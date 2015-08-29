@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 
 <project name="hafen" default="deftgt">
+  <property name="arch" value="linux-amd64"/> <!-- linux-amd64/linux-i586/windows-amd64/windows-i586 -->
+
   <target name="build-env">
     <mkdir dir="build" />
     <mkdir dir="build/classes" />
@@ -20,7 +22,7 @@
 
   <target name="hafen-client" depends="build-env">
     <javac srcdir="src" destdir="build/classes" debug="on"
-	   source="1.5" target="1.5" includeantruntime="no">
+	   source="1.7" target="1.7" includeantruntime="no">
       <classpath>
 	<pathelement path="lib/jogl.jar" />
 	<pathelement path="lib/gluegen-rt.jar" />
@@ -41,10 +43,6 @@
     <copy todir="build/classes/haven" file="etc/res-preload" />
     <copy todir="build/classes/haven" file="etc/res-bgload" />
     <copy todir="build/classes/haven" file="etc/icon.png" />
-  </target>
-  
-  <target name="appletview" depends="build-env">
-    <copy file="etc/applet.html" todir="build" />
   </target>
 
   <target name="lib-classes" depends="build-env" unless="unpacked-lib">
@@ -73,14 +71,10 @@
   </target>
   
   <target name="res-jar" depends="build-env" unless="has-res-jar">
-    <!--
-    <get src="http://www.havenandhearth.com/java/haven-res.jar" dest="lib/haven-res.jar"
+    <get src="http://game.havenandhearth.com/java/builtin-res.jar" dest="lib/builtin-res.jar"
 	 usetimestamp="true" />
-    -->
-    <available property="lib-res-jar" file="lib/hafen-res.jar" />
-    <fail unless="lib-res-jar" message="hafen-res.jar not available" />
-    <available property="lib-builtin-jar" file="lib/builtin-res.jar" />
-    <fail unless="lib-builtin-jar" message="builtin-res.jar not available" />
+    <get src="http://game.havenandhearth.com/java/hafen-res.jar" dest="lib/hafen-res.jar"
+	 usetimestamp="true" />
   </target>
   
   <target name="jars" depends="build-env, jar, res-jar">
@@ -91,10 +85,12 @@
 	<include name="hafen-res.jar" />
 	<include name="builtin-res.jar" />
       </fileset>
+      <fileset dir="lib/jogl-natives" includes="*${arch}.jar">
+      </fileset>
     </copy>
   </target>
   
-  <target name="deftgt" depends="jars, appletview" />
+  <target name="deftgt" depends="jars" />
 
   <target name="run" depends="jars">
     <java jar="build/hafen.jar" fork="true" />
@@ -102,6 +98,9 @@
   
   <target name="clean">
     <delete dir="build" />
+  </target>
+
+  <target name="rebuild" depends="clean, jars">   
   </target>
   
   <target name="profile" depends="jars">
