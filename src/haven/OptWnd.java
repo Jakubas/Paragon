@@ -257,15 +257,22 @@ public class OptWnd extends Window {
 
 	// -------------------------------------------- display
 	y = 0;
-	display.add(new CheckBox("Show flavor objects") {
+	display.add(new CheckBox("Show flavour objects") {
 		{a = Utils.getprefb("showflo", true);}
 
 		public void set(boolean val) {
-			if (val) {
-				Utils.setprefb("showflo", true);
-			} else {
-				Utils.setprefb("showflo", false);
-			}
+			Utils.setprefb("showflo", val);
+			Config.showflo = val;
+			a = val;
+		}
+	}, new Coord(0, y));
+	y += 35;
+	display.add(new CheckBox("Daylight mode") {
+		{a = Utils.getprefb("daylight", false);}
+
+		public void set(boolean val) {
+			Utils.setprefb("daylight", val);
+			Config.daylight = val;
 			a = val;
 		}
 	}, new Coord(0, y));

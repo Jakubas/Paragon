@@ -48,6 +48,10 @@ public class Config {
     public static int mainport = getint("haven.mainport", 1870);
     public static int authport = getint("haven.authport", 1871);
     public static boolean softres = getprop("haven.softres", "on").equals("on");
+
+	public static boolean showflo = Utils.getprefb("showflo", true);
+	public static boolean daylight = Utils.getprefb("daylight", false);
+
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     

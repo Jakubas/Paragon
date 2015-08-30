@@ -417,7 +417,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 				MapMesh cut = glob.map.getcut(cc.add(o));
 				rl.add(cut, Location.xlate(new Coord3f(pc.x, -pc.y, 0)));
 
-				if (Utils.getprefb("showflo", true)) {
+				if (Config.showflo) {
 					Collection<Gob> fol;
 					try {
 						fol = glob.map.getfo(cc.add(o));
@@ -552,7 +552,17 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    this.cc = new Coord(pl.getc());
 	synchronized(glob) {
 	    if(glob.lightamb != null) {
-		DirLight light = new DirLight(glob.lightamb, glob.lightdif, glob.lightspc, Coord3f.o.sadd((float)glob.lightelev, (float)glob.lightang, 1f));
+			Color lightamb, lightdif, lightspc;
+			if (Config.daylight) {
+				lightamb = glob.dlightamb;
+				lightdif = glob.dlightamb;
+				lightspc = glob.dlightspc;
+			} else {
+				lightamb = glob.lightamb;
+				lightdif = glob.lightamb;
+				lightspc = glob.lightspc;
+			}
+		DirLight light = new DirLight(lightamb, lightdif, lightspc, Coord3f.o.sadd((float)glob.lightelev, (float)glob.lightang, 1f));
 		rl.add(light, null);
 		updsmap(rl, light);
 		amb = light;
