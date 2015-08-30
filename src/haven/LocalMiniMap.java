@@ -29,15 +29,22 @@ package haven;
 import static haven.MCache.cmaps;
 import static haven.MCache.tilesz;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import haven.resutil.Ridges;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.text.SimpleDateFormat;
+import java.io.Writer;
+import java.io.FileWriter;
 
 public class LocalMiniMap extends Widget {
     public final MapView mv;
     private Coord cc = null;
     private MapTile cur = null;
+	private boolean isCurCave = false;
+	private String session;
     private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(5, 0.75f, true) {
 	protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
 	    if(size() > 5) {
@@ -67,6 +74,7 @@ public class LocalMiniMap extends Widget {
 	BufferedImage img = texes[t];
 	if(img == null) {
 	    Resource r = ui.sess.glob.map.tilesetr(t);
+		// isCurCave = (r.basename().equals("cave") || r.basename().equals("mine"));
 	    if(r == null)
 		return(null);
 	    Resource.Image ir = r.layer(Resource.imgc);
@@ -123,9 +131,25 @@ public class LocalMiniMap extends Widget {
 	return(buf);
     }
 
+	private void save(BufferedImage img, Coord c) {
+		String fileName = String.format("map/%s/tile_%d_%d.png", session, c.x, c.y);
+		try {
+			File outputfile = new File(fileName);
+			ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {}
+	}
+
     public LocalMiniMap(Coord sz, MapView mv) {
-	super(sz);
-	this.mv = mv;
+		super(sz);
+		this.mv = mv;
+		session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
+		(new File("map/" + session)).mkdirs();
+		try {
+			Writer cursesf = new FileWriter("map/currentsession.js");
+			cursesf.write("var currentSession = '" + session + "';\n");
+			cursesf.close();
+
+		} catch (IOException e) {}
     }
     
     public Coord p2c(Coord pc) {
@@ -190,8 +214,29 @@ public class LocalMiniMap extends Widget {
 		if(f == null) {
 		    f = Defer.later(new Defer.Callable<MapTile> () {
 			    public MapTile call() {
-				Coord ul = plg.mul(cmaps).sub(cmaps).add(1, 1);
-				return(new MapTile(new TexI(drawmap(ul, cmaps.mul(3).sub(2, 2))), ul, plg));
+					Coord ul = plg.mul(cmaps).sub(cmaps).add(1, 1);
+					Coord mtc = cmaps.mul(3).sub(2, 2);
+					TexI im = new TexI(drawmap(ul, mtc));
+					
+					//if (!isCurCave) {
+						int mtcw = mtc.x;
+						int mtch = mtc.y;
+						int cmapsw = cmaps.x - 1;
+						int cmapsh = cmaps.y - 1;
+
+						int dx = -1;
+						for (int x = 0; x <= mtcw - cmapsw; x += cmapsw) {
+							int dy = -1;
+							for (int y = 0; y <= mtch - cmapsh; y += cmapsh) {
+								if (im.back != null)
+									save(im.back.getSubimage(x, y, cmapsw, cmapsh), plg.add(dx, dy));
+								dy++;
+							}
+							dx++;
+						}
+					//}
+
+					return(new MapTile(im, ul, plg));
 			    }
 			});
 		    cache.put(plg, f);
