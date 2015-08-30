@@ -2,6 +2,11 @@
 
 <project name="hafen" default="deftgt">
   <property name="arch" value="linux-amd64"/> <!-- linux-amd64/linux-i586/windows-amd64/windows-i586 -->
+  <property name="name" value="amber"/>
+
+  <tstamp>
+    <format property="built.date" pattern="dd.MM.yy" />
+  </tstamp>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -88,6 +93,35 @@
       <fileset dir="lib/jogl-natives" includes="*${arch}.jar">
       </fileset>
     </copy>
+  </target>
+
+ <target name="dist" depends="rebuild">
+    <zip destfile="${basedir}/${name}-${built.date}-${arch}.zip" update="false">
+        <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
+        <fileset dir="${basedir}" includes="README"/>
+        <fileset dir="lib/jogl-natives" includes="*${arch}.jar"/>
+    </zip>
+  </target>
+
+  <target name="distall">
+    <antcall target="dist">
+      <param name="arch" value="linux-amd64"/>
+    </antcall>
+    <antcall target="dist">
+      <param name="arch" value="linux-i586"/>
+    </antcall>
+    <antcall target="dist">
+      <param name="arch" value="windows-amd64"/>
+    </antcall>
+    <antcall target="dist">
+      <param name="arch" value="windows-i586"/>
+    </antcall>
+    <antcall target="dist">
+      <param name="arch" value="macosx-universal"/>
+    </antcall>
+    <zip destfile="${basedir}/${name}-update-${built.date}.zip" update="false">
+        <fileset dir="build" includes="*.jar"/>
+    </zip>
   </target>
   
   <target name="deftgt" depends="jars" />
