@@ -526,7 +526,8 @@ public abstract class GLState {
             cur.copy(old);
             for (int i = deplist.length - 1; i >= 0; i--) {
                 int id = deplist[i].id;
-                if (repl[id]) {
+                // FIXME: dirty fix for ArrayIndexOutOfBoundsException id >= repl.length
+                if (id < repl.length && repl[id]) {
                     if (cur.states[id] != null) {
                         cur.states[id].unapply(g);
                         if (debug)
@@ -545,7 +546,8 @@ public abstract class GLState {
 	     * been altered, future results are undefined. */
             for (int i = 0; i < deplist.length; i++) {
                 int id = deplist[i].id;
-                if (repl[id]) {
+                // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= repl.length
+                if (id < repl.length && repl[id]) {
                     if (next.states[id] != null) {
                         next.states[id].apply(g);
                         cur.states[id] = next.states[id];
