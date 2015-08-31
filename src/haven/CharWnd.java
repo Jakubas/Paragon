@@ -39,8 +39,8 @@ import haven.resutil.FoodInfo;
 
 public class CharWnd extends Window {
     public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, 9).aa(true);
-    public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.fraktur, 25).aa(true), Window.ctex), 3, 2, new Color(96, 48, 0));
-    public static final Text.Foundry attrf = new Text.Foundry(Text.fraktur, 18).aa(true);
+    public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.sans, 20).aa(true), Window.ctex), 2, 2, new Color(96, 48, 0));
+    public static final Text.Foundry attrf = new Text.Foundry(Text.sansb, 14).aa(true);
     public static final Color debuff = new Color(255, 128, 128);
     public static final Color buff = new Color(128, 255, 128);
     public static final Color tbuff = new Color(128, 128, 255);
@@ -1116,7 +1116,7 @@ public class CharWnd extends Window {
             int x = 5, y = 0;
 
             battr = tabs.add();
-            battr.add(new Img(catf.render("Base Attributes").tex()), new Coord(x - 5, y));
+            battr.add(new Img(catf.render("Base Attributes").tex()), new Coord(x - 2, y));
             y += 35;
             base = new ArrayList<Attr>();
             Attr aw;
@@ -1138,19 +1138,19 @@ public class CharWnd extends Window {
             y += aw.sz.y;
             Frame.around(battr, base);
             y += 24;
-            battr.add(new Img(catf.render("Food Event Points").tex()), new Coord(x - 5, y));
+            battr.add(new Img(catf.render("Food Event Points").tex()), new Coord(x - 2, y));
             y += 35;
             feps = battr.add(new FoodMeter(), new Coord(x, y));
 
             x = 260;
             y = 0;
-            battr.add(new Img(catf.render("Food Satiations").tex()), new Coord(x - 5, y));
+            battr.add(new Img(catf.render("Food Satiations").tex()), new Coord(x - 2, y));
             y += 35;
             cons = battr.add(new Constipations(attrw, base.size()), wbox.btloff().add(x, y));
             y += cons.sz.y;
             Frame.around(battr, Collections.singletonList(cons));
             y += 24;
-            battr.add(new Img(catf.render("Hunger Level").tex()), new Coord(x - 5, y));
+            battr.add(new Img(catf.render("Hunger Level").tex()), new Coord(x - 2, y));
             y += 35;
             glut = battr.add(new GlutMeter(), new Coord(x, y));
         }
@@ -1159,7 +1159,7 @@ public class CharWnd extends Window {
             int x = 5, y = 0;
 
             sattr = tabs.add();
-            sattr.add(new Img(catf.render("Abilities").tex()), new Coord(x - 5, y));
+            sattr.add(new Img(catf.render("Abilities").tex()), new Coord(x - 2, y));
             y += 35;
             skill = new ArrayList<SAttr>();
             SAttr aw;
@@ -1189,7 +1189,7 @@ public class CharWnd extends Window {
 
             x = 260;
             y = 0;
-            sattr.add(new Img(catf.render("Study Report").tex()), new Coord(x - 5, y));
+            sattr.add(new Img(catf.render("Study Report").tex()), new Coord(x - 2, y));
             y += 35;
             y += 151;
             int rx = x + attrw - 10;
@@ -1229,7 +1229,7 @@ public class CharWnd extends Window {
             int x = 5, y = 0;
 
             skills = tabs.add();
-            skills.add(new Img(catf.render("Lore & Skills").tex()), new Coord(x - 5, y));
+            skills.add(new Img(catf.render("Lore & Skills").tex()), new Coord(x - 2, y));
             y += 35;
             final LoadingTextBox info = skills.add(new LoadingTextBox(new Coord(attrw, 260), "", ifnd), new Coord(x, y).add(wbox.btloff()));
             info.bg = new Color(0, 0, 0, 128);
@@ -1237,7 +1237,7 @@ public class CharWnd extends Window {
 
             x = 260;
             y = 0;
-            skills.add(new Img(catf.render("Entries").tex()), new Coord(x - 5, y));
+            skills.add(new Img(catf.render("Entries").tex()), new Coord(x - 2, y));
             y += 35;
             Tabs lists = new Tabs(new Coord(x, y), new Coord(attrw + wbox.bisz().x, 0), skills);
             Tabs.Tab nsk = lists.add();
@@ -1392,7 +1392,7 @@ public class CharWnd extends Window {
             prev.settip("Abilities");
             prev = add(new TB("skill", skills), new Coord(prev.c.x + prev.sz.x + 10, prev.c.y));
             prev.settip("Lore & Skills");
-            prev = add(new TB("fgt", fgt), new Coord(prev.c.x + prev.sz.x + 10, prev.c.y));
+            prev = add(new TB("fgt", fgt), new Coord(prev.c.x + prev.sz.x + 7, prev.c.y));
             prev.settip("Martial Arts & Combat Schools");
             prev = add(new TB("wound", wounds), new Coord(prev.c.x + prev.sz.x + 10, prev.c.y));
             prev.settip("Health & Wounds");
