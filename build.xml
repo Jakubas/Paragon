@@ -100,6 +100,7 @@
         <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
         <fileset dir="${basedir}" includes="README"/>
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
+        <fileset dir="etc" includes="*.bat"/>
     </zip>
     <zip destfile="${basedir}/${name}-update-${built.date}.zip" update="false">
         <fileset dir="build" includes="*.jar"/>
