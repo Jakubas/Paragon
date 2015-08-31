@@ -558,7 +558,8 @@ public abstract class GLState {
                     }
                     if (!pdirty)
                         prog.adirty(deplist[i]);
-                } else if (trans[id]) {
+                // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= trans.length
+                } else if (id < trans.length && trans[id]) {
                     cur.states[id].applyto(g, next.states[id]);
                     if (debug)
                         stcheckerr(g, "applyto", cur.states[id]);
@@ -570,7 +571,8 @@ public abstract class GLState {
                         stcheckerr(g, "applyfrom", cur.states[id]);
                     if (!pdirty)
                         prog.adirty(deplist[i]);
-                } else if (pdirty && (shaders[id] != null)) {
+                // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= shaders.length
+                } else if (pdirty && (id < shaders.length && shaders[id] != null)) {
                     cur.states[id].reapply(g);
                     if (debug)
                         stcheckerr(g, "reapply", cur.states[id]);
