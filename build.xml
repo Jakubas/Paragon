@@ -2,6 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="amber"/>
+  <property name="patch" value=""/>
 
   <tstamp>
     <format property="built.date" pattern="dd.MM.yy" />
@@ -22,7 +23,7 @@
     <echo file="build/classes/buildinfo" xml:space="default">
       git-rev = ${gitrev}
     </echo>
-    <echo file="build/classes/version" xml:space="default">${built.date}</echo>
+    <echo file="build/classes/version" xml:space="default">${built.date}${patch}</echo>
   </target>
 
   <target name="hafen-client" depends="build-env">
@@ -96,13 +97,13 @@
   </target>
 
  <target name="dist" depends="rebuild">
-    <zip destfile="${basedir}/${name}-${built.date}.zip" update="false">
+    <zip destfile="${basedir}/${name}-${built.date}${patch}.zip" update="false">
         <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
         <fileset dir="${basedir}" includes="README"/>
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
         <fileset dir="etc" includes="*.bat"/>
     </zip>
-    <zip destfile="${basedir}/${name}-update-${built.date}.zip" update="false">
+    <zip destfile="${basedir}/${name}-update-${built.date}${patch}.zip" update="false">
         <fileset dir="build" includes="*.jar"/>
     </zip>
   </target>
