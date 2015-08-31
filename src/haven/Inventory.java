@@ -104,11 +104,11 @@ public class Inventory extends Widget implements DTarget {
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if(msg.equals("drop-indentical")) {
+        if(msg.equals("drop-identical")) {
             for (WItem item : getitems((String) args[0]))
                 item.item.wdgmsg("drop", Coord.z);
         } else if(msg.equals("transfer-identical")) {
-            for (WItem item : getitems((String)args[0])) {
+            for (WItem item : getitems((String) args[0])) {
                 item.item.wdgmsg("transfer", Coord.z);
             }
         } else {
