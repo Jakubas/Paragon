@@ -30,67 +30,68 @@ public class Img extends Widget {
     private Indir<Resource> res;
     private Tex img;
     public boolean hit = false;
-	
+
     @RName("img")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    Indir<Resource> res;
-	    int a = 0;
-	    if(args[a] instanceof String) {
-		String nm = (String)args[a++];
-		int ver = (args.length > a)?((Integer)args[a++]):-1;
-		res = new Resource.Spec(Resource.remote(), nm, ver);
-	    } else {
-		res = parent.ui.sess.getres((Integer)args[a++]);
-	    }
-	    Img ret = new Img(res);
-	    if(args.length > a)
-		ret.hit = (Integer)args[a++] != 0;
-	    return(ret);
-	}
+        public Widget create(Widget parent, Object[] args) {
+            Indir<Resource> res;
+            int a = 0;
+            if (args[a] instanceof String) {
+                String nm = (String) args[a++];
+                int ver = (args.length > a) ? ((Integer) args[a++]) : -1;
+                res = new Resource.Spec(Resource.remote(), nm, ver);
+            } else {
+                res = parent.ui.sess.getres((Integer) args[a++]);
+            }
+            Img ret = new Img(res);
+            if (args.length > a)
+                ret.hit = (Integer) args[a++] != 0;
+            return (ret);
+        }
     }
 
     public void draw(GOut g) {
-	if(res != null) {
-	    try {
-		img = res.get().layer(Resource.imgc).tex();
-		resize(img.sz());
-		res = null;
-	    } catch(Loading e) {}
-	}
-	if(img != null)
-	    g.image(img, Coord.z);
+        if (res != null) {
+            try {
+                img = res.get().layer(Resource.imgc).tex();
+                resize(img.sz());
+                res = null;
+            } catch (Loading e) {
+            }
+        }
+        if (img != null)
+            g.image(img, Coord.z);
     }
-	
+
     public Img(Tex img) {
-	super(img.sz());
-	this.res = null;
-	this.img = img;
+        super(img.sz());
+        this.res = null;
+        this.img = img;
     }
 
     public Img(Indir<Resource> res) {
-	super(Coord.z);
-	this.res = res;
-	this.img = null;
+        super(Coord.z);
+        this.res = res;
+        this.img = null;
     }
 
     public void uimsg(String name, Object... args) {
-	if(name == "ch") {
-	    if(args[0] instanceof String) {
-		String nm = (String)args[0];
-		int ver = (args.length > 1)?((Integer)args[1]):-1;
-		this.res = new Resource.Spec(Resource.remote(), nm, ver);
-	    } else {
-		this.res = ui.sess.getres((Integer)args[0]);
-	    }
-	}
+        if (name == "ch") {
+            if (args[0] instanceof String) {
+                String nm = (String) args[0];
+                int ver = (args.length > 1) ? ((Integer) args[1]) : -1;
+                this.res = new Resource.Spec(Resource.remote(), nm, ver);
+            } else {
+                this.res = ui.sess.getres((Integer) args[0]);
+            }
+        }
     }
-    
+
     public boolean mousedown(Coord c, int button) {
-	if(hit) {
-	    wdgmsg("click", c, button, ui.modflags());
-	    return(true);
-	}
-	return(false);
+        if (hit) {
+            wdgmsg("click", c, button, ui.modflags());
+            return (true);
+        }
+        return (false);
     }
 }

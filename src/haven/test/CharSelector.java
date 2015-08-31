@@ -32,52 +32,52 @@ public class CharSelector extends Robot {
     Runnable cb;
     String chr;
     Charlist chrlist;
-    
+
     public CharSelector(TestClient c, String chr, Runnable cb) {
-	super(c);
-	this.chr = chr;
-	this.cb = cb;
+        super(c);
+        this.chr = chr;
+        this.cb = cb;
     }
-    
+
     public void check() {
-	if(chrlist == null)
-	    return;
-	
-	if(chr == null) {
-	    chr = chrlist.chars.get(0).name;
-	} else {
-	    Charlist.Char found = null;
-	    for(Charlist.Char ch : chrlist.chars) {
-		if(ch.name.equals(chr)) {
-		    found = ch;
-		    break;
-		}
-	    }
-	    if(found == null)
-		throw(new RobotException(this, "requested character not found: " + chr));
-	}
-	chrlist.wdgmsg("play", chr);
+        if (chrlist == null)
+            return;
+
+        if (chr == null) {
+            chr = chrlist.chars.get(0).name;
+        } else {
+            Charlist.Char found = null;
+            for (Charlist.Char ch : chrlist.chars) {
+                if (ch.name.equals(chr)) {
+                    found = ch;
+                    break;
+                }
+            }
+            if (found == null)
+                throw (new RobotException(this, "requested character not found: " + chr));
+        }
+        chrlist.wdgmsg("play", chr);
     }
-    
+
     public void newwdg(int id, Widget w, Object... args) {
-	if(w instanceof Listbox) {
-	    chrlist = (Charlist)w;
-	}
-	check();
+        if (w instanceof Listbox) {
+            chrlist = (Charlist) w;
+        }
+        check();
     }
-    
+
     public void dstwdg(int id, Widget w) {
-	if(w == chrlist) {
-	    destroy();
-	    succeed();
-	}
+        if (w == chrlist) {
+            destroy();
+            succeed();
+        }
     }
-    
+
     public void uimsg(int id, Widget w, String msg, Object... args) {
     }
-    
+
     public void succeed() {
-	if(cb != null)
-	    cb.run();
+        if (cb != null)
+            cb.run();
     }
 }

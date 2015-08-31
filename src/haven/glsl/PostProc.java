@@ -33,109 +33,123 @@ public class PostProc implements Walker {
     public final Context ctx;
 
     public interface Processed {
-	public void process(PostProc proc);
-	public Object ppid();
+        public void process(PostProc proc);
+
+        public Object ppid();
     }
 
     public static class AutoID {
-	public final String name;
-	public final int order;
+        public final String name;
+        public final int order;
 
-	public AutoID(String name, int order) {
-	    this.name = name;
-	    this.order = order;
-	}
-	public AutoID(int order) {
-	    this("<nil>", order);
-	}
+        public AutoID(String name, int order) {
+            this.name = name;
+            this.order = order;
+        }
 
-	public PostProc proc(Context ctx) {
-	    return(new PostProc(this, ctx));
-	}
+        public AutoID(int order) {
+            this("<nil>", order);
+        }
 
-	public String toString() {
-	    return("AutoID(\"" + name + "\", " + order + ")");
-	}
+        public PostProc proc(Context ctx) {
+            return (new PostProc(this, ctx));
+        }
+
+        public String toString() {
+            return ("AutoID(\"" + name + "\", " + order + ")");
+        }
     }
+
     public static final AutoID misc = new AutoID("misc", 0);
 
     public PostProc(Object id, Context ctx) {
-	this.id = id;
-	this.ctx = ctx;
+        this.id = id;
+        this.ctx = ctx;
     }
 
     public PostProc(Object id) {
-	this(id, null);
+        this(id, null);
     }
 
     public PostProc() {
-	this.id = this;
-	this.ctx = null;
+        this.id = this;
+        this.ctx = null;
     }
 
     public void el(Element el) {
-	if((el instanceof Processed) && (((Processed)el).ppid() == id))
-	    ((Processed)el).process(this);
-	el.walk(this);
+        if ((el instanceof Processed) && (((Processed) el).ppid() == id))
+            ((Processed) el).process(this);
+        el.walk(this);
     }
 
     public static void autoproc(Context ctx) {
-	final Collection<AutoID> closed = new ArrayList<AutoID>();
-	final int[] curo = {Integer.MIN_VALUE};
-	while(true) {
-	    final int[] mino = {0};
-	    final AutoID[] min = {null};
-	    ctx.walk(new Walker() {
-		    public void el(Element el) {
-			if(el instanceof Processed) {
-			    Object key = ((Processed)el).ppid();
-			    if(key instanceof AutoID) {
-				AutoID id = (AutoID)key;
-				if(!closed.contains(id) && ((min[0] == null) || (id.order < mino[0]))) {
-				    if(id.order < curo[0])
-					throw(new RuntimeException("New postprocessor " + id.name + " with order " + id.order + " added when at order " + curo[0]));
-				    min[0] = id;
-				    mino[0] = id.order;
-				}
-			    }
-			}
-			el.walk(this);
-		    }
-		});
-	    AutoID id = min[0];
-	    if(id == null)
-		return;
-	    ctx.walk(id.proc(ctx));
-	    curo[0] = id.order;
-	    closed.add(id);
-	}
+        final Collection<AutoID> closed = new ArrayList<AutoID>();
+        final int[] curo = {Integer.MIN_VALUE};
+        while (true) {
+            final int[] mino = {0};
+            final AutoID[] min = {null};
+            ctx.walk(new Walker() {
+                public void el(Element el) {
+                    if (el instanceof Processed) {
+                        Object key = ((Processed) el).ppid();
+                        if (key instanceof AutoID) {
+                            AutoID id = (AutoID) key;
+                            if (!closed.contains(id) && ((min[0] == null) || (id.order < mino[0]))) {
+                                if (id.order < curo[0])
+                                    throw (new RuntimeException("New postprocessor " + id.name + " with order " + id.order + " added when at order " + curo[0]));
+                                min[0] = id;
+                                mino[0] = id.order;
+                            }
+                        }
+                    }
+                    el.walk(this);
+                }
+            });
+            AutoID id = min[0];
+            if (id == null)
+                return;
+            ctx.walk(id.proc(ctx));
+            curo[0] = id.order;
+            closed.add(id);
+        }
     }
 
     public static abstract class ProcExpression extends Expression implements Processed {
-	public final Object id;
-	public ProcExpression(Object id) {this.id = id;}
-	public Object ppid() {return(id);}
+        public final Object id;
+
+        public ProcExpression(Object id) {
+            this.id = id;
+        }
+
+        public Object ppid() {
+            return (id);
+        }
     }
 
     public static abstract class AutoMacro extends ProcExpression {
-	protected Expression exp = null;
+        protected Expression exp = null;
 
-	public AutoMacro(Object id) {super(id);}
+        public AutoMacro(Object id) {
+            super(id);
+        }
 
-	protected abstract Expression expand(Context ctx);
-	protected Expression expand0(PostProc proc) {return(expand(proc.ctx));}
+        protected abstract Expression expand(Context ctx);
 
-	public void process(PostProc proc) {
-	    exp = expand0(proc);
-	}
+        protected Expression expand0(PostProc proc) {
+            return (expand(proc.ctx));
+        }
 
-	public void walk(Walker w) {
-	    if(exp != null)
-		w.el(exp);
-	}
+        public void process(PostProc proc) {
+            exp = expand0(proc);
+        }
 
-	public void output(Output out) {
-	    exp.output(out);
-	}
+        public void walk(Walker w) {
+            if (exp != null)
+                w.el(exp);
+        }
+
+        public void output(Output out) {
+            exp.output(out);
+        }
     }
 }

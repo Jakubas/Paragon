@@ -34,49 +34,49 @@ public class PosLight extends Light {
     public float ac = 1.0f, al = 0.0f, aq = 0.0f;
 
     public PosLight(FColor col, Coord3f pos) {
-	super(col);
-	this.pos = pos.to4a(1);
+        super(col);
+        this.pos = pos.to4a(1);
     }
 
     public PosLight(Color col, Coord3f pos) {
-	super(col);
-	this.pos = pos.to4a(1);
+        super(col);
+        this.pos = pos.to4a(1);
     }
 
     public PosLight(FColor amb, FColor dif, FColor spc, Coord3f pos) {
-	super(amb, dif, spc);
-	this.pos = pos.to4a(1);
+        super(amb, dif, spc);
+        this.pos = pos.to4a(1);
     }
 
     public PosLight(Color amb, Color dif, Color spc, Coord3f pos) {
-	super(amb, dif, spc);
-	this.pos = pos.to4a(1);
+        super(amb, dif, spc);
+        this.pos = pos.to4a(1);
     }
 
     public void move(Coord3f pos) {
-	this.pos = pos.to4a(1);
+        this.pos = pos.to4a(1);
     }
 
     public void att(float c, float l, float q) {
-	ac = c;
-	al = l;
-	aq = q;
+        ac = c;
+        al = l;
+        aq = q;
     }
 
     public void enable(GOut g, int idx) {
-	super.enable(g, idx);
-	BGL gl = g.gl;
-	gl.glLightfv(GL2.GL_LIGHT0 + idx, GL2.GL_POSITION, pos, 0);
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_CONSTANT_ATTENUATION, ac);
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_LINEAR_ATTENUATION, al);
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_QUADRATIC_ATTENUATION, aq);
+        super.enable(g, idx);
+        BGL gl = g.gl;
+        gl.glLightfv(GL2.GL_LIGHT0 + idx, GL2.GL_POSITION, pos, 0);
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_CONSTANT_ATTENUATION, ac);
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_LINEAR_ATTENUATION, al);
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_QUADRATIC_ATTENUATION, aq);
     }
 
     public void disable(GOut g, int idx) {
-	BGL gl = g.gl;
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_CONSTANT_ATTENUATION, 1.0f);
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_LINEAR_ATTENUATION, 0.0f);
-	gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_QUADRATIC_ATTENUATION, 0.0f);
-	super.disable(g, idx);
+        BGL gl = g.gl;
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_CONSTANT_ATTENUATION, 1.0f);
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_LINEAR_ATTENUATION, 0.0f);
+        gl.glLightf(GL2.GL_LIGHT0 + idx, GL2.GL_QUADRATIC_ATTENUATION, 0.0f);
+        super.disable(g, idx);
     }
 }

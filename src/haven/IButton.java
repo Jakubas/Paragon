@@ -37,49 +37,49 @@ public class IButton extends SSWidget {
 
     @RName("ibtn")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new IButton(Resource.loadimg((String)args[0]), Resource.loadimg((String)args[1])));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new IButton(Resource.loadimg((String) args[0]), Resource.loadimg((String) args[1])));
+        }
     }
 
     public IButton(BufferedImage up, BufferedImage down, BufferedImage hover) {
-	super(Utils.imgsz(up));
-	this.up = up;
-	this.down = down;
-	this.hover = hover;
-	render();
+        super(Utils.imgsz(up));
+        this.up = up;
+        this.down = down;
+        this.hover = hover;
+        render();
     }
 
     public IButton(BufferedImage up, BufferedImage down) {
-	this(up, down, up);
+        this(up, down, up);
     }
 
     public IButton(String base, String up, String down, String hover) {
-	this(Resource.loadimg(base + up), Resource.loadimg(base + down), Resource.loadimg(base + (hover == null?up:hover)));
+        this(Resource.loadimg(base + up), Resource.loadimg(base + down), Resource.loadimg(base + (hover == null ? up : hover)));
     }
 
     public void render() {
-	clear();
-	Graphics g = graphics();
-	if(a)
-	    g.drawImage(down, 0, 0, null);
-	else if(h)
-	    g.drawImage(hover, 0, 0, null);
-	else
-	    g.drawImage(up, 0, 0, null);
-	update();
+        clear();
+        Graphics g = graphics();
+        if (a)
+            g.drawImage(down, 0, 0, null);
+        else if (h)
+            g.drawImage(hover, 0, 0, null);
+        else
+            g.drawImage(up, 0, 0, null);
+        update();
     }
 
     public boolean checkhit(Coord c) {
-	if(!c.isect(Coord.z, sz))
-	    return(false);
-	if(up.getRaster().getNumBands() < 4)
-	    return(true);
-	return(up.getRaster().getSample(c.x, c.y, 3) >= 128);
+        if (!c.isect(Coord.z, sz))
+            return (false);
+        if (up.getRaster().getNumBands() < 4)
+            return (true);
+        return (up.getRaster().getSample(c.x, c.y, 3) >= 128);
     }
 
     public void click() {
-	wdgmsg("activate");
+        wdgmsg("activate");
     }
 
     protected void depress() {
@@ -89,48 +89,48 @@ public class IButton extends SSWidget {
     }
 
     public boolean mousedown(Coord c, int button) {
-	if(button != 1)
-	    return(false);
-	if(!checkhit(c))
-	    return(false);
-	a = true;
-	d = ui.grabmouse(this);
-	depress();
-	render();
-	return(true);
+        if (button != 1)
+            return (false);
+        if (!checkhit(c))
+            return (false);
+        a = true;
+        d = ui.grabmouse(this);
+        depress();
+        render();
+        return (true);
     }
 
     public boolean mouseup(Coord c, int button) {
-	if((d != null) && button == 1) {
-	    d.remove();
-	    d = null;
-	    mousemove(c);
-	    if(checkhit(c)) {
-		unpress();
-		click();
-	    }
-	    return(true);
-	}
-	return(false);
+        if ((d != null) && button == 1) {
+            d.remove();
+            d = null;
+            mousemove(c);
+            if (checkhit(c)) {
+                unpress();
+                click();
+            }
+            return (true);
+        }
+        return (false);
     }
 
     public void mousemove(Coord c) {
-	boolean h = checkhit(c);
-	boolean a = false;
-	if(d != null) {
-	    a = h;
-	    h = true;
-	}
-	if((h != this.h) || (a != this.a)) {
-	    this.h = h;
-	    this.a = a;
-	    render();
-	}
+        boolean h = checkhit(c);
+        boolean a = false;
+        if (d != null) {
+            a = h;
+            h = true;
+        }
+        if ((h != this.h) || (a != this.a)) {
+            this.h = h;
+            this.a = a;
+            render();
+        }
     }
 
     public Object tooltip(Coord c, Widget prev) {
-	if(!checkhit(c))
-	    return(null);
-	return(super.tooltip(c, prev));
+        if (!checkhit(c))
+            return (null);
+        return (super.tooltip(c, prev));
     }
 }

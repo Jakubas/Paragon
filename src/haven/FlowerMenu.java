@@ -28,6 +28,7 @@ package haven;
 
 import java.awt.Color;
 import java.awt.Font;
+
 import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
@@ -42,210 +43,215 @@ public class FlowerMenu extends Widget {
 
     @RName("sm")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    String[] opts = new String[args.length];
-	    for(int i = 0; i < args.length; i++)
-		opts[i] = (String)args[i];
-	    return(new FlowerMenu(opts));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            String[] opts = new String[args.length];
+            for (int i = 0; i < args.length; i++)
+                opts[i] = (String) args[i];
+            return (new FlowerMenu(opts));
+        }
     }
 
     public class Petal extends Widget {
-	public String name;
-	public double ta, tr;
-	public int num;
-	private Text text;
-	private double a = 1;
+        public String name;
+        public double ta, tr;
+        public int num;
+        private Text text;
+        private double a = 1;
 
-	public Petal(String name) {
-	    super(Coord.z);
-	    this.name = name;
-	    text = ptf.render(name, ptc);
-	    resize(text.sz().x + 25, ph);
-	}
+        public Petal(String name) {
+            super(Coord.z);
+            this.name = name;
+            text = ptf.render(name, ptc);
+            resize(text.sz().x + 25, ph);
+        }
 
-	public void move(Coord c) {
-	    this.c = c.sub(sz.div(2));
-	}
+        public void move(Coord c) {
+            this.c = c.sub(sz.div(2));
+        }
 
-	public void move(double a, double r) {
-	    move(Coord.sc(a, r));
-	}
+        public void move(double a, double r) {
+            move(Coord.sc(a, r));
+        }
 
-	public void draw(GOut g) {
-	    g.chcolor(new Color(255, 255, 255, (int)(255 * a)));
-	    g.image(pbg, new Coord(3, 3), new Coord(3, 3), sz.add(new Coord(-6, -6)));
-	    pbox.draw(g, Coord.z, sz);
-	    g.image(text.tex(), sz.div(2).sub(text.sz().div(2)));
-	}
+        public void draw(GOut g) {
+            g.chcolor(new Color(255, 255, 255, (int) (255 * a)));
+            g.image(pbg, new Coord(3, 3), new Coord(3, 3), sz.add(new Coord(-6, -6)));
+            pbox.draw(g, Coord.z, sz);
+            g.image(text.tex(), sz.div(2).sub(text.sz().div(2)));
+        }
 
-	public boolean mousedown(Coord c, int button) {
-	    choose(this);
-	    return(true);
-	}
+        public boolean mousedown(Coord c, int button) {
+            choose(this);
+            return (true);
+        }
 
-	public Area ta(Coord tc) {
-	    return(Area.sized(tc.sub(sz.div(2)), sz));
-	}
+        public Area ta(Coord tc) {
+            return (Area.sized(tc.sub(sz.div(2)), sz));
+        }
 
-	public Area ta(double a, double r) {
-	    return(ta(Coord.sc(a, r)));
-	}
+        public Area ta(double a, double r) {
+            return (ta(Coord.sc(a, r)));
+        }
     }
 
     public class Opening extends NormAnim {
-	Opening() {super(0.25);}
-	
-	public void ntick(double s) {
-	    for(Petal p : opts) {
-		p.move(p.ta + ((1 - s) * PI), p.tr * s);
-		p.a = s;
-	    }
-	}
+        Opening() {
+            super(0.25);
+        }
+
+        public void ntick(double s) {
+            for (Petal p : opts) {
+                p.move(p.ta + ((1 - s) * PI), p.tr * s);
+                p.a = s;
+            }
+        }
     }
 
     public class Chosen extends NormAnim {
-	Petal chosen;
-		
-	Chosen(Petal c) {
-	    super(0.75);
-	    chosen = c;
-	}
-		
-	public void ntick(double s) {
-	    for(Petal p : opts) {
-		if(p == chosen) {
-		    if(s > 0.6) {
-			p.a = 1 - ((s - 0.6) / 0.4);
-		    } else if(s < 0.3) {
-			p.move(p.ta, p.tr * (1 - (s / 0.3)));
-		    }
-		} else {
-		    if(s > 0.3)
-			p.a = 0;
-		    else
-			p.a = 1 - (s / 0.3);
-		}
-	    }
-	    if(s == 1.0)
-		ui.destroy(FlowerMenu.this);
-	}
+        Petal chosen;
+
+        Chosen(Petal c) {
+            super(0.75);
+            chosen = c;
+        }
+
+        public void ntick(double s) {
+            for (Petal p : opts) {
+                if (p == chosen) {
+                    if (s > 0.6) {
+                        p.a = 1 - ((s - 0.6) / 0.4);
+                    } else if (s < 0.3) {
+                        p.move(p.ta, p.tr * (1 - (s / 0.3)));
+                    }
+                } else {
+                    if (s > 0.3)
+                        p.a = 0;
+                    else
+                        p.a = 1 - (s / 0.3);
+                }
+            }
+            if (s == 1.0)
+                ui.destroy(FlowerMenu.this);
+        }
     }
 
     public class Cancel extends NormAnim {
-	Cancel() {super(0.25);}
+        Cancel() {
+            super(0.25);
+        }
 
-	public void ntick(double s) {
-	    for(Petal p : opts) {
-		p.move(p.ta + ((s) * PI), p.tr * (1 - s));
-		p.a = 1 - s;
-	    }
-	    if(s == 1.0)
-		ui.destroy(FlowerMenu.this);
-	}
+        public void ntick(double s) {
+            for (Petal p : opts) {
+                p.move(p.ta + ((s) * PI), p.tr * (1 - s));
+                p.a = 1 - s;
+            }
+            if (s == 1.0)
+                ui.destroy(FlowerMenu.this);
+        }
     }
 
     private void organize(Petal[] opts) {
-	Area bounds = parent.area().xl(c.inv());
-	int l = 1, p = 0, i = 0, mp = 0, ml = 1, t = 0, tt = -1;
-	boolean muri = false;
-	while(i < opts.length) {
-	    place: {
-		double ta = (PI / 2) - (p * (2 * PI / (l * ppl)));
-		double tr = 75 + (50 * (l - 1));
-		if(!muri && !bounds.contains(opts[i].ta(ta, tr))) {
-		    if(tt < 0) {
-			tt = ppl * l;
-			t = 1;
-			mp = p;
-			ml = l;
-		    } else if(++t >= tt) {
-			muri = true;
-			p = mp;
-			l = ml;
-			continue;
-		    }
-		    break place;
-		}
-		tt = -1;
-		opts[i].ta = ta;
-		opts[i].tr = tr;
-		i++;
-	    }
-	    if(++p >= (ppl * l)) {
-		l++;
-		p = 0;
-	    }
-	}
+        Area bounds = parent.area().xl(c.inv());
+        int l = 1, p = 0, i = 0, mp = 0, ml = 1, t = 0, tt = -1;
+        boolean muri = false;
+        while (i < opts.length) {
+            place:
+            {
+                double ta = (PI / 2) - (p * (2 * PI / (l * ppl)));
+                double tr = 75 + (50 * (l - 1));
+                if (!muri && !bounds.contains(opts[i].ta(ta, tr))) {
+                    if (tt < 0) {
+                        tt = ppl * l;
+                        t = 1;
+                        mp = p;
+                        ml = l;
+                    } else if (++t >= tt) {
+                        muri = true;
+                        p = mp;
+                        l = ml;
+                        continue;
+                    }
+                    break place;
+                }
+                tt = -1;
+                opts[i].ta = ta;
+                opts[i].tr = tr;
+                i++;
+            }
+            if (++p >= (ppl * l)) {
+                l++;
+                p = 0;
+            }
+        }
     }
 
     public FlowerMenu(String... options) {
-	super(Coord.z);
-	opts = new Petal[options.length];
-	for(int i = 0; i < options.length; i++) {
-	    add(opts[i] = new Petal(options[i]));
-	    opts[i].num = i;
-	}
+        super(Coord.z);
+        opts = new Petal[options.length];
+        for (int i = 0; i < options.length; i++) {
+            add(opts[i] = new Petal(options[i]));
+            opts[i].num = i;
+        }
     }
 
     protected void added() {
-	if(c.equals(-1, -1))
-	    c = parent.ui.lcc;
-	mg = ui.grabmouse(this);
-	kg = ui.grabkeys(this);
-	organize(opts);
-	new Opening();
+        if (c.equals(-1, -1))
+            c = parent.ui.lcc;
+        mg = ui.grabmouse(this);
+        kg = ui.grabkeys(this);
+        organize(opts);
+        new Opening();
     }
 
     public boolean mousedown(Coord c, int button) {
-	if(!anims.isEmpty())
-	    return(true);
-	if(!super.mousedown(c, button))
-	    choose(null);
-	return(true);
+        if (!anims.isEmpty())
+            return (true);
+        if (!super.mousedown(c, button))
+            choose(null);
+        return (true);
     }
 
     public void uimsg(String msg, Object... args) {
-	if(msg == "cancel") {
-	    new Cancel();
-	    mg.remove();
-	    kg.remove();
-	} else if(msg == "act") {
-	    new Chosen(opts[(Integer)args[0]]);
-	    mg.remove();
-	    kg.remove();
-	}
+        if (msg == "cancel") {
+            new Cancel();
+            mg.remove();
+            kg.remove();
+        } else if (msg == "act") {
+            new Chosen(opts[(Integer) args[0]]);
+            mg.remove();
+            kg.remove();
+        }
     }
 
     public void draw(GOut g) {
-	super.draw(g, false);
+        super.draw(g, false);
     }
 
     public boolean keydown(java.awt.event.KeyEvent ev) {
-	return(true);
+        return (true);
     }
 
     public boolean type(char key, java.awt.event.KeyEvent ev) {
-	if((key >= '0') && (key <= '9')) {
-	    int opt = (key == '0')?10:(key - '1');
-	    if(opt < opts.length) {
-		choose(opts[opt]);
-		kg.remove();
-	    }
-	    return(true);
-	} else if(key == 27) {
-	    choose(null);
-	    kg.remove();
-	    return(true);
-	}
-	return(false);
+        if ((key >= '0') && (key <= '9')) {
+            int opt = (key == '0') ? 10 : (key - '1');
+            if (opt < opts.length) {
+                choose(opts[opt]);
+                kg.remove();
+            }
+            return (true);
+        } else if (key == 27) {
+            choose(null);
+            kg.remove();
+            return (true);
+        }
+        return (false);
     }
 
     public void choose(Petal option) {
-	if(option == null) {
-	    wdgmsg("cl", -1);
-	} else {
-	    wdgmsg("cl", option.num, ui.modflags());
-	}
+        if (option == null) {
+            wdgmsg("cl", -1);
+        } else {
+            wdgmsg("cl", option.num, ui.modflags());
+        }
     }
 }

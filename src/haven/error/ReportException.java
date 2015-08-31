@@ -30,6 +30,6 @@ import java.io.*;
 
 public class ReportException extends IOException {
     public ReportException(String message) {
-	super(message);
+        super(message);
     }
 }

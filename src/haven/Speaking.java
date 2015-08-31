@@ -34,39 +34,39 @@ public class Speaking extends GAttrib {
     static IBox sb = null;
     Tex svans;
     static final int sx = 3;
-	
+
     public Speaking(Gob gob, float zo, String text) {
-	super(gob);
-	if(sb == null)
-	    sb = new IBox("gfx/hud/emote", "tl", "tr", "bl", "br", "el", "er", "et", "eb");
-	svans = Resource.loadtex("gfx/hud/emote/svans");
-	this.zo = zo;
-	this.text = Text.render(text, Color.BLACK);
+        super(gob);
+        if (sb == null)
+            sb = new IBox("gfx/hud/emote", "tl", "tr", "bl", "br", "el", "er", "et", "eb");
+        svans = Resource.loadtex("gfx/hud/emote/svans");
+        this.zo = zo;
+        this.text = Text.render(text, Color.BLACK);
     }
-	
+
     public void update(String text) {
-	this.text = Text.render(text, Color.BLACK);
+        this.text = Text.render(text, Color.BLACK);
     }
-	
+
     public void draw(GOut g, Coord c) {
-	Coord sz = text.sz();
-	if(sz.x < 10)
-	    sz.x = 10;
-	Coord tl = c.add(new Coord(sx, sb.bsz().y + sz.y + svans.sz().y - 1).inv());
-	Coord ftl = tl.add(sb.tloff());
-	g.chcolor(Color.WHITE);
-	g.frect(ftl, sz);
-	sb.draw(g, tl, sz.add(sb.bsz()));
-	g.chcolor(Color.BLACK);
-	g.image(text.tex(), ftl);
-	g.chcolor(Color.WHITE);
-	g.image(svans, c.add(0, -svans.sz().y));
+        Coord sz = text.sz();
+        if (sz.x < 10)
+            sz.x = 10;
+        Coord tl = c.add(new Coord(sx, sb.bsz().y + sz.y + svans.sz().y - 1).inv());
+        Coord ftl = tl.add(sb.tloff());
+        g.chcolor(Color.WHITE);
+        g.frect(ftl, sz);
+        sb.draw(g, tl, sz.add(sb.bsz()));
+        g.chcolor(Color.BLACK);
+        g.image(text.tex(), ftl);
+        g.chcolor(Color.WHITE);
+        g.image(svans, c.add(0, -svans.sz().y));
     }
 
     final PView.Draw2D fx = new PView.Draw2D() {
-	    public void draw2d(GOut g) {
-		if(gob.sc != null)
-		    Speaking.this.draw(g, gob.sc.add(new Coord(gob.sczu.mul(zo))).add(3, 0));
-	    }
-	};
+        public void draw2d(GOut g) {
+            if (gob.sc != null)
+                Speaking.this.draw(g, gob.sc.add(new Coord(gob.sczu.mul(zo))).add(3, 0));
+        }
+    };
 }

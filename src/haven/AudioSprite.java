@@ -27,123 +27,124 @@
 package haven;
 
 import java.util.*;
+
 import haven.Audio.CS;
 
 public class AudioSprite {
     public static Resource.Audio randoom(Resource res, String id) {
-	List<Resource.Audio> cl = new ArrayList<Resource.Audio>();
-	for(Resource.Audio clip : res.layers(Resource.audio)) {
-	    if(clip.id == id)
-		cl.add(clip);
-	}
-	if(!cl.isEmpty())
-	    return(cl.get((int)(Math.random() * cl.size())));
-	return(null);
+        List<Resource.Audio> cl = new ArrayList<Resource.Audio>();
+        for (Resource.Audio clip : res.layers(Resource.audio)) {
+            if (clip.id == id)
+                cl.add(clip);
+        }
+        if (!cl.isEmpty())
+            return (cl.get((int) (Math.random() * cl.size())));
+        return (null);
     }
 
     public static final Sprite.Factory fact = new Sprite.Factory() {
-	    public Sprite create(Sprite.Owner owner, Resource res, Message sdt) {
-		{
-		    Resource.Audio clip = randoom(res, "cl");
-		    if(clip != null)
-			return(new ClipSprite(owner, res, clip));
-		}
-		{
-		    Resource.Audio clip = randoom(res, "rep");
-		    if(clip != null)
-			return(new RepeatSprite(owner, res, randoom(res, "beg"), clip, randoom(res, "end")));
-		}
-		{
-		    if((res.layer(Resource.audio, "amb") != null) || (res.layer(ClipAmbiance.Desc.class) != null))
-			return(new Ambience(owner, res));
-		}
-		return(null);
-	    }
-	};
+        public Sprite create(Sprite.Owner owner, Resource res, Message sdt) {
+            {
+                Resource.Audio clip = randoom(res, "cl");
+                if (clip != null)
+                    return (new ClipSprite(owner, res, clip));
+            }
+            {
+                Resource.Audio clip = randoom(res, "rep");
+                if (clip != null)
+                    return (new RepeatSprite(owner, res, randoom(res, "beg"), clip, randoom(res, "end")));
+            }
+            {
+                if ((res.layer(Resource.audio, "amb") != null) || (res.layer(ClipAmbiance.Desc.class) != null))
+                    return (new Ambience(owner, res));
+            }
+            return (null);
+        }
+    };
 
     public static class ClipSprite extends Sprite {
-	public final ActAudio.PosClip clip;
-	private boolean done = false;
+        public final ActAudio.PosClip clip;
+        private boolean done = false;
 
-	public ClipSprite(Owner owner, Resource res, Resource.Audio clip) {
-	    super(owner, res);
-	    this.clip = new ActAudio.PosClip(new Audio.Monitor(clip.stream()) {
-		    protected void eof() {
-			super.eof();
-			done = true;
-		    }
-		});
-	}
+        public ClipSprite(Owner owner, Resource res, Resource.Audio clip) {
+            super(owner, res);
+            this.clip = new ActAudio.PosClip(new Audio.Monitor(clip.stream()) {
+                protected void eof() {
+                    super.eof();
+                    done = true;
+                }
+            });
+        }
 
-	public boolean setup(RenderList r) {
-	    r.add(clip, null);
-	    return(false);
-	}
+        public boolean setup(RenderList r) {
+            r.add(clip, null);
+            return (false);
+        }
 
-	public boolean tick(int dt) {
-	    return(done);
-	}
+        public boolean tick(int dt) {
+            return (done);
+        }
     }
 
     public static class RepeatSprite extends Sprite implements Gob.Overlay.CDel {
-	private ActAudio.PosClip clip;
-	private final Resource.Audio end;
+        private ActAudio.PosClip clip;
+        private final Resource.Audio end;
 
-	public RepeatSprite(Owner owner, Resource res, final Resource.Audio beg, final Resource.Audio clip, Resource.Audio end) {
-	    super(owner, res);
-	    this.end = end;
-	    CS rep = new Audio.Repeater() {
-		    private boolean f = true;
+        public RepeatSprite(Owner owner, Resource res, final Resource.Audio beg, final Resource.Audio clip, Resource.Audio end) {
+            super(owner, res);
+            this.end = end;
+            CS rep = new Audio.Repeater() {
+                private boolean f = true;
 
-		    public CS cons() {
-			if(f && (beg != null)) {
-			    f = false;
-			    return(beg.stream());
-			}
-			return(clip.stream());
-		    }
-		};
-	    this.clip = new ActAudio.PosClip(rep);
-	}
+                public CS cons() {
+                    if (f && (beg != null)) {
+                        f = false;
+                        return (beg.stream());
+                    }
+                    return (clip.stream());
+                }
+            };
+            this.clip = new ActAudio.PosClip(rep);
+        }
 
-	public boolean setup(RenderList r) {
-	    if(clip != null)
-		r.add(clip, null);
-	    return(false);
-	}
+        public boolean setup(RenderList r) {
+            if (clip != null)
+                r.add(clip, null);
+            return (false);
+        }
 
-	public boolean tick(int dt) {
-	    return(clip == null);
-	}
+        public boolean tick(int dt) {
+            return (clip == null);
+        }
 
-	public void delete() {
-	    if(end != null)
-		clip = new ActAudio.PosClip(new Audio.Monitor(end.stream()) {
-			protected void eof() {
-			    super.eof();
-			    RepeatSprite.this.clip = null;
-			}
-		    });
-	    else
-		clip = null;
-	}
+        public void delete() {
+            if (end != null)
+                clip = new ActAudio.PosClip(new Audio.Monitor(end.stream()) {
+                    protected void eof() {
+                        super.eof();
+                        RepeatSprite.this.clip = null;
+                    }
+                });
+            else
+                clip = null;
+        }
     }
 
     public static class Ambience extends Sprite {
-	public final Rendered amb;
+        public final Rendered amb;
 
-	public Ambience(Owner owner, Resource res) {
-	    super(owner, res);
-	    ClipAmbiance.Desc clamb = res.layer(ClipAmbiance.Desc.class);
-	    if(clamb != null)
-		this.amb = new ClipAmbiance(clamb);
-	    else
-		this.amb = new ActAudio.Ambience(res);
-	}
+        public Ambience(Owner owner, Resource res) {
+            super(owner, res);
+            ClipAmbiance.Desc clamb = res.layer(ClipAmbiance.Desc.class);
+            if (clamb != null)
+                this.amb = new ClipAmbiance(clamb);
+            else
+                this.amb = new ActAudio.Ambience(res);
+        }
 
-	public boolean setup(RenderList r) {
-	    r.add(amb, null);
-	    return(false);
-	}
+        public boolean setup(RenderList r) {
+            r.add(amb, null);
+            return (false);
+        }
     }
 }

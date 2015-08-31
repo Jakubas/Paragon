@@ -27,7 +27,9 @@
 package haven;
 
 import java.awt.Color;
+
 import haven.glsl.*;
+
 import static haven.glsl.Type.*;
 
 public class ColorMask extends GLState {
@@ -36,35 +38,37 @@ public class ColorMask extends GLState {
     private final float[] col;
 
     private static final ShaderMacro[] sh = {
-	new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		prog.fctx.fragcol.mod(new Macro1<Expression>() {
-			public Expression expand(Expression in) {
-			    return(MiscLib.colblend.call(in, ccol.ref()));
-			}
-		    }, 100);
-	    }
-	}
+            new ShaderMacro() {
+                public void modify(ProgramContext prog) {
+                    prog.fctx.fragcol.mod(new Macro1<Expression>() {
+                        public Expression expand(Expression in) {
+                            return (MiscLib.colblend.call(in, ccol.ref()));
+                        }
+                    }, 100);
+                }
+            }
     };
 
     public ColorMask(Color col) {
-	this.col = Utils.c2fa(col);
+        this.col = Utils.c2fa(col);
     }
 
-    public ShaderMacro[] shaders() {return(sh);}
+    public ShaderMacro[] shaders() {
+        return (sh);
+    }
 
     public void reapply(GOut g) {
-	g.gl.glUniform4fv(g.st.prog.uniform(ccol), 1, col, 0);
+        g.gl.glUniform4fv(g.st.prog.uniform(ccol), 1, col, 0);
     }
 
     public void apply(GOut g) {
-	reapply(g);
+        reapply(g);
     }
 
     public void unapply(GOut g) {
     }
 
     public void prep(Buffer buf) {
-	buf.put(slot, this);
+        buf.put(slot, this);
     }
 }

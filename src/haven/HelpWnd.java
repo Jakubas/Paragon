@@ -31,30 +31,31 @@ public class HelpWnd extends Window {
     public Indir<Resource> res;
     private Indir<Resource> showing = null;
     private final RichTextBox text;
-    
+
     static {
-	fnd = new RichText.Foundry();
-	fnd.aa = true;
+        fnd = new RichText.Foundry();
+        fnd.aa = true;
     }
-    
+
     public HelpWnd(Indir<Resource> res) {
-	super(new Coord(300, 430), "Help");
-	this.res = res;
-	this.text = add(new RichTextBox(new Coord(300, 400), "", fnd), Coord.z);
-	add(new Button(100, "Dismiss") {
-		public void click() {
-		    HelpWnd.this.wdgmsg("close");
-		}
-	    }, new Coord(100, 410));
+        super(new Coord(300, 430), "Help");
+        this.res = res;
+        this.text = add(new RichTextBox(new Coord(300, 400), "", fnd), Coord.z);
+        add(new Button(100, "Dismiss") {
+            public void click() {
+                HelpWnd.this.wdgmsg("close");
+            }
+        }, new Coord(100, 410));
     }
-    
+
     public void tick(double dt) {
-	super.tick(dt);
-	if(res != showing) {
-	    try {
-		text.settext(res.get().layer(Resource.pagina).text);
-		showing = res;
-	    } catch(Loading e) {}
-	}
+        super.tick(dt);
+        if (res != showing) {
+            try {
+                text.settext(res.get().layer(Resource.pagina).text);
+                showing = res;
+            } catch (Loading e) {
+            }
+        }
     }
 }

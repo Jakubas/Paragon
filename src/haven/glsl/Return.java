@@ -30,16 +30,16 @@ public class Return extends Statement {
     public final Expression rv;
 
     public Return(Expression rv) {
-	this.rv = rv;
+        this.rv = rv;
     }
 
     public void walk(Walker w) {
-	w.el(rv);
+        w.el(rv);
     }
 
     public void output(Output out) {
-	out.write("return ");
-	rv.output(out);
-	out.write(";");
+        out.write("return ");
+        rv.output(out);
+        out.write(";");
     }
 }

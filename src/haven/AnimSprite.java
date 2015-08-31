@@ -33,53 +33,53 @@ public class AnimSprite extends Sprite {
     private MeshAnim.Anim[] anims;
 
     public static final Factory fact = new Factory() {
-	    public Sprite create(Owner owner, Resource res, Message sdt) {
-		if(res.layer(MeshAnim.Res.class) == null)
-		    return(null);
-		return(new AnimSprite(owner, res, sdt));
-	    }
-	};
+        public Sprite create(Owner owner, Resource res, Message sdt) {
+            if (res.layer(MeshAnim.Res.class) == null)
+                return (null);
+            return (new AnimSprite(owner, res, sdt));
+        }
+    };
 
     private AnimSprite(Owner owner, Resource res, Message sdt) {
-	super(owner, res);
-	int mask = sdt.eom()?0xffff0000:decnum(sdt);
-	Collection<MeshAnim.Anim> anims = new LinkedList<MeshAnim.Anim>();
-	for(MeshAnim.Res ar : res.layers(MeshAnim.Res.class)) {
-	    if((ar.id < 0) || (((1 << ar.id) & mask) != 0))
-		anims.add(ar.make());
-	}
-	this.anims = anims.toArray(new MeshAnim.Anim[0]);
-	MorphedMesh.Morpher.Factory morph = MorphedMesh.combine(this.anims);
-	Collection<Rendered> rl = new LinkedList<Rendered>();
-	for(FastMesh.MeshRes mr : res.layers(FastMesh.MeshRes.class)) {
-	    if((mr.mat != null) && ((mr.id < 0) || (((1 << mr.id) & mask) != 0))) {
-		boolean stat = true;
-		for(MeshAnim.Anim anim : anims) {
-		    if(anim.desc().animp(mr.m)) {
-			stat = false;
-			break;
-		    }
-		}
-		if(stat)
-		    rl.add(mr.mat.get().apply(mr.m));
-		else
-		    rl.add(mr.mat.get().apply(new MorphedMesh(mr.m, morph)));
-	    }
-	}
-	parts = rl.toArray(new Rendered[0]);
+        super(owner, res);
+        int mask = sdt.eom() ? 0xffff0000 : decnum(sdt);
+        Collection<MeshAnim.Anim> anims = new LinkedList<MeshAnim.Anim>();
+        for (MeshAnim.Res ar : res.layers(MeshAnim.Res.class)) {
+            if ((ar.id < 0) || (((1 << ar.id) & mask) != 0))
+                anims.add(ar.make());
+        }
+        this.anims = anims.toArray(new MeshAnim.Anim[0]);
+        MorphedMesh.Morpher.Factory morph = MorphedMesh.combine(this.anims);
+        Collection<Rendered> rl = new LinkedList<Rendered>();
+        for (FastMesh.MeshRes mr : res.layers(FastMesh.MeshRes.class)) {
+            if ((mr.mat != null) && ((mr.id < 0) || (((1 << mr.id) & mask) != 0))) {
+                boolean stat = true;
+                for (MeshAnim.Anim anim : anims) {
+                    if (anim.desc().animp(mr.m)) {
+                        stat = false;
+                        break;
+                    }
+                }
+                if (stat)
+                    rl.add(mr.mat.get().apply(mr.m));
+                else
+                    rl.add(mr.mat.get().apply(new MorphedMesh(mr.m, morph)));
+            }
+        }
+        parts = rl.toArray(new Rendered[0]);
     }
 
     public boolean setup(RenderList rl) {
-	for(Rendered p : parts)
-	    rl.add(p, null);
-	return(false);
+        for (Rendered p : parts)
+            rl.add(p, null);
+        return (false);
     }
 
     public boolean tick(int idt) {
-	boolean ret = false;
-	float dt = idt / 1000.0f;
-	for(MeshAnim.Anim anim : anims)
-	    ret = ret | anim.tick(dt);
-	return(ret);
+        boolean ret = false;
+        float dt = idt / 1000.0f;
+        for (MeshAnim.Anim anim : anims)
+            ret = ret | anim.tick(dt);
+        return (ret);
     }
 }

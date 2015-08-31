@@ -34,77 +34,77 @@ public class Following extends Moving {
     GLState xf = null, lpxf = null;
     Gob lxfb = null;
     Skeleton.Pose lpose = null;
-    
+
     public Following(Gob gob, long tgt, Indir<Resource> xfres, String xfname) {
-	super(gob);
-	this.tgt = tgt;
-	this.xfres = xfres;
-	this.xfname = xfname;
+        super(gob);
+        this.tgt = tgt;
+        this.xfres = xfres;
+        this.xfname = xfname;
     }
-    
+
     public Coord3f getc() {
-	Gob tgt = gob.glob.oc.getgob(this.tgt);
-	if(tgt == null)
-	    return(gob.getrc());
-	return(tgt.getc());
+        Gob tgt = gob.glob.oc.getgob(this.tgt);
+        if (tgt == null)
+            return (gob.getrc());
+        return (tgt.getc());
     }
-    
+
     public double getv() {
-	Gob tgt = gob.glob.oc.getgob(this.tgt);
-	if(tgt != null) {
-	    Moving mv = tgt.getattr(Moving.class);
-	    if(mv == null)
-		lastv = 0.0;
-	    else
-		lastv = mv.getv();
-	}
-	return(lastv);
+        Gob tgt = gob.glob.oc.getgob(this.tgt);
+        if (tgt != null) {
+            Moving mv = tgt.getattr(Moving.class);
+            if (mv == null)
+                lastv = 0.0;
+            else
+                lastv = mv.getv();
+        }
+        return (lastv);
     }
-    
+
     public Gob tgt() {
-	return(gob.glob.oc.getgob(this.tgt));
+        return (gob.glob.oc.getgob(this.tgt));
     }
-    
+
     private Skeleton.Pose getpose(Gob tgt) {
-	if(tgt == null)
-	    return(null);
-	return(tgt.getattr(Drawable.class).getpose());
+        if (tgt == null)
+            return (null);
+        return (tgt.getattr(Drawable.class).getpose());
     }
 
     public GLState xf() {
-	synchronized(this) {
-	    Gob tgt = tgt();
-	    Skeleton.Pose cpose = getpose(tgt);
-	    GLState pxf = xf(tgt);
-	    if((xf == null) || (cpose != lpose) || (lpxf != pxf)) {
-		if(tgt == null) {
-		    xf = null;
-		    lpose = null;
-		    lxfb = null;
-		    lpxf = null;
-		    return(null);
-		}
-		Skeleton.BoneOffset bo = xfres.get().layer(Skeleton.BoneOffset.class, xfname);
-		if(bo == null)
-		    throw(new RuntimeException("No such boneoffset in " + xfres.get() + ": " + xfname));
-		if(pxf != null)
-		    xf = GLState.compose(pxf, bo.forpose(cpose));
-		else
-		    xf = GLState.compose(tgt.loc, bo.forpose(cpose));
-		lpxf = pxf;
-		lxfb = tgt;
-		lpose = cpose;
-	    }
-	}
-	return(xf);
+        synchronized (this) {
+            Gob tgt = tgt();
+            Skeleton.Pose cpose = getpose(tgt);
+            GLState pxf = xf(tgt);
+            if ((xf == null) || (cpose != lpose) || (lpxf != pxf)) {
+                if (tgt == null) {
+                    xf = null;
+                    lpose = null;
+                    lxfb = null;
+                    lpxf = null;
+                    return (null);
+                }
+                Skeleton.BoneOffset bo = xfres.get().layer(Skeleton.BoneOffset.class, xfname);
+                if (bo == null)
+                    throw (new RuntimeException("No such boneoffset in " + xfres.get() + ": " + xfname));
+                if (pxf != null)
+                    xf = GLState.compose(pxf, bo.forpose(cpose));
+                else
+                    xf = GLState.compose(tgt.loc, bo.forpose(cpose));
+                lpxf = pxf;
+                lxfb = tgt;
+                lpose = cpose;
+            }
+        }
+        return (xf);
     }
 
     public static GLState xf(Gob gob) {
-	if(gob == null)
-	    return(null);
-	Following flw = gob.getattr(Following.class);
-	if(flw == null)
-	    return(null);
-	return(flw.xf());
+        if (gob == null)
+            return (null);
+        Following flw = gob.getattr(Following.class);
+        if (flw == null)
+            return (null);
+        return (flw.xf());
     }
 }

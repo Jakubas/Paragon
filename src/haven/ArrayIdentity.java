@@ -34,69 +34,69 @@ public class ArrayIdentity {
     private static ReferenceQueue<Object> cleanq = new ReferenceQueue<Object>();
 
     private static class Entry<T> extends WeakReference<T[]> {
-	private Entry(T[] arr) {
-	    super(arr, cleanq);
-	}
-	
-	public boolean equals(Object x) {
-	    if(!(x instanceof Entry))
-	       return(false);
-	    T[] a = get();
-	    if(a == null)
-		return(false);
-	    Entry<?> e = (Entry<?>)x;
-	    Object[] ea = e.get();
-	    if(ea == null)
-		return(false);
-	    if(ea.length != a.length)
-		return(false);
-	    for(int i = 0; i < a.length; i++) {
-		if(a[i] != ea[i])
-		    return(false);
-	    }
-	    return(true);
-	}
-	
-	public int hashCode() {
-	    T[] a = get();
-	    if(a == null)
-		return(0);
-	    int ret = 1;
-	    for(T o : a)
-		ret = (ret * 31) + System.identityHashCode(o);
-	    return(ret);
-	}
+        private Entry(T[] arr) {
+            super(arr, cleanq);
+        }
+
+        public boolean equals(Object x) {
+            if (!(x instanceof Entry))
+                return (false);
+            T[] a = get();
+            if (a == null)
+                return (false);
+            Entry<?> e = (Entry<?>) x;
+            Object[] ea = e.get();
+            if (ea == null)
+                return (false);
+            if (ea.length != a.length)
+                return (false);
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] != ea[i])
+                    return (false);
+            }
+            return (true);
+        }
+
+        public int hashCode() {
+            T[] a = get();
+            if (a == null)
+                return (0);
+            int ret = 1;
+            for (T o : a)
+                ret = (ret * 31) + System.identityHashCode(o);
+            return (ret);
+        }
     }
-    
+
     private static void clean() {
-	Reference<?> ref;
-	while((ref = cleanq.poll()) != null)
-	    set.remove(ref);
+        Reference<?> ref;
+        while ((ref = cleanq.poll()) != null)
+            set.remove(ref);
     }
-    
+
     @SuppressWarnings("unchecked")
     private static <T> Entry<T> getcanon(Entry<T> e) {
-	return((Entry<T>)set.get(e));
+        return ((Entry<T>) set.get(e));
     }
 
     public static <T> T[] intern(T[] arr) {
-	Entry<T> e = new Entry<T>(arr);
-	synchronized(ArrayIdentity.class) {
-	    clean();
-	    Entry<T> e2 = getcanon(e);
-	    T[] ret;
-	    if(e2 == null) {
-		set.put(e, e);
-		ret = arr;
-	    } else {
-		ret = e2.get();
-		if(ret == null) {
-		    set.remove(e2);
-		    set.put(e, e);
-		    ret = arr;
-		}
-	    }
-	    return(ret);
-	}
+        Entry<T> e = new Entry<T>(arr);
+        synchronized (ArrayIdentity.class) {
+            clean();
+            Entry<T> e2 = getcanon(e);
+            T[] ret;
+            if (e2 == null) {
+                set.put(e, e);
+                ret = arr;
+            } else {
+                ret = e2.get();
+                if (ret == null) {
+                    set.remove(e2);
+                    set.put(e, e);
+                    ret = arr;
+                }
+            }
+            return (ret);
+        }
     }
 }

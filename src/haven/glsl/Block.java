@@ -32,100 +32,116 @@ public class Block extends Statement {
     public final List<Statement> stmts = new LinkedList<Statement>();
 
     public Block(Statement... stmts) {
-	for(Statement s : stmts)
-	    this.stmts.add(s);
+        for (Statement s : stmts)
+            this.stmts.add(s);
     }
 
     public final static class Local extends Variable {
-	public Local(Type type, Symbol name) {
-	    super(type, name);
-	}
+        public Local(Type type, Symbol name) {
+            super(type, name);
+        }
 
-	public Local(Type type) {
-	    this(type, new Symbol.Gen());
-	}
+        public Local(Type type) {
+            this(type, new Symbol.Gen());
+        }
 
-	public class Def extends Statement {
-	    private final Expression init;
+        public class Def extends Statement {
+            private final Expression init;
 
-	    public Def(Expression init) {
-		this.init = init;
-	    }
+            public Def(Expression init) {
+                this.init = init;
+            }
 
-	    public void walk(Walker w) {
-		if(init != null)
-		    w.el(init);
-	    }
+            public void walk(Walker w) {
+                if (init != null)
+                    w.el(init);
+            }
 
-	    public void output(Output out) {
-		out.write(type.name(out.ctx));
-		out.write(" ");
-		out.write(name);
-		if(init != null) {
-		    out.write(" = ");
-		    init.output(out);
-		}
-		out.write(";");
-	    }
-	}
+            public void output(Output out) {
+                out.write(type.name(out.ctx));
+                out.write(" ");
+                out.write(name);
+                if (init != null) {
+                    out.write(" = ");
+                    init.output(out);
+                }
+                out.write(";");
+            }
+        }
     }
 
     public void add(Statement stmt, Statement before) {
-	if(stmt == null)
-	    throw(new NullPointerException());
-	if(before == null) {
-	    stmts.add(stmt);
-	} else {
-	    for(ListIterator<Statement> i = stmts.listIterator(); i.hasNext();) {
-		Statement cur = i.next();
-		if(cur == before) {
-		    i.previous();
-		    i.add(stmt);
-		    return;
-		}
-	    }
-	    throw(new RuntimeException(before + " is not already in block"));
-	}
+        if (stmt == null)
+            throw (new NullPointerException());
+        if (before == null) {
+            stmts.add(stmt);
+        } else {
+            for (ListIterator<Statement> i = stmts.listIterator(); i.hasNext(); ) {
+                Statement cur = i.next();
+                if (cur == before) {
+                    i.previous();
+                    i.add(stmt);
+                    return;
+                }
+            }
+            throw (new RuntimeException(before + " is not already in block"));
+        }
     }
 
-    public void add(Statement stmt)                    {add(stmt, null);}
-    public void add(Expression expr, Statement before) {add(Statement.expr(expr), before);}
-    public void add(Expression expr)                   {add(Statement.expr(expr), null);}
+    public void add(Statement stmt) {
+        add(stmt, null);
+    }
+
+    public void add(Expression expr, Statement before) {
+        add(Statement.expr(expr), before);
+    }
+
+    public void add(Expression expr) {
+        add(Statement.expr(expr), null);
+    }
 
     public Local local(Type type, Symbol name, Expression init, Statement before) {
-	Local ret = new Local(type, name);
-	add(ret.new Def(init), before);
-	return(ret);
+        Local ret = new Local(type, name);
+        add(ret.new Def(init), before);
+        return (ret);
     }
 
-    public Local local(Type type, Symbol name, Expression init)   {return(local(type, name, init, null));}
-    public Local local(Type type, String prefix, Expression init) {return(local(type, new Symbol.Gen(prefix), init));}
-    public Local local(Type type, Expression init)                {return(local(type, new Symbol.Gen(), init));}
+    public Local local(Type type, Symbol name, Expression init) {
+        return (local(type, name, init, null));
+    }
+
+    public Local local(Type type, String prefix, Expression init) {
+        return (local(type, new Symbol.Gen(prefix), init));
+    }
+
+    public Local local(Type type, Expression init) {
+        return (local(type, new Symbol.Gen(), init));
+    }
 
     public void walk(Walker w) {
-	for(Statement s : stmts)
-	    w.el(s);
+        for (Statement s : stmts)
+            w.el(s);
     }
 
     public void trail(Output out, boolean nl) {
-	if(stmts.isEmpty())
-	    return;
-	out.write("{\n");
-	out.indent++;
-	for(Statement s : stmts) {
-	    out.indent();
-	    s.output(out);
-	    out.write("\n");
-	}
-	out.indent--;
-	out.indent();
-	out.write("}");
-	if(nl)
-	    out.write("\n");
+        if (stmts.isEmpty())
+            return;
+        out.write("{\n");
+        out.indent++;
+        for (Statement s : stmts) {
+            out.indent();
+            s.output(out);
+            out.write("\n");
+        }
+        out.indent--;
+        out.indent();
+        out.write("}");
+        if (nl)
+            out.write("\n");
     }
 
     public void output(Output out) {
-	out.indent();
-	trail(out, true);
+        out.indent();
+        trail(out, true);
     }
 }

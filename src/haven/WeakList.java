@@ -34,100 +34,100 @@ public class WeakList<T> extends AbstractCollection<T> {
     private Entry<T> head = null;
 
     private void clean() {
-	Reference<? extends T> ref;
-	while((ref = cleanq.poll()) != null) {
-	    Entry e = (Entry)ref;
-	    e.unlink();
-	}
+        Reference<? extends T> ref;
+        while ((ref = cleanq.poll()) != null) {
+            Entry e = (Entry) ref;
+            e.unlink();
+        }
     }
 
     public Iterator<T> iterator() {
-	clean();
-	return(new Iterator<T>() {
-		Entry<T> c = head, l = null;
-		T n = null;
+        clean();
+        return (new Iterator<T>() {
+            Entry<T> c = head, l = null;
+            T n = null;
 
-		public boolean hasNext() {
-		    while(n == null) {
-			if(c == null)
-			    return(false);
-			n = (l = c).get();
-			c = c.n;
-		    }
-		    return(true);
-		}
+            public boolean hasNext() {
+                while (n == null) {
+                    if (c == null)
+                        return (false);
+                    n = (l = c).get();
+                    c = c.n;
+                }
+                return (true);
+            }
 
-		public T next() {
-		    if(!hasNext())
-			throw(new NoSuchElementException());
-		    T ret = n;
-		    n = null;
-		    return(ret);
-		}
+            public T next() {
+                if (!hasNext())
+                    throw (new NoSuchElementException());
+                T ret = n;
+                n = null;
+                return (ret);
+            }
 
-		public void remove() {
-		    if(l == null)
-			throw(new IllegalStateException());
-		    l.unlink();
-		    l = null;
-		}
-	    });
+            public void remove() {
+                if (l == null)
+                    throw (new IllegalStateException());
+                l.unlink();
+                l = null;
+            }
+        });
     }
 
     public Entry<T> add2(T e) {
-	clean();
-	Entry<T> n = new Entry<T>(e, this);
-	n.link();
-	return(n);
+        clean();
+        Entry<T> n = new Entry<T>(e, this);
+        n.link();
+        return (n);
     }
 
     public boolean add(T e) {
-	add2(e);
-	return(true);
+        add2(e);
+        return (true);
     }
 
     public void clear() {
-	head = null;
+        head = null;
     }
 
     public int size() {
-	int ret = 0;
-	for(T e : this)
-	    ret++;
-	return(ret);
+        int ret = 0;
+        for (T e : this)
+            ret++;
+        return (ret);
     }
 
     public static class Entry<E> extends WeakReference<E> {
-	private Entry<E> n, p;
-	private WeakList<E> l;
+        private Entry<E> n, p;
+        private WeakList<E> l;
 
-	private Entry(E e, WeakList<E> l) {
-	    super(e, l.cleanq);
-	    this.l = l;
-	}
+        private Entry(E e, WeakList<E> l) {
+            super(e, l.cleanq);
+            this.l = l;
+        }
 
-	private void link() {
-	    this.n = l.head;
-	    if(l.head != null)
-		l.head.p = this;
-	    l.head = this;
-	}
+        private void link() {
+            this.n = l.head;
+            if (l.head != null)
+                l.head.p = this;
+            l.head = this;
+        }
 
-	private void unlink() {
-	    if(this.n != null)
-		this.n.p = this.p;
-	    if(this.p != null)
-		this.p.n = this.n;
-	    if(l.head == this)
-		l.head = this.n;
-	    this.n = this.p = null;
-	}
+        private void unlink() {
+            if (this.n != null)
+                this.n.p = this.p;
+            if (this.p != null)
+                this.p.n = this.n;
+            if (l.head == this)
+                l.head = this.n;
+            this.n = this.p = null;
+        }
 
-	public void remove() {
-	    if(l == null)
-		throw(new IllegalStateException());
-	    unlink();
-	    l = null;
-	}
+        public void remove() {
+            if (l == null)
+                throw (new IllegalStateException());
+            unlink();
+            l = null;
+        }
     }
 }

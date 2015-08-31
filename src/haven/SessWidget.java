@@ -34,83 +34,83 @@ public class SessWidget extends AWidget {
 
     @RName("sess")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    String host = (String)args[0];
-	    int port = (Integer)args[1];
-	    byte[] cookie = Utils.hex2byte((String)args[2]);
-	    Object[] sargs = Utils.splice(args, 3);
-	    return(new SessWidget(host, port, cookie, sargs));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            String host = (String) args[0];
+            int port = (Integer) args[1];
+            byte[] cookie = Utils.hex2byte((String) args[2]);
+            Object[] sargs = Utils.splice(args, 3);
+            return (new SessWidget(host, port, cookie, sargs));
+        }
     }
 
     static class Connection {
-	final Session sess;
-	final int error;
+        final Session sess;
+        final int error;
 
-	Connection(Session sess, int error) {
-	    this.sess = sess;
-	    this.error = error;
-	}
+        Connection(Session sess, int error) {
+            this.sess = sess;
+            this.error = error;
+        }
     }
 
     public SessWidget(final String addr, final int port, final byte[] cookie, final Object... args) {
-	conn = Defer.later(new Defer.Callable<Connection>() {
-		public Connection call() throws InterruptedException {
-		    InetAddress host;
-		    try {
-			host = InetAddress.getByName(addr);
-		    } catch(UnknownHostException e) {
-			return(new Connection(null, Session.SESSERR_CONN));
-		    }
-		    Session sess = new Session(new InetSocketAddress(host, port), ui.sess.username, cookie, args);
-		    try {
-			synchronized(sess) {
-			    while(true) {
-				if(sess.state == "") {
-				    Connection ret = new Connection(sess, 0);
-				    sess = null;
-				    return(ret);
-				} else if(sess.connfailed != 0) {
-				    return(new Connection(null, sess.connfailed));
-				}
-				sess.wait();
-			    }
-			}
-		    } finally {
-			if(sess != null)
-			    sess.close();
-		    }
-		}
-	    });
+        conn = Defer.later(new Defer.Callable<Connection>() {
+            public Connection call() throws InterruptedException {
+                InetAddress host;
+                try {
+                    host = InetAddress.getByName(addr);
+                } catch (UnknownHostException e) {
+                    return (new Connection(null, Session.SESSERR_CONN));
+                }
+                Session sess = new Session(new InetSocketAddress(host, port), ui.sess.username, cookie, args);
+                try {
+                    synchronized (sess) {
+                        while (true) {
+                            if (sess.state == "") {
+                                Connection ret = new Connection(sess, 0);
+                                sess = null;
+                                return (ret);
+                            } else if (sess.connfailed != 0) {
+                                return (new Connection(null, sess.connfailed));
+                            }
+                            sess.wait();
+                        }
+                    }
+                } finally {
+                    if (sess != null)
+                        sess.close();
+                }
+            }
+        });
     }
 
     public void tick(double dt) {
-	super.tick(dt);
-	if(!rep && conn.done()) {
-	    wdgmsg("res", conn.get().error);
-	    rep = true;
-	}
+        super.tick(dt);
+        if (!rep && conn.done()) {
+            wdgmsg("res", conn.get().error);
+            rep = true;
+        }
     }
 
     public void uimsg(String name, Object... args) {
-	if(name == "exec") {
-	    ((RemoteUI)ui.rcvr).ret(conn.get().sess);
-	} else {
-	    super.uimsg(name, args);
-	}
+        if (name == "exec") {
+            ((RemoteUI) ui.rcvr).ret(conn.get().sess);
+        } else {
+            super.uimsg(name, args);
+        }
     }
 
     public void destroy() {
-	super.destroy();
-	/* XXX: There's a race condition here, but I admit I'm not
-	 * sure what can properly be done about it, and it ought at
+        super.destroy();
+    /* XXX: There's a race condition here, but I admit I'm not
+     * sure what can properly be done about it, and it ought at
 	 * least be uncommon. */
-	if(conn.done()) {
-	    Session sess = conn.get().sess;
-	    if(sess != null)
-		sess.close();
-	} else {
-	    conn.cancel();
-	}
+        if (conn.done()) {
+            Session sess = conn.get().sess;
+            if (sess != null)
+                sess.close();
+        } else {
+            conn.cancel();
+        }
     }
 }

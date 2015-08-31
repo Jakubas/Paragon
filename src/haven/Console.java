@@ -34,76 +34,81 @@ public class Console {
     private Map<String, Command> commands = new TreeMap<String, Command>();
     private Collection<Directory> dirs = new LinkedList<Directory>();
     public PrintWriter out;
-    
+
     {
-	clearout();
+        clearout();
     }
 
     public static interface Command {
-	public void run(Console cons, String[] args) throws Exception;
+        public void run(Console cons, String[] args) throws Exception;
     }
-    
+
     public static interface Directory {
-	public Map<String, Command> findcmds();
+        public Map<String, Command> findcmds();
     }
-    
+
     public static void setscmd(String name, Command cmd) {
-	synchronized(scommands) {
-	    scommands.put(name, cmd);
-	}
+        synchronized (scommands) {
+            scommands.put(name, cmd);
+        }
     }
-    
+
     public void setcmd(String name, Command cmd) {
-	synchronized(commands) {
-	    commands.put(name, cmd);
-	}
+        synchronized (commands) {
+            commands.put(name, cmd);
+        }
     }
-    
+
     public Map<String, Command> findcmds() {
-	Map<String, Command> ret = new TreeMap<String, Command>();
-	synchronized(scommands) {
-	    ret.putAll(scommands);
-	}
-	synchronized(commands) {
-	    ret.putAll(commands);
-	}
-	synchronized(dirs) {
-	    for(Directory dir : dirs) {
-		Map<String, Command> cmds = dir.findcmds();
-		ret.putAll(cmds);
-	    }
-	}
-	return(ret);
+        Map<String, Command> ret = new TreeMap<String, Command>();
+        synchronized (scommands) {
+            ret.putAll(scommands);
+        }
+        synchronized (commands) {
+            ret.putAll(commands);
+        }
+        synchronized (dirs) {
+            for (Directory dir : dirs) {
+                Map<String, Command> cmds = dir.findcmds();
+                ret.putAll(cmds);
+            }
+        }
+        return (ret);
     }
-    
+
     public void add(Directory dir) {
-	synchronized(dirs) {
-	    dirs.add(dir);
-	}
+        synchronized (dirs) {
+            dirs.add(dir);
+        }
     }
-    
+
     public Command findcmd(String name) {
-	return(findcmds().get(name));
+        return (findcmds().get(name));
     }
 
     public void run(String[] args) throws Exception {
-	if(args.length < 1)
-	    return;
-	Command cmd = findcmd(args[0]);
-	if(cmd == null)
-	    throw(new Exception(args[0] + ": no such command"));
-	cmd.run(this, args);
+        if (args.length < 1)
+            return;
+        Command cmd = findcmd(args[0]);
+        if (cmd == null)
+            throw (new Exception(args[0] + ": no such command"));
+        cmd.run(this, args);
     }
-    
+
     public void run(String cmdl) throws Exception {
-	run(Utils.splitwords(cmdl));
+        run(Utils.splitwords(cmdl));
     }
-    
+
     public void clearout() {
-	out = new PrintWriter(new Writer() {
-		public void write(char[] b, int o, int c) {}
-		public void close() {}
-		public void flush() {}
-	    });
+        out = new PrintWriter(new Writer() {
+            public void write(char[] b, int o, int c) {
+            }
+
+            public void close() {
+            }
+
+            public void flush() {
+            }
+        });
     }
 }

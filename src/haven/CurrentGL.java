@@ -33,7 +33,7 @@ public class CurrentGL {
     public final GLConfig cfg;
 
     public CurrentGL(GL gl, GLConfig cfg) {
-	this.gl = gl;
-	this.cfg = cfg;
+        this.gl = gl;
+        this.cfg = cfg;
     }
 }

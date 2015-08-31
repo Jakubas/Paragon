@@ -27,44 +27,54 @@
 package haven.glsl;
 
 import java.util.List;
+
 import haven.GOut;
 import haven.GLBuffer;
 import haven.GLState.Buffer;
 
 public class Attribute extends Variable.Global {
     public Attribute(Type type, Symbol name) {
-	super(type, name);
+        super(type, name);
     }
 
     public Attribute(Type type, String infix) {
-	this(type, new Symbol.Shared("s_" + infix));
+        this(type, new Symbol.Shared("s_" + infix));
     }
 
     public Attribute(Type type) {
-	this(type, new Symbol.Shared());
+        this(type, new Symbol.Shared());
     }
 
     private class Def extends Definition {
-	public void output(Output out) {
-	    if(out.ctx instanceof ShaderContext) {
-		((ShaderContext)out.ctx).prog.attribs.add(Attribute.this);
-	    }
-	    out.write("attribute ");
-	    super.output(out);
-	}
+        public void output(Output out) {
+            if (out.ctx instanceof ShaderContext) {
+                ((ShaderContext) out.ctx).prog.attribs.add(Attribute.this);
+            }
+            out.write("attribute ");
+            super.output(out);
+        }
     }
 
     public void use(Context ctx) {
-	if(!defined(ctx))
-	    ctx.vardefs.add(new Def());
+        if (!defined(ctx))
+            ctx.vardefs.add(new Def());
     }
 
     public static abstract class AutoInstanced extends Attribute {
-	public AutoInstanced(Type type, Symbol name) {super(type, name);}
-	public AutoInstanced(Type type, String infix) {super(type, infix);}
-	public AutoInstanced(Type type) {super(type);}
+        public AutoInstanced(Type type, Symbol name) {
+            super(type, name);
+        }
 
-	public abstract GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prevbuf);
-	public abstract void unbindiarr(GOut g, GLBuffer buf);
+        public AutoInstanced(Type type, String infix) {
+            super(type, infix);
+        }
+
+        public AutoInstanced(Type type) {
+            super(type);
+        }
+
+        public abstract GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prevbuf);
+
+        public abstract void unbindiarr(GOut g, GLBuffer buf);
     }
 }

@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+
 import haven.Sprite.Factory;
 import haven.Sprite.Owner;
 import haven.Resource.Tileset;
@@ -36,84 +37,84 @@ public class SpriteLink extends Resource.Layer {
     public final Factory f;
 
     public static final Factory sfact = new Factory() {
-	    public Sprite create(Owner owner, Resource res, Message sdt) {
-		SpriteLink link = res.layer(SpriteLink.class);
-		if(link != null)
-		    return(link.f.create(owner, res, sdt));
-		return(null);
-	    }
-	};
+        public Sprite create(Owner owner, Resource res, Message sdt) {
+            SpriteLink link = res.layer(SpriteLink.class);
+            if (link != null)
+                return (link.f.create(owner, res, sdt));
+            return (null);
+        }
+    };
 
     public static class ByTile implements Factory {
-	private final String[] tag;
-	private final Factory[] sub;
-	private final Factory def;
+        private final String[] tag;
+        private final Factory[] sub;
+        private final Factory def;
 
-	private ByTile(Resource res, Message buf, Map<Integer, Factory> refs) {
-	    tag = new String[buf.uint8()];
-	    sub = new Factory[tag.length];
-	    for(int i = 0; i < tag.length; i++) {
-		tag[i] = buf.string();
-		sub[i] = refs.get(buf.int16());
-	    }
-	    def = refs.get(buf.int16());
-	}
+        private ByTile(Resource res, Message buf, Map<Integer, Factory> refs) {
+            tag = new String[buf.uint8()];
+            sub = new Factory[tag.length];
+            for (int i = 0; i < tag.length; i++) {
+                tag[i] = buf.string();
+                sub[i] = refs.get(buf.int16());
+            }
+            def = refs.get(buf.int16());
+        }
 
-	public Sprite create(Owner owner, Resource res, Message sdt) {
-	    Gob gob = (Gob)owner;
-	    Glob glob = gob.glob;
-	    Tileset t = glob.map.tileset(glob.map.gettile(new Coord(gob.getc()).div(MCache.tilesz)));
-	    for(int i = 0; i < tag.length; i++) {
-		if(Arrays.binarySearch(t.tags, tag[i]) >= 0)
-		    return(sub[i].create(owner, res, sdt));
-	    }
-	    return((def == null)?null:def.create(owner, res, sdt));
-	}
+        public Sprite create(Owner owner, Resource res, Message sdt) {
+            Gob gob = (Gob) owner;
+            Glob glob = gob.glob;
+            Tileset t = glob.map.tileset(glob.map.gettile(new Coord(gob.getc()).div(MCache.tilesz)));
+            for (int i = 0; i < tag.length; i++) {
+                if (Arrays.binarySearch(t.tags, tag[i]) >= 0)
+                    return (sub[i].create(owner, res, sdt));
+            }
+            return ((def == null) ? null : def.create(owner, res, sdt));
+        }
     }
 
     public static class ByRes implements Factory {
-	private final Indir<Resource> res;
+        private final Indir<Resource> res;
 
-	private ByRes(Resource res, Message buf, Map<Integer, Factory> refs) {
-	    String resnm = buf.string();
-	    int resver = buf.uint16();
-	    this.res = res.pool.load(resnm, resver);
-	}
+        private ByRes(Resource res, Message buf, Map<Integer, Factory> refs) {
+            String resnm = buf.string();
+            int resver = buf.uint16();
+            this.res = res.pool.load(resnm, resver);
+        }
 
-	public Sprite create(Owner owner, Resource res, Message sdt) {
-	    return(Sprite.create(owner, this.res.get(), sdt));
-	}
+        public Sprite create(Owner owner, Resource res, Message sdt) {
+            return (Sprite.create(owner, this.res.get(), sdt));
+        }
 
-	public String toString() {
-	    return(res.toString());
-	}
+        public String toString() {
+            return (res.toString());
+        }
     }
 
     public SpriteLink(Resource res, Message buf) {
-	res.super();
-	int ver = buf.uint8();
-	if(ver != 1)
-	    throw(new Resource.LoadException("Unknown spritelink version: " + ver, getres()));
-	Map<Integer, Factory> refs = new IntMap<Factory>(16);
-	while(true) {
-	    int id = buf.int16();
-	    if(id < 0)
-		break;
-	    char t = (char)buf.uint8();
-	    Factory f;
-	    switch(t) {
-	    case 't':
-		f = new ByTile(res, buf, refs);
-		break;
-	    case 'r':
-		f = new ByRes(res, buf, refs);
-		break;
-	    default:
-		throw(new Resource.LoadException("Unknown spritelink type: `" + t + "'", getres()));
-	    }
-	    refs.put(id, f);
-	}
-	this.f = refs.get(buf.int16());
+        res.super();
+        int ver = buf.uint8();
+        if (ver != 1)
+            throw (new Resource.LoadException("Unknown spritelink version: " + ver, getres()));
+        Map<Integer, Factory> refs = new IntMap<Factory>(16);
+        while (true) {
+            int id = buf.int16();
+            if (id < 0)
+                break;
+            char t = (char) buf.uint8();
+            Factory f;
+            switch (t) {
+                case 't':
+                    f = new ByTile(res, buf, refs);
+                    break;
+                case 'r':
+                    f = new ByRes(res, buf, refs);
+                    break;
+                default:
+                    throw (new Resource.LoadException("Unknown spritelink type: `" + t + "'", getres()));
+            }
+            refs.put(id, f);
+        }
+        this.f = refs.get(buf.int16());
     }
 
     public void init() {

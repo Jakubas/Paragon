@@ -30,9 +30,9 @@ import java.util.List;
 
 public class Avatar extends GAttrib {
     public Avatar(Gob gob) {
-	super(gob);
+        super(gob);
     }
-	
+
     void setlayers(List<Indir<Resource>> layers) {
     }
 }

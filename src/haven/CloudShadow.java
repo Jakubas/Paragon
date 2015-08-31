@@ -28,8 +28,10 @@ package haven;
 
 import java.util.*;
 import javax.media.opengl.*;
+
 import haven.glsl.*;
 import haven.GLProgram.VarID;
+
 import static haven.glsl.Cons.*;
 import static haven.glsl.Function.PDir.*;
 import static haven.glsl.Type.*;
@@ -43,10 +45,10 @@ public class CloudShadow extends GLState {
     public float cmin = 0.5f, cmax = 1.0f, rmin = 0.4f, rmax = 1.0f;
 
     public CloudShadow(TexGL tex, DirLight light, Coord3f vel, float scale) {
-	this.tex = tex;
-	this.light = light;
-	this.vel = vel;
-	this.scale = scale;
+        this.tex = tex;
+        this.light = light;
+        this.vel = vel;
+        this.scale = scale;
     }
 
     public static final Uniform tsky = new Uniform(SAMPLER2D);
@@ -55,67 +57,70 @@ public class CloudShadow extends GLState {
     public static final Uniform cscl = new Uniform(FLOAT);
     public static final Uniform cthr = new Uniform(VEC4);
     private static final ShaderMacro[] shaders = {
-	new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		final Phong ph = prog.getmod(Phong.class);
-		if((ph == null) || !ph.pfrag)
-		    return;
-		final ValBlock.Value shval = prog.fctx.uniform.new Value(FLOAT) {
-			public Expression root() {
-			    Expression tc = add(mul(add(pick(MiscLib.fragmapv.ref(), "xy"),
-							mul(pick(MiscLib.fragmapv.ref(), "z"), cdir.ref())),
-						    cscl.ref()), mul(cvel.ref(), MiscLib.globtime.ref()));
-			    Expression cl = pick(texture2D(tsky.ref(), tc), "r");
-			    Expression th = cthr.ref();
-			    return(add(mul(smoothstep(pick(th, "x"), pick(th, "y"), cl), pick(th, "w")), pick(th, "z")));
-			}
+            new ShaderMacro() {
+                public void modify(ProgramContext prog) {
+                    final Phong ph = prog.getmod(Phong.class);
+                    if ((ph == null) || !ph.pfrag)
+                        return;
+                    final ValBlock.Value shval = prog.fctx.uniform.new Value(FLOAT) {
+                        public Expression root() {
+                            Expression tc = add(mul(add(pick(MiscLib.fragmapv.ref(), "xy"),
+                                            mul(pick(MiscLib.fragmapv.ref(), "z"), cdir.ref())),
+                                    cscl.ref()), mul(cvel.ref(), MiscLib.globtime.ref()));
+                            Expression cl = pick(texture2D(tsky.ref(), tc), "r");
+                            Expression th = cthr.ref();
+                            return (add(mul(smoothstep(pick(th, "x"), pick(th, "y"), cl), pick(th, "w")), pick(th, "z")));
+                        }
 
-			protected void cons2(Block blk) {
-			    tgt = new Variable.Global(FLOAT).ref();
-			    blk.add(ass(tgt, init));
-			}
-		    };
-		shval.force();
-		ph.dolight.mod(new Runnable() {
-			public void run() {
-			    ph.dolight.dcalc.add(new If(eq(MapView.amblight.ref(), ph.dolight.i),
-							stmt(amul(ph.dolight.dl.tgt, shval.ref()))),
-						 ph.dolight.dcurs);
-			}
-		    }, 0);
-	    }
-	}
+                        protected void cons2(Block blk) {
+                            tgt = new Variable.Global(FLOAT).ref();
+                            blk.add(ass(tgt, init));
+                        }
+                    };
+                    shval.force();
+                    ph.dolight.mod(new Runnable() {
+                        public void run() {
+                            ph.dolight.dcalc.add(new If(eq(MapView.amblight.ref(), ph.dolight.i),
+                                            stmt(amul(ph.dolight.dl.tgt, shval.ref()))),
+                                    ph.dolight.dcurs);
+                        }
+                    }, 0);
+                }
+            }
     };
 
-    public ShaderMacro[] shaders() {return(shaders);}
+    public ShaderMacro[] shaders() {
+        return (shaders);
+    }
 
     private TexUnit sampler;
 
     public void reapply(GOut g) {
-	VarID u = g.st.prog.cuniform(tsky);
-	if(u != null) {
-	    g.gl.glUniform1i(u, sampler.id);
-	    float zf = 1.0f / (light.dir[2] + 1.1f);
-	    float xd = -light.dir[0] * zf, yd = -light.dir[1] * zf;
-	    g.gl.glUniform2f(g.st.prog.uniform(cdir), xd, yd);
-	    g.gl.glUniform2f(g.st.prog.uniform(cvel), vel.x, vel.y);
-	    g.gl.glUniform1f(g.st.prog.uniform(cscl), scale);
-	    g.gl.glUniform4f(g.st.prog.uniform(cthr), cmin, cmax, rmin, rmax - rmin);
-	}
+        VarID u = g.st.prog.cuniform(tsky);
+        if (u != null) {
+            g.gl.glUniform1i(u, sampler.id);
+            float zf = 1.0f / (light.dir[2] + 1.1f);
+            float xd = -light.dir[0] * zf, yd = -light.dir[1] * zf;
+            g.gl.glUniform2f(g.st.prog.uniform(cdir), xd, yd);
+            g.gl.glUniform2f(g.st.prog.uniform(cvel), vel.x, vel.y);
+            g.gl.glUniform1f(g.st.prog.uniform(cscl), scale);
+            g.gl.glUniform4f(g.st.prog.uniform(cthr), cmin, cmax, rmin, rmax - rmin);
+        }
     }
 
     public void apply(GOut g) {
-	sampler = TexGL.lbind(g, tex);
-	reapply(g);
+        sampler = TexGL.lbind(g, tex);
+        reapply(g);
     }
 
     public void unapply(GOut g) {
-	sampler.act(g);
-	g.gl.glBindTexture(GL.GL_TEXTURE_2D, null);
-	sampler.free(); sampler = null;
+        sampler.act(g);
+        g.gl.glBindTexture(GL.GL_TEXTURE_2D, null);
+        sampler.free();
+        sampler = null;
     }
 
     public void prep(Buffer buf) {
-	buf.put(slot, this);
+        buf.put(slot, this);
     }
 }

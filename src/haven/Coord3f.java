@@ -34,145 +34,145 @@ public class Coord3f {
     public static Coord3f xu = new Coord3f(1, 0, 0);
     public static Coord3f yu = new Coord3f(0, 1, 0);
     public static Coord3f zu = new Coord3f(0, 0, 1);
-    
+
     public Coord3f(float x, float y, float z) {
-	this.x = x;
-	this.y = y;
-	this.z = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public Coord3f(Coord3f c) {
-	this(c.x, c.y, c.z);
+        this(c.x, c.y, c.z);
     }
-    
+
     public Coord3f(Coord c) {
-	this(c.x, c.y, 0);
+        this(c.x, c.y, 0);
     }
-    
+
     public boolean equals(Coord3f o) {
-	return((o.x == x) && (o.y == y) && (o.z == z));
+        return ((o.x == x) && (o.y == y) && (o.z == z));
     }
 
     public Coord3f add(float ax, float ay, float az) {
-	return(new Coord3f(x + ax, y + ay, z + az));
+        return (new Coord3f(x + ax, y + ay, z + az));
     }
 
     public Coord3f add(Coord3f b) {
-	return(add(b.x, b.y, b.z));
+        return (add(b.x, b.y, b.z));
     }
-    
+
     public Coord3f sadd(float e, float a, float r) {
-	return(add((float)Math.cos(a) * (float)Math.cos(e) * r, (float)Math.sin(a) * (float)Math.cos(e) * r, (float)Math.sin(e) * r));
+        return (add((float) Math.cos(a) * (float) Math.cos(e) * r, (float) Math.sin(a) * (float) Math.cos(e) * r, (float) Math.sin(e) * r));
     }
-    
+
     public Coord3f neg() {
-	return(new Coord3f(-x, -y, -z));
+        return (new Coord3f(-x, -y, -z));
     }
-    
+
     public Coord3f sub(float ax, float ay, float az) {
-	return(new Coord3f(x - ax, y - ay, z - az));
+        return (new Coord3f(x - ax, y - ay, z - az));
     }
 
     public Coord3f sub(Coord3f b) {
-	return(sub(b.x, b.y, b.z));
+        return (sub(b.x, b.y, b.z));
     }
-    
+
     public Coord3f mul(float f) {
-	return(new Coord3f(x * f, y * f, z * f));
+        return (new Coord3f(x * f, y * f, z * f));
     }
 
     public Coord3f mul(float X, float Y, float Z) {
-	return(new Coord3f(x * X, y * Y, z * Z));
+        return (new Coord3f(x * X, y * Y, z * Z));
     }
 
     public Coord3f mul(Coord3f b) {
-	return(mul(b.x, b.y, b.z));
+        return (mul(b.x, b.y, b.z));
     }
 
     public Coord3f div(float f) {
-	return(new Coord3f(x / f, y / f, z / f));
+        return (new Coord3f(x / f, y / f, z / f));
     }
-    
+
     public Coord3f inv() {
-	return(new Coord3f(-x, -y, -z));
+        return (new Coord3f(-x, -y, -z));
     }
-    
+
     public float dmul(float X, float Y, float Z) {
-	return(x * X + y * Y + z * Z);
+        return (x * X + y * Y + z * Z);
     }
-    
+
     public float dmul(Coord3f b) {
-	return(dmul(b.x, b.y, b.z));
+        return (dmul(b.x, b.y, b.z));
     }
 
     public Coord3f cmul(float X, float Y, float Z) {
-	return(new Coord3f(y * Z - z * Y, z * X - x * Z, x * Y - y * X));
+        return (new Coord3f(y * Z - z * Y, z * X - x * Z, x * Y - y * X));
     }
 
     public Coord3f cmul(Coord3f b) {
-	return(cmul(b.x, b.y, b.z));
+        return (cmul(b.x, b.y, b.z));
     }
-    
+
     public Coord3f rot(Coord3f p, float a) {
-	float c = (float)Math.cos(a), s = (float)Math.sin(a), C = 1.0f - c;
-	float ax = p.x, ay = p.y, az = p.z;
-	return(new Coord3f((x * ((ax * ax * C) + c)) +
-			   (y * ((ay * ax * C) - (az * s))) +
-			   (z * ((az * ax * C) + (ay * s))),
-			   (x * ((ax * ay * C) + (az * s))) +
-			   (y * ((ay * ay * C) + c)) +
-			   (z * ((az * ay * C) - (ax * s))),
-			   (x * ((ax * az * C) - (ay * s))) +
-			   (y * ((ay * az * C) + (ax * s))) +
-			   (z * ((az * az * C) + c))));
+        float c = (float) Math.cos(a), s = (float) Math.sin(a), C = 1.0f - c;
+        float ax = p.x, ay = p.y, az = p.z;
+        return (new Coord3f((x * ((ax * ax * C) + c)) +
+                (y * ((ay * ax * C) - (az * s))) +
+                (z * ((az * ax * C) + (ay * s))),
+                (x * ((ax * ay * C) + (az * s))) +
+                        (y * ((ay * ay * C) + c)) +
+                        (z * ((az * ay * C) - (ax * s))),
+                (x * ((ax * az * C) - (ay * s))) +
+                        (y * ((ay * az * C) + (ax * s))) +
+                        (z * ((az * az * C) + c))));
     }
 
     public float abs() {
-	return((float)Math.sqrt((x * x) + (y * y) + (z * z)));
+        return ((float) Math.sqrt((x * x) + (y * y) + (z * z)));
     }
 
     public Coord3f norm() {
-	float a = abs();
-	if(a == 0.0)
-	    return(new Coord3f(0, 0, 0));
-	return(div(a));
+        float a = abs();
+        if (a == 0.0)
+            return (new Coord3f(0, 0, 0));
+        return (div(a));
     }
 
     public float dist(Coord3f o) {
-	float dx = o.x - x;
-	float dy = o.y - y;
-	float dz = o.z - z;
-	return((float)Math.sqrt((dx * dx) + (dy * dy) + (dz * dz)));
+        float dx = o.x - x;
+        float dy = o.y - y;
+        float dz = o.z - z;
+        return ((float) Math.sqrt((dx * dx) + (dy * dy) + (dz * dz)));
     }
-    
+
     public float xyangle(Coord3f o) {
-	Coord3f c = o.sub(this);
-	if(c.x == 0) {
-	    if(c.y < 0)
-		return((float)-PI / 2);
-	    else
-		return((float)PI / 2);
-	} else {
-	    if(c.x < 0) {
-		if(c.y < 0)
-		    return((float)(-PI + Math.atan(c.y / c.x)));
-		else
-		    return((float)(PI + Math.atan(c.y / c.x)));
-	    } else {
-		return((float)Math.atan(c.y / c.x));
-	    }
-	}
+        Coord3f c = o.sub(this);
+        if (c.x == 0) {
+            if (c.y < 0)
+                return ((float) -PI / 2);
+            else
+                return ((float) PI / 2);
+        } else {
+            if (c.x < 0) {
+                if (c.y < 0)
+                    return ((float) (-PI + Math.atan(c.y / c.x)));
+                else
+                    return ((float) (PI + Math.atan(c.y / c.x)));
+            } else {
+                return ((float) Math.atan(c.y / c.x));
+            }
+        }
     }
-    
+
     public float[] to3a() {
-	return(new float[] {x, y, z});
+        return (new float[]{x, y, z});
     }
-    
+
     public float[] to4a(float w) {
-	return(new float[] {x, y, z, w});
+        return (new float[]{x, y, z, w});
     }
-    
+
     public String toString() {
-	return(String.format("(%f, %f, %f)", x, y, z));
+        return (String.format("(%f, %f, %f)", x, y, z));
     }
 }

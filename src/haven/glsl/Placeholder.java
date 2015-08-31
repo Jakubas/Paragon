@@ -30,18 +30,19 @@ public class Placeholder extends Statement {
     public final String comment;
 
     public Placeholder(String comment) {
-	this.comment = comment;
+        this.comment = comment;
     }
 
     public Placeholder() {
-	this(null);
+        this(null);
     }
 
-    public void walk(Walker w) {}
+    public void walk(Walker w) {
+    }
 
     public void output(Output out) {
-	if(comment != null) {
-	    out.write("/* " + comment + " */");
-	}
+        if (comment != null) {
+            out.write("/* " + comment + " */");
+        }
     }
 }

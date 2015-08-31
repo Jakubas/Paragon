@@ -39,169 +39,169 @@ public class HavenApplet extends Applet {
     HavenPanel h;
     boolean running = false;
     static boolean initedonce = false;
-    
+
     private class ErrorPanel extends Canvas implements haven.error.ErrorStatus {
-	String status = "";
-	boolean ar = false;
-	
-	public ErrorPanel() {
-	    setBackground(Color.BLACK);
-	    addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent e) {
-			if(ar && !running) {
-			    HavenApplet.this.remove(ErrorPanel.this);
-			    startgame();
-			}
-		    }
-		});
-	}
-	
-	public boolean goterror(Throwable t) {
-	    stopgame();
-	    setSize(HavenApplet.this.getSize());
-	    HavenApplet.this.add(this);
-	    repaint();
-	    return(true);
-	}
-	
-	public void connecting() {
-	    status = "Connecting to error report server...";
-	    repaint();
-	}
-	
-	public void sending() {
-	    status = "Sending error report...";
-	    repaint();
-	}
-	
-	public void done(String ctype, String info) {
-	    status = "Done";
-	    ar = true;
-	    repaint();
-	}
-	
-	public void senderror(Exception e) {
-	    status = "Could not send error report";
-	    ar = true;
-	    repaint();
-	}
-	
-	public void paint(Graphics g) {
-	    g.setColor(getBackground());
-	    g.fillRect(0, 0, getWidth(), getHeight());
-	    g.setColor(Color.WHITE);
-	    FontMetrics m = g.getFontMetrics();
-	    int y = 0;
-	    g.drawString("An error has occurred.", 0, y + m.getAscent());
-	    y += m.getHeight();
-	    g.drawString(status, 0, y + m.getAscent());
-	    y += m.getHeight();
-	    if(ar) {
-		g.drawString("Click to restart the game", 0, y + m.getAscent());
-		y += m.getHeight();
-	    }
-	}
+        String status = "";
+        boolean ar = false;
+
+        public ErrorPanel() {
+            setBackground(Color.BLACK);
+            addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    if (ar && !running) {
+                        HavenApplet.this.remove(ErrorPanel.this);
+                        startgame();
+                    }
+                }
+            });
+        }
+
+        public boolean goterror(Throwable t) {
+            stopgame();
+            setSize(HavenApplet.this.getSize());
+            HavenApplet.this.add(this);
+            repaint();
+            return (true);
+        }
+
+        public void connecting() {
+            status = "Connecting to error report server...";
+            repaint();
+        }
+
+        public void sending() {
+            status = "Sending error report...";
+            repaint();
+        }
+
+        public void done(String ctype, String info) {
+            status = "Done";
+            ar = true;
+            repaint();
+        }
+
+        public void senderror(Exception e) {
+            status = "Could not send error report";
+            ar = true;
+            repaint();
+        }
+
+        public void paint(Graphics g) {
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            FontMetrics m = g.getFontMetrics();
+            int y = 0;
+            g.drawString("An error has occurred.", 0, y + m.getAscent());
+            y += m.getHeight();
+            g.drawString(status, 0, y + m.getAscent());
+            y += m.getHeight();
+            if (ar) {
+                g.drawString("Click to restart the game", 0, y + m.getAscent());
+                y += m.getHeight();
+            }
+        }
     }
-    
+
     private void initonce() {
-	if(initedonce)
-	    return;
-	initedonce = true;
-	try {
-	    Resource.addurl(new URL("https", getCodeBase().getHost(), 443, "/res/"));
-	} catch(java.net.MalformedURLException e) {
-	    throw(new RuntimeException(e));
-	}
-	if(!Config.nopreload) {
-	    try {
-		InputStream pls;
-		pls = Resource.class.getResourceAsStream("res-preload");
-		if(pls != null)
-		    Resource.loadlist(Resource.remote(), pls, -5);
-		pls = Resource.class.getResourceAsStream("res-bgload");
-		if(pls != null)
-		    Resource.loadlist(Resource.remote(), pls, -10);
-	    } catch(IOException e) {
-		throw(new Error(e));
-	    }
-	}
+        if (initedonce)
+            return;
+        initedonce = true;
+        try {
+            Resource.addurl(new URL("https", getCodeBase().getHost(), 443, "/res/"));
+        } catch (java.net.MalformedURLException e) {
+            throw (new RuntimeException(e));
+        }
+        if (!Config.nopreload) {
+            try {
+                InputStream pls;
+                pls = Resource.class.getResourceAsStream("res-preload");
+                if (pls != null)
+                    Resource.loadlist(Resource.remote(), pls, -5);
+                pls = Resource.class.getResourceAsStream("res-bgload");
+                if (pls != null)
+                    Resource.loadlist(Resource.remote(), pls, -10);
+            } catch (IOException e) {
+                throw (new Error(e));
+            }
+        }
     }
-    
+
     public void destroy() {
-	stopgame();
+        stopgame();
     }
-    
+
     public void startgame() {
-	if(running)
-	    return;
-	h = new HavenPanel(800, 600);
-	add(h);
-	h.init();
-	try {
-	    p = new haven.error.ErrorHandler(new ErrorPanel(), new URL("http", getCodeBase().getHost(), 80, "/java/error"));
-	} catch(java.net.MalformedURLException e) {
-	    p = new ThreadGroup("Haven client");
-	}
-	synchronized(applets) {
-	    applets.put(p, this);
-	}
-	Thread main = new HackThread(p, new Runnable() {
-		public void run() {
-		    Thread ui = new HackThread(h, "Haven UI thread");
-		    ui.start();
-		    try {
-			Session sess = null;
-			while(true) {
-			    UI.Runner fun;
-			    if(sess == null) {
-				Bootstrap bill = new Bootstrap(getCodeBase().getHost(), Config.mainport);
-				if((getParameter("username") != null) && (getParameter("authcookie") != null))
-				    bill.setinitcookie(getParameter("username"), Utils.hex2byte(getParameter("authcookie")));
-				fun = bill;
-			    } else {
-				fun = new RemoteUI(sess);
-			    }
-			    sess = fun.run(h.newui(sess));
-			}
-		    } catch(InterruptedException e) {
-		    } finally {
-			ui.interrupt();
-		    }
-		}
-	    }, "Haven main thread");
-	main.start();
-	running = true;
+        if (running)
+            return;
+        h = new HavenPanel(800, 600);
+        add(h);
+        h.init();
+        try {
+            p = new haven.error.ErrorHandler(new ErrorPanel(), new URL("http", getCodeBase().getHost(), 80, "/java/error"));
+        } catch (java.net.MalformedURLException e) {
+            p = new ThreadGroup("Haven client");
+        }
+        synchronized (applets) {
+            applets.put(p, this);
+        }
+        Thread main = new HackThread(p, new Runnable() {
+            public void run() {
+                Thread ui = new HackThread(h, "Haven UI thread");
+                ui.start();
+                try {
+                    Session sess = null;
+                    while (true) {
+                        UI.Runner fun;
+                        if (sess == null) {
+                            Bootstrap bill = new Bootstrap(getCodeBase().getHost(), Config.mainport);
+                            if ((getParameter("username") != null) && (getParameter("authcookie") != null))
+                                bill.setinitcookie(getParameter("username"), Utils.hex2byte(getParameter("authcookie")));
+                            fun = bill;
+                        } else {
+                            fun = new RemoteUI(sess);
+                        }
+                        sess = fun.run(h.newui(sess));
+                    }
+                } catch (InterruptedException e) {
+                } finally {
+                    ui.interrupt();
+                }
+            }
+        }, "Haven main thread");
+        main.start();
+        running = true;
     }
-    
+
     public void stopgame() {
-	if(!running)
-	    return;
-	running = false;
-	synchronized(applets) {
-	    applets.remove(p);
-	}
-	p.interrupt();
-	remove(h);
-	p = null;
-	h = null;
+        if (!running)
+            return;
+        running = false;
+        synchronized (applets) {
+            applets.remove(p);
+        }
+        p.interrupt();
+        remove(h);
+        p = null;
+        h = null;
     }
-    
+
     public void init() {
-	initonce();
-	resize(800, 600);
-	startgame();
+        initonce();
+        resize(800, 600);
+        startgame();
     }
-    
+
     static {
-	WebBrowser.self = new WebBrowser() {
-		public void show(URL url) {
-		    HavenApplet a;
-		    synchronized(applets) {
-			a = applets.get(HackThread.tg());
-		    }
-		    if(a != null)
-			a.getAppletContext().showDocument(url, "_blank");
-		}
-	    };
+        WebBrowser.self = new WebBrowser() {
+            public void show(URL url) {
+                HavenApplet a;
+                synchronized (applets) {
+                    a = applets.get(HackThread.tg());
+                }
+                if (a != null)
+                    a.getAppletContext().showDocument(url, "_blank");
+            }
+        };
     }
 }

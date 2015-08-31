@@ -35,62 +35,70 @@ public abstract class Dropbox<T> extends ListWidget<T> {
     private Droplist dl;
 
     public Dropbox(int w, int listh, int itemh) {
-	super(new Coord(w, itemh), itemh);
-	this.listh = listh;
-	dropc = new Coord(sz.x - drop.sz().x, 0);
+        super(new Coord(w, itemh), itemh);
+        this.listh = listh;
+        dropc = new Coord(sz.x - drop.sz().x, 0);
     }
 
     private class Droplist extends Listbox<T> {
-	private UI.Grab grab = null;
+        private UI.Grab grab = null;
 
-	private Droplist() {
-	    super(Dropbox.this.sz.x, Math.min(listh, Dropbox.this.listitems()), Dropbox.this.itemh);
-	    sel = Dropbox.this.sel;
-	    Dropbox.this.ui.root.add(this, Dropbox.this.rootpos().add(0, Dropbox.this.sz.y));
-	    grab = ui.grabmouse(this);
-	}
+        private Droplist() {
+            super(Dropbox.this.sz.x, Math.min(listh, Dropbox.this.listitems()), Dropbox.this.itemh);
+            sel = Dropbox.this.sel;
+            Dropbox.this.ui.root.add(this, Dropbox.this.rootpos().add(0, Dropbox.this.sz.y));
+            grab = ui.grabmouse(this);
+        }
 
-	protected T listitem(int i) {return(Dropbox.this.listitem(i));}
-	protected int listitems() {return(Dropbox.this.listitems());}
-	protected void drawitem(GOut g, T item, int idx) {Dropbox.this.drawitem(g, item, idx);}
+        protected T listitem(int i) {
+            return (Dropbox.this.listitem(i));
+        }
 
-	public boolean mousedown(Coord c, int btn) {
-	    if(!c.isect(Coord.z, sz)) {
-		reqdestroy();
-		return(true);
-	    }
-	    return(super.mousedown(c, btn));
-	}
+        protected int listitems() {
+            return (Dropbox.this.listitems());
+        }
 
-	public void destroy() {
-	    grab.remove();
-	    super.destroy();
-	    dl = null;
-	}
+        protected void drawitem(GOut g, T item, int idx) {
+            Dropbox.this.drawitem(g, item, idx);
+        }
 
-	public void change(T item) {
-	    Dropbox.this.change(item);
-	    reqdestroy();
-	}
+        public boolean mousedown(Coord c, int btn) {
+            if (!c.isect(Coord.z, sz)) {
+                reqdestroy();
+                return (true);
+            }
+            return (super.mousedown(c, btn));
+        }
+
+        public void destroy() {
+            grab.remove();
+            super.destroy();
+            dl = null;
+        }
+
+        public void change(T item) {
+            Dropbox.this.change(item);
+            reqdestroy();
+        }
     }
 
     public void draw(GOut g) {
-	g.chcolor(Color.BLACK);
-	g.frect(Coord.z, sz);
-	g.chcolor();
-	if(sel != null)
-	    drawitem(g.reclip(Coord.z, new Coord(sz.x - drop.sz().x, itemh)), sel, 0);
-	g.image(drop, dropc);
-	super.draw(g);
+        g.chcolor(Color.BLACK);
+        g.frect(Coord.z, sz);
+        g.chcolor();
+        if (sel != null)
+            drawitem(g.reclip(Coord.z, new Coord(sz.x - drop.sz().x, itemh)), sel, 0);
+        g.image(drop, dropc);
+        super.draw(g);
     }
 
     public boolean mousedown(Coord c, int btn) {
-	if(super.mousedown(c, btn))
-	    return(true);
-	if((dl == null) && (btn == 1)) {
-	    dl = new Droplist();
-	    return(true);
-	}
-	return(true);
+        if (super.mousedown(c, btn))
+            return (true);
+        if ((dl == null) && (btn == 1)) {
+            dl = new Droplist();
+            return (true);
+        }
+        return (true);
     }
 }

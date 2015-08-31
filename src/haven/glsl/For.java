@@ -31,37 +31,39 @@ public class For extends Statement {
     public final Statement body;
 
     public For(Expression init, Expression cond, Expression step, Statement body) {
-	this.init = init;
-	this.cond = cond;
-	this.step = step;
-	this.body = body;
+        this.init = init;
+        this.cond = cond;
+        this.step = step;
+        this.body = body;
     }
 
     public void walk(Walker w) {
-	if(init != null) w.el(init);
-	if(cond != null) w.el(cond);
-	if(step != null) w.el(step);
-	w.el(body);
+        if (init != null) w.el(init);
+        if (cond != null) w.el(cond);
+        if (step != null) w.el(step);
+        w.el(body);
     }
 
     public void output(Output out) {
-	out.write("for(");
-	if(init != null)
-	    init.output(out);
-	out.write("; ");
-	if(cond != null)
-	    cond.output(out);
-	out.write("; ");
-	if(step != null)
-	    step.output(out);
-	out.write(")");
-	if(body instanceof Block) {
-	    out.write(" ");
-	    ((Block)body).trail(out, false);
-	} else {
-	    out.write("\n"); out.indent++; out.indent();
-	    body.output(out);
-	    out.indent--;
-	}
+        out.write("for(");
+        if (init != null)
+            init.output(out);
+        out.write("; ");
+        if (cond != null)
+            cond.output(out);
+        out.write("; ");
+        if (step != null)
+            step.output(out);
+        out.write(")");
+        if (body instanceof Block) {
+            out.write(" ");
+            ((Block) body).trail(out, false);
+        } else {
+            out.write("\n");
+            out.indent++;
+            out.indent();
+            body.output(out);
+            out.indent--;
+        }
     }
 }

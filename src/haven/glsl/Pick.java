@@ -34,28 +34,28 @@ public class Pick extends Expression {
     public final char[] el;
 
     public Pick(Expression val, char[] el) {
-	for(char c : el) {
-	    if(valid.indexOf(c) < 0)
-		throw(new IllegalArgumentException("`" + c + "' is not a valid swizzling component"));
-	}
-	this.val = val;
-	this.el = el;
+        for (char c : el) {
+            if (valid.indexOf(c) < 0)
+                throw (new IllegalArgumentException("`" + c + "' is not a valid swizzling component"));
+        }
+        this.val = val;
+        this.el = el;
     }
 
     public Pick(Expression val, String el) {
-	this(val, el.toCharArray());
+        this(val, el.toCharArray());
     }
 
     public void walk(Walker w) {
-	w.el(val);
+        w.el(val);
     }
 
     public void output(Output out) {
-	out.write("(");
-	val.output(out);
-	out.write(".");
-	for(char c : el)
-	    out.write(c);
-	out.write(")");
+        out.write("(");
+        val.output(out);
+        out.write(".");
+        for (char c : el)
+            out.write(c);
+        out.write(")");
     }
 }

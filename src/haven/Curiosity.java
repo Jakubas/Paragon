@@ -33,17 +33,17 @@ public class Curiosity extends ItemInfo.Tip {
     public final int exp, mw, enc;
 
     public Curiosity(Owner owner, int exp, int mw, int enc) {
-	super(owner);
-	this.exp = exp;
-	this.mw = mw;
-	this.enc = enc;
+        super(owner);
+        this.exp = exp;
+        this.mw = mw;
+        this.enc = enc;
     }
 
     public BufferedImage tipimg() {
-	StringBuilder buf = new StringBuilder();
-	buf.append(String.format("Learning points: $col[192,192,255]{%s}\nMental weight: $col[255,192,255]{%d}\n", Utils.thformat(exp), mw));
-	if(enc > 0)
-	    buf.append(String.format("Experience points: $col[255,255,192]{%d}\n", enc));
-	return(RichText.render(buf.toString(), 0).img);
+        StringBuilder buf = new StringBuilder();
+        buf.append(String.format("Learning points: $col[192,192,255]{%s}\nMental weight: $col[255,192,255]{%d}\n", Utils.thformat(exp), mw));
+        if (enc > 0)
+            buf.append(String.format("Experience points: $col[255,255,192]{%d}\n", enc));
+        return (RichText.render(buf.toString(), 0).img);
     }
 }

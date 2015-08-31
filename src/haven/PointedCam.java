@@ -33,18 +33,18 @@ public class PointedCam extends Camera {
     float dist = 5.0f, e, a;
 
     public PointedCam() {
-	super(Matrix4f.identity());
+        super(Matrix4f.identity());
     }
 
     public Matrix4f fin(Matrix4f p) {
-	update(compute(base, dist, e, a));
-	return(super.fin(p));
+        update(compute(base, dist, e, a));
+        return (super.fin(p));
     }
-    
+
     public static Matrix4f compute(Coord3f base, float dist, float e, float a) {
-	return(makexlate(new Matrix4f(), new Coord3f(0.0f, 0.0f, -dist))
-	       .mul1(makerot(new Matrix4f(), new Coord3f(-1.0f, 0.0f, 0.0f), ((float)Math.PI / 2.0f) - e))
-	       .mul1(makerot(new Matrix4f(), new Coord3f(0.0f, 0.0f, -1.0f), ((float)Math.PI / 2.0f) + a))
-	       .mul1(makexlate(new Matrix4f(), base.inv())));
+        return (makexlate(new Matrix4f(), new Coord3f(0.0f, 0.0f, -dist))
+                .mul1(makerot(new Matrix4f(), new Coord3f(-1.0f, 0.0f, 0.0f), ((float) Math.PI / 2.0f) - e))
+                .mul1(makerot(new Matrix4f(), new Coord3f(0.0f, 0.0f, -1.0f), ((float) Math.PI / 2.0f) + a))
+                .mul1(makexlate(new Matrix4f(), base.inv())));
     }
 }

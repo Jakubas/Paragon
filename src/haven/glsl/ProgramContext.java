@@ -44,24 +44,24 @@ public class ProgramContext {
     public static final Variable gl_FrontMaterial = new Variable.Implicit(Struct.gl_MaterialParameters, new Symbol.Fix("gl_FrontMaterial"));
 
     public ProgramContext() {
-	vctx = new VertexContext(this);
-	fctx = new FragmentContext(this);
+        vctx = new VertexContext(this);
+        fctx = new FragmentContext(this);
     }
 
     public void module(Object mod) {
-	mods.add(mod);
+        mods.add(mod);
     }
 
     public <T> T getmod(Class<T> cl) {
-	T ret = null;
-	for(Object mod : mods) {
-	    if(cl.isInstance(mod)) {
-		if(ret == null)
-		    ret = cl.cast(mod);
-		else
-		    throw(new RuntimeException("multiple modules of " + cl + " installed: " + ret + " and " + mod));
-	    }
-	}
-	return(ret);
+        T ret = null;
+        for (Object mod : mods) {
+            if (cl.isInstance(mod)) {
+                if (ret == null)
+                    ret = cl.cast(mod);
+                else
+                    throw (new RuntimeException("multiple modules of " + cl + " installed: " + ret + " and " + mod));
+            }
+        }
+        return (ret);
     }
 }

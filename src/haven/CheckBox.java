@@ -36,51 +36,53 @@ public class CheckBox extends Widget {
 
     @RName("chk")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    CheckBox ret = new CheckBox((String)args[0]);
-	    ret.canactivate = true;
-	    return(ret);
-	}
+        public Widget create(Widget parent, Object[] args) {
+            CheckBox ret = new CheckBox((String) args[0]);
+            ret.canactivate = true;
+            return (ret);
+        }
     }
 
     public CheckBox(String lbl, boolean lg) {
-	this.lbl = Text.std.render(lbl, java.awt.Color.WHITE);
-	if(lg) {
-	    box = lbox; mark = lmark;
-	    loff = new Coord(0, -3);
-	} else {
-	    box = sbox; mark = smark;
-	    loff = new Coord(5, 0);
-	}
-	sz = new Coord(box.sz().x + 5 + this.lbl.sz().x, Math.max(box.sz().y, this.lbl.sz().y));
+        this.lbl = Text.std.render(lbl, java.awt.Color.WHITE);
+        if (lg) {
+            box = lbox;
+            mark = lmark;
+            loff = new Coord(0, -3);
+        } else {
+            box = sbox;
+            mark = smark;
+            loff = new Coord(5, 0);
+        }
+        sz = new Coord(box.sz().x + 5 + this.lbl.sz().x, Math.max(box.sz().y, this.lbl.sz().y));
     }
 
     public CheckBox(String lbl) {
-	this(lbl, false);
+        this(lbl, false);
     }
 
     public boolean mousedown(Coord c, int button) {
-	if(button != 1)
-	    return(false);
-	set(!a);
-	return(true);
+        if (button != 1)
+            return (false);
+        set(!a);
+        return (true);
     }
 
     public void set(boolean a) {
-	this.a = a;
-	changed(a);
+        this.a = a;
+        changed(a);
     }
 
     public void draw(GOut g) {
-	g.image(lbl.tex(), loff.add(box.sz().x, box.sz().y - lbl.sz().y));
-	g.image(box, Coord.z);
-	if(a)
-	    g.image(mark, Coord.z);
-	super.draw(g);
+        g.image(lbl.tex(), loff.add(box.sz().x, box.sz().y - lbl.sz().y));
+        g.image(box, Coord.z);
+        if (a)
+            g.image(mark, Coord.z);
+        super.draw(g);
     }
 
     public void changed(boolean val) {
-	if(canactivate)
-	    wdgmsg("ch", a);
+        if (canactivate)
+            wdgmsg("ch", a);
     }
 }

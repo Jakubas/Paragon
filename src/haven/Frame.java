@@ -30,45 +30,45 @@ public class Frame extends Widget {
     private final IBox box;
 
     public Frame(Coord sz, boolean inner, IBox box) {
-	super(sz.add(inner?box.bisz():Coord.z));
-	this.box = box;
+        super(sz.add(inner ? box.bisz() : Coord.z));
+        this.box = box;
     }
 
     public Frame(Coord sz, boolean inner) {
-	this(sz, inner, Window.wbox);
+        this(sz, inner, Window.wbox);
     }
 
     public static Frame around(Widget parent, Area area, IBox box) {
-	return(parent.add(new Frame(area.sz(), true, box),
-			  area.ul.sub(box.btloff())));
+        return (parent.add(new Frame(area.sz(), true, box),
+                area.ul.sub(box.btloff())));
     }
 
     public static Frame around(Widget parent, Area area) {
-	return(around(parent, area, Window.wbox));
+        return (around(parent, area, Window.wbox));
     }
 
     public static Frame around(Widget parent, Iterable<? extends Widget> wl) {
-	Widget f = Utils.el(wl);
-	Coord tl = new Coord(f.c), br = new Coord(f.c);
-	for(Widget wdg : wl) {
-	    Coord wbr = wdg.c.add(wdg.sz);
-	    if(wdg.c.x < tl.x) tl.x = wdg.c.x;
-	    if(wdg.c.y < tl.y) tl.y = wdg.c.y;
-	    if(wbr.x > br.x) br.x = wbr.x;
-	    if(wbr.y > br.y) br.y = wbr.y;
-	}
-	return(around(parent, new Area(tl, br)));
+        Widget f = Utils.el(wl);
+        Coord tl = new Coord(f.c), br = new Coord(f.c);
+        for (Widget wdg : wl) {
+            Coord wbr = wdg.c.add(wdg.sz);
+            if (wdg.c.x < tl.x) tl.x = wdg.c.x;
+            if (wdg.c.y < tl.y) tl.y = wdg.c.y;
+            if (wbr.x > br.x) br.x = wbr.x;
+            if (wbr.y > br.y) br.y = wbr.y;
+        }
+        return (around(parent, new Area(tl, br)));
     }
 
     public Coord xlate(Coord c, boolean in) {
-	if(in)
-	    return(c.add(box.btloff()));
-	else
-	    return(c.sub(box.btloff()));
+        if (in)
+            return (c.add(box.btloff()));
+        else
+            return (c.sub(box.btloff()));
     }
 
     public void draw(GOut g) {
-	super.draw(g);
-	box.draw(g, Coord.z, sz);
+        super.draw(g);
+        box.draw(g, Coord.z, sz);
     }
 }

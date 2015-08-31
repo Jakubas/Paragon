@@ -32,44 +32,44 @@ public class FColor {
     public float r, g, b, a;
 
     public FColor(float r, float g, float b, float a) {
-	this.r = r;
-	this.g = g;
-	this.b = b;
-	this.a = a;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     public FColor(float r, float g, float b) {
-	this(r, g, b, 1);
+        this(r, g, b, 1);
     }
 
     public FColor(Color c, float f) {
-	this(f * c.getRed()   / 255.0f,
-	     f * c.getGreen() / 255.0f,
-	     f * c.getBlue()  / 255.0f,
-	     c.getAlpha() / 255.0f);
+        this(f * c.getRed() / 255.0f,
+                f * c.getGreen() / 255.0f,
+                f * c.getBlue() / 255.0f,
+                c.getAlpha() / 255.0f);
     }
 
     public FColor(Color c) {
-	this(c, 1);
+        this(c, 1);
     }
 
     public FColor blend(FColor o, float f) {
-	float F = 1.0f - f;
-	return(new FColor((r * F) + (o.r * f),
-			  (g * F) + (o.g * f),
-			  (b * F) + (o.b * f),
-			  (a * F) + (o.a * f)));
+        float F = 1.0f - f;
+        return (new FColor((r * F) + (o.r * f),
+                (g * F) + (o.g * f),
+                (b * F) + (o.b * f),
+                (a * F) + (o.a * f)));
     }
 
     public float[] to3a() {
-	return(new float[] {r, g, b});
+        return (new float[]{r, g, b});
     }
 
     public float[] to4a() {
-	return(new float[] {r, g, b, a});
+        return (new float[]{r, g, b, a});
     }
 
     public String toString() {
-	return(String.format("color(%f, %f, %f, %f)", r, g, b, a));
+        return (String.format("color(%f, %f, %f, %f)", r, g, b, a));
     }
 }

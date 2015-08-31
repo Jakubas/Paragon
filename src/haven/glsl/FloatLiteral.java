@@ -33,12 +33,13 @@ public class FloatLiteral extends Expression {
     public final double val;
 
     public FloatLiteral(double val) {
-	this.val = val;
+        this.val = val;
     }
 
-    public void walk(Walker w) {}
+    public void walk(Walker w) {
+    }
 
     public void output(Output out) {
-	out.write(Double.toString(val));
+        out.write(Double.toString(val));
     }
 }

@@ -31,25 +31,25 @@ public class Progress extends Widget {
 
     @RName("prog")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new Progress((Integer)args[0]));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new Progress((Integer) args[0]));
+        }
     }
 
     public Progress(int p) {
-	super(new Coord(75, 20));
-	text = Text.renderf(FlowerMenu.pink, "%d%%", p);
+        super(new Coord(75, 20));
+        text = Text.renderf(FlowerMenu.pink, "%d%%", p);
     }
 
     public void draw(GOut g) {
-	g.image(text.tex(), new Coord(sz.x / 2 - text.tex().sz().x / 2, 0));
+        g.image(text.tex(), new Coord(sz.x / 2 - text.tex().sz().x / 2, 0));
     }
 
     public void uimsg(String msg, Object... args) {
-	if(msg == "p") {
-	    text = Text.renderf(FlowerMenu.pink, "%d%%", (Integer)args[0]);
-	} else {
-	    super.uimsg(msg, args);
-	}
+        if (msg == "p") {
+            text = Text.renderf(FlowerMenu.pink, "%d%%", (Integer) args[0]);
+        } else {
+            super.uimsg(msg, args);
+        }
     }
 }

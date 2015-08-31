@@ -37,28 +37,28 @@ public class GobIcon extends GAttrib {
     private Tex tex;
 
     public GobIcon(Gob g, Indir<Resource> res) {
-	super(g);
-	this.res = res;
+        super(g);
+        this.res = res;
     }
 
     public Tex tex() {
-	if(this.tex == null) {
-	    synchronized(cache) {
-		if(!cache.containsKey(res)) {
-		    Resource.Image img = res.get().layer(Resource.imgc);
-		    Tex tex = img.tex();
-		    if((tex.sz().x <= 20) && (tex.sz().y <= 20)) {
-			cache.put(res, tex);
-		    } else {
-			BufferedImage buf = img.img;
-			buf = PUtils.rasterimg(PUtils.blurmask2(buf.getRaster(), 1, 1, Color.BLACK));
-			buf = PUtils.convolvedown(buf, new Coord(20, 20), filter);
-			cache.put(res, new TexI(buf));
-		    }
-		}
-		this.tex = cache.get(res);
-	    }
-	}
-	return(this.tex);
+        if (this.tex == null) {
+            synchronized (cache) {
+                if (!cache.containsKey(res)) {
+                    Resource.Image img = res.get().layer(Resource.imgc);
+                    Tex tex = img.tex();
+                    if ((tex.sz().x <= 20) && (tex.sz().y <= 20)) {
+                        cache.put(res, tex);
+                    } else {
+                        BufferedImage buf = img.img;
+                        buf = PUtils.rasterimg(PUtils.blurmask2(buf.getRaster(), 1, 1, Color.BLACK));
+                        buf = PUtils.convolvedown(buf, new Coord(20, 20), filter);
+                        cache.put(res, new TexI(buf));
+                    }
+                }
+                this.tex = cache.get(res);
+            }
+        }
+        return (this.tex);
     }
 }

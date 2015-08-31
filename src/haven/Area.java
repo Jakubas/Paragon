@@ -30,35 +30,35 @@ public class Area implements java.io.Serializable {
     public Coord ul, br;
 
     public Area(Coord ul, Coord br) {
-	this.ul = ul;
-	this.br = br;
+        this.ul = ul;
+        this.br = br;
     }
 
     public static Area sized(Coord ul, Coord sz) {
-	return(new Area(ul, ul.add(sz)));
+        return (new Area(ul, ul.add(sz)));
     }
 
     public Coord sz() {
-	return(br.sub(ul));
+        return (br.sub(ul));
     }
 
     public boolean isects(Area o) {
-	return((br.x > o.ul.x) && (br.y > o.ul.y) && (o.br.x > ul.x) && (o.br.y > ul.y));
+        return ((br.x > o.ul.x) && (br.y > o.ul.y) && (o.br.x > ul.x) && (o.br.y > ul.y));
     }
 
     public boolean contains(Area o) {
-	return((o.ul.x >= ul.x) && (o.ul.y >= ul.y) && (o.br.x <= br.x) && (o.br.y <= br.y));
+        return ((o.ul.x >= ul.x) && (o.ul.y >= ul.y) && (o.br.x <= br.x) && (o.br.y <= br.y));
     }
 
     public Area xl(Coord off) {
-	return(new Area(ul.add(off), br.add(off)));
+        return (new Area(ul.add(off), br.add(off)));
     }
 
     public Area margin(Coord m) {
-	return(new Area(ul.sub(m), br.add(m)));
+        return (new Area(ul.sub(m), br.add(m)));
     }
 
     public Area margin(int m) {
-	return(margin(new Coord(m, m)));
+        return (margin(new Coord(m, m)));
     }
 }

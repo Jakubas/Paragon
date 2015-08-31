@@ -42,159 +42,172 @@ public class Fightsess extends Widget {
 
     @RName("fsess")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    int nact = (Integer)args[0];
-	    return(new Fightsess(nact, parent.getparent(GameUI.class).fv));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            int nact = (Integer) args[0];
+            return (new Fightsess(nact, parent.getparent(GameUI.class).fv));
+        }
     }
 
     @SuppressWarnings("unchecked")
     public Fightsess(int nact, Fightview fv) {
-	this.fv = fv;
-	pho = -40;
-	this.actions = (Indir<Resource>[])new Indir[nact];
-	this.dyn = new boolean[nact];
+        this.fv = fv;
+        pho = -40;
+        this.actions = (Indir<Resource>[]) new Indir[nact];
+        this.dyn = new boolean[nact];
     }
 
     public void presize() {
-	resize(parent.sz);
-	pcc = sz.div(2);
+        resize(parent.sz);
+        pcc = sz.div(2);
     }
 
     protected void added() {
-	presize();
+        presize();
     }
 
     private void updatepos() {
-	MapView map;
-	Gob pl;
-	if(((map = getparent(GameUI.class).map) == null) || ((pl = map.player()) == null) || (pl.sc == null))
-	    return;
-	pcc = pl.sc;
-	pho = (int)(pl.sczu.mul(20f).y) - 20;
+        MapView map;
+        Gob pl;
+        if (((map = getparent(GameUI.class).map) == null) || ((pl = map.player()) == null) || (pl.sc == null))
+            return;
+        pcc = pl.sc;
+        pho = (int) (pl.sczu.mul(20f).y) - 20;
     }
 
     private static final Text.Furnace ipf = new PUtils.BlurFurn(new Text.Foundry(Text.serif, 18, new Color(128, 128, 255)).aa(true), 1, 1, new Color(48, 48, 96));
     private final Text.UText<?> ip = new Text.UText<Integer>(ipf) {
-	public String text(Integer v) {return("IP: " + v);}
-	public Integer value() {return(fv.current.ip);}
+        public String text(Integer v) {
+            return ("IP: " + v);
+        }
+
+        public Integer value() {
+            return (fv.current.ip);
+        }
     };
     private final Text.UText<?> oip = new Text.UText<Integer>(ipf) {
-	public String text(Integer v) {return("IP: " + v);}
-	public Integer value() {return(fv.current.oip);}
+        public String text(Integer v) {
+            return ("IP: " + v);
+        }
+
+        public Integer value() {
+            return (fv.current.oip);
+        }
     };
 
     public void draw(GOut g) {
-	updatepos();
-	double now = System.currentTimeMillis() / 1000.0;
+        updatepos();
+        double now = System.currentTimeMillis() / 1000.0;
 
-	for(Buff buff : fv.buffs.children(Buff.class))
-	    buff.draw(g.reclip(pcc.add(-buff.c.x - Buff.cframe.sz().x - 20, buff.c.y + pho - Buff.cframe.sz().y), buff.sz));
-	if(fv.current != null) {
-	    for(Buff buff : fv.current.buffs.children(Buff.class))
-		buff.draw(g.reclip(pcc.add(buff.c.x + 20, buff.c.y + pho - Buff.cframe.sz().y), buff.sz));
+        for (Buff buff : fv.buffs.children(Buff.class))
+            buff.draw(g.reclip(pcc.add(-buff.c.x - Buff.cframe.sz().x - 20, buff.c.y + pho - Buff.cframe.sz().y), buff.sz));
+        if (fv.current != null) {
+            for (Buff buff : fv.current.buffs.children(Buff.class))
+                buff.draw(g.reclip(pcc.add(buff.c.x + 20, buff.c.y + pho - Buff.cframe.sz().y), buff.sz));
 
-	    g.aimage(ip.get().tex(), pcc.add(-75, 0), 1, 0.5);
-	    g.aimage(oip.get().tex(), pcc.add(75, 0), 0, 0.5);
-	}
+            g.aimage(ip.get().tex(), pcc.add(-75, 0), 1, 0.5);
+            g.aimage(oip.get().tex(), pcc.add(75, 0), 0, 0.5);
+        }
 
-	if(now < fv.atkct) {
-	    int w = (int)((fv.atkct - now) * 20);
-	    g.chcolor(255, 0, 128, 255);
-	    g.frect(pcc.add(-w, 20), new Coord(w * 2, 15));
-	    g.chcolor();
-	}
-	Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
-	for(int i = 0; i < actions.length; i++) {
-	    Indir<Resource> act = actions[i];
-	    try {
-		if(act != null) {
-		    Tex img = act.get().layer(Resource.imgc).tex();
-		    g.image(img, ca);
-		    g.image(dyn[i]?lframe:Buff.frame, ca.sub(Buff.imgoff));
-		    if(i == use) {
-			g.chcolor(255, 0, 128, 255);
-			Coord cc = ca.add(img.sz().x / 2, img.sz().y + 5);
-			g.frect(cc.sub(2, 2), new Coord(5, 5));
-			g.chcolor();
-		    }
-		}
-	    } catch(Loading l) {}
-	    ca.x += actpitch;
-	}
+        if (now < fv.atkct) {
+            int w = (int) ((fv.atkct - now) * 20);
+            g.chcolor(255, 0, 128, 255);
+            g.frect(pcc.add(-w, 20), new Coord(w * 2, 15));
+            g.chcolor();
+        }
+        Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
+        for (int i = 0; i < actions.length; i++) {
+            Indir<Resource> act = actions[i];
+            try {
+                if (act != null) {
+                    Tex img = act.get().layer(Resource.imgc).tex();
+                    g.image(img, ca);
+                    g.image(dyn[i] ? lframe : Buff.frame, ca.sub(Buff.imgoff));
+                    if (i == use) {
+                        g.chcolor(255, 0, 128, 255);
+                        Coord cc = ca.add(img.sz().x / 2, img.sz().y + 5);
+                        g.frect(cc.sub(2, 2), new Coord(5, 5));
+                        g.chcolor();
+                    }
+                }
+            } catch (Loading l) {
+            }
+            ca.x += actpitch;
+        }
     }
 
     private Widget prevtt = null;
+
     public Object tooltip(Coord c, Widget prev) {
-	for(Buff buff : fv.buffs.children(Buff.class)) {
-	    Coord dc = pcc.add(-buff.c.x - Buff.cframe.sz().x - 20, buff.c.y + pho - Buff.cframe.sz().y);
-	    if(c.isect(dc, buff.sz)) {
-		Object ret = buff.tooltip(c.sub(dc), prevtt);
-		if(ret != null) {
-		    prevtt = buff;
-		    return(ret);
-		}
-	    }
-	}
-	if(fv.current != null) {
-	    for(Buff buff : fv.current.buffs.children(Buff.class)) {
-		Coord dc = pcc.add(buff.c.x + 20, buff.c.y + pho - Buff.cframe.sz().y);
-		if(c.isect(dc, buff.sz)) {
-		    Object ret = buff.tooltip(c.sub(dc), prevtt);
-		    if(ret != null) {
-			prevtt = buff;
-			return(ret);
-		    }
-		}
-	    }
-	}
-	Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
-	for(int i = 0; i < actions.length; i++) {
-	    Indir<Resource> act = actions[i];
-	    try {
-		if(act != null) {
-		    Tex img = act.get().layer(Resource.imgc).tex();
-		    if(c.isect(ca, img.sz())) {
-			if(dyn[i])
-			    return("Combat discovery");
-			return(act.get().layer(Resource.tooltip).t);
-		    }
-		}
-	    } catch(Loading l) {}
-	    ca.x += actpitch;
-	}
-	return(null);
+        for (Buff buff : fv.buffs.children(Buff.class)) {
+            Coord dc = pcc.add(-buff.c.x - Buff.cframe.sz().x - 20, buff.c.y + pho - Buff.cframe.sz().y);
+            if (c.isect(dc, buff.sz)) {
+                Object ret = buff.tooltip(c.sub(dc), prevtt);
+                if (ret != null) {
+                    prevtt = buff;
+                    return (ret);
+                }
+            }
+        }
+        if (fv.current != null) {
+            for (Buff buff : fv.current.buffs.children(Buff.class)) {
+                Coord dc = pcc.add(buff.c.x + 20, buff.c.y + pho - Buff.cframe.sz().y);
+                if (c.isect(dc, buff.sz)) {
+                    Object ret = buff.tooltip(c.sub(dc), prevtt);
+                    if (ret != null) {
+                        prevtt = buff;
+                        return (ret);
+                    }
+                }
+            }
+        }
+        Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
+        for (int i = 0; i < actions.length; i++) {
+            Indir<Resource> act = actions[i];
+            try {
+                if (act != null) {
+                    Tex img = act.get().layer(Resource.imgc).tex();
+                    if (c.isect(ca, img.sz())) {
+                        if (dyn[i])
+                            return ("Combat discovery");
+                        return (act.get().layer(Resource.tooltip).t);
+                    }
+                }
+            } catch (Loading l) {
+            }
+            ca.x += actpitch;
+        }
+        return (null);
     }
 
     public void uimsg(String msg, Object... args) {
-	if(msg == "act") {
-	    int n = (Integer)args[0];
-	    if(args.length > 1) {
-		Indir<Resource> res = ui.sess.getres((Integer)args[1]);
-		actions[n] = res;
-		dyn[n] = ((Integer)args[2]) != 0;
-	    } else {
-		actions[n] = null;
-	    }
-	} else if(msg == "use") {
-	    this.use = (Integer)args[0];
-	} else if(msg == "used") {
-	} else if(msg == "dropped") {
-	} else {
-	    super.uimsg(msg, args);
-	}
+        if (msg == "act") {
+            int n = (Integer) args[0];
+            if (args.length > 1) {
+                Indir<Resource> res = ui.sess.getres((Integer) args[1]);
+                actions[n] = res;
+                dyn[n] = ((Integer) args[2]) != 0;
+            } else {
+                actions[n] = null;
+            }
+        } else if (msg == "use") {
+            this.use = (Integer) args[0];
+        } else if (msg == "used") {
+        } else if (msg == "dropped") {
+        } else {
+            super.uimsg(msg, args);
+        }
     }
 
     public boolean globtype(char key, KeyEvent ev) {
-	int c = ev.getKeyChar();
-	if((key == 0) && (c >= KeyEvent.VK_1) && (key < KeyEvent.VK_1 + actions.length)) {
-	    int n = c - KeyEvent.VK_1;
-	    if((ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
-		wdgmsg("drop", n);
-	    else
-		wdgmsg("use", n);
-	    return(true);
-	}
-	return(super.globtype(key, ev));
+        int c = ev.getKeyChar();
+        if ((key == 0) && (c >= KeyEvent.VK_1) && (key < KeyEvent.VK_1 + actions.length)) {
+            int n = c - KeyEvent.VK_1;
+            if ((ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
+                wdgmsg("drop", n);
+            else
+                wdgmsg("use", n);
+            return (true);
+        }
+        return (super.globtype(key, ev));
     }
 }

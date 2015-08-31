@@ -30,18 +30,18 @@ import javax.media.opengl.*;
 
 public class Camera extends Transform {
     private Matrix4f bk;
-    
+
     public Camera(Matrix4f xf) {
-	super(xf);
+        super(xf);
     }
-    
+
     public void apply(GOut g) {
     }
-    
+
     public void unapply(GOut g) {
     }
-    
+
     public void prep(Buffer b) {
-	b.put(PView.cam, this);
+        b.put(PView.cam, this);
     }
 }

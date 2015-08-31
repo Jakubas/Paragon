@@ -29,7 +29,9 @@ package haven;
 import java.awt.image.*;
 import java.nio.*;
 import javax.media.opengl.*;
+
 import haven.TexGL.TexOb;
+
 import static haven.GOut.checkerr;
 
 public abstract class Tex3D {
@@ -37,37 +39,37 @@ public abstract class Tex3D {
     public final int w, h, d;
 
     public Tex3D(int w, int h, int d) {
-	this.w = w;
-	this.h = h;
-	this.d = d;
+        this.w = w;
+        this.h = h;
+        this.d = d;
     }
 
     protected abstract void fill(GOut g);
 
     private void create(GOut g) {
-	BGL gl = g.gl;
-	t = new TexOb(g);
-	gl.glBindTexture(GL2.GL_TEXTURE_3D, t);
-	fill(g);
-	checkerr(gl);
+        BGL gl = g.gl;
+        t = new TexOb(g);
+        gl.glBindTexture(GL2.GL_TEXTURE_3D, t);
+        fill(g);
+        checkerr(gl);
     }
 
     public TexOb glid(GOut g) {
-	synchronized(this) {
-	    if((t != null) && (t.cur != g.curgl))
-		dispose();
-	    if(t == null)
-		create(g);
-	    return(t);
-	}
+        synchronized (this) {
+            if ((t != null) && (t.cur != g.curgl))
+                dispose();
+            if (t == null)
+                create(g);
+            return (t);
+        }
     }
 
     public void dispose() {
-	synchronized(this) {
-	    if(t != null) {
-		t.dispose();
-		t = null;
-	    }
-	}
+        synchronized (this) {
+            if (t != null) {
+                t.dispose();
+                t = null;
+            }
+        }
     }
 }

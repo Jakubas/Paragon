@@ -27,11 +27,14 @@
 package haven.resutil;
 
 import java.util.*;
+
 import haven.*;
 import haven.glsl.*;
+
 import static haven.glsl.Cons.*;
 import static haven.glsl.Function.PDir.*;
 import static haven.glsl.Type.*;
+
 import haven.glsl.ValBlock.Value;
 
 @Material.ResName("texrot")
@@ -40,36 +43,40 @@ public class TexAnim extends GLState {
     public final Coord3f ax;
 
     public TexAnim(Coord3f ax) {
-	this.ax = ax;
+        this.ax = ax;
     }
 
     public TexAnim(Resource res, Object... args) {
-	this(new Coord3f(((Number)args[0]).floatValue(), ((Number)args[1]).floatValue(), 0));
+        this(new Coord3f(((Number) args[0]).floatValue(), ((Number) args[1]).floatValue(), 0));
     }
 
     private static final Uniform cax = new Uniform(VEC2);
     private static final ShaderMacro[] shaders = {new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		Tex2D.rtexcoord.value(prog.vctx).mod(new Macro1<Expression>() {
-			public Expression expand(Expression in) {
-			    return(add(in, mul(cax.ref(), MiscLib.time.ref())));
-			}
-		    }, 0);
-	    }
-	}};
-    public ShaderMacro[] shaders() {return(shaders);}
+        public void modify(ProgramContext prog) {
+            Tex2D.rtexcoord.value(prog.vctx).mod(new Macro1<Expression>() {
+                public Expression expand(Expression in) {
+                    return (add(in, mul(cax.ref(), MiscLib.time.ref())));
+                }
+            }, 0);
+        }
+    }};
+
+    public ShaderMacro[] shaders() {
+        return (shaders);
+    }
 
     public void reapply(GOut g) {
-	g.gl.glUniform2f(g.st.prog.uniform(cax), ax.x, ax.y);
+        g.gl.glUniform2f(g.st.prog.uniform(cax), ax.x, ax.y);
     }
 
     public void apply(GOut g) {
-	reapply(g);
+        reapply(g);
     }
 
-    public void unapply(GOut g) {}
+    public void unapply(GOut g) {
+    }
 
     public void prep(Buffer buf) {
-	buf.put(slot, this);
+        buf.put(slot, this);
     }
 }

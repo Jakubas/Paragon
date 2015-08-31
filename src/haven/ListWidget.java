@@ -31,15 +31,17 @@ public abstract class ListWidget<T> extends Widget {
     public T sel;
 
     public ListWidget(Coord sz, int itemh) {
-	super(sz);
-	this.itemh = itemh;
+        super(sz);
+        this.itemh = itemh;
     }
 
     protected abstract T listitem(int i);
+
     protected abstract int listitems();
+
     protected abstract void drawitem(GOut g, T item, int i);
 
     public void change(T item) {
-	this.sel = item;
+        this.sel = item;
     }
 }

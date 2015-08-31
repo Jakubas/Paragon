@@ -33,22 +33,22 @@ public class DirCam extends Camera {
     Matrix4f mat = compute(Coord3f.o, defdir);
 
     public DirCam() {
-	super(Matrix4f.identity());
+        super(Matrix4f.identity());
     }
 
     public void update(Coord3f base, Coord3f dir) {
-	mat = compute(base, dir);
+        mat = compute(base, dir);
     }
 
     public Matrix4f fin(Matrix4f p) {
-	update(mat);
-	return(super.fin(p));
+        update(mat);
+        return (super.fin(p));
     }
-    
+
     public static Matrix4f compute(Coord3f base, Coord3f dir) {
-	Coord3f diff = defdir.cmul(dir);
-	float a = (float)Math.asin(diff.abs());
-	return(makerot(new Matrix4f(), diff, -a)
-	       .mul1(makexlate(new Matrix4f(), base.inv())));
+        Coord3f diff = defdir.cmul(dir);
+        float a = (float) Math.asin(diff.abs());
+        return (makerot(new Matrix4f(), diff, -a)
+                .mul1(makexlate(new Matrix4f(), base.inv())));
     }
 }

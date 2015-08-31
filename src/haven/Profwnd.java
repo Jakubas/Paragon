@@ -33,65 +33,65 @@ public class Profwnd extends Window {
     public double mt = 0.05;
     private static final int h = 80;
     private final TexIM tex;
-    
+
     public Profwnd(Profile prof, String title) {
-	super(new Coord(prof.hist.length, h), title);
-	this.prof = prof;
-	this.tex = new TexIM(new Coord(prof.hist.length, h));
+        super(new Coord(prof.hist.length, h), title);
+        this.prof = prof;
+        this.tex = new TexIM(new Coord(prof.hist.length, h));
     }
-    
+
     public void cdraw(GOut g) {
-	double[] ttl = new double[prof.hist.length];
-	for(int i = 0; i < prof.hist.length; i++) {
-	    if(prof.hist[i] != null)
-		ttl[i] = prof.hist[i].total;
-	}
-	Arrays.sort(ttl);
-	int ti = ttl.length;
-	for(int i = 0; i < ttl.length; i++) {
-	    if(ttl[i] != 0) {
-		ti = ttl.length - ((ttl.length - i) / 10);
-		break;
-	    }
-	}
-	if(ti < ttl.length)
-	    mt = ttl[ti];
-	else
-	    mt = 0.05;
-	prof.draw(tex, mt / h);
-	g.image(tex, Coord.z);
+        double[] ttl = new double[prof.hist.length];
+        for (int i = 0; i < prof.hist.length; i++) {
+            if (prof.hist[i] != null)
+                ttl[i] = prof.hist[i].total;
+        }
+        Arrays.sort(ttl);
+        int ti = ttl.length;
+        for (int i = 0; i < ttl.length; i++) {
+            if (ttl[i] != 0) {
+                ti = ttl.length - ((ttl.length - i) / 10);
+                break;
+            }
+        }
+        if (ti < ttl.length)
+            mt = ttl[ti];
+        else
+            mt = 0.05;
+        prof.draw(tex, mt / h);
+        g.image(tex, Coord.z);
     }
 
     public boolean type(char k, java.awt.event.KeyEvent ev) {
-	if(k == 'd') {
-	    prof.dump(System.err);
-	    return(true);
-	}
-	return(super.type(k, ev));
+        if (k == 'd') {
+            prof.dump(System.err);
+            return (true);
+        }
+        return (super.type(k, ev));
     }
 
     public String tooltip(Coord c, Widget prev) {
-	c = xlate(c, false);
-	if((c.x >= 0) && (c.x < prof.hist.length) && (c.y >= 0) && (c.y < h)) {
-	    int x = c.x;
-	    int y = c.y;
-	    double t = (h - y) * (mt / h);
-	    Profile.Frame f = prof.hist[x];
-	    if(f != null) {
-		for(int i = 0; i < f.prt.length; i++) {
-		    if((t -= f.prt[i]) < 0)
-			return(String.format("%.2f ms, %s: %.2f ms", f.total * 1000, f.nm[i], f.prt[i] * 1000));
-		}
-	    }
-	}
-	return("");
+        c = xlate(c, false);
+        if ((c.x >= 0) && (c.x < prof.hist.length) && (c.y >= 0) && (c.y < h)) {
+            int x = c.x;
+            int y = c.y;
+            double t = (h - y) * (mt / h);
+            Profile.Frame f = prof.hist[x];
+            if (f != null) {
+                for (int i = 0; i < f.prt.length; i++) {
+                    if ((t -= f.prt[i]) < 0)
+                        return (String.format("%.2f ms, %s: %.2f ms", f.total * 1000, f.nm[i], f.prt[i] * 1000));
+                }
+            }
+        }
+        return ("");
     }
-    
+
     public void wdgmsg(Widget sender, String msg, Object... args) {
-	if(msg.equals("close")) {
-	    ui.destroy(this);
-	} else {
-	    super.wdgmsg(sender, msg, args);
-	}
+        if (msg.equals("close")) {
+            ui.destroy(this);
+        } else {
+            super.wdgmsg(sender, msg, args);
+        }
     }
 }

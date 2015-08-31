@@ -42,220 +42,231 @@ public class Makewindow extends Widget {
 
     @RName("make")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new Makewindow((String)args[0]));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new Makewindow((String) args[0]));
+        }
     }
-    
+
     public class Spec implements GSprite.Owner {
-	public Indir<Resource> res;
-	public MessageBuf sdt;
-	public Tex num;
-	private GSprite spr;
+        public Indir<Resource> res;
+        public MessageBuf sdt;
+        public Tex num;
+        private GSprite spr;
 
-	public Spec(Indir<Resource> res, Message sdt, int num) {
-	    this.res = res;
-	    this.sdt = new MessageBuf(sdt);
-	    if(num >= 0)
-		this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE).img, Utils.contrast(Color.WHITE)));
-	    else
-		this.num = null;
-	}
+        public Spec(Indir<Resource> res, Message sdt, int num) {
+            this.res = res;
+            this.sdt = new MessageBuf(sdt);
+            if (num >= 0)
+                this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE).img, Utils.contrast(Color.WHITE)));
+            else
+                this.num = null;
+        }
 
-	public void draw(GOut g) {
-	    try {
-		if(spr == null)
-		    spr = GSprite.create(this, res.get(), sdt.clone());
-		spr.draw(g);
-	    } catch(Loading e) {}
-	    if(num != null)
-		g.aimage(num, Inventory.sqsz, 1.0, 1.0);
-	}
+        public void draw(GOut g) {
+            try {
+                if (spr == null)
+                    spr = GSprite.create(this, res.get(), sdt.clone());
+                spr.draw(g);
+            } catch (Loading e) {
+            }
+            if (num != null)
+                g.aimage(num, Inventory.sqsz, 1.0, 1.0);
+        }
 
-	private Random rnd = null;
-	public Random mkrandoom() {
-	    if(rnd == null)
-		rnd = new Random();
-	    return(rnd);
-	}
-	public Resource getres() {return(res.get());}
-	public Glob glob() {return(ui.sess.glob);}
+        private Random rnd = null;
+
+        public Random mkrandoom() {
+            if (rnd == null)
+                rnd = new Random();
+            return (rnd);
+        }
+
+        public Resource getres() {
+            return (res.get());
+        }
+
+        public Glob glob() {
+            return (ui.sess.glob);
+        }
     }
-	
+
     public void tick(double dt) {
-	for(Spec s : inputs) {
-	    if(s.spr != null)
-		s.spr.tick(dt);
-	}
-	for(Spec s : outputs) {
-	    if(s.spr != null)
-		s.spr.tick(dt);
-	}
+        for (Spec s : inputs) {
+            if (s.spr != null)
+                s.spr.tick(dt);
+        }
+        for (Spec s : outputs) {
+            if (s.spr != null)
+                s.spr.tick(dt);
+        }
     }
 
     public Makewindow(String rcpnm) {
-	add(new Label("Input:"), new Coord(0, 8));
-	add(new Label("Result:"), new Coord(0, outy + 8));
-	obtn = add(new Button(85, "Craft"), new Coord(265, 75));
-	cbtn = add(new Button(85, "Craft All"), new Coord(360, 75));
-	pack();
-	adda(new Label(rcpnm, nmf), sz.x, 0, 1, 0);
+        add(new Label("Input:"), new Coord(0, 8));
+        add(new Label("Result:"), new Coord(0, outy + 8));
+        obtn = add(new Button(85, "Craft"), new Coord(265, 75));
+        cbtn = add(new Button(85, "Craft All"), new Coord(360, 75));
+        pack();
+        adda(new Label(rcpnm, nmf), sz.x, 0, 1, 0);
     }
-	
+
     public void uimsg(String msg, Object... args) {
-	if(msg == "inpop") {
-	    List<Spec> inputs = new LinkedList<Spec>();
-	    for(int i = 0; i < args.length;) {
-		int resid = (Integer)args[i++];
-		Message sdt = (args[i] instanceof byte[])?new MessageBuf((byte[])args[i++]):MessageBuf.nil;
-		int num = (Integer)args[i++];
-		inputs.add(new Spec(ui.sess.getres(resid), sdt, num));
-	    }
-	    this.inputs = inputs;
-	} else if(msg == "opop") {
-	    List<Spec> outputs = new LinkedList<Spec>();
-	    for(int i = 0; i < args.length;) {
-		int resid = (Integer)args[i++];
-		Message sdt = (args[i] instanceof byte[])?new MessageBuf((byte[])args[i++]):MessageBuf.nil;
-		int num = (Integer)args[i++];
-		outputs.add(new Spec(ui.sess.getres(resid), sdt, num));
-	    }
-	    this.outputs = outputs;
-	} else if(msg == "qmod") {
-	    List<Indir<Resource>> qmod = new ArrayList<Indir<Resource>>();
-	    for(Object arg : args)
-		qmod.add(ui.sess.getres((Integer)arg));
-	    this.qmod = qmod;
-	} else {
-	    super.uimsg(msg, args);
-	}
+        if (msg == "inpop") {
+            List<Spec> inputs = new LinkedList<Spec>();
+            for (int i = 0; i < args.length; ) {
+                int resid = (Integer) args[i++];
+                Message sdt = (args[i] instanceof byte[]) ? new MessageBuf((byte[]) args[i++]) : MessageBuf.nil;
+                int num = (Integer) args[i++];
+                inputs.add(new Spec(ui.sess.getres(resid), sdt, num));
+            }
+            this.inputs = inputs;
+        } else if (msg == "opop") {
+            List<Spec> outputs = new LinkedList<Spec>();
+            for (int i = 0; i < args.length; ) {
+                int resid = (Integer) args[i++];
+                Message sdt = (args[i] instanceof byte[]) ? new MessageBuf((byte[]) args[i++]) : MessageBuf.nil;
+                int num = (Integer) args[i++];
+                outputs.add(new Spec(ui.sess.getres(resid), sdt, num));
+            }
+            this.outputs = outputs;
+        } else if (msg == "qmod") {
+            List<Indir<Resource>> qmod = new ArrayList<Indir<Resource>>();
+            for (Object arg : args)
+                qmod.add(ui.sess.getres((Integer) arg));
+            this.qmod = qmod;
+        } else {
+            super.uimsg(msg, args);
+        }
     }
-	
+
     public void draw(GOut g) {
-	Coord c = new Coord(xoff, 0);
-	for(Spec s : inputs) {
-	    GOut sg = g.reclip(c, Inventory.invsq.sz());
-	    sg.image(Inventory.invsq, Coord.z);
-	    s.draw(sg);
-	    c = c.add(Inventory.sqsz.x, 0);
-	}
-	if(qmod != null) {
-	    g.image(qmodl.tex(), new Coord(0, qmy + 4));
-	    c = new Coord(xoff, qmy);
-	    for(Indir<Resource> qm : qmod) {
-		try {
-		    Tex t = qm.get().layer(Resource.imgc).tex();
-		    g.image(t, c);
-		    c = c.add(t.sz().x + 1, 0);
-		} catch(Loading l) {
-		}
-	    }
-	}
-	c = new Coord(xoff, outy);
-	for(Spec s : outputs) {
-	    GOut sg = g.reclip(c, Inventory.invsq.sz());
-	    sg.image(Inventory.invsq, Coord.z);
-	    s.draw(sg);
-	    c = c.add(Inventory.sqsz.x, 0);
-	}
-	super.draw(g);
+        Coord c = new Coord(xoff, 0);
+        for (Spec s : inputs) {
+            GOut sg = g.reclip(c, Inventory.invsq.sz());
+            sg.image(Inventory.invsq, Coord.z);
+            s.draw(sg);
+            c = c.add(Inventory.sqsz.x, 0);
+        }
+        if (qmod != null) {
+            g.image(qmodl.tex(), new Coord(0, qmy + 4));
+            c = new Coord(xoff, qmy);
+            for (Indir<Resource> qm : qmod) {
+                try {
+                    Tex t = qm.get().layer(Resource.imgc).tex();
+                    g.image(t, c);
+                    c = c.add(t.sz().x + 1, 0);
+                } catch (Loading l) {
+                }
+            }
+        }
+        c = new Coord(xoff, outy);
+        for (Spec s : outputs) {
+            GOut sg = g.reclip(c, Inventory.invsq.sz());
+            sg.image(Inventory.invsq, Coord.z);
+            s.draw(sg);
+            c = c.add(Inventory.sqsz.x, 0);
+        }
+        super.draw(g);
     }
-    
+
     private long hoverstart;
     private Resource lasttip;
     private Object stip, ltip;
+
     public Object tooltip(Coord mc, Widget prev) {
-	Resource tres = null;
-	Coord c;
-	if(qmod != null) {
-	    c = new Coord(xoff, qmy);
-	    try {
-		for(Indir<Resource> qm : qmod) {
-		    Tex t = qm.get().layer(Resource.imgc).tex();
-		    if(mc.isect(c, t.sz()))
-			return(qm.get().layer(Resource.tooltip).t);
-		    c = c.add(t.sz().x + 1, 0);
-		}
-	    } catch(Loading l) {
-	    }
-	}
-	find: {
-	    c = new Coord(xoff, 0);
-	    for(Spec s : inputs) {
-		if(mc.isect(c, Inventory.invsq.sz())) {
-		    tres = s.res.get();
-		    break find;
-		}
-		c = c.add(31, 0);
-	    }
-	    c = new Coord(xoff, outy);
-	    for(Spec s : outputs) {
-		if(mc.isect(c, Inventory.invsq.sz())) {
-		    tres = s.res.get();
-		    break find;
-		}
-		c = c.add(31, 0);
-	    }
-	}
-	Resource.Tooltip tt;
-	if((tres == null) || ((tt = tres.layer(Resource.tooltip)) == null))
-	    return(null);
-	if(lasttip != tres) {
-	    lasttip = tres;
-	    stip = ltip = null;
-	}
-	long now = System.currentTimeMillis();
-	boolean sh = true;
-	if(prev != this)
-	    hoverstart = now;
-	else if(now - hoverstart > 1000)
-	    sh = false;
-	if(sh) {
-	    if(stip == null)
-		stip = Text.render(tt.t);
-	    return(stip);
-	} else {
-	    if(ltip == null) {
-		String t = tt.t;
-		Resource.Pagina p = tres.layer(Resource.pagina);
-		if(p != null)
-		    t += "\n\n" + tres.layer(Resource.pagina).text;
-		ltip = RichText.render(t, 300);
-	    }
-	    return(ltip);
-	}
+        Resource tres = null;
+        Coord c;
+        if (qmod != null) {
+            c = new Coord(xoff, qmy);
+            try {
+                for (Indir<Resource> qm : qmod) {
+                    Tex t = qm.get().layer(Resource.imgc).tex();
+                    if (mc.isect(c, t.sz()))
+                        return (qm.get().layer(Resource.tooltip).t);
+                    c = c.add(t.sz().x + 1, 0);
+                }
+            } catch (Loading l) {
+            }
+        }
+        find:
+        {
+            c = new Coord(xoff, 0);
+            for (Spec s : inputs) {
+                if (mc.isect(c, Inventory.invsq.sz())) {
+                    tres = s.res.get();
+                    break find;
+                }
+                c = c.add(31, 0);
+            }
+            c = new Coord(xoff, outy);
+            for (Spec s : outputs) {
+                if (mc.isect(c, Inventory.invsq.sz())) {
+                    tres = s.res.get();
+                    break find;
+                }
+                c = c.add(31, 0);
+            }
+        }
+        Resource.Tooltip tt;
+        if ((tres == null) || ((tt = tres.layer(Resource.tooltip)) == null))
+            return (null);
+        if (lasttip != tres) {
+            lasttip = tres;
+            stip = ltip = null;
+        }
+        long now = System.currentTimeMillis();
+        boolean sh = true;
+        if (prev != this)
+            hoverstart = now;
+        else if (now - hoverstart > 1000)
+            sh = false;
+        if (sh) {
+            if (stip == null)
+                stip = Text.render(tt.t);
+            return (stip);
+        } else {
+            if (ltip == null) {
+                String t = tt.t;
+                Resource.Pagina p = tres.layer(Resource.pagina);
+                if (p != null)
+                    t += "\n\n" + tres.layer(Resource.pagina).text;
+                ltip = RichText.render(t, 300);
+            }
+            return (ltip);
+        }
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-	if(sender == obtn) {
-	    if(msg == "activate")
-		wdgmsg("make", 0);
-	    return;
-	}
-	if(sender == cbtn) {
-	    if(msg == "activate")
-		wdgmsg("make", 1);
-	    return;
-	}
-	super.wdgmsg(sender, msg, args);
+        if (sender == obtn) {
+            if (msg == "activate")
+                wdgmsg("make", 0);
+            return;
+        }
+        if (sender == cbtn) {
+            if (msg == "activate")
+                wdgmsg("make", 1);
+            return;
+        }
+        super.wdgmsg(sender, msg, args);
     }
-    
+
     public boolean globtype(char ch, java.awt.event.KeyEvent ev) {
-	if(ch == '\n') {
-	    wdgmsg("make", ui.modctrl?1:0);
-	    return(true);
-	}
-	return(super.globtype(ch, ev));
+        if (ch == '\n') {
+            wdgmsg("make", ui.modctrl ? 1 : 0);
+            return (true);
+        }
+        return (super.globtype(ch, ev));
     }
-    
+
     public static class MakePrep extends ItemInfo implements GItem.ColorInfo {
-	private final static Color olcol = new Color(0, 255, 0, 64);
-	public MakePrep(Owner owner) {
-	    super(owner);
-	}
-	
-	public Color olcol() {
-	    return(olcol);
-	}
+        private final static Color olcol = new Color(0, 255, 0, 64);
+
+        public MakePrep(Owner owner) {
+            super(owner);
+        }
+
+        public Color olcol() {
+            return (olcol);
+        }
     }
 }

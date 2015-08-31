@@ -30,6 +30,7 @@ import java.util.*;
 import java.awt.image.*;
 import java.nio.ByteBuffer;
 import javax.media.opengl.*;
+
 import haven.Defer.Future;
 
 public abstract class TexL extends TexGL {
@@ -39,97 +40,97 @@ public abstract class TexL extends TexGL {
     protected abstract BufferedImage fill();
 
     public TexL(Coord sz) {
-	super(sz);
-	if((sz.x != nextp2(sz.x)) || (sz.y != nextp2(sz.y)))
-	    throw(new RuntimeException("TexL does not support non-power-of-two textures"));
+        super(sz);
+        if ((sz.x != nextp2(sz.x)) || (sz.y != nextp2(sz.y)))
+            throw (new RuntimeException("TexL does not support non-power-of-two textures"));
     }
 
     public void mipmap(Mipmapper mipmap) {
-	this.mipmap = mipmap;
-	dispose();
+        this.mipmap = mipmap;
+        dispose();
     }
 
     private class Prepared {
-	BufferedImage img;
-	byte[][] data;
-	int ifmt;
+        BufferedImage img;
+        byte[][] data;
+        int ifmt;
 
-	private Prepared() {
-	    img = fill();
-	    if(!Utils.imgsz(img).equals(dim))
-		throw(new RuntimeException("Generated TexL image from " + TexL.this + " does not match declared size"));
-	    ifmt = TexI.detectfmt(img);
-	    LinkedList<byte[]> data = new LinkedList<byte[]>();
-	    if((ifmt == GL.GL_RGB) || (ifmt == GL2.GL_BGR)) {
-		if((mipmap != null) && !(mipmap instanceof Mipmapper.Mipmapper3))
-		    ifmt = -1;
-	    }
-	    if((ifmt == GL.GL_RGB) || (ifmt == GL2.GL_BGR)) {
-		byte[] pixels = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
-		data.add(pixels);
-		if(mipmap != null) {
-		    Coord msz = dim;
-		    Mipmapper.Mipmapper3 alg = (Mipmapper.Mipmapper3)mipmap;
-		    while((msz.x > 1) || (msz.y > 1)) {
-			pixels = alg.gen3(msz, pixels, ifmt);
-			data.add(pixels);
-			msz = Mipmapper.nextsz(msz);
-		    }
-		}
-	    } else {
-		byte[] pixels;
-		if((ifmt == GL.GL_RGBA) || (ifmt == GL.GL_BGRA)) {
-		    pixels = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
-		} else {
-		    pixels = TexI.convert(img, dim);
-		    ifmt = GL.GL_RGBA;
-		}
-		data.add(pixels);
-		if(mipmap != null) {
-		    Coord msz = dim;
-		    while((msz.x > 1) || (msz.y > 1)) {
-			pixels = mipmap.gen4(msz, pixels, ifmt);
-			data.add(pixels);
-			msz = Mipmapper.nextsz(msz);
-		    }
-		}
-	    }
-	    this.data = data.toArray(new byte[0][]);
-	}
+        private Prepared() {
+            img = fill();
+            if (!Utils.imgsz(img).equals(dim))
+                throw (new RuntimeException("Generated TexL image from " + TexL.this + " does not match declared size"));
+            ifmt = TexI.detectfmt(img);
+            LinkedList<byte[]> data = new LinkedList<byte[]>();
+            if ((ifmt == GL.GL_RGB) || (ifmt == GL2.GL_BGR)) {
+                if ((mipmap != null) && !(mipmap instanceof Mipmapper.Mipmapper3))
+                    ifmt = -1;
+            }
+            if ((ifmt == GL.GL_RGB) || (ifmt == GL2.GL_BGR)) {
+                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                data.add(pixels);
+                if (mipmap != null) {
+                    Coord msz = dim;
+                    Mipmapper.Mipmapper3 alg = (Mipmapper.Mipmapper3) mipmap;
+                    while ((msz.x > 1) || (msz.y > 1)) {
+                        pixels = alg.gen3(msz, pixels, ifmt);
+                        data.add(pixels);
+                        msz = Mipmapper.nextsz(msz);
+                    }
+                }
+            } else {
+                byte[] pixels;
+                if ((ifmt == GL.GL_RGBA) || (ifmt == GL.GL_BGRA)) {
+                    pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                } else {
+                    pixels = TexI.convert(img, dim);
+                    ifmt = GL.GL_RGBA;
+                }
+                data.add(pixels);
+                if (mipmap != null) {
+                    Coord msz = dim;
+                    while ((msz.x > 1) || (msz.y > 1)) {
+                        pixels = mipmap.gen4(msz, pixels, ifmt);
+                        data.add(pixels);
+                        msz = Mipmapper.nextsz(msz);
+                    }
+                }
+            }
+            this.data = data.toArray(new byte[0][]);
+        }
     }
 
     private Future<Prepared> prepare() {
-	return(Defer.later(new Defer.Callable<Prepared>() {
-		    public Prepared call() {
-			Prepared ret = new Prepared();
-			return(ret);
-		    }
+        return (Defer.later(new Defer.Callable<Prepared>() {
+            public Prepared call() {
+                Prepared ret = new Prepared();
+                return (ret);
+            }
 
-		    public String toString() {
-			String nm = loadname();
-			if(nm != null)
-			    return("Finalizing " + nm + "...");
-			else
-			    return("Finalizing texture...");
-		    }
-		}));
+            public String toString() {
+                String nm = loadname();
+                if (nm != null)
+                    return ("Finalizing " + nm + "...");
+                else
+                    return ("Finalizing texture...");
+            }
+        }));
     }
 
     public String loadname() {
-	return(null);
+        return (null);
     }
 
     protected void fill(GOut g) {
-	if(decode == null)
-	    decode = prepare();
-	Prepared prep = decode.get();
-	decode = null;
-	BGL gl = g.gl;
-	gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
-	Coord cdim = tdim;
-	for(int i = 0; i < prep.data.length; i++) {
-	    gl.glTexImage2D(GL.GL_TEXTURE_2D, i, GL.GL_RGBA, cdim.x, cdim.y, 0, prep.ifmt, GL.GL_UNSIGNED_BYTE, ByteBuffer.wrap(prep.data[i]));
-	    cdim = Mipmapper.nextsz(cdim);
-	}
+        if (decode == null)
+            decode = prepare();
+        Prepared prep = decode.get();
+        decode = null;
+        BGL gl = g.gl;
+        gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+        Coord cdim = tdim;
+        for (int i = 0; i < prep.data.length; i++) {
+            gl.glTexImage2D(GL.GL_TEXTURE_2D, i, GL.GL_RGBA, cdim.x, cdim.y, 0, prep.ifmt, GL.GL_UNSIGNED_BYTE, ByteBuffer.wrap(prep.data[i]));
+            cdim = Mipmapper.nextsz(cdim);
+        }
     }
 }

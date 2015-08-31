@@ -31,80 +31,84 @@ public abstract class Variable {
     public final Symbol name;
 
     public Variable(Type type, Symbol name) {
-	this.type = type;
-	this.name = name;
+        this.type = type;
+        this.name = name;
     }
 
     public class Ref extends LValue {
-	public void walk(Walker w) {}
+        public void walk(Walker w) {
+        }
 
-	public void output(Output out) {
-	    out.write(name);
-	}
+        public void output(Output out) {
+            out.write(name);
+        }
     }
 
     public Ref ref() {
-	return(new Ref());
+        return (new Ref());
     }
 
     public static class Implicit extends Variable {
-	public Implicit(Type type, Symbol name) {
-	    super(type, name);
-	}
+        public Implicit(Type type, Symbol name) {
+            super(type, name);
+        }
     }
 
     public static class Global extends Variable {
-	public Global(Type type, Symbol name) {
-	    super(type, name);
-	}
+        public Global(Type type, Symbol name) {
+            super(type, name);
+        }
 
-	public Global(Type type) {
-	    super(type, new Symbol.Gen());
-	}
+        public Global(Type type) {
+            super(type, new Symbol.Gen());
+        }
 
-	private static final Object ppid = new PostProc.AutoID("vardef", 10000);
-	public class Ref extends Variable.Ref implements PostProc.Processed {
-	    public void process(PostProc proc) {
-		use(proc.ctx);
-	    }
+        private static final Object ppid = new PostProc.AutoID("vardef", 10000);
 
-	    public Object ppid() {
-		return(ppid);
-	    }
+        public class Ref extends Variable.Ref implements PostProc.Processed {
+            public void process(PostProc proc) {
+                use(proc.ctx);
+            }
 
-	    public void walk(Walker w) {}
-	}
+            public Object ppid() {
+                return (ppid);
+            }
 
-	public Ref ref() {
-	    return(new Ref());
-	}
+            public void walk(Walker w) {
+            }
+        }
 
-	public boolean defined(Context ctx) {
-	    for(Toplevel tl : ctx.vardefs) {
-		if((tl instanceof Definition) && (((Definition)tl).var() == this))
-		    return(true);
-	    }
-	    return(false);
-	}
+        public Ref ref() {
+            return (new Ref());
+        }
 
-	public void use(Context ctx) {
-	    if(!defined(ctx))
-		ctx.vardefs.add(new Definition());
-	}
+        public boolean defined(Context ctx) {
+            for (Toplevel tl : ctx.vardefs) {
+                if ((tl instanceof Definition) && (((Definition) tl).var() == this))
+                    return (true);
+            }
+            return (false);
+        }
 
-	public class Definition extends Toplevel {
-	    public void walk(Walker w) {}
+        public void use(Context ctx) {
+            if (!defined(ctx))
+                ctx.vardefs.add(new Definition());
+        }
 
-	    public void output(Output out) {
-		out.write(type.name(out.ctx));
-		out.write(" ");
-		out.write(name);
-		out.write(";\n");
-	    }
+        public class Definition extends Toplevel {
+            public void walk(Walker w) {
+            }
 
-	    private Global var() {
-		return(Global.this);
-	    }
-	}
+            public void output(Output out) {
+                out.write(type.name(out.ctx));
+                out.write(" ");
+                out.write(name);
+                out.write(";\n");
+            }
+
+            private Global var() {
+                return (Global.this);
+            }
+        }
     }
 }

@@ -29,8 +29,10 @@ package haven;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
+
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
+
 import java.util.*;
 
 public class MenuGrid extends Widget {
@@ -46,322 +48,325 @@ public class MenuGrid extends Widget {
     private int pagseq = 0;
     private boolean loading = true;
     private Map<Character, Pagina> hotmap = new TreeMap<Character, Pagina>();
-	
+
     @RName("scm")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new MenuGrid());
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new MenuGrid());
+        }
     }
-	
+
     public class PaginaException extends RuntimeException {
-	public Pagina pag;
-	
-	public PaginaException(Pagina p) {
-	    super("Invalid pagina: " + p.res);
-	    pag = p;
-	}
+        public Pagina pag;
+
+        public PaginaException(Pagina p) {
+            super("Invalid pagina: " + p.res);
+            pag = p;
+        }
     }
 
     private boolean cons(Pagina p, Collection<Pagina> buf) {
-	Pagina[] cp = new Pagina[0];
-	Collection<Pagina> open, close = new HashSet<Pagina>();
-	synchronized(ui.sess.glob.paginae) {
-	    open = new LinkedList<Pagina>();
-	    for(Pagina pag : ui.sess.glob.paginae) {
-		if(pag.newp == 2) {
-		    pag.newp = 0;
-		    pag.fstart = 0;
-		}
-		open.add(pag);
-	    }
-	    for(Pagina pag : ui.sess.glob.pmap.values()) {
-		if(pag.newp == 2) {
-		    pag.newp = 0;
-		    pag.fstart = 0;
-		}
-	    }
-	}
-	boolean ret = true;
-	while(!open.isEmpty()) {
-	    Iterator<Pagina> iter = open.iterator();
-	    Pagina pag = iter.next();
-	    iter.remove();
-	    try {
-		AButton ad = pag.act();
-		if(ad == null)
-		    throw(new PaginaException(pag));
-		Pagina parent = paginafor(ad.parent);
-		if((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
-		    parent.newp = 2;
-		    parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
-		}
-		if(parent == p)
-		    buf.add(pag);
-		else if((parent != null) && !close.contains(parent) && !open.contains(parent))
-		    open.add(parent);
-		close.add(pag);
-	    } catch(Loading e) {
-		ret = false;
-	    }
-	}
-	return(ret);
+        Pagina[] cp = new Pagina[0];
+        Collection<Pagina> open, close = new HashSet<Pagina>();
+        synchronized (ui.sess.glob.paginae) {
+            open = new LinkedList<Pagina>();
+            for (Pagina pag : ui.sess.glob.paginae) {
+                if (pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+                open.add(pag);
+            }
+            for (Pagina pag : ui.sess.glob.pmap.values()) {
+                if (pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+            }
+        }
+        boolean ret = true;
+        while (!open.isEmpty()) {
+            Iterator<Pagina> iter = open.iterator();
+            Pagina pag = iter.next();
+            iter.remove();
+            try {
+                AButton ad = pag.act();
+                if (ad == null)
+                    throw (new PaginaException(pag));
+                Pagina parent = paginafor(ad.parent);
+                if ((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
+                    parent.newp = 2;
+                    parent.fstart = (parent.fstart == 0) ? pag.fstart : Math.min(parent.fstart, pag.fstart);
+                }
+                if (parent == p)
+                    buf.add(pag);
+                else if ((parent != null) && !close.contains(parent) && !open.contains(parent))
+                    open.add(parent);
+                close.add(pag);
+            } catch (Loading e) {
+                ret = false;
+            }
+        }
+        return (ret);
     }
-	
+
     public MenuGrid() {
-	super(bgsz.mul(gsz).add(1, 1));
+        super(bgsz.mul(gsz).add(1, 1));
     }
-	
+
     private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
-	public int compare(Pagina a, Pagina b) {
-	    AButton aa = a.act(), ab = b.act();
-	    if((aa.ad.length == 0) && (ab.ad.length > 0))
-		return(-1);
-	    if((aa.ad.length > 0) && (ab.ad.length == 0))
-		return(1);
-	    return(aa.name.compareTo(ab.name));
-	}
+        public int compare(Pagina a, Pagina b) {
+            AButton aa = a.act(), ab = b.act();
+            if ((aa.ad.length == 0) && (ab.ad.length > 0))
+                return (-1);
+            if ((aa.ad.length > 0) && (ab.ad.length == 0))
+                return (1);
+            return (aa.name.compareTo(ab.name));
+        }
     };
 
     private void updlayout() {
-	synchronized(ui.sess.glob.paginae) {
-	    List<Pagina> cur = new ArrayList<Pagina>();
-	    loading = !cons(this.cur, cur);
-	    Collections.sort(cur, sorter);
-	    int i = curoff;
-	    hotmap.clear();
-	    for(int y = 0; y < gsz.y; y++) {
-		for(int x = 0; x < gsz.x; x++) {
-		    Pagina btn = null;
-		    if((this.cur != null) && (x == gsz.x - 1) && (y == gsz.y - 1)) {
-			btn = bk;
-		    } else if((cur.size() > ((gsz.x * gsz.y) - 1)) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
-			btn = next;
-		    } else if(i < cur.size()) {
-			Resource.AButton ad = cur.get(i).act();
-			if(ad.hk != 0)
-			    hotmap.put(Character.toUpperCase(ad.hk), cur.get(i));
-			btn = cur.get(i++);
-		    }
-		    layout[x][y] = btn;
-		}
-	    }
-	    pagseq = ui.sess.glob.pagseq;
-	}
+        synchronized (ui.sess.glob.paginae) {
+            List<Pagina> cur = new ArrayList<Pagina>();
+            loading = !cons(this.cur, cur);
+            Collections.sort(cur, sorter);
+            int i = curoff;
+            hotmap.clear();
+            for (int y = 0; y < gsz.y; y++) {
+                for (int x = 0; x < gsz.x; x++) {
+                    Pagina btn = null;
+                    if ((this.cur != null) && (x == gsz.x - 1) && (y == gsz.y - 1)) {
+                        btn = bk;
+                    } else if ((cur.size() > ((gsz.x * gsz.y) - 1)) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
+                        btn = next;
+                    } else if (i < cur.size()) {
+                        Resource.AButton ad = cur.get(i).act();
+                        if (ad.hk != 0)
+                            hotmap.put(Character.toUpperCase(ad.hk), cur.get(i));
+                        btn = cur.get(i++);
+                    }
+                    layout[x][y] = btn;
+                }
+            }
+            pagseq = ui.sess.glob.pagseq;
+        }
     }
-	
+
     private static Text rendertt(Resource res, boolean withpg) {
-	Resource.AButton ad = res.layer(Resource.action);
-	Resource.Pagina pg = res.layer(Resource.pagina);
-	String tt = ad.name;
-	int pos = tt.toUpperCase().indexOf(Character.toUpperCase(ad.hk));
-	if(pos >= 0)
-	    tt = tt.substring(0, pos) + "$col[255,255,0]{" + tt.charAt(pos) + "}" + tt.substring(pos + 1);
-	else if(ad.hk != 0)
-	    tt += " [" + ad.hk + "]";
-	if(withpg && (pg != null)) {
-	    tt += "\n\n" + pg.text;
-	}
-	return(ttfnd.render(tt, 300));
+        Resource.AButton ad = res.layer(Resource.action);
+        Resource.Pagina pg = res.layer(Resource.pagina);
+        String tt = ad.name;
+        int pos = tt.toUpperCase().indexOf(Character.toUpperCase(ad.hk));
+        if (pos >= 0)
+            tt = tt.substring(0, pos) + "$col[255,255,0]{" + tt.charAt(pos) + "}" + tt.substring(pos + 1);
+        else if (ad.hk != 0)
+            tt += " [" + ad.hk + "]";
+        if (withpg && (pg != null)) {
+            tt += "\n\n" + pg.text;
+        }
+        return (ttfnd.render(tt, 300));
     }
 
     private static Map<Pagina, Tex> glowmasks = new WeakHashMap<Pagina, Tex>();
+
     private Tex glowmask(Pagina pag) {
-	Tex ret = glowmasks.get(pag);
-	if(ret == null) {
-	    ret = new TexI(PUtils.glowmask(PUtils.glowmask(pag.res().layer(Resource.imgc).img.getRaster()), 4, new Color(32, 255, 32)));
-	    glowmasks.put(pag, ret);
-	}
-	return(ret);
+        Tex ret = glowmasks.get(pag);
+        if (ret == null) {
+            ret = new TexI(PUtils.glowmask(PUtils.glowmask(pag.res().layer(Resource.imgc).img.getRaster()), 4, new Color(32, 255, 32)));
+            glowmasks.put(pag, ret);
+        }
+        return (ret);
     }
+
     public void draw(GOut g) {
-	long now = System.currentTimeMillis();
-	for(int y = 0; y < gsz.y; y++) {
-	    for(int x = 0; x < gsz.x; x++) {
-		Coord p = bgsz.mul(new Coord(x, y));
-		g.image(bg, p);
-		Pagina btn = layout[x][y];
-		if(btn != null) {
-		    Tex btex = btn.img.tex();
-		    g.image(btex, p.add(1, 1));
-		    if(btn.meter > 0) {
-			double m = btn.meter / 1000.0;
-			if(btn.dtime > 0)
-			    m += (1 - m) * (double)(now - btn.gettime) / (double)btn.dtime;
-			m = Utils.clip(m, 0, 1);
-			g.chcolor(255, 255, 255, 128);
-			g.fellipse(p.add(bgsz.div(2)), bgsz.div(2), 90, (int)(90 + (360 * m)));
-			g.chcolor();
-		    }
-		    if(btn.newp != 0) {
-			if(btn.fstart == 0) {
-			    btn.fstart = now;
-			} else {
-			    double ph = ((now - btn.fstart) / 1000.0) - (((x + (y * gsz.x)) * 0.15) % 1.0);
-			    if(ph < 1.25) {
-				g.chcolor(255, 255, 255, (int)(255 * ((Math.cos(ph * Math.PI * 2) * -0.5) + 0.5)));
-				g.image(glowmask(btn), p.sub(4, 4));
-				g.chcolor();
-			    } else {
-				g.chcolor(255, 255, 255, 128);
-				g.image(glowmask(btn), p.sub(4, 4));
-				g.chcolor();
-			    }
-			}
-		    }
-		    if(btn == pressed) {
-			g.chcolor(new Color(0, 0, 0, 128));
-			g.frect(p.add(1, 1), btex.sz());
-			g.chcolor();
-		    }
-		}
-	    }
-	}
-	super.draw(g);
-	if(dragging != null) {
-	    final Tex dt = dragging.img.tex();
-	    ui.drawafter(new UI.AfterDraw() {
-		    public void draw(GOut g) {
-			g.image(dt, ui.mc.add(dt.sz().div(2).inv()));
-		    }
-		});
-	}
+        long now = System.currentTimeMillis();
+        for (int y = 0; y < gsz.y; y++) {
+            for (int x = 0; x < gsz.x; x++) {
+                Coord p = bgsz.mul(new Coord(x, y));
+                g.image(bg, p);
+                Pagina btn = layout[x][y];
+                if (btn != null) {
+                    Tex btex = btn.img.tex();
+                    g.image(btex, p.add(1, 1));
+                    if (btn.meter > 0) {
+                        double m = btn.meter / 1000.0;
+                        if (btn.dtime > 0)
+                            m += (1 - m) * (double) (now - btn.gettime) / (double) btn.dtime;
+                        m = Utils.clip(m, 0, 1);
+                        g.chcolor(255, 255, 255, 128);
+                        g.fellipse(p.add(bgsz.div(2)), bgsz.div(2), 90, (int) (90 + (360 * m)));
+                        g.chcolor();
+                    }
+                    if (btn.newp != 0) {
+                        if (btn.fstart == 0) {
+                            btn.fstart = now;
+                        } else {
+                            double ph = ((now - btn.fstart) / 1000.0) - (((x + (y * gsz.x)) * 0.15) % 1.0);
+                            if (ph < 1.25) {
+                                g.chcolor(255, 255, 255, (int) (255 * ((Math.cos(ph * Math.PI * 2) * -0.5) + 0.5)));
+                                g.image(glowmask(btn), p.sub(4, 4));
+                                g.chcolor();
+                            } else {
+                                g.chcolor(255, 255, 255, 128);
+                                g.image(glowmask(btn), p.sub(4, 4));
+                                g.chcolor();
+                            }
+                        }
+                    }
+                    if (btn == pressed) {
+                        g.chcolor(new Color(0, 0, 0, 128));
+                        g.frect(p.add(1, 1), btex.sz());
+                        g.chcolor();
+                    }
+                }
+            }
+        }
+        super.draw(g);
+        if (dragging != null) {
+            final Tex dt = dragging.img.tex();
+            ui.drawafter(new UI.AfterDraw() {
+                public void draw(GOut g) {
+                    g.image(dt, ui.mc.add(dt.sz().div(2).inv()));
+                }
+            });
+        }
     }
-	
+
     private Pagina curttp = null;
     private boolean curttl = false;
     private Text curtt = null;
     private long hoverstart;
+
     public Object tooltip(Coord c, Widget prev) {
-	Pagina pag = bhit(c);
-	long now = System.currentTimeMillis();
-	if((pag != null) && (pag.act() != null)) {
-	    if(prev != this)
-		hoverstart = now;
-	    boolean ttl = (now - hoverstart) > 500;
-	    if((pag != curttp) || (ttl != curttl)) {
-		curtt = rendertt(pag.res(), ttl);
-		curttp = pag;
-		curttl = ttl;
-	    }
-	    return(curtt);
-	} else {
-	    hoverstart = now;
-	    return("");
-	}
+        Pagina pag = bhit(c);
+        long now = System.currentTimeMillis();
+        if ((pag != null) && (pag.act() != null)) {
+            if (prev != this)
+                hoverstart = now;
+            boolean ttl = (now - hoverstart) > 500;
+            if ((pag != curttp) || (ttl != curttl)) {
+                curtt = rendertt(pag.res(), ttl);
+                curttp = pag;
+                curttl = ttl;
+            }
+            return (curtt);
+        } else {
+            hoverstart = now;
+            return ("");
+        }
     }
 
     private Pagina bhit(Coord c) {
-	Coord bc = c.div(bgsz);
-	if((bc.x >= 0) && (bc.y >= 0) && (bc.x < gsz.x) && (bc.y < gsz.y))
-	    return(layout[bc.x][bc.y]);
-	else
-	    return(null);
+        Coord bc = c.div(bgsz);
+        if ((bc.x >= 0) && (bc.y >= 0) && (bc.x < gsz.x) && (bc.y < gsz.y))
+            return (layout[bc.x][bc.y]);
+        else
+            return (null);
     }
-	
+
     public boolean mousedown(Coord c, int button) {
-	Pagina h = bhit(c);
-	if((button == 1) && (h != null)) {
-	    pressed = h;
-	    grab = ui.grabmouse(this);
-	}
-	return(true);
+        Pagina h = bhit(c);
+        if ((button == 1) && (h != null)) {
+            pressed = h;
+            grab = ui.grabmouse(this);
+        }
+        return (true);
     }
-	
+
     public void mousemove(Coord c) {
-	if((dragging == null) && (pressed != null)) {
-	    Pagina h = bhit(c);
-	    if(h != pressed)
-		dragging = pressed;
-	}
+        if ((dragging == null) && (pressed != null)) {
+            Pagina h = bhit(c);
+            if (h != pressed)
+                dragging = pressed;
+        }
     }
-	
+
     private Pagina paginafor(Resource.Named res) {
-	return(ui.sess.glob.paginafor(res));
+        return (ui.sess.glob.paginafor(res));
     }
 
     private void use(Pagina r, boolean reset) {
-	Collection<Pagina> sub = new LinkedList<Pagina>(),
-	    cur = new LinkedList<Pagina>();
-	cons(r, sub);
-	cons(this.cur, cur);
-	if(sub.size() > 0) {
-	    this.cur = r;
-	    curoff = 0;
-	} else if(r == bk) {
-	    this.cur = paginafor(this.cur.act().parent);
-	    curoff = 0;
-	} else if(r == next) {
-	    if((curoff + 14) >= cur.size())
-		curoff = 0;
-	    else
-		curoff += 14;
-	} else {
-	    r.newp = 0;
-	    wdgmsg("act", (Object[])r.act().ad);
-	    if(reset)
-		this.cur = null;
-	    curoff = 0;
-	}
-	updlayout();
+        Collection<Pagina> sub = new LinkedList<Pagina>(),
+                cur = new LinkedList<Pagina>();
+        cons(r, sub);
+        cons(this.cur, cur);
+        if (sub.size() > 0) {
+            this.cur = r;
+            curoff = 0;
+        } else if (r == bk) {
+            this.cur = paginafor(this.cur.act().parent);
+            curoff = 0;
+        } else if (r == next) {
+            if ((curoff + 14) >= cur.size())
+                curoff = 0;
+            else
+                curoff += 14;
+        } else {
+            r.newp = 0;
+            wdgmsg("act", (Object[]) r.act().ad);
+            if (reset)
+                this.cur = null;
+            curoff = 0;
+        }
+        updlayout();
     }
 
     public void tick(double dt) {
-	if(loading || (pagseq != ui.sess.glob.pagseq))
-	    updlayout();
+        if (loading || (pagseq != ui.sess.glob.pagseq))
+            updlayout();
     }
 
     public boolean mouseup(Coord c, int button) {
-	Pagina h = bhit(c);
-	if((button == 1) && (grab != null)) {
-	    if(dragging != null) {
-		ui.dropthing(ui.root, ui.mc, dragging.res());
-		dragging = pressed = null;
-	    } else if(pressed != null) {
-		if(pressed == h)
-		    use(h, false);
-		pressed = null;
-	    }
-	    grab.remove();
-	    grab = null;
-	}
-	return(true);
+        Pagina h = bhit(c);
+        if ((button == 1) && (grab != null)) {
+            if (dragging != null) {
+                ui.dropthing(ui.root, ui.mc, dragging.res());
+                dragging = pressed = null;
+            } else if (pressed != null) {
+                if (pressed == h)
+                    use(h, false);
+                pressed = null;
+            }
+            grab.remove();
+            grab = null;
+        }
+        return (true);
     }
-	
+
     public void uimsg(String msg, Object... args) {
-	if(msg == "goto") {
-	    String resnm = (String)args[0];
-	    if(resnm.equals("")) {
-		cur = null;
-	    } else {
-		Resource.Named res = Resource.remote().load(resnm, (Integer)args[1]);
-		cur = paginafor(res);
-	    }
-	    curoff = 0;
-	    updlayout();
-	}
+        if (msg == "goto") {
+            String resnm = (String) args[0];
+            if (resnm.equals("")) {
+                cur = null;
+            } else {
+                Resource.Named res = Resource.remote().load(resnm, (Integer) args[1]);
+                cur = paginafor(res);
+            }
+            curoff = 0;
+            updlayout();
+        }
     }
-	
+
     public boolean globtype(char k, KeyEvent ev) {
-	if((k == 27) && (this.cur != null)) {
-	    this.cur = null;
-	    curoff = 0;
-	    updlayout();
-	    return(true);
-	} else if((k == 8) && (this.cur != null)) {
-	    this.cur = paginafor(this.cur.act().parent);
-	    curoff = 0;
-	    updlayout();
-	    return(true);
-	} else if((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
-	    use(next, false);
-	    return(true);
-	}
-	Pagina r = hotmap.get(Character.toUpperCase(k));
-	if(r != null) {
-	    use(r, true);
-	    return(true);
-	}
-	return(false);
+        if ((k == 27) && (this.cur != null)) {
+            this.cur = null;
+            curoff = 0;
+            updlayout();
+            return (true);
+        } else if ((k == 8) && (this.cur != null)) {
+            this.cur = paginafor(this.cur.act().parent);
+            curoff = 0;
+            updlayout();
+            return (true);
+        } else if ((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
+            use(next, false);
+            return (true);
+        }
+        Pagina r = hotmap.get(Character.toUpperCase(k));
+        if (r != null) {
+            use(r, true);
+            return (true);
+        }
+        return (false);
     }
 }

@@ -33,8 +33,8 @@ import java.util.*;
 
 public class Text {
     public static final Font serif = new Font("Serif", Font.PLAIN, 10);
-    public static final Font sans  = new Font("Sans", Font.PLAIN, 10);
-    public static final Font mono  = new Font("Monospaced", Font.PLAIN, 10);
+    public static final Font sans = new Font("Sans", Font.PLAIN, 10);
+    public static final Font mono = new Font("Monospaced", Font.PLAIN, 10);
     public static final Font fraktur = Resource.local().loadwait("ui/fraktur").layer(Resource.Font.class).font;
     public static final Font dfont = sans;
     public static final Foundry std;
@@ -43,260 +43,265 @@ public class Text {
     private Tex tex;
     public static final Color black = Color.BLACK;
     public static final Color white = Color.WHITE;
-	
+
     static {
-	std = new Foundry(sans, 10);
+        std = new Foundry(sans, 10);
     }
-	
+
     public static class Line extends Text {
-	private final FontMetrics m;
-	
-	private Line(String text, BufferedImage img, FontMetrics m) {
-	    super(text, img);
-	    this.m = m;
-	}
-	
-	public Coord base() {
-	    return(new Coord(0, m.getAscent()));
-	}
-	
-	public int advance(int pos) {
-	    return(m.stringWidth(text.substring(0, pos)));
-	}
-	
-	public int charat(int x) {
-	    int l = 0, r = text.length() + 1;
-	    while(true) {
-		int p = (l + r) / 2;
-		int a = advance(p);
-		if((a < x) && (l < p)) {
-		    l = p;
-		} else if((a > x) && (r > p)) {
-		    r = p;
-		} else {
-		    return(p);
-		}
-	    }
-	}
+        private final FontMetrics m;
+
+        private Line(String text, BufferedImage img, FontMetrics m) {
+            super(text, img);
+            this.m = m;
+        }
+
+        public Coord base() {
+            return (new Coord(0, m.getAscent()));
+        }
+
+        public int advance(int pos) {
+            return (m.stringWidth(text.substring(0, pos)));
+        }
+
+        public int charat(int x) {
+            int l = 0, r = text.length() + 1;
+            while (true) {
+                int p = (l + r) / 2;
+                int a = advance(p);
+                if ((a < x) && (l < p)) {
+                    l = p;
+                } else if ((a > x) && (r > p)) {
+                    r = p;
+                } else {
+                    return (p);
+                }
+            }
+        }
     }
 
     public static int[] findspaces(String text) {
-	java.util.List<Integer> l = new ArrayList<Integer>();
-	for(int i = 0; i < text.length(); i++) {
-	    char c = text.charAt(i);
-	    if(Character.isWhitespace(c))
-		l.add(i);
-	}
-	int[] ret = new int[l.size()];
-	for(int i = 0; i < ret.length; i++)
-	    ret[i] = l.get(i);
-	return(ret);
+        java.util.List<Integer> l = new ArrayList<Integer>();
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (Character.isWhitespace(c))
+                l.add(i);
+        }
+        int[] ret = new int[l.size()];
+        for (int i = 0; i < ret.length; i++)
+            ret[i] = l.get(i);
+        return (ret);
     }
-        
-    public static abstract class Furnace {
-	public abstract Text render(String text);
 
-	public Text renderf(String fmt, Object... args) {
-	    return(render(String.format(fmt, args)));
-	}
+    public static abstract class Furnace {
+        public abstract Text render(String text);
+
+        public Text renderf(String fmt, Object... args) {
+            return (render(String.format(fmt, args)));
+        }
     }
 
     public static class Foundry extends Furnace {
-	private FontMetrics m;
-	Font font;
-	Color defcol;
-	public boolean aa = false;
-	private RichText.Foundry wfnd = null;
-		
-	public Foundry(Font f, Color defcol) {
-	    font = f;
-	    this.defcol = defcol;
-	    BufferedImage junk = TexI.mkbuf(new Coord(10, 10));
-	    Graphics tmpl = junk.getGraphics();
-	    tmpl.setFont(f);
-	    m = tmpl.getFontMetrics();
-	}
-		
-	public Foundry(Font f) {
-	    this(f, Color.WHITE);
-	}
-	
-	public Foundry(Font font, int psz, Color defcol) {
-	    this(font.deriveFont((float)psz), defcol);
-	}
+        private FontMetrics m;
+        Font font;
+        Color defcol;
+        public boolean aa = false;
+        private RichText.Foundry wfnd = null;
 
-	public Foundry(Font font, int psz) {
-	    this(font.deriveFont((float)psz));
-	}
+        public Foundry(Font f, Color defcol) {
+            font = f;
+            this.defcol = defcol;
+            BufferedImage junk = TexI.mkbuf(new Coord(10, 10));
+            Graphics tmpl = junk.getGraphics();
+            tmpl.setFont(f);
+            m = tmpl.getFontMetrics();
+        }
 
-	@Deprecated
-	public Foundry(String font, int psz) {
-	    this(new Font(font, Font.PLAIN, psz));
-	}
-		
-	public Foundry aa(boolean aa) {
-	    this.aa = aa;
-	    return(this);
-	}
+        public Foundry(Font f) {
+            this(f, Color.WHITE);
+        }
 
-	public int height() {
-	    /* XXX: Should leading go into this, when it's mostly
-	     * supposed to be used for one-liners? */
-	    return(m.getAscent() + m.getDescent());
-	}
+        public Foundry(Font font, int psz, Color defcol) {
+            this(font.deriveFont((float) psz), defcol);
+        }
 
-	private Coord strsize(String text) {
-	    return(new Coord(m.stringWidth(text), height()));
-	}
-                
-	public Text renderwrap(String text, Color c, int width) {
-	    if(wfnd == null)
-		wfnd = new RichText.Foundry(font, defcol);
-	    wfnd.aa = aa;
-	    text = RichText.Parser.quote(text);
-	    if(c != null)
-		text = String.format("$col[%d,%d,%d,%d]{%s}", c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha(), text);
-	    return(wfnd.render(text, width));
-	}
-                
-	public Text renderwrap(String text, int width) {
-	    return(renderwrap(text, null, width));
-	}
-                
-	public Line render(String text, Color c) {
-	    Coord sz = strsize(text);
-	    if(sz.x < 1)
-		sz = sz.add(1, 0);
-	    BufferedImage img = TexI.mkbuf(sz);
-	    Graphics g = img.createGraphics();
-	    if(aa)
-		Utils.AA(g);
-	    g.setFont(font);
-	    g.setColor(c);
-	    FontMetrics m = g.getFontMetrics();
-	    g.drawString(text, 0, m.getAscent());
-	    g.dispose();
-	    return(new Line(text, img, m));
-	}
-		
-	public Line render(String text) {
-	    return(render(text, defcol));
-	}
+        public Foundry(Font font, int psz) {
+            this(font.deriveFont((float) psz));
+        }
+
+        @Deprecated
+        public Foundry(String font, int psz) {
+            this(new Font(font, Font.PLAIN, psz));
+        }
+
+        public Foundry aa(boolean aa) {
+            this.aa = aa;
+            return (this);
+        }
+
+        public int height() {
+        /* XXX: Should leading go into this, when it's mostly
+         * supposed to be used for one-liners? */
+            return (m.getAscent() + m.getDescent());
+        }
+
+        private Coord strsize(String text) {
+            return (new Coord(m.stringWidth(text), height()));
+        }
+
+        public Text renderwrap(String text, Color c, int width) {
+            if (wfnd == null)
+                wfnd = new RichText.Foundry(font, defcol);
+            wfnd.aa = aa;
+            text = RichText.Parser.quote(text);
+            if (c != null)
+                text = String.format("$col[%d,%d,%d,%d]{%s}", c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha(), text);
+            return (wfnd.render(text, width));
+        }
+
+        public Text renderwrap(String text, int width) {
+            return (renderwrap(text, null, width));
+        }
+
+        public Line render(String text, Color c) {
+            Coord sz = strsize(text);
+            if (sz.x < 1)
+                sz = sz.add(1, 0);
+            BufferedImage img = TexI.mkbuf(sz);
+            Graphics g = img.createGraphics();
+            if (aa)
+                Utils.AA(g);
+            g.setFont(font);
+            g.setColor(c);
+            FontMetrics m = g.getFontMetrics();
+            g.drawString(text, 0, m.getAscent());
+            g.dispose();
+            return (new Line(text, img, m));
+        }
+
+        public Line render(String text) {
+            return (render(text, defcol));
+        }
     }
 
     public static abstract class Imager extends Furnace {
-	private final Furnace back;
+        private final Furnace back;
 
-	public Imager(Furnace back) {
-	    this.back = back;
-	}
+        public Imager(Furnace back) {
+            this.back = back;
+        }
 
-	protected abstract BufferedImage proc(Text text);
+        protected abstract BufferedImage proc(Text text);
 
-	public Text render(String text) {
-	    return(new Text(text, proc(back.render(text))));
-	}
+        public Text render(String text) {
+            return (new Text(text, proc(back.render(text))));
+        }
     }
 
     public static abstract class UText<T> implements Indir<Text> {
-	public final Furnace fnd;
-	private Text cur = null;
-	private T cv = null;
+        public final Furnace fnd;
+        private Text cur = null;
+        private T cv = null;
 
-	public UText(Furnace fnd) {this.fnd = fnd;}
+        public UText(Furnace fnd) {
+            this.fnd = fnd;
+        }
 
-	protected String text(T value) {return(String.valueOf(value));}
-	protected abstract T value();
+        protected String text(T value) {
+            return (String.valueOf(value));
+        }
 
-	public Text get() {
-	    T value = value();
-	    if(!Utils.eq(value, cv))
-		cur = fnd.render(text(cv = value));
-	    return(cur);
-	}
+        protected abstract T value();
 
-	public Indir<Tex> tex() {
-	    return(new Indir<Tex>() {
-		    public Tex get() {
-			return(UText.this.get().tex());
-		    }
-		});
-	}
+        public Text get() {
+            T value = value();
+            if (!Utils.eq(value, cv))
+                cur = fnd.render(text(cv = value));
+            return (cur);
+        }
 
-	public static UText forfield(Furnace fnd, final Object obj, String fn) {
-	    final java.lang.reflect.Field f;
-	    try {
-		f = obj.getClass().getField(fn);
-	    } catch(NoSuchFieldException e) {
-		throw(new RuntimeException(e));
-	    }
-	    return(new UText<Object>(fnd) {
-		    public Object value() {
-			try {
-			    return(f.get(obj));
-			} catch(IllegalAccessException e) {
-			    throw(new RuntimeException(e));
-			}
-		    }
-		});
-	}
+        public Indir<Tex> tex() {
+            return (new Indir<Tex>() {
+                public Tex get() {
+                    return (UText.this.get().tex());
+                }
+            });
+        }
 
-	public static UText forfield(Object obj, String fn) {
-	    return(forfield(std, obj, fn));
-	}
+        public static UText forfield(Furnace fnd, final Object obj, String fn) {
+            final java.lang.reflect.Field f;
+            try {
+                f = obj.getClass().getField(fn);
+            } catch (NoSuchFieldException e) {
+                throw (new RuntimeException(e));
+            }
+            return (new UText<Object>(fnd) {
+                public Object value() {
+                    try {
+                        return (f.get(obj));
+                    } catch (IllegalAccessException e) {
+                        throw (new RuntimeException(e));
+                    }
+                }
+            });
+        }
+
+        public static UText forfield(Object obj, String fn) {
+            return (forfield(std, obj, fn));
+        }
     }
 
     protected Text(String text, BufferedImage img) {
-	this.text = text;
-	this.img = img;
+        this.text = text;
+        this.img = img;
     }
-	
+
     public Coord sz() {
-	return(Utils.imgsz(img));
+        return (Utils.imgsz(img));
     }
-	
+
     public static Line render(String text, Color c) {
-	return(std.render(text, c));
+        return (std.render(text, c));
     }
-	
+
     public static Line renderf(Color c, String text, Object... args) {
-	return(std.render(String.format(text, args), c));
+        return (std.render(String.format(text, args), c));
     }
-	
+
     public static Line render(String text) {
-	return(render(text, Color.WHITE));
+        return (render(text, Color.WHITE));
     }
-	
+
     public Tex tex() {
-	if(tex == null)
-	    tex = new TexI(img);
-	return(tex);
+        if (tex == null)
+            tex = new TexI(img);
+        return (tex);
     }
-    
+
     public static void main(String[] args) throws Exception {
-	String cmd = args[0].intern();
-	if(cmd == "render") {
-	    PosixArgs opt = PosixArgs.getopt(args, 1, "aw:f:s:");
-	    boolean aa = false;
-	    String font = "SansSerif";
-	    int width = 100, size = 10;
-	    for(char c : opt.parsed()) {
-		if(c == 'a') {
-		    aa = true;
-		} else if(c == 'f') {
-		    font = opt.arg;
-		} else if(c == 'w') {
-		    width = Integer.parseInt(opt.arg);
-		} else if(c == 's') {
-		    size = Integer.parseInt(opt.arg);
-		}
-	    }
-	    Foundry f = new Foundry(font, size);
-	    f.aa = aa;
-	    Text t = f.renderwrap(opt.rest[0], width);
-	    java.io.OutputStream out = new java.io.FileOutputStream(opt.rest[1]);
-	    javax.imageio.ImageIO.write(t.img, "PNG", out);
-	    out.close();
-	}
+        String cmd = args[0].intern();
+        if (cmd == "render") {
+            PosixArgs opt = PosixArgs.getopt(args, 1, "aw:f:s:");
+            boolean aa = false;
+            String font = "SansSerif";
+            int width = 100, size = 10;
+            for (char c : opt.parsed()) {
+                if (c == 'a') {
+                    aa = true;
+                } else if (c == 'f') {
+                    font = opt.arg;
+                } else if (c == 'w') {
+                    width = Integer.parseInt(opt.arg);
+                } else if (c == 's') {
+                    size = Integer.parseInt(opt.arg);
+                }
+            }
+            Foundry f = new Foundry(font, size);
+            f.aa = aa;
+            Text t = f.renderwrap(opt.rest[0], width);
+            java.io.OutputStream out = new java.io.FileOutputStream(opt.rest[1]);
+            javax.imageio.ImageIO.write(t.img, "PNG", out);
+            out.close();
+        }
     }
 }

@@ -31,86 +31,89 @@ public class ISBox extends Widget implements DTarget {
     static Text.Foundry lf;
     private Indir<Resource> res;
     private Text label;
+
     static {
         lf = new Text.Foundry(Text.fraktur, 22, java.awt.Color.WHITE);
         lf.aa = true;
     }
-    
+
     @RName("isbox")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    Indir<Resource> res;
-	    if(args[0] instanceof String)
-		res = Resource.remote().load((String)args[0]);
-	    else
-		res = parent.ui.sess.getres((Integer)args[0]);
-	    return(new ISBox(res, (Integer)args[1], (Integer)args[2], (Integer)args[3]));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            Indir<Resource> res;
+            if (args[0] instanceof String)
+                res = Resource.remote().load((String) args[0]);
+            else
+                res = parent.ui.sess.getres((Integer) args[0]);
+            return (new ISBox(res, (Integer) args[1], (Integer) args[2], (Integer) args[3]));
+        }
     }
-    
+
     private void setlabel(int rem, int av, int bi) {
-	if(bi < 0)
-	    label = lf.renderf("%d/%d", rem, av);
-	else
-	    label = lf.renderf("%d/%d/%d", rem, av, bi);
+        if (bi < 0)
+            label = lf.renderf("%d/%d", rem, av);
+        else
+            label = lf.renderf("%d/%d/%d", rem, av, bi);
     }
-    
+
     public ISBox(Indir<Resource> res, int rem, int av, int bi) {
         super(bg.sz());
         this.res = res;
         setlabel(rem, av, bi);
     }
-    
+
     public void draw(GOut g) {
         g.image(bg, Coord.z);
-	try {
+        try {
             Tex t = res.get().layer(Resource.imgc).tex();
             Coord dc = new Coord(6, (bg.sz().y / 2) - (t.sz().y / 2));
             g.image(t, dc);
-        } catch(Loading e) {}
+        } catch (Loading e) {
+        }
         g.image(label.tex(), new Coord(40, (bg.sz().y / 2) - (label.tex().sz().y / 2)));
     }
-    
+
     public Object tooltip(Coord c, Widget prev) {
-	try {
-	    if(res.get().layer(Resource.tooltip) != null)
-		return(res.get().layer(Resource.tooltip).t);
-	} catch(Loading e) {}
-	return(null);
+        try {
+            if (res.get().layer(Resource.tooltip) != null)
+                return (res.get().layer(Resource.tooltip).t);
+        } catch (Loading e) {
+        }
+        return (null);
     }
-    
+
     public boolean mousedown(Coord c, int button) {
-        if(button == 1) {
-            if(ui.modshift)
+        if (button == 1) {
+            if (ui.modshift)
                 wdgmsg("xfer");
             else
                 wdgmsg("click");
-            return(true);
+            return (true);
         }
-        return(false);
+        return (false);
     }
-    
+
     public boolean mousewheel(Coord c, int amount) {
-	if(amount < 0)
-	    wdgmsg("xfer2", -1, ui.modflags());
-	if(amount > 0)
-	    wdgmsg("xfer2", 1, ui.modflags());
-	return(true);
+        if (amount < 0)
+            wdgmsg("xfer2", -1, ui.modflags());
+        if (amount > 0)
+            wdgmsg("xfer2", 1, ui.modflags());
+        return (true);
     }
-    
+
     public boolean drop(Coord cc, Coord ul) {
         wdgmsg("drop");
-        return(true);
+        return (true);
     }
-    
+
     public boolean iteminteract(Coord cc, Coord ul) {
         wdgmsg("iact");
-        return(true);
+        return (true);
     }
-    
+
     public void uimsg(String msg, Object... args) {
-        if(msg == "chnum") {
-            setlabel((Integer)args[0], (Integer)args[1], (Integer)args[2]);
+        if (msg == "chnum") {
+            setlabel((Integer) args[0], (Integer) args[1], (Integer) args[2]);
         } else {
             super.uimsg(msg, args);
         }

@@ -33,19 +33,19 @@ public class LFieldRef extends LValue {
     public final String el;
 
     public LFieldRef(LValue val, String el) {
-	this.val = val;
-	this.el = el;
+        this.val = val;
+        this.el = el;
     }
 
     public void walk(Walker w) {
-	w.el(val);
+        w.el(val);
     }
 
     public void output(Output out) {
-	out.write("(");
-	val.output(out);
-	out.write(".");
-	out.write(el);
-	out.write(")");
+        out.write("(");
+        val.output(out);
+        out.write(".");
+        out.write(el);
+        out.write(")");
     }
 }

@@ -31,35 +31,35 @@ public class LimitMessage extends Message {
     private int left;
 
     public LimitMessage(Message bk, int left) {
-	this.bk = bk;
-	this.left = left;
+        this.bk = bk;
+        this.left = left;
     }
 
     public boolean underflow(int hint) {
-	if(left < 1)
-	    return(false);
-	if(hint + rt - rh <= rbuf.length) {
-	    System.arraycopy(rbuf, rh, rbuf, 0, rt - rh);
-	} else {
-	    byte[] n = new byte[Math.min(left, Math.max(hint, 32)) + rt - rh];
-	    System.arraycopy(rbuf, rh, n, 0, rt - rh);
-	    rbuf = n;
-	}
-	rt -= rh;
-	rh = 0;
-	if(bk.rt - bk.rh < 1) {
-	    if(!bk.underflow(hint))
-		return(false);
-	}
-	int len = Math.min(left, Math.min(bk.rt - bk.rh, rbuf.length - rt));
-	System.arraycopy(bk.rbuf, bk.rh, rbuf, rt, len);
-	bk.rh += len;
-	rt += len;
-	left -= len;
-	return(true);
+        if (left < 1)
+            return (false);
+        if (hint + rt - rh <= rbuf.length) {
+            System.arraycopy(rbuf, rh, rbuf, 0, rt - rh);
+        } else {
+            byte[] n = new byte[Math.min(left, Math.max(hint, 32)) + rt - rh];
+            System.arraycopy(rbuf, rh, n, 0, rt - rh);
+            rbuf = n;
+        }
+        rt -= rh;
+        rh = 0;
+        if (bk.rt - bk.rh < 1) {
+            if (!bk.underflow(hint))
+                return (false);
+        }
+        int len = Math.min(left, Math.min(bk.rt - bk.rh, rbuf.length - rt));
+        System.arraycopy(bk.rbuf, bk.rh, rbuf, rt, len);
+        bk.rh += len;
+        rt += len;
+        left -= len;
+        return (true);
     }
 
     public void overflow(int min) {
-	throw(new RuntimeException("LimitMessage is not writeable"));
+        throw (new RuntimeException("LimitMessage is not writeable"));
     }
 }

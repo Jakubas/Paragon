@@ -29,6 +29,7 @@ package haven.glsl;
 import java.util.*;
 import java.nio.*;
 import javax.media.opengl.*;
+
 import haven.*;
 import haven.GLState.Slot;
 import haven.GLState.Buffer;
@@ -40,80 +41,92 @@ public abstract class InstancedUniform {
     public final Attribute.AutoInstanced attrib;
 
     public InstancedUniform(Type type, String infix, Slot... deps) {
-	this.deps = deps;
-	uniform = new Uniform.AutoApply(type, infix, deps) {
-		public void apply(GOut g, VarID location) {InstancedUniform.this.apply(g, location);}
-	    };
-	attrib = new Attribute.AutoInstanced(type, infix) {
-		public GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prev) {return(InstancedUniform.this.bindiarr(g, inst, prev));}
-		public void unbindiarr(GOut g, GLBuffer buf) {InstancedUniform.this.unbindiarr(g, buf);}
-	    };
+        this.deps = deps;
+        uniform = new Uniform.AutoApply(type, infix, deps) {
+            public void apply(GOut g, VarID location) {
+                InstancedUniform.this.apply(g, location);
+            }
+        };
+        attrib = new Attribute.AutoInstanced(type, infix) {
+            public GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prev) {
+                return (InstancedUniform.this.bindiarr(g, inst, prev));
+            }
+
+            public void unbindiarr(GOut g, GLBuffer buf) {
+                InstancedUniform.this.unbindiarr(g, buf);
+            }
+        };
     }
 
     private static final Object refproc = new PostProc.AutoID("refproc", 9000);
+
     public Expression ref() {
-	return(new PostProc.AutoMacro(refproc) {
-		public Expression expand(Context ctx) {
-		    if(!((ShaderContext)ctx).prog.instanced)
-			return(uniform.ref());
-		    else
-			return(attrib.ref());
-		}
-	    });
+        return (new PostProc.AutoMacro(refproc) {
+            public Expression expand(Context ctx) {
+                if (!((ShaderContext) ctx).prog.instanced)
+                    return (uniform.ref());
+                else
+                    return (attrib.ref());
+            }
+        });
     }
 
     protected abstract void apply(GOut g, VarID location);
+
     protected abstract GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prevbuf);
+
     protected abstract void unbindiarr(GOut g, GLBuffer buf);
 
     public static abstract class Mat4 extends InstancedUniform {
-	public Mat4(String infix, Slot... deps) {super(Type.MAT4, infix, deps);}
+        public Mat4(String infix, Slot... deps) {
+            super(Type.MAT4, infix, deps);
+        }
 
-	public abstract Matrix4f forstate(GOut g, Buffer buf);
+        public abstract Matrix4f forstate(GOut g, Buffer buf);
 
-	protected void apply(GOut g, VarID loc) {
-	    g.gl.glUniformMatrix4fv(loc, 1, false, forstate(g, g.st.state()).m, 0);
-	}
+        protected void apply(GOut g, VarID loc) {
+            g.gl.glUniformMatrix4fv(loc, 1, false, forstate(g, g.st.state()).m, 0);
+        }
 
-	protected GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prev) {
-	    float[] buf = new float[inst.size() * 16];
-	    int i = 0;
-	    for(Buffer st : inst) {
-		System.arraycopy(forstate(g, st).m, 0, buf, i, 16);
-		i += 16;
-	    }
-	    BGL gl = g.gl;
-	    GLBuffer bo = (prev == null)?new GLBuffer(g):prev;
-	    gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bo);
-	    gl.glBufferData(GL.GL_ARRAY_BUFFER, buf.length * 4, FloatBuffer.wrap(buf), GL.GL_STATIC_DRAW);
-	    VarID loc = g.st.prog.attrib(attrib);
-	    gl.glVertexAttribPointer(loc, 0, 4, GL.GL_FLOAT, false, 64,  0);
-	    gl.glVertexAttribPointer(loc, 1, 4, GL.GL_FLOAT, false, 64, 16);
-	    gl.glVertexAttribPointer(loc, 2, 4, GL.GL_FLOAT, false, 64, 32);
-	    gl.glVertexAttribPointer(loc, 3, 4, GL.GL_FLOAT, false, 64, 48);
-	    gl.glEnableVertexAttribArray(loc, 0);
-	    gl.glEnableVertexAttribArray(loc, 1);
-	    gl.glEnableVertexAttribArray(loc, 2);
-	    gl.glEnableVertexAttribArray(loc, 3);
-	    gl.glVertexAttribDivisor(loc, 0, 1);
-	    gl.glVertexAttribDivisor(loc, 1, 1);
-	    gl.glVertexAttribDivisor(loc, 2, 1);
-	    gl.glVertexAttribDivisor(loc, 3, 1);
-	    gl.glBindBuffer(GL.GL_ARRAY_BUFFER, null);
-	    return(bo);
-	}
+        protected GLBuffer bindiarr(GOut g, List<Buffer> inst, GLBuffer prev) {
+            float[] buf = new float[inst.size() * 16];
+            int i = 0;
+            for (Buffer st : inst) {
+                System.arraycopy(forstate(g, st).m, 0, buf, i, 16);
+                i += 16;
+            }
+            BGL gl = g.gl;
+            GLBuffer bo = (prev == null) ? new GLBuffer(g) : prev;
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bo);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, buf.length * 4, FloatBuffer.wrap(buf), GL.GL_STATIC_DRAW);
+            VarID loc = g.st.prog.attrib(attrib);
+            gl.glVertexAttribPointer(loc, 0, 4, GL.GL_FLOAT, false, 64, 0);
+            gl.glVertexAttribPointer(loc, 1, 4, GL.GL_FLOAT, false, 64, 16);
+            gl.glVertexAttribPointer(loc, 2, 4, GL.GL_FLOAT, false, 64, 32);
+            gl.glVertexAttribPointer(loc, 3, 4, GL.GL_FLOAT, false, 64, 48);
+            gl.glEnableVertexAttribArray(loc, 0);
+            gl.glEnableVertexAttribArray(loc, 1);
+            gl.glEnableVertexAttribArray(loc, 2);
+            gl.glEnableVertexAttribArray(loc, 3);
+            gl.glVertexAttribDivisor(loc, 0, 1);
+            gl.glVertexAttribDivisor(loc, 1, 1);
+            gl.glVertexAttribDivisor(loc, 2, 1);
+            gl.glVertexAttribDivisor(loc, 3, 1);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, null);
+            return (bo);
+        }
 
-	protected void unbindiarr(GOut g, GLBuffer buf) {
-	    BGL gl = g.gl;
-	    VarID loc = g.st.prog.attrib(attrib);
-	    gl.glDisableVertexAttribArray(loc, 0);
-	    gl.glDisableVertexAttribArray(loc, 1);
-	    gl.glDisableVertexAttribArray(loc, 2);
-	    gl.glDisableVertexAttribArray(loc, 3);
-	    gl.glVertexAttribDivisor(loc, 0, 0);
-	    gl.glVertexAttribDivisor(loc, 1, 0);
-	    gl.glVertexAttribDivisor(loc, 2, 0);
-	    gl.glVertexAttribDivisor(loc, 3, 0);
-	}
+        protected void unbindiarr(GOut g, GLBuffer buf) {
+            BGL gl = g.gl;
+            VarID loc = g.st.prog.attrib(attrib);
+            gl.glDisableVertexAttribArray(loc, 0);
+            gl.glDisableVertexAttribArray(loc, 1);
+            gl.glDisableVertexAttribArray(loc, 2);
+            gl.glDisableVertexAttribArray(loc, 3);
+            gl.glVertexAttribDivisor(loc, 0, 0);
+            gl.glVertexAttribDivisor(loc, 1, 0);
+            gl.glVertexAttribDivisor(loc, 2, 0);
+            gl.glVertexAttribDivisor(loc, 3, 0);
+        }
     }
 }

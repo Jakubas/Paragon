@@ -29,37 +29,37 @@ package haven;
 public class Chatwindow extends Window {
     TextEntry in;
     Textlog out;
-	
+
     @RName("chat")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new Chatwindow((Coord)args[0]));
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new Chatwindow((Coord) args[0]));
+        }
     }
-	
+
     public Chatwindow(Coord sz) {
-	super(sz, "Chat");
-	in = add(new TextEntry(sz.x, ""), 0, sz.y - 20);
-	in.canactivate = true;
-	out = add(new Textlog(new Coord(sz.x, sz.y - 20)), Coord.z);
+        super(sz, "Chat");
+        in = add(new TextEntry(sz.x, ""), 0, sz.y - 20);
+        in.canactivate = true;
+        out = add(new Textlog(new Coord(sz.x, sz.y - 20)), Coord.z);
     }
-	
+
     public void uimsg(String msg, Object... args) {
-	if(msg == "log") {
-	    out.append((String)args[0]);
-	} else {
-	    super.uimsg(msg, args);
-	}
+        if (msg == "log") {
+            out.append((String) args[0]);
+        } else {
+            super.uimsg(msg, args);
+        }
     }
-	
+
     public void wdgmsg(Widget sender, String msg, Object... args) {
-	if(sender == in) {
-	    if(msg == "activate") {
-		wdgmsg("msg", args[0]);
-		in.settext("");
-		return;
-	    }
-	}
-	super.wdgmsg(sender, msg, args);
+        if (sender == in) {
+            if (msg == "activate") {
+                wdgmsg("msg", args[0]);
+                in.settext("");
+                return;
+            }
+        }
+        super.wdgmsg(sender, msg, args);
     }
 }

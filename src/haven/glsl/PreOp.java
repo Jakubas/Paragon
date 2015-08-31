@@ -32,21 +32,29 @@ public abstract class PreOp extends Expression {
     public final Expression op;
 
     public PreOp(Expression op) {
-	this.op = op;
+        this.op = op;
     }
 
     public void walk(Walker w) {
-	w.el(op);
+        w.el(op);
     }
 
     public abstract String form();
 
     public void output(Output out) {
-	out.write("(");
-	out.write(form());
-	op.output(out);
-	out.write(")");
+        out.write("(");
+        out.write(form());
+        op.output(out);
+        out.write(")");
     }
 
-    public static class Neg extends PreOp {public String form() {return("-");} public Neg(Expression op) {super(op);}}
+    public static class Neg extends PreOp {
+        public String form() {
+            return ("-");
+        }
+
+        public Neg(Expression op) {
+            super(op);
+        }
+    }
 }

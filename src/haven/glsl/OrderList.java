@@ -33,44 +33,48 @@ public class OrderList<E> extends AbstractCollection<E> {
     private boolean sorted;
 
     class Element implements Comparable<Element> {
-	final E e;
-	final int o;
-	Element(E e, int o) {this.e = e; this.o = o;}
+        final E e;
+        final int o;
 
-	public int compareTo(Element b) {
-	    return(this.o - b.o);
-	}
+        Element(E e, int o) {
+            this.e = e;
+            this.o = o;
+        }
+
+        public int compareTo(Element b) {
+            return (this.o - b.o);
+        }
     }
 
     public boolean add(E e, int o) {
-	bk.add(new Element(e, o));
-	sorted = false;
-	return(true);
+        bk.add(new Element(e, o));
+        sorted = false;
+        return (true);
     }
 
     public int size() {
-	return(bk.size());
+        return (bk.size());
     }
 
     public Iterator<E> iterator() {
-	if(!sorted) {
-	    Collections.sort(bk);
-	    sorted = true;
-	}
-	return(new Iterator<E>() {
-		private final Iterator<Element> bi = bk.iterator();
+        if (!sorted) {
+            Collections.sort(bk);
+            sorted = true;
+        }
+        return (new Iterator<E>() {
+            private final Iterator<Element> bi = bk.iterator();
 
-		public boolean hasNext() {
-		    return(bi.hasNext());
-		}
+            public boolean hasNext() {
+                return (bi.hasNext());
+            }
 
-		public E next() {
-		    return(bi.next().e);
-		}
+            public E next() {
+                return (bi.next().e);
+            }
 
-		public void remove() {
-		    bi.remove();
-		}
-	    });
+            public void remove() {
+                bi.remove();
+            }
+        });
     }
 }

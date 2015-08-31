@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.*;
+
 import static haven.ItemInfo.find;
 import static haven.Inventory.sqsz;
 
@@ -38,195 +39,201 @@ public class WItem extends Widget implements DTarget {
     public final GItem item;
     private Resource cspr = null;
     private Message csdt = Message.nil;
-    
+
     public WItem(GItem item) {
-	super(sqsz);
-	this.item = item;
+        super(sqsz);
+        this.item = item;
     }
-    
+
     public void drawmain(GOut g, GSprite spr) {
-	spr.draw(g);
+        spr.draw(g);
     }
 
     public static BufferedImage shorttip(List<ItemInfo> info) {
-	return(ItemInfo.shorttip(info));
+        return (ItemInfo.shorttip(info));
     }
-    
+
     public static BufferedImage longtip(GItem item, List<ItemInfo> info) {
-	BufferedImage img = ItemInfo.longtip(info);
-	Resource.Pagina pg = item.res.get().layer(Resource.pagina);
-	if(pg != null)
-	    img = ItemInfo.catimgs(0, img, RichText.render("\n" + pg.text, 200).img);
-	return(img);
+        BufferedImage img = ItemInfo.longtip(info);
+        Resource.Pagina pg = item.res.get().layer(Resource.pagina);
+        if (pg != null)
+            img = ItemInfo.catimgs(0, img, RichText.render("\n" + pg.text, 200).img);
+        return (img);
     }
-    
+
     public BufferedImage longtip(List<ItemInfo> info) {
-	return(longtip(item, info));
+        return (longtip(item, info));
     }
-    
+
     public class ItemTip implements Indir<Tex> {
-	private final TexI tex;
-	
-	public ItemTip(BufferedImage img) {
-	    if(img == null)
-		throw(new Loading());
-	    tex = new TexI(img);
-	}
-	
-	public GItem item() {
-	    return(item);
-	}
-	
-	public Tex get() {
-	    return(tex);
-	}
+        private final TexI tex;
+
+        public ItemTip(BufferedImage img) {
+            if (img == null)
+                throw (new Loading());
+            tex = new TexI(img);
+        }
+
+        public GItem item() {
+            return (item);
+        }
+
+        public Tex get() {
+            return (tex);
+        }
     }
-    
+
     public class ShortTip extends ItemTip {
-	public ShortTip(List<ItemInfo> info) {super(shorttip(info));}
+        public ShortTip(List<ItemInfo> info) {
+            super(shorttip(info));
+        }
     }
-    
+
     public class LongTip extends ItemTip {
-	public LongTip(List<ItemInfo> info) {super(longtip(info));}
+        public LongTip(List<ItemInfo> info) {
+            super(longtip(info));
+        }
     }
 
     private long hoverstart;
     private ItemTip shorttip = null, longtip = null;
     private List<ItemInfo> ttinfo = null;
+
     public Object tooltip(Coord c, Widget prev) {
-	long now = System.currentTimeMillis();
-	if(prev == this) {
-	} else if(prev instanceof WItem) {
-	    long ps = ((WItem)prev).hoverstart;
-	    if(now - ps < 1000)
-		hoverstart = now;
-	    else
-		hoverstart = ps;
-	} else {
-	    hoverstart = now;
-	}
-	try {
-	    List<ItemInfo> info = item.info();
-	    if(info.size() < 1)
-		return(null);
-	    if(info != ttinfo) {
-		shorttip = longtip = null;
-		ttinfo = info;
-	    }
-	    if(now - hoverstart < 1000) {
-		if(shorttip == null)
-		    shorttip = new ShortTip(info);
-		return(shorttip);
-	    } else {
-		if(longtip == null)
-		    longtip = new LongTip(info);
-		return(longtip);
-	    }
-	} catch(Loading e) {
-	    return("...");
-	}
+        long now = System.currentTimeMillis();
+        if (prev == this) {
+        } else if (prev instanceof WItem) {
+            long ps = ((WItem) prev).hoverstart;
+            if (now - ps < 1000)
+                hoverstart = now;
+            else
+                hoverstart = ps;
+        } else {
+            hoverstart = now;
+        }
+        try {
+            List<ItemInfo> info = item.info();
+            if (info.size() < 1)
+                return (null);
+            if (info != ttinfo) {
+                shorttip = longtip = null;
+                ttinfo = info;
+            }
+            if (now - hoverstart < 1000) {
+                if (shorttip == null)
+                    shorttip = new ShortTip(info);
+                return (shorttip);
+            } else {
+                if (longtip == null)
+                    longtip = new LongTip(info);
+                return (longtip);
+            }
+        } catch (Loading e) {
+            return ("...");
+        }
     }
 
     public abstract class AttrCache<T> {
-	private List<ItemInfo> forinfo = null;
-	private T save = null;
-	
-	public T get() {
-	    try {
-		List<ItemInfo> info = item.info();
-		if(info != forinfo) {
-		    save = find(info);
-		    forinfo = info;
-		}
-	    } catch(Loading e) {
-		return(null);
-	    }
-	    return(save);
-	}
-	
-	protected abstract T find(List<ItemInfo> info);
+        private List<ItemInfo> forinfo = null;
+        private T save = null;
+
+        public T get() {
+            try {
+                List<ItemInfo> info = item.info();
+                if (info != forinfo) {
+                    save = find(info);
+                    forinfo = info;
+                }
+            } catch (Loading e) {
+                return (null);
+            }
+            return (save);
+        }
+
+        protected abstract T find(List<ItemInfo> info);
     }
-    
+
     public final AttrCache<Color> olcol = new AttrCache<Color>() {
-	protected Color find(List<ItemInfo> info) {
-	    GItem.ColorInfo cinf = ItemInfo.find(GItem.ColorInfo.class, info);
-	    return((cinf == null)?null:cinf.olcol());
-	}
+        protected Color find(List<ItemInfo> info) {
+            GItem.ColorInfo cinf = ItemInfo.find(GItem.ColorInfo.class, info);
+            return ((cinf == null) ? null : cinf.olcol());
+        }
     };
-    
+
     public final AttrCache<Tex> itemnum = new AttrCache<Tex>() {
-	protected Tex find(List<ItemInfo> info) {
-	    GItem.NumberInfo ninf = ItemInfo.find(GItem.NumberInfo.class, info);
-	    if(ninf == null) return(null);
-	    return(new TexI(Utils.outline2(Text.render(Integer.toString(ninf.itemnum()), Color.WHITE).img, Utils.contrast(Color.WHITE))));
-	}
+        protected Tex find(List<ItemInfo> info) {
+            GItem.NumberInfo ninf = ItemInfo.find(GItem.NumberInfo.class, info);
+            if (ninf == null) return (null);
+            return (new TexI(Utils.outline2(Text.render(Integer.toString(ninf.itemnum()), Color.WHITE).img, Utils.contrast(Color.WHITE))));
+        }
     };
 
     private GSprite lspr = null;
+
     public void tick(double dt) {
-	/* XXX: This is ugly and there should be a better way to
-	 * ensure the resizing happens as it should, but I can't think
+    /* XXX: This is ugly and there should be a better way to
+     * ensure the resizing happens as it should, but I can't think
 	 * of one yet. */
-	GSprite spr = item.spr();
-	if((spr != null) && (spr != lspr)) {
-	    Coord sz = new Coord(spr.sz());
-	    if((sz.x % sqsz.x) != 0)
-		sz.x = sqsz.x * ((sz.x / sqsz.x) + 1);
-	    if((sz.y % sqsz.y) != 0)
-		sz.y = sqsz.y * ((sz.y / sqsz.y) + 1);
-	    resize(sz);
-	    lspr = spr;
-	}
+        GSprite spr = item.spr();
+        if ((spr != null) && (spr != lspr)) {
+            Coord sz = new Coord(spr.sz());
+            if ((sz.x % sqsz.x) != 0)
+                sz.x = sqsz.x * ((sz.x / sqsz.x) + 1);
+            if ((sz.y % sqsz.y) != 0)
+                sz.y = sqsz.y * ((sz.y / sqsz.y) + 1);
+            resize(sz);
+            lspr = spr;
+        }
     }
 
     public void draw(GOut g) {
-	GSprite spr = item.spr();
-	if(spr != null) {
-	    Coord sz = spr.sz();
-	    g.defstate();
-	    if(olcol.get() != null)
-		g.usestate(new ColorMask(olcol.get()));
-	    drawmain(g, spr);
-	    g.defstate();
-	    if(item.num >= 0) {
-		g.atext(Integer.toString(item.num), sz, 1, 1);
-	    } else if(itemnum.get() != null) {
-		g.aimage(itemnum.get(), sz, 1, 1);
-	    }
-	    if(item.meter > 0) {
-		double a = ((double)item.meter) / 100.0;
-		g.chcolor(255, 255, 255, 64);
-		Coord half = sz.div(2);
-		g.prect(half, half.inv(), half, a * Math.PI * 2);
-		g.chcolor();
-	    }
-	} else {
-	    g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
-	}
+        GSprite spr = item.spr();
+        if (spr != null) {
+            Coord sz = spr.sz();
+            g.defstate();
+            if (olcol.get() != null)
+                g.usestate(new ColorMask(olcol.get()));
+            drawmain(g, spr);
+            g.defstate();
+            if (item.num >= 0) {
+                g.atext(Integer.toString(item.num), sz, 1, 1);
+            } else if (itemnum.get() != null) {
+                g.aimage(itemnum.get(), sz, 1, 1);
+            }
+            if (item.meter > 0) {
+                double a = ((double) item.meter) / 100.0;
+                g.chcolor(255, 255, 255, 64);
+                Coord half = sz.div(2);
+                g.prect(half, half.inv(), half, a * Math.PI * 2);
+                g.chcolor();
+            }
+        } else {
+            g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
+        }
     }
-    
+
     public boolean mousedown(Coord c, int btn) {
-	if(btn == 1) {
-	    if(ui.modshift)
-		item.wdgmsg("transfer", c);
-	    else if(ui.modctrl)
-		item.wdgmsg("drop", c);
-	    else
-		item.wdgmsg("take", c);
-	    return(true);
-	} else if(btn == 3) {
-	    item.wdgmsg("iact", c, ui.modflags());
-	    return(true);
-	}
-	return(false);
+        if (btn == 1) {
+            if (ui.modshift)
+                item.wdgmsg("transfer", c);
+            else if (ui.modctrl)
+                item.wdgmsg("drop", c);
+            else
+                item.wdgmsg("take", c);
+            return (true);
+        } else if (btn == 3) {
+            item.wdgmsg("iact", c, ui.modflags());
+            return (true);
+        }
+        return (false);
     }
 
     public boolean drop(Coord cc, Coord ul) {
-	return(false);
+        return (false);
     }
-	
+
     public boolean iteminteract(Coord cc, Coord ul) {
-	item.wdgmsg("itemact", ui.modflags());
-	return(true);
+        item.wdgmsg("itemact", ui.modflags());
+        return (true);
     }
 }

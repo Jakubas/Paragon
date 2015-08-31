@@ -27,11 +27,14 @@
 package haven.resutil;
 
 import java.util.*;
+
 import haven.*;
 import haven.glsl.*;
+
 import static haven.glsl.Cons.*;
 import static haven.glsl.Function.PDir.*;
 import static haven.glsl.Type.*;
+
 import haven.glsl.ValBlock.Value;
 
 public class AlphaTex extends GLState {
@@ -45,77 +48,88 @@ public class AlphaTex extends GLState {
     private TexUnit sampler;
 
     public AlphaTex(TexGL tex, float clip) {
-	this.tex = tex;
-	this.cthr = clip;
+        this.tex = tex;
+        this.cthr = clip;
     }
 
     public AlphaTex(TexGL tex) {
-	this(tex, 0);
+        this(tex, 0);
     }
 
     private static final AutoVarying fc = new AutoVarying(VEC2) {
-	    {ipol = Interpol.CENTROID;}
-	    protected Expression root(VertexContext vctx) {
-		return(clipc.ref());
-	    }
-	};
+        {
+            ipol = Interpol.CENTROID;
+        }
+
+        protected Expression root(VertexContext vctx) {
+            return (clipc.ref());
+        }
+    };
+
     private static Value value(FragmentContext fctx) {
-	return(fctx.uniform.ext(ctex, new ValBlock.Factory() {
-		public Value make(ValBlock vals) {
-		    return(vals.new Value(VEC4) {
-			    public Expression root() {
-				return(texture2D(ctex.ref(), fc.ref()));
-			    }
-			});
-		}
-	    }));
+        return (fctx.uniform.ext(ctex, new ValBlock.Factory() {
+            public Value make(ValBlock vals) {
+                return (vals.new Value(VEC4) {
+                    public Expression root() {
+                        return (texture2D(ctex.ref(), fc.ref()));
+                    }
+                });
+            }
+        }));
     }
+
     private static final ShaderMacro main = new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		final Value val = value(prog.fctx);
-		val.force();
-		prog.fctx.fragcol.mod(new Macro1<Expression>() {
-			public Expression expand(Expression in) {
-			    return(mul(in, val.ref()));
-			}
-		    }, 100);
-	    }
-	};
+        public void modify(ProgramContext prog) {
+            final Value val = value(prog.fctx);
+            val.force();
+            prog.fctx.fragcol.mod(new Macro1<Expression>() {
+                public Expression expand(Expression in) {
+                    return (mul(in, val.ref()));
+                }
+            }, 100);
+        }
+    };
     private static final ShaderMacro clip = new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		final Value val = value(prog.fctx);
-		val.force();
-		prog.fctx.mainmod(new CodeMacro() {
-			public void expand(Block blk) {
-			    blk.add(new If(lt(pick(val.ref(), "a"), cclip.ref()),
-					   new Discard()));
-			}
-		    }, -100);
-	    }
-	};
+        public void modify(ProgramContext prog) {
+            final Value val = value(prog.fctx);
+            val.force();
+            prog.fctx.mainmod(new CodeMacro() {
+                public void expand(Block blk) {
+                    blk.add(new If(lt(pick(val.ref(), "a"), cclip.ref()),
+                            new Discard()));
+                }
+            }, -100);
+        }
+    };
 
     private static final ShaderMacro[] shnc = {main};
     private static final ShaderMacro[] shwc = {main, clip};
 
-    public ShaderMacro[] shaders() {return((cthr > 0)?shwc:shnc);}
-    public boolean reqshader() {return(true);}
+    public ShaderMacro[] shaders() {
+        return ((cthr > 0) ? shwc : shnc);
+    }
+
+    public boolean reqshader() {
+        return (true);
+    }
 
     public void reapply(GOut g) {
-	g.gl.glUniform1i(g.st.prog.uniform(ctex), sampler.id);
-	if(cthr > 0)
-	    g.gl.glUniform1f(g.st.prog.uniform(cclip), cthr);
+        g.gl.glUniform1i(g.st.prog.uniform(ctex), sampler.id);
+        if (cthr > 0)
+            g.gl.glUniform1f(g.st.prog.uniform(cclip), cthr);
     }
 
     public void apply(GOut g) {
-	sampler = TexGL.lbind(g, tex);
-	reapply(g);
+        sampler = TexGL.lbind(g, tex);
+        reapply(g);
     }
 
     public void unapply(GOut g) {
-	sampler.ufree(g); sampler = null;
+        sampler.ufree(g);
+        sampler = null;
     }
 
     public void prep(Buffer buf) {
-	buf.put(slot, this);
+        buf.put(slot, this);
     }
 }

@@ -30,53 +30,53 @@ import java.util.*;
 import java.awt.Color;
 
 public class NpcChat extends Window {
-	Textlog out;
-        List<Button> btns = null;
-	
-	@RName("npc")
-	public static class $_ implements Factory {
-		public Widget create(Widget parent, Object[] args) {
-			return(new NpcChat((Coord)args[0], (String)args[1]));
-		}
-	}
-	
-	public NpcChat(Coord sz, String title) {
-		super(sz, title);
-		out = add(new Textlog(new Coord(sz.x, sz.y)), Coord.z);
-	}
-	
-	public void uimsg(String msg, Object... args) {
-		if(msg == "log") {
-                        Color col = null;
-                        if(args.length > 1)
-                                col = (Color)args[1];
-			out.append((String)args[0], col);
-                } else if(msg == "btns") {
-                        if(btns != null) {
-                                for(Button b : btns)
-                                        ui.destroy(b);
-                                btns = null;
-                        }
-                        if(args.length > 0) {
-                            int y = out.sz.y + 3;
-                            btns = new LinkedList<Button>();
-                            for(Object text : args) {
-				Button b = add(Button.wrapped(out.sz.x, (String)text), new Coord(0, y));
-                                    btns.add(b);
-                                    y += b.sz.y + 3;
-                            }
-                        }
-                        pack();
-		} else {
-			super.uimsg(msg, args);
-		}
-	}
-	
-	public void wdgmsg(Widget sender, String msg, Object... args) {
-                if((btns != null) && (btns.contains(sender))) {
-                    wdgmsg("btn", btns.indexOf(sender));
-                    return;
+    Textlog out;
+    List<Button> btns = null;
+
+    @RName("npc")
+    public static class $_ implements Factory {
+        public Widget create(Widget parent, Object[] args) {
+            return (new NpcChat((Coord) args[0], (String) args[1]));
+        }
+    }
+
+    public NpcChat(Coord sz, String title) {
+        super(sz, title);
+        out = add(new Textlog(new Coord(sz.x, sz.y)), Coord.z);
+    }
+
+    public void uimsg(String msg, Object... args) {
+        if (msg == "log") {
+            Color col = null;
+            if (args.length > 1)
+                col = (Color) args[1];
+            out.append((String) args[0], col);
+        } else if (msg == "btns") {
+            if (btns != null) {
+                for (Button b : btns)
+                    ui.destroy(b);
+                btns = null;
+            }
+            if (args.length > 0) {
+                int y = out.sz.y + 3;
+                btns = new LinkedList<Button>();
+                for (Object text : args) {
+                    Button b = add(Button.wrapped(out.sz.x, (String) text), new Coord(0, y));
+                    btns.add(b);
+                    y += b.sz.y + 3;
                 }
-		super.wdgmsg(sender, msg, args);
-	}
+            }
+            pack();
+        } else {
+            super.uimsg(msg, args);
+        }
+    }
+
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+        if ((btns != null) && (btns.contains(sender))) {
+            wdgmsg("btn", btns.indexOf(sender));
+            return;
+        }
+        super.wdgmsg(sender, msg, args);
+    }
 }

@@ -32,32 +32,32 @@ public class MessageInputStream extends InputStream {
     private final Message bk;
 
     public MessageInputStream(Message from) {
-	this.bk = from;
+        this.bk = from;
     }
 
     public int read() {
-	while(bk.rt - bk.rh < 1) {
-	    if(!bk.underflow(1))
-		return(-1);
-	}
-	return(Utils.ub(bk.rbuf[bk.rh++]));
+        while (bk.rt - bk.rh < 1) {
+            if (!bk.underflow(1))
+                return (-1);
+        }
+        return (Utils.ub(bk.rbuf[bk.rh++]));
     }
 
     public int read(byte[] buf, int off, int len) {
-	int read = 0;
-	while(len > 0) {
-	    while(bk.rh >= bk.rt) {
-		if(!bk.underflow(Math.min(len, 1024))) {
-		    return((read > 0)?read:-1);
-		}
-	    }
-	    int r = Math.min(len, bk.rt - bk.rh);
-	    System.arraycopy(bk.rbuf, bk.rh, buf, off, r);
-	    bk.rh += r;
-	    off += r;
-	    len -= r;
-	    read += r;
-	}
-	return(read);
+        int read = 0;
+        while (len > 0) {
+            while (bk.rh >= bk.rt) {
+                if (!bk.underflow(Math.min(len, 1024))) {
+                    return ((read > 0) ? read : -1);
+                }
+            }
+            int r = Math.min(len, bk.rt - bk.rh);
+            System.arraycopy(bk.rbuf, bk.rh, buf, off, r);
+            bk.rh += r;
+            off += r;
+            len -= r;
+            read += r;
+        }
+        return (read);
     }
 }

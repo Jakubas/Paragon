@@ -32,262 +32,289 @@ import java.awt.Graphics;
 
 public abstract class ItemInfo {
     public final Owner owner;
-    
+
     public interface Owner {
-	public Glob glob();
-	public List<ItemInfo> info();
+        public Glob glob();
+
+        public List<ItemInfo> info();
     }
-    
+
     public interface ResOwner extends Owner {
-	public Resource resource();
+        public Resource resource();
     }
 
     public interface SpriteOwner extends ResOwner {
-	public GSprite sprite();
+        public GSprite sprite();
     }
-    
+
     @Resource.PublishedCode(name = "tt")
     public static interface InfoFactory {
-	public ItemInfo build(Owner owner, Object... args);
+        public ItemInfo build(Owner owner, Object... args);
     }
-    
+
     public ItemInfo(Owner owner) {
-	this.owner = owner;
+        this.owner = owner;
     }
-    
+
     public static class Layout {
-	private final List<Tip> tips = new ArrayList<Tip>();
-	private final Map<ID, Tip> itab = new HashMap<ID, Tip>();
-	public final CompImage cmp = new CompImage();
+        private final List<Tip> tips = new ArrayList<Tip>();
+        private final Map<ID, Tip> itab = new HashMap<ID, Tip>();
+        public final CompImage cmp = new CompImage();
 
-	public interface ID<T extends Tip> {
-	    public T make();
-	}
+        public interface ID<T extends Tip> {
+            public T make();
+        }
 
-	@SuppressWarnings("unchecked")
-	public <T extends Tip> T intern(ID<T> id) {
-	    T ret = (T)itab.get(id);
-	    if(ret == null) {
-		itab.put(id, ret = id.make());
-		add(ret);
-	    }
-	    return(ret);
-	}
+        @SuppressWarnings("unchecked")
+        public <T extends Tip> T intern(ID<T> id) {
+            T ret = (T) itab.get(id);
+            if (ret == null) {
+                itab.put(id, ret = id.make());
+                add(ret);
+            }
+            return (ret);
+        }
 
-	public void add(Tip tip) {
-	    tips.add(tip);
-	    tip.prepare(this);
-	}
+        public void add(Tip tip) {
+            tips.add(tip);
+            tip.prepare(this);
+        }
 
-	public BufferedImage render() {
-	    Collections.sort(tips, new Comparator<Tip>() {
-		    public int compare(Tip a, Tip b) {
-			return(a.order() - b.order());
-		    }
-		});
-	    for(Tip tip : tips)
-		tip.layout(this);
-	    return(cmp.compose());
-	}
+        public BufferedImage render() {
+            Collections.sort(tips, new Comparator<Tip>() {
+                public int compare(Tip a, Tip b) {
+                    return (a.order() - b.order());
+                }
+            });
+            for (Tip tip : tips)
+                tip.layout(this);
+            return (cmp.compose());
+        }
     }
 
     public static abstract class Tip extends ItemInfo {
-	public Tip(Owner owner) {
-	    super(owner);
-	}
+        public Tip(Owner owner) {
+            super(owner);
+        }
 
-	@Deprecated
-	public BufferedImage longtip() {return(null);}
-	public BufferedImage tipimg() {return(longtip());}
-	public Tip shortvar() {return(null);}
-	public void prepare(Layout l) {}
-	public void layout(Layout l) {
-	    BufferedImage t = tipimg();
-	    if(t != null)
-		l.cmp.add(tipimg(), new Coord(0, l.cmp.sz.y));
-	}
-	public int order() {return(100);}
+        @Deprecated
+        public BufferedImage longtip() {
+            return (null);
+        }
+
+        public BufferedImage tipimg() {
+            return (longtip());
+        }
+
+        public Tip shortvar() {
+            return (null);
+        }
+
+        public void prepare(Layout l) {
+        }
+
+        public void layout(Layout l) {
+            BufferedImage t = tipimg();
+            if (t != null)
+                l.cmp.add(tipimg(), new Coord(0, l.cmp.sz.y));
+        }
+
+        public int order() {
+            return (100);
+        }
     }
-    
+
     public static class AdHoc extends Tip {
-	public final Text str;
-	
-	public AdHoc(Owner owner, String str) {
-	    super(owner);
-	    this.str = Text.render(str);
-	}
-	
-	public BufferedImage tipimg() {
-	    return(str.img);
-	}
+        public final Text str;
+
+        public AdHoc(Owner owner, String str) {
+            super(owner);
+            this.str = Text.render(str);
+        }
+
+        public BufferedImage tipimg() {
+            return (str.img);
+        }
     }
 
     public static class Name extends Tip {
-	public final Text str;
-	
-	public Name(Owner owner, Text str) {
-	    super(owner);
-	    this.str = str;
-	}
-	
-	public Name(Owner owner, String str) {
-	    this(owner, Text.render(str));
-	}
-	
-	public BufferedImage tipimg() {
-	    return(str.img);
-	}
+        public final Text str;
 
-	public int order() {return(0);}
+        public Name(Owner owner, Text str) {
+            super(owner);
+            this.str = str;
+        }
 
-	public Tip shortvar() {
-	    return(new Tip(owner) {
-		    public BufferedImage tipimg() {return(str.img);}
-		    public int order() {return(0);}
-		});
-	}
+        public Name(Owner owner, String str) {
+            this(owner, Text.render(str));
+        }
+
+        public BufferedImage tipimg() {
+            return (str.img);
+        }
+
+        public int order() {
+            return (0);
+        }
+
+        public Tip shortvar() {
+            return (new Tip(owner) {
+                public BufferedImage tipimg() {
+                    return (str.img);
+                }
+
+                public int order() {
+                    return (0);
+                }
+            });
+        }
     }
 
     public static class Contents extends Tip {
-	public final List<ItemInfo> sub;
-	private static final Text.Line ch = Text.render("Contents:");
-	
-	public Contents(Owner owner, List<ItemInfo> sub) {
-	    super(owner);
-	    this.sub = sub;
-	}
-	
-	public BufferedImage tipimg() {
-	    BufferedImage stip = longtip(sub);
-	    BufferedImage img = TexI.mkbuf(new Coord(stip.getWidth() + 10, stip.getHeight() + 15));
-	    Graphics g = img.getGraphics();
-	    g.drawImage(ch.img, 0, 0, null);
-	    g.drawImage(stip, 10, 15, null);
-	    g.dispose();
-	    return(img);
-	}
+        public final List<ItemInfo> sub;
+        private static final Text.Line ch = Text.render("Contents:");
 
-	public Tip shortvar() {
-	    return(new Tip(owner) {
-		    public BufferedImage tipimg() {return(shorttip(sub));}
-		    public int order() {return(100);}
-		});
-	}
+        public Contents(Owner owner, List<ItemInfo> sub) {
+            super(owner);
+            this.sub = sub;
+        }
+
+        public BufferedImage tipimg() {
+            BufferedImage stip = longtip(sub);
+            BufferedImage img = TexI.mkbuf(new Coord(stip.getWidth() + 10, stip.getHeight() + 15));
+            Graphics g = img.getGraphics();
+            g.drawImage(ch.img, 0, 0, null);
+            g.drawImage(stip, 10, 15, null);
+            g.dispose();
+            return (img);
+        }
+
+        public Tip shortvar() {
+            return (new Tip(owner) {
+                public BufferedImage tipimg() {
+                    return (shorttip(sub));
+                }
+
+                public int order() {
+                    return (100);
+                }
+            });
+        }
     }
 
     public static BufferedImage catimgs(int margin, BufferedImage... imgs) {
-	int w = 0, h = -margin;
-	for(BufferedImage img : imgs) {
-	    if(img == null)
-		continue;
-	    if(img.getWidth() > w)
-		w = img.getWidth();
-	    h += img.getHeight() + margin;
-	}
-	BufferedImage ret = TexI.mkbuf(new Coord(w, h));
-	Graphics g = ret.getGraphics();
-	int y = 0;
-	for(BufferedImage img : imgs) {
-	    if(img == null)
-		continue;
-	    g.drawImage(img, 0, y, null);
-	    y += img.getHeight() + margin;
-	}
-	g.dispose();
-	return(ret);
+        int w = 0, h = -margin;
+        for (BufferedImage img : imgs) {
+            if (img == null)
+                continue;
+            if (img.getWidth() > w)
+                w = img.getWidth();
+            h += img.getHeight() + margin;
+        }
+        BufferedImage ret = TexI.mkbuf(new Coord(w, h));
+        Graphics g = ret.getGraphics();
+        int y = 0;
+        for (BufferedImage img : imgs) {
+            if (img == null)
+                continue;
+            g.drawImage(img, 0, y, null);
+            y += img.getHeight() + margin;
+        }
+        g.dispose();
+        return (ret);
     }
 
     public static BufferedImage catimgsh(int margin, BufferedImage... imgs) {
-	int w = -margin, h = 0;
-	for(BufferedImage img : imgs) {
-	    if(img == null)
-		continue;
-	    if(img.getHeight() > h)
-		h = img.getHeight();
-	    w += img.getWidth() + margin;
-	}
-	BufferedImage ret = TexI.mkbuf(new Coord(w, h));
-	Graphics g = ret.getGraphics();
-	int x = 0;
-	for(BufferedImage img : imgs) {
-	    if(img == null)
-		continue;
-	    g.drawImage(img, x, (h - img.getHeight()) / 2, null);
-	    x += img.getWidth() + margin;
-	}
-	g.dispose();
-	return(ret);
+        int w = -margin, h = 0;
+        for (BufferedImage img : imgs) {
+            if (img == null)
+                continue;
+            if (img.getHeight() > h)
+                h = img.getHeight();
+            w += img.getWidth() + margin;
+        }
+        BufferedImage ret = TexI.mkbuf(new Coord(w, h));
+        Graphics g = ret.getGraphics();
+        int x = 0;
+        for (BufferedImage img : imgs) {
+            if (img == null)
+                continue;
+            g.drawImage(img, x, (h - img.getHeight()) / 2, null);
+            x += img.getWidth() + margin;
+        }
+        g.dispose();
+        return (ret);
     }
 
     public static BufferedImage longtip(List<ItemInfo> info) {
-	Layout l = new Layout();
-	for(ItemInfo ii : info) {
-	    if(ii instanceof Tip) {
-		Tip tip = (Tip)ii;
-		l.add(tip);
-	    }
-	}
-	if(l.tips.size() < 1)
-	    return(null);
-	return(l.render());
+        Layout l = new Layout();
+        for (ItemInfo ii : info) {
+            if (ii instanceof Tip) {
+                Tip tip = (Tip) ii;
+                l.add(tip);
+            }
+        }
+        if (l.tips.size() < 1)
+            return (null);
+        return (l.render());
     }
 
     public static BufferedImage shorttip(List<ItemInfo> info) {
-	Layout l = new Layout();
-	for(ItemInfo ii : info) {
-	    if(ii instanceof Tip) {
-		Tip tip = ((Tip)ii).shortvar();
-		if(tip != null)
-		    l.add(tip);
-	    }
-	}
-	if(l.tips.size() < 1)
-	    return(null);
-	return(l.render());
+        Layout l = new Layout();
+        for (ItemInfo ii : info) {
+            if (ii instanceof Tip) {
+                Tip tip = ((Tip) ii).shortvar();
+                if (tip != null)
+                    l.add(tip);
+            }
+        }
+        if (l.tips.size() < 1)
+            return (null);
+        return (l.render());
     }
 
     public static <T> T find(Class<T> cl, List<ItemInfo> il) {
-	for(ItemInfo inf : il) {
-	    if(cl.isInstance(inf))
-		return(cl.cast(inf));
-	}
-	return(null);
+        for (ItemInfo inf : il) {
+            if (cl.isInstance(inf))
+                return (cl.cast(inf));
+        }
+        return (null);
     }
 
     public static List<ItemInfo> buildinfo(Owner owner, Object[] rawinfo) {
-	List<ItemInfo> ret = new ArrayList<ItemInfo>();
-	for(Object o : rawinfo) {
-	    if(o instanceof Object[]) {
-		Object[] a = (Object[])o;
-		Resource ttres = owner.glob().sess.getres((Integer)a[0]).get();
-		InfoFactory f = ttres.getcode(InfoFactory.class, true);
-		ItemInfo inf = f.build(owner, a);
-		if(inf != null)
-		    ret.add(inf);
-	    } else if(o instanceof String) {
-		ret.add(new AdHoc(owner, (String)o));
-	    } else {
-		throw(new ClassCastException("Unexpected object type " + o.getClass() + " in item info array."));
-	    }
-	}
-	return(ret);
+        List<ItemInfo> ret = new ArrayList<ItemInfo>();
+        for (Object o : rawinfo) {
+            if (o instanceof Object[]) {
+                Object[] a = (Object[]) o;
+                Resource ttres = owner.glob().sess.getres((Integer) a[0]).get();
+                InfoFactory f = ttres.getcode(InfoFactory.class, true);
+                ItemInfo inf = f.build(owner, a);
+                if (inf != null)
+                    ret.add(inf);
+            } else if (o instanceof String) {
+                ret.add(new AdHoc(owner, (String) o));
+            } else {
+                throw (new ClassCastException("Unexpected object type " + o.getClass() + " in item info array."));
+            }
+        }
+        return (ret);
     }
-    
+
     private static String dump(Object arg) {
-	if(arg instanceof Object[]) {
-	    StringBuilder buf = new StringBuilder();
-	    buf.append("[");
-	    boolean f = true;
-	    for(Object a : (Object[])arg) {
-		if(!f)
-		    buf.append(", ");
-		buf.append(dump(a));
-		f = false;
-	    }
-	    buf.append("]");
-	    return(buf.toString());
-	} else {
-	    return(arg.toString());
-	}
+        if (arg instanceof Object[]) {
+            StringBuilder buf = new StringBuilder();
+            buf.append("[");
+            boolean f = true;
+            for (Object a : (Object[]) arg) {
+                if (!f)
+                    buf.append(", ");
+                buf.append(dump(a));
+                f = false;
+            }
+            buf.append("]");
+            return (buf.toString());
+        } else {
+            return (arg.toString());
+        }
     }
 }

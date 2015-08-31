@@ -38,20 +38,20 @@ public class MapMod extends Window implements MapView.Grabber {
     Label text;
     Coord sc, c1, c2;
     TextEntry tilenm;
-    public final static String fmt = "Selected: %d" + (char)(0xD7) + "%d";
-    
+    public final static String fmt = "Selected: %d" + (char) (0xD7) + "%d";
+
     @RName("mapmod")
     public static class $_ implements Factory {
-	public Widget create(Widget parent, Object[] args) {
-	    return(new MapMod());
-	}
+        public Widget create(Widget parent, Object[] args) {
+            return (new MapMod());
+        }
     }
 
     public MapMod() {
         super(new Coord(200, 100), "Kartlasskostning");
         walkmod = false;
         cbox = add(new CheckBox("Walk drawing"), Coord.z);
-	cbox.canactivate = true;
+        cbox.canactivate = true;
         btn = add(new Button(40, "Change"), asz.add(-50, -30));
         text = add(new Label(String.format(fmt, 0, 0)), Coord.z);
         tilenm = add(new TextEntry(50, ""), new Coord(0, 40));
@@ -59,62 +59,62 @@ public class MapMod extends Window implements MapView.Grabber {
     }
 
     protected void added() {
-	map = ui.sess.glob.map;
-	mv = getparent(GameUI.class).map;
-	grab = mv.new GrabXL(this);
+        map = ui.sess.glob.map;
+        mv = getparent(GameUI.class).map;
+        grab = mv.new GrabXL(this);
         mv.enol(17);
         mv.grab(grab);
     }
 
     public void destroy() {
         mv.disol(17);
-        if(!walkmod)
+        if (!walkmod)
             mv.release(grab);
-        if(ol != null)
+        if (ol != null)
             ol.destroy();
         super.destroy();
     }
 
-	
+
     public boolean mmousedown(Coord mc, int button) {
-	if(button != 1)
-	    return(false);
+        if (button != 1)
+            return (false);
         Coord tc = mc.div(MCache.tilesz);
-        if(ol != null)
+        if (ol != null)
             ol.destroy();
         ol = map.new Overlay(tc, tc, 1 << 17);
         sc = tc;
         grab.mv = true;
         mgrab = ui.grabmouse(mv);
-	return(true);
+        return (true);
     }
 
     public boolean mmousewheel(Coord mc, int amount) {
-	return(false);
+        return (false);
     }
-	
+
     public boolean mmouseup(Coord mc, int button) {
         grab.mv = false;
-	mgrab.remove();
-	return(true);
+        mgrab.remove();
+        return (true);
     }
-	
+
     public void mmousemove(Coord mc) {
         Coord tc = mc.div(MCache.tilesz);
         Coord c1 = new Coord(0, 0), c2 = new Coord(0, 0);
-        if(tc.x < sc.x) {
+        if (tc.x < sc.x) {
             c1.x = tc.x;
             c2.x = sc.x;
         } else {
             c1.x = sc.x;
-            c2.x = tc.x;			
+            c2.x = tc.x;
         }
-        if(tc.y < sc.y) {
+        if (tc.y < sc.y) {
             c1.y = tc.y;
             c2.y = sc.y;
         } else {
             c1.y = sc.y;
-            c2.y = tc.y;			
+            c2.y = tc.y;
         }
         ol.update(c1, c2);
         this.c1 = c1;
@@ -123,25 +123,25 @@ public class MapMod extends Window implements MapView.Grabber {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if(sender == btn) {
-            if((c1 != null) && (c2 != null))
+        if (sender == btn) {
+            if ((c1 != null) && (c2 != null))
                 wdgmsg("mod", c1, c2);
             return;
         }
-        if(sender == cbox) {
-            walkmod = (Boolean)args[0];
-            if(!walkmod) {
+        if (sender == cbox) {
+            walkmod = (Boolean) args[0];
+            if (!walkmod) {
                 mv.grab(grab);
             } else {
-                if(ol != null)
+                if (ol != null)
                     ol.destroy();
                 ol = null;
                 mv.release(grab);
             }
-            wdgmsg("wm", walkmod?1:0);
+            wdgmsg("wm", walkmod ? 1 : 0);
             return;
         }
-        if(sender == tilenm) {
+        if (sender == tilenm) {
             wdgmsg("tilenm", tilenm.text);
             return;
         }

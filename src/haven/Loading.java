@@ -30,80 +30,80 @@ public class Loading extends RuntimeException {
     public final Loading rec;
 
     public Loading() {
-	super();
-	rec = null;
+        super();
+        rec = null;
     }
 
     public Loading(String msg) {
-	super(msg);
-	rec = null;
+        super(msg);
+        rec = null;
     }
-    
+
     public Loading(Throwable cause) {
-	super(cause);
-	rec = null;
+        super(cause);
+        rec = null;
     }
-    
+
     public Loading(String msg, Throwable cause) {
-	super(msg, cause);
-	rec = null;
+        super(msg, cause);
+        rec = null;
     }
 
     public Loading(Loading rec) {
-	super(rec);
-	this.rec = rec;
+        super(rec);
+        this.rec = rec;
     }
 
     public Loading(String msg, Loading rec) {
-	super(msg, rec);
-	this.rec = rec;
+        super(msg, rec);
+        this.rec = rec;
     }
 
     public String getMessage() {
-	if(rec != null)
-	    return(rec.getMessage());
-	return(super.getMessage());
+        if (rec != null)
+            return (rec.getMessage());
+        return (super.getMessage());
     }
 
     public boolean canwait() {
-	if(rec != null)
-	    return(rec.canwait());
-	else
-	    return(false);
+        if (rec != null)
+            return (rec.canwait());
+        else
+            return (false);
     }
 
     public void waitfor() throws InterruptedException {
-	if(rec != null) {
-	    rec.waitfor();
-	    return;
-	} else {
-	    throw(new RuntimeException("Tried to wait for unwaitable event", this));
-	}
+        if (rec != null) {
+            rec.waitfor();
+            return;
+        } else {
+            throw (new RuntimeException("Tried to wait for unwaitable event", this));
+        }
     }
 
     public static <T> T waitforint(Indir<T> x) throws InterruptedException {
-	while(true) {
-	    try {
-		return(x.get());
-	    } catch(Loading l) {
-		l.waitfor();
-	    }
-	}
+        while (true) {
+            try {
+                return (x.get());
+            } catch (Loading l) {
+                l.waitfor();
+            }
+        }
     }
 
     public static <T> T waitfor(Indir<T> x) {
-	boolean intd = false;
-	try {
-	    while(true) {
-		try {
-		    return(waitforint(x));
-		} catch(InterruptedException e) {
-		    intd = true;
-		}
-	    }
-	} finally {
-	    if(intd)
-		Thread.currentThread().interrupt();
-	}
+        boolean intd = false;
+        try {
+            while (true) {
+                try {
+                    return (waitforint(x));
+                } catch (InterruptedException e) {
+                    intd = true;
+                }
+            }
+        } finally {
+            if (intd)
+                Thread.currentThread().interrupt();
+        }
     }
 }

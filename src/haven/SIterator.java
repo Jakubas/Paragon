@@ -31,34 +31,34 @@ import java.util.*;
 public abstract class SIterator<T> implements Iterator<T> {
     private int st = 0;
     private T n;
-    
+
     public abstract T snext() throws NoSuchElementException;
 
     private void ref() {
-	if(st == 0) {
-	    try {
-		n = snext();
-		st = 1;
-	    } catch(NoSuchElementException e) {
-		st = 2;
-	    }
-	}
+        if (st == 0) {
+            try {
+                n = snext();
+                st = 1;
+            } catch (NoSuchElementException e) {
+                st = 2;
+            }
+        }
     }
 
     public boolean hasNext() {
-	ref();
-	return(st == 1);
+        ref();
+        return (st == 1);
     }
 
     public T next() {
-	ref();
-	if(st == 2)
-	    throw(new NoSuchElementException());
-	st = 0;
-	return(n);
+        ref();
+        if (st == 2)
+            throw (new NoSuchElementException());
+        st = 0;
+        return (n);
     }
 
     public void remove() {
-	throw(new UnsupportedOperationException());
+        throw (new UnsupportedOperationException());
     }
 }

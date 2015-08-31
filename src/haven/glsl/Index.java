@@ -33,20 +33,20 @@ public class Index extends LValue {
     public final Expression idx;
 
     public Index(Expression val, Expression idx) {
-	this.val = val;
-	this.idx = idx;
+        this.val = val;
+        this.idx = idx;
     }
 
     public void walk(Walker w) {
-	w.el(val);
-	w.el(idx);
+        w.el(val);
+        w.el(idx);
     }
 
     public void output(Output out) {
-	out.write("(");
-	val.output(out);
-	out.write("[");
-	idx.output(out);
-	out.write("])");
+        out.write("(");
+        val.output(out);
+        out.write("[");
+        idx.output(out);
+        out.write("])");
     }
 }

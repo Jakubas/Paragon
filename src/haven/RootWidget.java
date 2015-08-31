@@ -32,40 +32,40 @@ public class RootWidget extends ConsoleHost {
     public static final Resource defcurs = Resource.local().loadwait("gfx/hud/curs/arw");
     Profile guprof, grprof, ggprof;
     boolean afk = false;
-	
+
     public RootWidget(UI ui, Coord sz) {
-	super(ui, new Coord(0, 0), sz);
-	setfocusctl(true);
-	cursor = defcurs.indir();
+        super(ui, new Coord(0, 0), sz);
+        setfocusctl(true);
+        cursor = defcurs.indir();
     }
-	
+
     public boolean globtype(char key, KeyEvent ev) {
-	if(!super.globtype(key, ev)) {
-	    if(key == '`') {
-		GameUI gi = findchild(GameUI.class);
-		if(Config.profile) {
-		    add(new Profwnd(guprof, "UI profile"), new Coord(100, 100));
-		    add(new Profwnd(grprof, "GL profile"), new Coord(450, 100));
-		    if((gi != null) && (gi.map != null))
-			add(new Profwnd(gi.map.prof, "Map profile"), new Coord(100, 250));
-		}
-		if(Config.profilegpu) {
-		    add(new Profwnd(ggprof, "GPU profile"), new Coord(450, 250));
-		}
-	    } else if(key == ':') {
-		entercmd();
-	    } else if(key != 0) {
-		wdgmsg("gk", (int)key);
-	    }
-	}
-	return(true);
+        if (!super.globtype(key, ev)) {
+            if (key == '`') {
+                GameUI gi = findchild(GameUI.class);
+                if (Config.profile) {
+                    add(new Profwnd(guprof, "UI profile"), new Coord(100, 100));
+                    add(new Profwnd(grprof, "GL profile"), new Coord(450, 100));
+                    if ((gi != null) && (gi.map != null))
+                        add(new Profwnd(gi.map.prof, "Map profile"), new Coord(100, 250));
+                }
+                if (Config.profilegpu) {
+                    add(new Profwnd(ggprof, "GPU profile"), new Coord(450, 250));
+                }
+            } else if (key == ':') {
+                entercmd();
+            } else if (key != 0) {
+                wdgmsg("gk", (int) key);
+            }
+        }
+        return (true);
     }
 
     public void draw(GOut g) {
-	super.draw(g);
-	drawcmd(g, new Coord(20, sz.y - 20));
+        super.draw(g);
+        drawcmd(g, new Coord(20, sz.y - 20));
     }
-    
+
     public void error(String msg) {
     }
 }

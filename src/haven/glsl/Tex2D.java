@@ -29,6 +29,7 @@ package haven.glsl;
 import static haven.glsl.Cons.*;
 import static haven.glsl.Function.PDir.*;
 import static haven.glsl.Type.*;
+
 import haven.glsl.ValBlock.Value;
 
 public class Tex2D {
@@ -36,76 +37,76 @@ public class Tex2D {
     public Varying.Interpol ipol = Varying.Interpol.NORMAL;
 
     public static final AutoVarying rtexcoord = new AutoVarying(VEC2, "s_tex2d") {
-	    protected Expression root(VertexContext vctx) {
-		return(pick(vctx.gl_MultiTexCoord[0].ref(), "st"));
-	    }
+        protected Expression root(VertexContext vctx) {
+            return (pick(vctx.gl_MultiTexCoord[0].ref(), "st"));
+        }
 
-	    protected Interpol ipol(Context ctx) {
-		Tex2D mod;
-		if((ctx instanceof ShaderContext) && ((mod = ((ShaderContext)ctx).prog.getmod(Tex2D.class)) != null))
-		    return(mod.ipol);
-		return(super.ipol(ctx));
-	    }
-	};
+        protected Interpol ipol(Context ctx) {
+            Tex2D mod;
+            if ((ctx instanceof ShaderContext) && ((mod = ((ShaderContext) ctx).prog.getmod(Tex2D.class)) != null))
+                return (mod.ipol);
+            return (super.ipol(ctx));
+        }
+    };
 
     public static Value texcoord(FragmentContext fctx) {
-	return(fctx.uniform.ext(rtexcoord, new ValBlock.Factory() {
-		public Value make(ValBlock vals) {
-		    return(vals.new Value(VEC2) {
-			    public Expression root() {
-				return(rtexcoord.ref());
-			    }
-			});
-		}
-	    }));
+        return (fctx.uniform.ext(rtexcoord, new ValBlock.Factory() {
+            public Value make(ValBlock vals) {
+                return (vals.new Value(VEC2) {
+                    public Expression root() {
+                        return (rtexcoord.ref());
+                    }
+                });
+            }
+        }));
     }
 
     public static Value tex2d(final FragmentContext fctx) {
-	return(fctx.uniform.ext(tex2d, new ValBlock.Factory() {
-		public Value make(ValBlock vals) {
-		    texcoord(fctx);
-		    return(vals.new Value(VEC4) {
-			    public Expression root() {
-				return(texture2D(tex2d.ref(), texcoord(fctx).depref()));
-			    }
-			});
-		}
-	    }));
+        return (fctx.uniform.ext(tex2d, new ValBlock.Factory() {
+            public Value make(ValBlock vals) {
+                texcoord(fctx);
+                return (vals.new Value(VEC4) {
+                    public Expression root() {
+                        return (texture2D(tex2d.ref(), texcoord(fctx).depref()));
+                    }
+                });
+            }
+        }));
     }
 
     public Tex2D(ProgramContext prog) {
-	prog.module(this);
+        prog.module(this);
     }
 
     public static Tex2D get(ProgramContext prog) {
-	Tex2D t = prog.getmod(Tex2D.class);
-	if(t == null)
-	    t = new Tex2D(prog);
-	return(t);
+        Tex2D t = prog.getmod(Tex2D.class);
+        if (t == null)
+            t = new Tex2D(prog);
+        return (t);
     }
 
     public static final ShaderMacro mod = new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		final Value tex2d = tex2d(prog.fctx);
-		tex2d.force();
-		prog.fctx.fragcol.mod(new Macro1<Expression>() {
-			public Expression expand(Expression in) {
-			    return(mul(in, tex2d.ref()));
-			}
-		    }, 0);
-	    }
-	};
+        public void modify(ProgramContext prog) {
+            final Value tex2d = tex2d(prog.fctx);
+            tex2d.force();
+            prog.fctx.fragcol.mod(new Macro1<Expression>() {
+                public Expression expand(Expression in) {
+                    return (mul(in, tex2d.ref()));
+                }
+            }, 0);
+        }
+    };
 
     public static final ShaderMacro clip = new ShaderMacro() {
-	    public void modify(ProgramContext prog) {
-		final Value tex2d = tex2d(prog.fctx);
-		tex2d.force();
-		prog.fctx.mainmod(new CodeMacro() {
-			public void expand(Block blk) {
-			    blk.add(new If(lt(pick(tex2d.ref(), "a"), l(0.5)),
-					   new Discard()));
-			}
-		    }, -100);
-	    }
-	};
+        public void modify(ProgramContext prog) {
+            final Value tex2d = tex2d(prog.fctx);
+            tex2d.force();
+            prog.fctx.mainmod(new CodeMacro() {
+                public void expand(Block blk) {
+                    blk.add(new If(lt(pick(tex2d.ref(), "a"), l(0.5)),
+                            new Discard()));
+                }
+            }, -100);
+        }
+    };
 }

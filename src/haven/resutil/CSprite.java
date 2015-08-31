@@ -27,35 +27,36 @@
 package haven.resutil;
 
 import haven.*;
+
 import java.util.*;
 
 public class CSprite extends Sprite {
     private final Coord3f cc;
     private final List<Rendered> parts = new ArrayList<Rendered>();
     private final Random rnd;
-    
+
     public CSprite(Owner owner, Resource res) {
-	super(owner, res);
-	rnd = owner.mkrandoom();
-	Gob gob = (Gob)owner;
-	cc = gob.getrc();
+        super(owner, res);
+        rnd = owner.mkrandoom();
+        Gob gob = (Gob) owner;
+        cc = gob.getrc();
     }
 
     public void addpart(Location loc, GLState mat, Rendered part) {
-	parts.add(GLState.compose(loc, mat).apply(part));
+        parts.add(GLState.compose(loc, mat).apply(part));
     }
 
     public void addpart(float xo, float yo, GLState mat, Rendered part) {
-	Coord3f pc = new Coord3f(xo, -yo, owner.glob().map.getcz(cc.x + xo, cc.y + yo) - cc.z);
-	Location loc = new Location(Transform.makexlate(new Matrix4f(), pc)
-				    .mul1(Transform.makerot(new Matrix4f(), Coord3f.zu, (float)(rnd.nextFloat() * Math.PI * 2))));
-	addpart(loc, mat, part);
+        Coord3f pc = new Coord3f(xo, -yo, owner.glob().map.getcz(cc.x + xo, cc.y + yo) - cc.z);
+        Location loc = new Location(Transform.makexlate(new Matrix4f(), pc)
+                .mul1(Transform.makerot(new Matrix4f(), Coord3f.zu, (float) (rnd.nextFloat() * Math.PI * 2))));
+        addpart(loc, mat, part);
     }
 
     public boolean setup(RenderList rl) {
-	rl.prepc(Location.goback("gobx"));
-	for(Rendered p : parts)
-	    rl.add(p, null);
-	return(false);
+        rl.prepc(Location.goback("gobx"));
+        for (Rendered p : parts)
+            rl.add(p, null);
+        return (false);
     }
 }

@@ -30,20 +30,24 @@ public class PMessage extends MessageBuf {
     public int type;
 
     public PMessage(int type, byte[] blob, int off, int len) {
-	super(blob, off, len);
-	this.type = type;
+        super(blob, off, len);
+        this.type = type;
     }
+
     public PMessage(int type, byte[] blob) {
-	this(type, blob, 0, blob.length);
+        this(type, blob, 0, blob.length);
     }
+
     public PMessage(int type) {
-	this.type = type;
+        this.type = type;
     }
+
     public PMessage(int type, Message msg) {
-	super(msg);
-	this.type = type;
+        super(msg);
+        this.type = type;
     }
+
     public PMessage(PMessage msg) {
-	this(msg.type, msg);
+        this(msg.type, msg);
     }
 }

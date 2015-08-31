@@ -28,14 +28,19 @@ package haven.glsl;
 
 public abstract class Type {
     private static class Simple extends Type {
-	private final String name;
+        private final String name;
 
-	private Simple(String name) {
-	    this.name = name;
-	}
+        private Simple(String name) {
+            this.name = name;
+        }
 
-	public String name(Context ctx) {return(name);}
-	public String toString() {return(name);}
+        public String name(Context ctx) {
+            return (name);
+        }
+
+        public String toString() {
+            return (name);
+        }
     }
 
     public static final Type VOID = new Simple("void");

@@ -34,32 +34,32 @@ public class Output {
     public int indent = 0;
 
     public Output(Writer out, Context ctx) {
-	this.out = out;
-	this.ctx = ctx;
+        this.out = out;
+        this.ctx = ctx;
     }
 
     public void write(char c) {
-	try {
-	    out.write(c);
-	} catch(IOException e) {
-	    throw(new RuntimeException(e));
-	}
+        try {
+            out.write(c);
+        } catch (IOException e) {
+            throw (new RuntimeException(e));
+        }
     }
 
     public void write(String str) {
-	try {
-	    out.write(str);
-	} catch(IOException e) {
-	    throw(new RuntimeException(e));
-	}
+        try {
+            out.write(str);
+        } catch (IOException e) {
+            throw (new RuntimeException(e));
+        }
     }
 
     public void write(Symbol sym) {
-	write(sym.name(ctx));
+        write(sym.name(ctx));
     }
 
     public void indent() {
-	for(int i = 0; i < indent; i++)
-	    write("    ");
+        for (int i = 0; i < indent; i++)
+            write("    ");
     }
 }
