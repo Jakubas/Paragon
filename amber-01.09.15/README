@@ -1,0 +1,15 @@
+                                Amber
+
+Amber is a client for Haven & Hearth. Main differences from the vanilla client include:
+
+- Option to hide flavour objects.
+- Daylight mode.
+- Better fonts.
+- Map data saving to disk.
+- Floating minimap.
+- Improved item transfer between inventory and containers.
+- ...and some additional fixes.
+
+
+
+https://github.com/romovs/amber
