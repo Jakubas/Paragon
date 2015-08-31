@@ -31,16 +31,28 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
+import haven.error.*;
 
 public class MainFrame extends java.awt.Frame implements Runnable, Console.Directory {
     HavenPanel p;
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
+	private static String TITLE;
 	
     static {
 	try {
 	    javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+
+		InputStream in = ErrorHandler.class.getResourceAsStream("/version");
+		try {
+			if(in != null) {
+				java.util.Scanner s = new java.util.Scanner(in);
+				TITLE = "Haven and Hearth (Amber v" + (s.hasNext() ? s.next() : "") + ")";
+			}
+		} finally {
+			in.close();
+		}
 	} catch(Exception e) {}
     }
 	
@@ -249,10 +261,10 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
 			    Config.authck = null;
 			}
 			fun = bill;
-			setTitle("Haven and Hearth");
+			setTitle(TITLE);
 		    } else {
 			fun = new RemoteUI(sess);
-			setTitle("Haven and Hearth \u2013 " + sess.username);
+			setTitle(TITLE + " \u2013 " + sess.username);
 		    }
 		    sess = fun.run(p.newui(sess));
 		}

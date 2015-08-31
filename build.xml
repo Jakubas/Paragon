@@ -23,6 +23,7 @@
     <echo file="build/classes/buildinfo" xml:space="default">
       git-rev = ${gitrev}
     </echo>
+    <echo file="build/classes/version" xml:space="default">${built.date}</echo>
   </target>
 
   <target name="hafen-client" depends="build-env">
