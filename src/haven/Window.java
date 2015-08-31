@@ -326,4 +326,8 @@ public class Window extends Widget implements DTarget {
         else
             return ("");
     }
+
+    public boolean ismousegrab() {
+        return dm != null;
+    }
 }

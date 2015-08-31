@@ -274,8 +274,6 @@ public class LocalMiniMap extends Widget {
                 }
             } catch (Loading l) {
             }
-        } else {
-            g.image(MiniMap.nomap, Coord.z);
         }
         drawicons(g);
     }
