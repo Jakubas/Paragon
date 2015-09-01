@@ -175,6 +175,17 @@ public class LocalMiniMap extends Widget {
                         Coord gc = p2c(gob.rc);
                         Tex tex = icon.tex();
                         g.image(tex, gc.sub(tex.sz().div(2)));
+                    } else if (Config.showplayersmmap) {
+                        Resource res = gob.getres();
+                        if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
+                            Coord pc = p2c(gob.rc);
+                            g.chcolor(Color.BLACK);
+                            g.fellipse(pc, new Coord(5, 5));
+                            KinInfo kininfo = gob.getattr(KinInfo.class);
+                            g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                            g.fellipse(pc, new Coord(4, 4));
+                            g.chcolor();
+                        }
                     }
                 } catch (Loading l) {
                 }
@@ -225,23 +236,23 @@ public class LocalMiniMap extends Widget {
                             Coord mtc = cmaps.mul(3).sub(2, 2);
                             TexI im = new TexI(drawmap(ul, mtc));
 
-                            //if (!isCurCave) {
-                            int mtcw = mtc.x;
-                            int mtch = mtc.y;
-                            int cmapsw = cmaps.x - 1;
-                            int cmapsh = cmaps.y - 1;
+                            if (Config.savemmap) {
+                                int mtcw = mtc.x;
+                                int mtch = mtc.y;
+                                int cmapsw = cmaps.x - 1;
+                                int cmapsh = cmaps.y - 1;
 
-                            int dx = -1;
-                            for (int x = 0; x <= mtcw - cmapsw; x += cmapsw) {
-                                int dy = -1;
-                                for (int y = 0; y <= mtch - cmapsh; y += cmapsh) {
-                                    if (im.back != null)
-                                        save(im.back.getSubimage(x, y, cmapsw, cmapsh), plg.add(dx, dy));
-                                    dy++;
+                                int dx = -1;
+                                for (int x = 0; x <= mtcw - cmapsw; x += cmapsw) {
+                                    int dy = -1;
+                                    for (int y = 0; y <= mtch - cmapsh; y += cmapsh) {
+                                        if (im.back != null)
+                                            save(im.back.getSubimage(x, y, cmapsw, cmapsh), plg.add(dx, dy));
+                                        dy++;
+                                    }
+                                    dx++;
                                 }
-                                dx++;
                             }
-                            //}
 
                             return (new MapTile(im, ul, plg));
                         }
@@ -255,25 +266,28 @@ public class LocalMiniMap extends Widget {
         if (cur != null) {
             g.image(MiniMap.bg, Coord.z);
             g.image(cur.img, cur.ul.sub(cc).add(sz.div(2)));
-            try {
-                synchronized (ui.sess.glob.party.memb) {
-                    for (Party.Member m : ui.sess.glob.party.memb.values()) {
-                        Coord ptc;
-                        try {
-                            ptc = m.getc();
-                        } catch (MCache.LoadingMap e) {
-                            ptc = null;
+                try {
+                    synchronized (ui.sess.glob.party.memb) {
+                        for (Party.Member m : ui.sess.glob.party.memb.values()) {
+                            if (Config.showplayersmmap && m.gobid != mv.player().id)
+                                continue;
+
+                            Coord ptc;
+                            try {
+                                ptc = m.getc();
+                            } catch (MCache.LoadingMap e) {
+                                ptc = null;
+                            }
+                            if (ptc == null)
+                                continue;
+                            ptc = p2c(ptc);
+                            g.chcolor(m.col.getRed(), m.col.getGreen(), m.col.getBlue(), 128);
+                            g.image(MiniMap.plx.layer(Resource.imgc).tex(), ptc.add(MiniMap.plx.layer(Resource.negc).cc.inv()));
+                            g.chcolor();
                         }
-                        if (ptc == null)
-                            continue;
-                        ptc = p2c(ptc);
-                        g.chcolor(m.col.getRed(), m.col.getGreen(), m.col.getBlue(), 128);
-                        g.image(MiniMap.plx.layer(Resource.imgc).tex(), ptc.add(MiniMap.plx.layer(Resource.negc).cc.inv()));
-                        g.chcolor();
                     }
+                } catch (Loading l) {
                 }
-            } catch (Loading l) {
-            }
         }
         drawicons(g);
     }

@@ -30,7 +30,7 @@ import java.util.*;
 import java.awt.font.TextAttribute;
 
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display;
+    public final Panel main, video, audio, display, map;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -202,30 +202,32 @@ public class OptWnd extends Window {
         video = add(new VideoPanel(main));
         audio = add(new Panel());
         display = add(new Panel());
+        map = add(new Panel());
 
         int y;
 
         main.add(new PButton(200, "Video settings", 'v', video), new Coord(0, 0));
         main.add(new PButton(200, "Audio settings", 'a', audio), new Coord(0, 30));
         main.add(new PButton(200, "Display settings", 'd', display), new Coord(0, 60));
+        main.add(new PButton(200, "Map settings", 'm', map), new Coord(0, 90));
 
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(0, 120));
+            }, new Coord(0, 140));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(0, 150));
+            }, new Coord(0, 170));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(0, 180));
+        }, new Coord(0, 200));
         main.pack();
 
         y = 0;
@@ -306,6 +308,35 @@ public class OptWnd extends Window {
 
         display.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
         display.pack();
+
+        // -------------------------------------------- map
+        y = 0;
+        map.add(new CheckBox("Show players on minimap") {
+            {
+                a = Utils.getprefb("showplayersmmap", false);
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showplayersmmap", val);
+                Config.showplayersmmap = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        map.add(new CheckBox("Save map tiles to disk") {
+            {
+                a = Utils.getprefb("savemmap", true);
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("savemmap", val);
+                Config.savemmap = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+
+        map.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        map.pack();
 
         chpanel(main);
     }

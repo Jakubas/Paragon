@@ -53,6 +53,8 @@ public class Config {
     public static boolean showflo = Utils.getprefb("showflo", true);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", false);
+    public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);
+    public static boolean savemmap = Utils.getprefb("savemmap", true);
 
     public static byte[] authck = null;
     public static String prefspec = "hafen";
