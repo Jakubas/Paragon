@@ -58,6 +58,7 @@ public class Config {
     public static boolean showkinnames = Utils.getprefb("showkinnames", false);
     public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);
     public static boolean savemmap = Utils.getprefb("savemmap", true);
+    public static boolean studylock = Utils.getprefb("studylock", false);
 
     public static byte[] authck = null;
     public static String prefspec = "hafen";
