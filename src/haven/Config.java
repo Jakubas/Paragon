@@ -26,6 +26,9 @@
 
 package haven;
 
+import haven.error.ErrorHandler;
+
+import java.io.InputStream;
 import java.net.URL;
 import java.io.PrintStream;
 
@@ -59,10 +62,24 @@ public class Config {
     public static byte[] authck = null;
     public static String prefspec = "hafen";
 
+    public static String version;
+
     static {
         String p;
         if ((p = getprop("haven.authck", null)) != null)
             authck = Utils.hex2byte(p);
+
+        try {
+            InputStream in = ErrorHandler.class.getResourceAsStream("/version");
+            try {
+                if (in != null) {
+                    java.util.Scanner s = new java.util.Scanner(in);
+                    version = s.next();
+                }
+            } finally {
+                in.close();
+            }
+        } catch (Exception e) {}
     }
 
     private static int getint(String name, int def) {

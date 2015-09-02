@@ -32,28 +32,17 @@ import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
 
-import haven.error.*;
 
 public class MainFrame extends java.awt.Frame implements Runnable, Console.Directory {
     HavenPanel p;
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static String TITLE;
+    private static final String TITLE = "Haven and Hearth (Amber v" + Config.version + ")";
 
     static {
         try {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
-
-            InputStream in = ErrorHandler.class.getResourceAsStream("/version");
-            try {
-                if (in != null) {
-                    java.util.Scanner s = new java.util.Scanner(in);
-                    TITLE = "Haven and Hearth (Amber v" + (s.hasNext() ? s.next() : "") + ")";
-                }
-            } finally {
-                in.close();
-            }
         } catch (Exception e) {
         }
     }

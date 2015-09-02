@@ -2,11 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="amber"/>
-  <property name="patch" value=""/>
-
-  <tstamp>
-    <format property="built.date" pattern="dd.MM.yy" />
-  </tstamp>
+  <property name="version" value=""/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -23,7 +19,7 @@
     <echo file="build/classes/buildinfo" xml:space="default">
       git-rev = ${gitrev}
     </echo>
-    <echo file="build/classes/version" xml:space="default">${built.date}${patch}</echo>
+    <echo file="build/classes/version" xml:space="default">${version}</echo>
   </target>
 
   <target name="hafen-client" depends="build-env">
@@ -36,6 +32,7 @@
 	<pathelement path="lib/jorbis.jar" />
 	<pathelement path="lib/jogg.jar" />
 	<pathelement path="lib/jglob.jar" />
+	<pathelement path="lib/json-20141113.jar" />
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:-options" />
@@ -60,6 +57,9 @@
       <patternset excludes="META-INF/**" />
     </unjar>
     <unjar src="lib/jglob.jar" dest="build/classes-lib">
+      <patternset excludes="META-INF/**" />
+    </unjar>
+    <unjar src="lib/json-20141113.jar" dest="build/classes-lib">
       <patternset excludes="META-INF/**" />
     </unjar>
   </target>
@@ -97,13 +97,13 @@
   </target>
 
  <target name="dist" depends="rebuild">
-    <zip destfile="${basedir}/${name}-${built.date}${patch}.zip" update="false">
+    <zip destfile="${basedir}/${name}-${version}.zip" update="false">
         <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
         <fileset dir="${basedir}" includes="README"/>
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
         <fileset dir="etc" includes="*.bat"/>
     </zip>
-    <zip destfile="${basedir}/${name}-update-${built.date}${patch}.zip" update="false">
+    <zip destfile="${basedir}/${name}-update-${version}.zip" update="false">
         <fileset dir="build" includes="*.jar"/>
     </zip>
   </target>

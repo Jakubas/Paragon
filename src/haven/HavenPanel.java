@@ -38,8 +38,9 @@ import javax.media.opengl.glu.GLU;
 
 public class HavenPanel extends GLCanvas implements Runnable, Console.Directory {
     UI ui;
+    public static UI lui;
     boolean inited = false;
-    int w, h;
+    public static int w, h;
     public boolean bgmode = false;
     long fd = 10, bgfd = 200, fps = 0;
     double uidle = 0.0, ridle = 0.0;
@@ -272,6 +273,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
         ui.cons.add(this);
         if (glconf != null)
             ui.cons.add(glconf);
+        lui = ui;
         return (ui);
     }
 
