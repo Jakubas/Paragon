@@ -46,7 +46,6 @@ public class LocalMiniMap extends Widget {
     public final MapView mv;
     private Coord cc = null;
     private MapTile cur = null;
-    private boolean isCurCave = false;
     private String session;
     private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(5, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
@@ -77,7 +76,6 @@ public class LocalMiniMap extends Widget {
         BufferedImage img = texes[t];
         if (img == null) {
             Resource r = ui.sess.glob.map.tilesetr(t);
-            // isCurCave = (r.basename().equals("cave") || r.basename().equals("mine"));
             if (r == null)
                 return (null);
             Resource.Image ir = r.layer(Resource.imgc);
@@ -97,38 +95,49 @@ public class LocalMiniMap extends Widget {
         for (c.y = 0; c.y < sz.y; c.y++) {
             for (c.x = 0; c.x < sz.x; c.x++) {
                 int t = m.gettile(ul.add(c));
-                BufferedImage tex = tileimg(t, texes);
-                int rgb = 0;
-                if (tex != null)
-                    rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
-                            Utils.floormod(c.y + ul.y, tex.getHeight()));
-                buf.setRGB(c.x, c.y, rgb);
-            }
-        }
-        for (c.y = 1; c.y < sz.y - 1; c.y++) {
-            for (c.x = 1; c.x < sz.x - 1; c.x++) {
-                int t = m.gettile(ul.add(c));
-                Tiler tl = m.tiler(t);
-                if (tl instanceof Ridges.RidgeTile) {
-                    if (Ridges.brokenp(m, ul.add(c))) {
-                        for (int y = c.y - 1; y <= c.y + 1; y++) {
-                            for (int x = c.x - 1; x <= c.x + 1; x++) {
-                                Color cc = new Color(buf.getRGB(x, y));
-                                buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
-                            }
-                        }
-                    }
+                try {
+                    BufferedImage tex = tileimg(t, texes);
+                    int rgb = 0;
+                    if (tex != null)
+                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                                Utils.floormod(c.y + ul.y, tex.getHeight()));
+                    buf.setRGB(c.x, c.y, rgb);
+                }  catch (Exception e) {
                 }
             }
         }
+
+        for (c.y = 1; c.y < sz.y - 1; c.y++) {
+            for (c.x = 1; c.x < sz.x - 1; c.x++) {
+                try {
+                    int t = m.gettile(ul.add(c));
+                    Tiler tl = m.tiler(t);
+                    if (tl instanceof Ridges.RidgeTile) {
+                        if (Ridges.brokenp(m, ul.add(c))) {
+                            for (int y = c.y - 1; y <= c.y + 1; y++) {
+                                for (int x = c.x - 1; x <= c.x + 1; x++) {
+                                    Color cc = new Color(buf.getRGB(x, y));
+                                    buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+
         for (c.y = 0; c.y < sz.y; c.y++) {
             for (c.x = 0; c.x < sz.x; c.x++) {
-                int t = m.gettile(ul.add(c));
-                if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
-                        (m.gettile(ul.add(c).add(1, 0)) > t) ||
-                        (m.gettile(ul.add(c).add(0, -1)) > t) ||
-                        (m.gettile(ul.add(c).add(0, 1)) > t))
-                    buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                try {
+                    int t = m.gettile(ul.add(c));
+                    if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
+                            (m.gettile(ul.add(c).add(1, 0)) > t) ||
+                            (m.gettile(ul.add(c).add(0, -1)) > t) ||
+                            (m.gettile(ul.add(c).add(0, 1)) > t))
+                        buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                } catch (Exception e) {
+                }
             }
         }
         return (buf);
@@ -232,8 +241,8 @@ public class LocalMiniMap extends Widget {
                 if (f == null) {
                     f = Defer.later(new Defer.Callable<MapTile>() {
                         public MapTile call() {
-                            Coord ul = plg.mul(cmaps).sub(cmaps).add(1, 1);
-                            Coord mtc = cmaps.mul(3).sub(2, 2);
+                            Coord ul = plg.mul(cmaps).sub(cmaps);
+                            Coord mtc = cmaps.mul(3);
                             TexI im = new TexI(drawmap(ul, mtc));
 
                             if (Config.savemmap) {
