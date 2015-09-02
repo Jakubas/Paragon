@@ -272,7 +272,7 @@ public class OptWnd extends Window {
         y = 0;
         display.add(new CheckBox("Show flavour objects") {
             {
-                a = Utils.getprefb("showflo", true);
+                a = Config.showflo;
             }
 
             public void set(boolean val) {
@@ -282,9 +282,21 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        display.add(new CheckBox("Show weather") {
+            {
+                a = Config.showweather;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showweather", val);
+                Config.showweather = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         display.add(new CheckBox("Daylight mode") {
             {
-                a = Utils.getprefb("daylight", false);
+                a =  Config.daylight;
             }
 
             public void set(boolean val) {
@@ -296,7 +308,7 @@ public class OptWnd extends Window {
         y += 35;
         display.add(new CheckBox("Display kin names") {
             {
-                a = Utils.getprefb("showkinnames", false);
+                a = Config.showkinnames;
             }
 
             public void set(boolean val) {
