@@ -305,6 +305,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        display.add(new CheckBox("Free camera rotation") {
+            {
+                a = Config.camfree;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("camfree", val);
+                Config.camfree = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
         display.pack();

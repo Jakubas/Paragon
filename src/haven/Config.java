@@ -59,7 +59,7 @@ public class Config {
     public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);
     public static boolean savemmap = Utils.getprefb("savemmap", true);
     public static boolean studylock = Utils.getprefb("studylock", false);
-
+    public static boolean camfree = Utils.getprefb("camfree", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
 
