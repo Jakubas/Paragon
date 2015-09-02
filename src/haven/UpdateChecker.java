@@ -49,8 +49,6 @@ public class UpdateChecker extends Thread {
         int majl = Integer.parseInt(vtokl[0]);
         int minl = Integer.parseInt(vtokl[1]);
         int ptcl = Integer.parseInt(vtokl[2]);
-        System.out.println(majc + " " + minc  + " " + ptcc);
-        System.out.println(majl + " " + minl  + " " + ptcl);
         return majl > majc || minl > minc || ptcl > ptcc;
     }
 }
