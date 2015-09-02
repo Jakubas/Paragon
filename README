@@ -10,6 +10,8 @@ Amber is a client for Haven & Hearth. Main differences from the vanilla client i
 - Improved item transfer between inventory and containers.
 - Option to always show kin names.
 - Show players on minimap.
+- Study box locking.
+- Free camera rotation.
 - ...and some additional fixes.
 
 
