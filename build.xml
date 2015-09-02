@@ -103,9 +103,6 @@
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
         <fileset dir="etc" includes="*.bat"/>
     </zip>
-    <zip destfile="${basedir}/${name}-update-${version}.zip" update="false">
-        <fileset dir="build" includes="*.jar"/>
-    </zip>
   </target>
 
   <target name="deftgt" depends="jars" />
