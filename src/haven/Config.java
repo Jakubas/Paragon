@@ -54,7 +54,6 @@ public class Config {
     public static boolean softres = getprop("haven.softres", "on").equals("on");
 
     public static boolean showflo = Utils.getprefb("showflo", true);
-    public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", false);
     public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);
