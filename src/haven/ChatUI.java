@@ -26,6 +26,9 @@
 
 package haven;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
@@ -149,6 +152,8 @@ public class ChatUI extends Widget {
             private final Text t;
 
             public SimpleMessage(String text, Color col, int w) {
+                if (Config.chattimestamp)
+                    text = timestamp(text);
                 if (col == null)
                     this.t = fnd.render(RichText.Parser.quote(text), w);
                 else
@@ -649,6 +654,7 @@ public class ChatUI extends Widget {
                 append(cmsg);
                 if (notify)
                     notify(cmsg);
+                save(cmsg.text().text);
             } else {
                 super.uimsg(msg, args);
             }
@@ -683,7 +689,8 @@ public class ChatUI extends Widget {
                 BuddyWnd.Buddy b = getparent(GameUI.class).buddies.find(from);
                 String nm = (b == null) ? "???" : (b.name);
                 if ((r == null) || !nm.equals(cn)) {
-                    r = fnd.render(RichText.Parser.quote(String.format("%s: %s", nm, text)), w, TextAttribute.FOREGROUND, col);
+                    String tf = String.format("%s: %s", nm, text);
+                    r = fnd.render(RichText.Parser.quote(Config.chattimestamp ? timestamp(tf) : tf), w, TextAttribute.FOREGROUND, col);
                     cn = nm;
                 }
                 return (r);
@@ -733,12 +740,15 @@ public class ChatUI extends Widget {
                 Integer from = (Integer) args[0];
                 String line = (String) args[1];
                 if (from == null) {
-                    append(new MyMessage(line, iw()));
+                    MyMessage my = new MyMessage(line, iw());
+                    append(my);
+                    save(my.text().text, super.getparent(GameUI.class).buddies.getCharName());
                 } else {
                     Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
                     append(cmsg);
                     if (notify)
                         notify(cmsg);
+                    save(cmsg.text().text);
                 }
             } else {
                 super.uimsg(msg, args);
@@ -761,17 +771,21 @@ public class ChatUI extends Widget {
                 int gobid = (Integer) args[1];
                 String line = (String) args[2];
                 Color col = Color.WHITE;
+
                 synchronized (ui.sess.glob.party.memb) {
                     Party.Member pm = ui.sess.glob.party.memb.get((long) gobid);
                     if (pm != null)
                         col = pm.col;
                 }
                 if (from == null) {
-                    append(new MyMessage(line, iw()));
+                    MyMessage my = new MyMessage(line, iw());
+                    append(my);
+                    save(my.text().text, super.getparent(GameUI.class).buddies.getCharName());
                 } else {
                     Message cmsg = new NamedMessage(from, line, Utils.blendcol(col, Color.WHITE, 0.5), iw());
                     append(cmsg);
                     notify(cmsg);
+                    save(cmsg.text().text);
                 }
             } else {
                 super.uimsg(msg, args);
@@ -807,8 +821,11 @@ public class ChatUI extends Widget {
                     Message cmsg = new InMessage(line, iw());
                     append(cmsg);
                     notify(cmsg);
+                    save(cmsg.text().text, getparent(GameUI.class).buddies.find(other).name);
                 } else if (t.equals("out")) {
-                    append(new OutMessage(line, iw()));
+                    OutMessage om = new OutMessage(line, iw());
+                    append(om);
+                    save(om.text().text, super.getparent(GameUI.class).buddies.getCharName());
                 }
             } else if (msg == "err") {
                 String err = (String) args[0];
@@ -1265,5 +1282,31 @@ public class ChatUI extends Widget {
             }
         }
         return (super.globtype(key, ev));
+    }
+
+    private static String timestamp(String text) {
+        return "[" + new SimpleDateFormat("HH:mm").format(new Date()) + "] " + text;
+    }
+
+    private static void save(String text, String name) {
+        if (Config.chatsave)
+            save(Config.chattimestamp ?
+                    text.substring(0, 7) + " " + name + ":" + text.substring(7) :
+                    name + ": " + text);
+    }
+
+    private static void save(String text) {
+        if (Config.chatsave) {
+            try {
+                if (Config.chatlog == null) {
+                    File file = new File(Config.chatfile);
+                    FileWriter fw = new FileWriter(file, true);
+                    Config.chatlog = new PrintWriter(fw, true);
+                }
+                Config.chatlog.println(text);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

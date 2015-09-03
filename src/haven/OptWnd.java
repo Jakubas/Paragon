@@ -30,7 +30,7 @@ import java.util.*;
 import java.awt.font.TextAttribute;
 
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display, map;
+    public final Panel main, video, audio, display, map, general;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -203,6 +203,7 @@ public class OptWnd extends Window {
         audio = add(new Panel());
         display = add(new Panel());
         map = add(new Panel());
+        general = add(new Panel());
 
         int y;
 
@@ -210,24 +211,25 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Audio settings", 'a', audio), new Coord(0, 30));
         main.add(new PButton(200, "Display settings", 'd', display), new Coord(0, 60));
         main.add(new PButton(200, "Map settings", 'm', map), new Coord(0, 90));
+        main.add(new PButton(200, "General settings", 'g', general), new Coord(210, 0));
 
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(0, 140));
+            }, new Coord(100, 140));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(0, 170));
+            }, new Coord(100, 170));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(0, 200));
+        }, new Coord(100, 200));
         main.pack();
 
         y = 0;
@@ -349,6 +351,43 @@ public class OptWnd extends Window {
 
         map.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
         map.pack();
+
+        // -------------------------------------------- general
+        y = 0;
+        general.add(new CheckBox("Save chats to disk") {
+            {
+                a = Config.chatsave;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chatsave", val);
+                Config.chatsave = val;
+                a = val;
+                if (!val && Config.chatlog != null) {
+                    try {
+                        Config.chatlog.close();
+                        Config.chatlog = null;
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }, new Coord(0, y));
+        y += 35;
+        general.add(new CheckBox("Show time in chats") {
+            {
+                a = Config.chattimestamp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chattimestamp", val);
+                Config.chattimestamp = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+
+        general.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        general.pack();
+
 
         chpanel(main);
     }

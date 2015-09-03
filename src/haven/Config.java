@@ -29,6 +29,7 @@ package haven;
 import haven.error.ErrorHandler;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.io.PrintStream;
 
@@ -60,10 +61,15 @@ public class Config {
     public static boolean savemmap = Utils.getprefb("savemmap", true);
     public static boolean studylock = Utils.getprefb("studylock", false);
     public static boolean camfree = Utils.getprefb("camfree", false);
+    public static boolean chatsave = Utils.getprefb("chatsave", false);
+    public static boolean chattimestamp = Utils.getprefb("chattimestamp", false);
+
     public static byte[] authck = null;
     public static String prefspec = "hafen";
-
     public static String version;
+
+    public final static String chatfile = "chat.txt";
+    public static PrintWriter chatlog = null;
 
     static {
         String p;
