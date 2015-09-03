@@ -2,7 +2,7 @@
 
 Amber is a client for Haven & Hearth. Main differences from the vanilla client include:
 
-- Option to hide flavour objects.
+- Option to hide flavor objects.
 - Daylight mode.
 - Better fonts.
 - Map data saving to disk.
@@ -12,6 +12,8 @@ Amber is a client for Haven & Hearth. Main differences from the vanilla client i
 - Show players on minimap.
 - Study box locking.
 - Free camera rotation.
+* Alarm sounds on unknown and red players.
+* Chat logs saving to disk and time-stamps.
 - ...and some additional fixes.
 
 
