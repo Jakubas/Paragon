@@ -278,8 +278,11 @@ public class LocalMiniMap extends Widget {
                 try {
                     synchronized (ui.sess.glob.party.memb) {
                         for (Party.Member m : ui.sess.glob.party.memb.values()) {
-                            if (Config.showplayersmmap && m.gobid != mv.player().id)
-                                continue;
+                            if (Config.showplayersmmap) {
+                                Gob pl = mv.player();
+                                if (pl != null && m.gobid != pl.id)
+                                    continue;
+                            }
 
                             Coord ptc;
                             try {
