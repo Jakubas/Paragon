@@ -47,6 +47,8 @@ public class LocalMiniMap extends Widget {
     private Coord cc = null;
     private MapTile cur = null;
     private String session;
+	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
+	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(5, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
             if (size() > 5) {
@@ -194,6 +196,17 @@ public class LocalMiniMap extends Widget {
                             g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
                             g.fellipse(pc, new Coord(4, 4));
                             g.chcolor();
+							if (Config.alarmunknow && kininfo == null) {
+                                if (!sgobs.contains(gob.id)) {
+                                    sgobs.add(gob.id);
+                                    Audio.play(alarmplayersfx, Config.alarmunknowvol);
+                                }
+                            } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+								if (!sgobs.contains(gob.id)) {
+									sgobs.add(gob.id);
+									Audio.play(alarmplayersfx, Config.alarmredvol);
+								}
+							}
                         }
                     }
                 } catch (Loading l) {

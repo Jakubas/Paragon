@@ -63,7 +63,10 @@ public class Config {
     public static boolean camfree = Utils.getprefb("camfree", false);
     public static boolean chatsave = Utils.getprefb("chatsave", false);
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", false);
-
+    public static boolean alarmunknow = Utils.getprefb("alarmunknow", false);
+    public static double alarmunknowvol = Utils.getprefd("alarmunknowvol", 0.32);
+    public static boolean alarmred = Utils.getprefb("alarmred", false);
+    public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;

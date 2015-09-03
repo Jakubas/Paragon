@@ -37,7 +37,6 @@ public class OptWnd extends Window {
         if (current != null)
             current.hide();
         (current = p).show();
-        pack();
     }
 
     public class PButton extends Button {
@@ -73,7 +72,7 @@ public class OptWnd extends Window {
     public class VideoPanel extends Panel {
         public VideoPanel(Panel back) {
             super();
-            add(new PButton(200, "Back", 27, back), new Coord(0, 180));
+            add(new PButton(200, "Back", 27, back), new Coord(100, 220));
             pack();
         }
 
@@ -179,7 +178,7 @@ public class OptWnd extends Window {
                         curcf.destroy();
                         curcf = null;
                     }
-                }, new Coord(0, 150));
+                }, new Coord(100, 180));
                 pack();
             }
         }
@@ -197,7 +196,7 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(boolean gopts) {
-        super(Coord.z, "Options", true);
+        super(new Coord(410, 250), "Options", true);
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -218,20 +217,21 @@ public class OptWnd extends Window {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(100, 140));
+            }, new Coord(100, 160));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(100, 170));
+            }, new Coord(100, 190));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(100, 200));
+        }, new Coord(100, 220));
         main.pack();
 
+        // -------------------------------------------- audio
         y = 0;
         audio.add(new Label("Master audio volume"), new Coord(0, y));
         y += 15;
@@ -267,7 +267,55 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        audio.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        audio.add(new CheckBox("Alarm on unknown players") {
+            {
+                a = Config.alarmunknow;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmunknown", val);
+                Config.alarmunknow = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        audio.add(new HSlider(100, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.alarmunknowvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmunknowvol = vol;
+                Utils.setprefd("alarmunknowvol", vol);
+            }
+        }, new Coord(170, y));
+        y += 35;
+        audio.add(new CheckBox("Alarm on red players") {
+            {
+                a = Config.alarmred;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmred", val);
+                Config.alarmred = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        audio.add(new HSlider(100, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.alarmredvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmredvol = vol;
+                Utils.setprefd("alarmredvol", vol);
+            }
+        }, new Coord(170, y));
+
+        audio.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
         audio.pack();
 
         // -------------------------------------------- display
@@ -320,7 +368,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        display.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        display.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
         display.pack();
 
         // -------------------------------------------- map
@@ -349,7 +397,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        map.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        map.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
         map.pack();
 
         // -------------------------------------------- general
@@ -385,7 +433,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        general.add(new PButton(200, "Back", 27, main), new Coord(0, 180));
+        general.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
         general.pack();
 
 

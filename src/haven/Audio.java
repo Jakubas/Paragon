@@ -551,11 +551,15 @@ public class Audio {
         play(fromres(res));
     }
 
-    public static void play(final Indir<Resource> clip) {
-        queue(new Runnable() {
-            public void run() {
-                try {
-                    play(clip.get());
+	public static void play(Resource res, double vol) {
+		play(new Audio.VolAdjust(fromres(res), vol));
+	}
+
+	public static void play(final Indir<Resource> clip) {
+		queue(new Runnable() {
+			public void run() {
+				try {
+					play(clip.get());
                 } catch (Loading e) {
                     queue(this);
                 }
