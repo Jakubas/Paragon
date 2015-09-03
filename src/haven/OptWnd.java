@@ -354,7 +354,7 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- general
         y = 0;
-        general.add(new CheckBox("Save chats to disk") {
+        general.add(new CheckBox("Save chat logs to disk") {
             {
                 a = Config.chatsave;
             }
@@ -373,7 +373,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        general.add(new CheckBox("Show time in chats") {
+        general.add(new CheckBox("Show timestamps in chats") {
             {
                 a = Config.chattimestamp;
             }
