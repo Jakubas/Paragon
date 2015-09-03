@@ -68,7 +68,7 @@ public class Config {
     public static String prefspec = "hafen";
     public static String version;
 
-    public final static String chatfile = "chat.txt";
+    public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
 
     static {
