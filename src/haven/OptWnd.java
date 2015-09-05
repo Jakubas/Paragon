@@ -332,18 +332,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        display.add(new CheckBox("Daylight mode") {
-            {
-                a =  Config.daylight;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("daylight", val);
-                Config.daylight = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         display.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;
