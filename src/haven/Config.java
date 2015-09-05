@@ -120,7 +120,12 @@ public class Config {
                 String ldjson = new JSONObject(ld, new String[] {"name", "pass"}).toString();
                 larr.add(ldjson);
             }
-            Utils.setpref("logins", "[" + String.join(",", larr) + "]");
+            String jsonobjs = "";
+            for (String s : larr)
+                jsonobjs += s + ",";
+            if (jsonobjs.length() > 0)
+                jsonobjs = jsonobjs.substring(0, jsonobjs.length()-1);
+            Utils.setpref("logins", "[" + jsonobjs + "]");
         } catch (Exception e) {
             e.printStackTrace();
         }
