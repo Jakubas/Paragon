@@ -175,6 +175,15 @@ public class TexI extends TexGL {
         return (((DataBufferByte) buf.getDataBuffer()).getData());
     }
 
+    public static BufferedImage convert2tile(BufferedImage img, Coord isz) {
+        WritableRaster buf = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, isz.x, isz.y, 4, null);
+        BufferedImage tgt = new BufferedImage(glcm, buf, false, null);
+        Graphics g = tgt.createGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
+        return tgt;
+    }
+
     public static byte[] convert(BufferedImage img, Coord tsz) {
         return (convert(img, tsz, Coord.z, Utils.imgsz(img)));
     }

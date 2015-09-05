@@ -519,7 +519,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     private MinimapWnd minimap() {
-        mmap = new LocalMiniMap(Utils.getprefc("mmappos", new Coord(180, 180)), map);
+        mmap = new LocalMiniMap(Utils.getprefc("mmappos", new Coord(290, 271)), map);
         IButton pclaim = new IButton("gfx/hud/lbtn-vil", "", "-d", "-h") {
             {tooltip = Text.render("Display personal claims");}
             public void click() {
@@ -538,11 +538,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     map.disol(2, 3);
             }
         };
-        Coord mwsz = Utils.getprefc("mmapsz", new Coord(173, 213));
+        Coord mwsz = Utils.getprefc("mmapsz", new Coord(290, 310));
         minimapWnd = new MinimapWnd(mwsz, mmap, pclaim, vclaim);
-        minimapWnd.add(mmap, new Coord(-3, 33));
-        minimapWnd.add(pclaim, 0, -4);
-        minimapWnd.add(vclaim, 0, -9);
+        minimapWnd.add(mmap, new Coord(1, 39));
+        minimapWnd.add(pclaim, 4, 5);
+        minimapWnd.add(vclaim, 4, 0);
         add(minimapWnd, Utils.getprefc("mmapc", new Coord(10, 100)));
         return minimapWnd;
     }
