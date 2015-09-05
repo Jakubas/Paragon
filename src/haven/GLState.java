@@ -225,7 +225,7 @@ public abstract class GLState {
             dest.adjust();
             adjust();
             for (int i = 0; i < states.length; i++) {
-                if (idlist[i].type == type)
+                if (i < idlist.length && idlist[i].type == type)
                     dest.states[i] = states[i];
             }
         }
