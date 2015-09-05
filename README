@@ -6,14 +6,16 @@ Amber is a client for Haven & Hearth. Main differences from the vanilla client i
 - Daylight mode.
 - Better fonts.
 - Map data saving to disk.
-- Floating minimap.
+- Persistent, resizable, and movable map.
 - Improved item transfer between inventory and containers.
 - Option to always show kin names.
 - Show players on minimap.
 - Study box locking.
 - Free camera rotation.
-* Alarm sounds on unknown and red players.
-* Chat logs saving to disk and time-stamps.
+- Alarm sounds on unknown and red players.
+- Chat logs saving to disk and time-stamps.
+- Option to show item quality.
+- Account management.
 - ...and some additional fixes.
 
 
