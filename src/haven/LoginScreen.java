@@ -170,7 +170,7 @@ public class LoginScreen extends Widget {
                         LoginData ld = Config.logins.get(i);
                         if(ld == curLD) {
                             g.chcolor(96, 96, 96, 255);
-                            g.frect(new Coord(0, i * ITEM_HEIGHT), new Coord(sz.x-40, ITEM_HEIGHT));
+                            g.frect(new Coord(0, i * ITEM_HEIGHT), new Coord(sz.x-30, ITEM_HEIGHT));
                             g.chcolor();
                         }
 
@@ -178,7 +178,7 @@ public class LoginScreen extends Widget {
                         g.aimage(r.tex(), new Coord(10, i * ITEM_HEIGHT + 10), 0, 0.5);
                         g.chcolor(Color.RED);
                         r = RichText.render("\u2716", 20, textSize);
-                        g.aimage(r.tex(), new Coord(sz.x - 30, i * ITEM_HEIGHT + 10), 0, 0.5);
+                        g.aimage(r.tex(), new Coord(sz.x - 20, i * ITEM_HEIGHT + 10), 0, 0.5);
                         g.chcolor();
                     }
                 }
@@ -194,7 +194,7 @@ public class LoginScreen extends Widget {
                 synchronized(Config.logins) {
                     if(sel < Config.logins.size() && sel >= 0) {
                         curLD = Config.logins.get(sel);
-                        if (c.x >= sz.x - 35 && c.x <= sz.x - 35 + 20) {
+                        if (c.x >= sz.x - 25 && c.x <= sz.x - 25 + 20) {
                             synchronized(Config.logins) {
                                 Config.logins.remove(curLD);
                                 Config.saveLogins();
