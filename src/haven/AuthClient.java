@@ -180,6 +180,7 @@ public class AuthClient {
 
     public static class NativeCred extends Credentials {
         public final String username;
+        public String pass;
         private byte[] phash;
 
         public NativeCred(String username, byte[] phash) {
@@ -198,6 +199,7 @@ public class AuthClient {
 
         public NativeCred(String username, String pw) {
             this(username, ohdearjava(pw));
+            this.pass = pw;
         }
 
         public String name() {
