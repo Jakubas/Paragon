@@ -48,6 +48,7 @@ public class LocalMiniMap extends Widget {
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
     private Coord mgo = null;
+    private Coord prevplg = null;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>();
@@ -159,15 +160,6 @@ public class LocalMiniMap extends Widget {
     public LocalMiniMap(Coord sz, MapView mv) {
         super(sz);
         this.mv = mv;
-        session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
-        (new File("map/" + session)).mkdirs();
-        try {
-            Writer cursesf = new FileWriter("map/currentsession.js");
-            cursesf.write("var currentSession = '" + session + "';\n");
-            cursesf.close();
-
-        } catch (IOException e) {
-        }
     }
 
     public Coord p2c(Coord pc) {
@@ -259,6 +251,20 @@ public class LocalMiniMap extends Widget {
                 if (f == null) {
                     f = Defer.later(new Defer.Callable<MapTile>() {
                         public MapTile call() {
+                            if (prevplg == null || plg.dist(prevplg) > 10) {
+                                session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
+                                (new File("map/" + session)).mkdirs();
+                                try {
+                                    Writer cursesf = new FileWriter("map/currentsession.js");
+                                    cursesf.write("var currentSession = '" + session + "';\n");
+                                    cursesf.close();
+
+                                } catch (IOException e) {
+                                }
+                                mgo = plg;
+                            }
+                            prevplg = plg;
+
                             Coord ul = plg.mul(cmaps).sub(cmaps);
                             Coord mtc = cmaps.mul(3);
                             TexI im = new TexI(drawmap(ul, mtc));
