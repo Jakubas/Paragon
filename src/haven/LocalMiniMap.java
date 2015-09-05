@@ -338,8 +338,19 @@ public class LocalMiniMap extends Widget {
     }
 
     public boolean mousedown(Coord c, int button) {
-        doff = c;
-        resizing = ui.grabmouse(this);
+        if (button == 3) {
+            if (cc == null)
+                return false;
+            Gob gob = findicongob(c.sub(delta));
+            if (gob == null)
+                mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), 1, ui.modflags());
+            else
+                mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), button, ui.modflags(), 0, (int) gob.id, gob.rc, 0, -1);
+
+        } else if (button == 1) {
+            doff = c;
+            resizing = ui.grabmouse(this);
+        }
         return true;
     }
 
