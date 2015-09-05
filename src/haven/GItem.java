@@ -161,35 +161,33 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     public Quality getMaxQuality() {
         if (maxq == null) {
-
             Quality essence = null;
             Quality substance = null;
             Quality vitality = null;
-
-            for (ItemInfo info : info()) {
-                if (info.getClass().getSimpleName().equals("QBuff")) {
-                    try {
-                        String name = (String) info.getClass().getDeclaredField("name").get(info);
-                        int val = (Integer) info.getClass().getDeclaredField("q").get(info);
-                        if ("Essence".equals(name)) {
-                            essence = new Quality(val, essenceclr);
-                            if (maxq == null || maxq.val < essence.val)
-                                maxq = essence;
-                        } else if ("Substance".equals(name)) {
-                            substance = new Quality(val, substanceclr);
-                            if (maxq == null || maxq.val < substance.val)
-                                maxq = substance;
-                        } else if ("Vitality".equals(name)) {
-                            vitality = new Quality(val, vitalityclr);
-                            if (maxq == null || maxq.val < vitality.val)
-                                maxq = vitality;
+            try {
+                for (ItemInfo info : info()) {
+                    if (info.getClass().getSimpleName().equals("QBuff")) {
+                        try {
+                            String name = (String) info.getClass().getDeclaredField("name").get(info);
+                            int val = (Integer) info.getClass().getDeclaredField("q").get(info);
+                            if ("Essence".equals(name)) {
+                                essence = new Quality(val, essenceclr);
+                                if (maxq == null || maxq.val < essence.val)
+                                    maxq = essence;
+                            } else if ("Substance".equals(name)) {
+                                substance = new Quality(val, substanceclr);
+                                if (maxq == null || maxq.val < substance.val)
+                                    maxq = substance;
+                            } else if ("Vitality".equals(name)) {
+                                vitality = new Quality(val, vitalityclr);
+                                if (maxq == null || maxq.val < vitality.val)
+                                    maxq = vitality;
+                            }
+                        } catch (Exception ex) {
                         }
-                    } catch (Exception ex) {
                     }
                 }
-            }
 
-            try {
                 if (essence.val == substance.val && essence.val == vitality.val)
                     maxq.color = Color.WHITE;
             } catch (Exception ex) {
