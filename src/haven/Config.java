@@ -67,6 +67,7 @@ public class Config {
     public static double alarmunknowvol = Utils.getprefd("alarmunknowvol", 0.32);
     public static boolean alarmred = Utils.getprefb("alarmred", false);
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
+    public static boolean showquality = Utils.getprefb("showquality", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;

@@ -304,6 +304,14 @@ public class GOut {
         checkerr();
     }
 
+    public void atextstroked(String text, Coord c, Color color, Color stroke) {
+        Text t = Text.renderstroked(text, color, stroke);
+        Tex T = t.tex();
+        image(T, c);
+        T.dispose();
+        checkerr();
+    }
+
     public void poly(Coord... c) {
         st.set(cur2d);
         apply();
