@@ -21,7 +21,7 @@ public class MinimapWnd extends Widget implements DTarget {
     public static final Tex br = Resource.loadtex("gfx/hud/wndmap/lg/br");
     public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22), cpo = new Coord(36, 17);
     private Widget mmap;
-    private IButton pclaim, vclaim;
+    private IButton pclaim, vclaim, center;
     private boolean minimized;
     private Coord szr;
     private boolean resizing;
@@ -46,7 +46,7 @@ public class MinimapWnd extends Widget implements DTarget {
     public int cmw;
     private UI.Grab dm = null;
 
-    public MinimapWnd(Coord sz, Widget mmap, IButton pclaim, IButton vclaim) {
+    public MinimapWnd(Coord sz, Widget mmap, IButton pclaim, IButton vclaim, IButton center) {
         this.tlo = Coord.z;
         this.rbo = Coord.z;
         this.mrgn = Coord.z;
@@ -57,6 +57,7 @@ public class MinimapWnd extends Widget implements DTarget {
         this.mmap = mmap;
         this.pclaim = pclaim;
         this.vclaim = vclaim;
+        this.center = center;
         this.c = Coord.z;
     }
 
@@ -259,10 +260,12 @@ public class MinimapWnd extends Widget implements DTarget {
             mmap.hide();
             pclaim.hide();
             vclaim.hide();
+            center.hide();
         } else {
             mmap.show();
             pclaim.show();
             vclaim.show();
+            center.show();
         }
 
         if (minimized) {

@@ -538,11 +538,18 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     map.disol(2, 3);
             }
         };
+        IButton center = new IButton("gfx/hud/center", "", "", "") {
+            {tooltip = Text.render("Center the map on player");}
+            public void click() {
+                ((LocalMiniMap)mmap).center();
+            }
+        };
         Coord mwsz = Utils.getprefc("mmapsz", new Coord(290, 310));
-        minimapWnd = new MinimapWnd(mwsz, mmap, pclaim, vclaim);
+        minimapWnd = new MinimapWnd(mwsz, mmap, pclaim, vclaim, center);
         minimapWnd.add(mmap, new Coord(1, 39));
         minimapWnd.add(pclaim, 4, 5);
         minimapWnd.add(vclaim, 4, 0);
+        minimapWnd.add(center, 50, 0);
         add(minimapWnd, Utils.getprefc("mmapc", new Coord(10, 100)));
         return minimapWnd;
     }

@@ -324,6 +324,9 @@ public class LocalMiniMap extends Widget {
         drawicons(g);
     }
 
+    public void center() {
+        delta = Coord.z;
+    }
 
     public boolean mousedown(Coord c, int button) {
         doff = c;
