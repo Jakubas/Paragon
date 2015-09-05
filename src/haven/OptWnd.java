@@ -305,7 +305,7 @@ public class OptWnd extends Window {
         audio.add(new HSlider(100, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
-                val = (int)(Config.alarmredvol * 1000);
+                val = (int) (Config.alarmredvol * 1000);
             }
 
             public void changed() {
@@ -355,6 +355,19 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        display.add(new Label("Bad camera scrolling sensitivity"), new Coord(0, y));
+        display.add(new HSlider(50, 0, 50, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.badcamsensitivity;
+            }
+            public void changed() {
+                System.out.println("sens: " + val);
+                Config.badcamsensitivity = val;
+                Utils.setprefi("badcamsensitivity", val);
+            }
+        }, new Coord(160, y));
         y += 35;
         display.add(new CheckBox("Show item quality") {
             {

@@ -248,7 +248,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
         }
 
         public boolean wheel(Coord c, int amount) {
-            float d = dist + (amount * 5);
+            System.out.println(Config.badcamsensitivity);
+            float d = dist + (amount * Config.badcamsensitivity);
             if (d < 5)
                 d = 5;
             dist = d;
