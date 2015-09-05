@@ -65,8 +65,8 @@ public class Config {
     public static boolean camfree = Utils.getprefb("camfree", false);
     public static boolean chatsave = Utils.getprefb("chatsave", false);
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", false);
-    public static boolean alarmunknow = Utils.getprefb("alarmunknow", false);
-    public static double alarmunknowvol = Utils.getprefd("alarmunknowvol", 0.32);
+    public static boolean alarmunknown = Utils.getprefb("alarmunknown", false);
+    public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
     public static boolean alarmred = Utils.getprefb("alarmred", false);
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", false);

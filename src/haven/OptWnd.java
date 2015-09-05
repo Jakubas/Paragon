@@ -269,24 +269,24 @@ public class OptWnd extends Window {
         y += 35;
         audio.add(new CheckBox("Alarm on unknown players") {
             {
-                a = Config.alarmunknow;
+                a = Config.alarmunknown;
             }
 
             public void set(boolean val) {
                 Utils.setprefb("alarmunknown", val);
-                Config.alarmunknow = val;
+                Config.alarmunknown = val;
                 a = val;
             }
         }, new Coord(0, y));
         audio.add(new HSlider(100, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
-                val = (int)(Config.alarmunknowvol * 1000);
+                val = (int)(Config.alarmunknownvol * 1000);
             }
 
             public void changed() {
                 double vol = val / 1000.0;
-                Config.alarmunknowvol = vol;
+                Config.alarmunknownvol = vol;
                 Utils.setprefd("alarmunknowvol", vol);
             }
         }, new Coord(170, y));

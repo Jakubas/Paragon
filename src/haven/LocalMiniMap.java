@@ -190,10 +190,10 @@ public class LocalMiniMap extends Widget {
                             g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
                             g.fellipse(pc.add(delta), new Coord(4, 4));
                             g.chcolor();
-							if (Config.alarmunknow && kininfo == null) {
+							if (Config.alarmunknown && kininfo == null) {
                                 if (!sgobs.contains(gob.id)) {
                                     sgobs.add(gob.id);
-                                    Audio.play(alarmplayersfx, Config.alarmunknowvol);
+                                    Audio.play(alarmplayersfx, Config.alarmunknownvol);
                                 }
                             } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
 								if (!sgobs.contains(gob.id)) {
