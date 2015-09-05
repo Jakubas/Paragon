@@ -45,8 +45,9 @@ public class LocalMiniMap extends Widget {
     private MapTile cur = null;
     private String session;
     private UI.Grab resizing;
-    Coord doff = Coord.z;
-    Coord delta = Coord.z;
+    private Coord doff = Coord.z;
+    private Coord delta = Coord.z;
+    private Coord mgo = null;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>();
@@ -250,6 +251,8 @@ public class LocalMiniMap extends Widget {
 
         final Coord plg = cc.div(cmaps);
         if ((cur == null) || !plg.equals(cur.c)) {
+            if (mgo == null)
+                mgo = plg;
             Defer.Future<MapTile> f;
             synchronized (cache) {
                 f = cache.get(plg);
@@ -267,7 +270,7 @@ public class LocalMiniMap extends Widget {
                                         BufferedImage si = im.back.getSubimage(x * tw + tw, y * th + th, tw, th);
                                         maptiles.put(ul.add(x * tw, y * th), TexI.convert2tile(si, cmaps));
                                         if (Config.savemmap)
-                                            save(si, plg.add(x, y));
+                                            save(si, plg.add(x, y).sub(mgo));
                                     }
                                 }
                             }
