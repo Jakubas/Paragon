@@ -182,25 +182,28 @@ public class LocalMiniMap extends Widget {
                         g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
                     } else if (Config.showplayersmmap) {
                         Resource res = gob.getres();
-                        if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
-                            Coord pc = p2c(gob.rc);
-                            g.chcolor(Color.BLACK);
-                            g.fellipse(pc.add(delta), new Coord(5, 5));
-                            KinInfo kininfo = gob.getattr(KinInfo.class);
-                            g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                            g.fellipse(pc.add(delta), new Coord(4, 4));
-                            g.chcolor();
-							if (Config.alarmunknown && kininfo == null) {
-                                if (!sgobs.contains(gob.id)) {
-                                    sgobs.add(gob.id);
-                                    Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                        try {
+                            if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
+                                Coord pc = p2c(gob.rc);
+                                g.chcolor(Color.BLACK);
+                                g.fellipse(pc.add(delta), new Coord(5, 5));
+                                KinInfo kininfo = gob.getattr(KinInfo.class);
+                                g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                                g.fellipse(pc.add(delta), new Coord(4, 4));
+                                g.chcolor();
+                                if (Config.alarmunknown && kininfo == null) {
+                                    if (!sgobs.contains(gob.id)) {
+                                        sgobs.add(gob.id);
+                                        Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                                    }
+                                } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+                                    if (!sgobs.contains(gob.id)) {
+                                        sgobs.add(gob.id);
+                                        Audio.play(alarmplayersfx, Config.alarmredvol);
+                                    }
                                 }
-                            } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
-								if (!sgobs.contains(gob.id)) {
-									sgobs.add(gob.id);
-									Audio.play(alarmplayersfx, Config.alarmredvol);
-								}
-							}
+                            }
+                        } catch (Exception e) {
                         }
                     }
                 } catch (Loading l) {
