@@ -9,18 +9,16 @@ import static haven.PUtils.rasterimg;
 public class MinimapWnd extends Widget implements DTarget {
     public static final Tex bg = Resource.loadtex("gfx/hud/wnd/lg/bg");
     public static final Tex cl = Resource.loadtex("gfx/hud/wndmap/lg/cl");
-    public static final TexI cm = new TexI(Resource.loadimg("gfx/hud/wnd/lg/cm"));
-    public static final Tex cr = Resource.loadtex("gfx/hud/wnd/lg/cr");
     public static final Tex tm = Resource.loadtex("gfx/hud/wnd/lg/tm");
     public static final Tex tr = Resource.loadtex("gfx/hud/wnd/lg/tr");
-    public static final Tex lm = Resource.loadtex("gfx/hud/wnd/lg/lm");
-    public static final Tex lb = Resource.loadtex("gfx/hud/wndmap/lg/lb");
+    public static final Tex lm = Resource.loadtex("gfx/hud/wndmap/lg/lm");
     public static final Tex rm = Resource.loadtex("gfx/hud/wnd/lg/rm");
     public static final Tex bl = Resource.loadtex("gfx/hud/wndmap/lg/bl");
     public static final Tex bm = Resource.loadtex("gfx/hud/wnd/lg/bm");
     public static final Tex br = Resource.loadtex("gfx/hud/wndmap/lg/br");
-    public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22), cpo = new Coord(36, 17);
-    private Widget mmap;
+    public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22);
+    private final Widget mmap;
+    private final MapView map;
     private IButton pclaim, vclaim, center;
     private ToggleButton lock;
     private boolean minimized;
@@ -37,30 +35,50 @@ public class MinimapWnd extends Widget implements DTarget {
 
     private static final BufferedImage[] cbtni = new BufferedImage[]{
             Resource.loadimg("gfx/hud/wndmap/lg/cbtnu"),
-            Resource.loadimg("gfx/hud/wnd/lg/cbtnd"),
             Resource.loadimg("gfx/hud/wndmap/lg/cbtnh")};
     public final Coord tlo, rbo, mrgn;
     public final IButton cbtn;
     public boolean dt = false;
     public Text cap;
-    public Coord wsz, ctl, csz, atl, asz, cptl, cpsz;
+    public Coord wsz, ctl, csz, atl, asz;
     public int cmw;
     private UI.Grab dm = null;
 
-    public MinimapWnd(Coord sz, Widget mmap, IButton pclaim, IButton vclaim, IButton center) {
+    public MinimapWnd(Coord sz, MapView _map) {
         this.tlo = Coord.z;
         this.rbo = Coord.z;
         this.mrgn = Coord.z;
-        cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
-        chcap("Map");
+        cbtn = add(new IButton(cbtni[0], cbtni[1]));
         resize(sz);
         setfocustab(true);
-        this.mmap = mmap;
-        this.pclaim = pclaim;
-        this.vclaim = vclaim;
-        this.center = center;
+        this.mmap = new LocalMiniMap(Utils.getprefc("mmapsz", new Coord(290, 271)), _map);
+        this.map = _map;
         this.c = Coord.z;
 
+        pclaim = new IButton("gfx/hud/lbtn-vil", "", "-d", "-h") {
+            {tooltip = Text.render("Display personal claims");}
+            public void click() {
+                if((map != null) && !map.visol(0))
+                    map.enol(0, 1);
+                else
+                    map.disol(0, 1);
+            }
+        };
+        vclaim = new IButton("gfx/hud/lbtn-claim", "", "-d", "-h") {
+            {tooltip = Text.render("Display village claims");}
+            public void click() {
+                if((map != null) && !map.visol(2))
+                    map.enol(2, 3);
+                else
+                    map.disol(2, 3);
+            }
+        };
+        center = new IButton("gfx/hud/center", "", "", "") {
+            {tooltip = Text.render("Center the map on player");}
+            public void click() {
+                ((LocalMiniMap)mmap).center();
+            }
+        };
         lock = new ToggleButton("gfx/hud/lock", "gfx/hud/lockd", Config.maplocked) {
             { tooltip = Text.render("Lock map dragging"); }
             public void click() {
@@ -68,18 +86,16 @@ public class MinimapWnd extends Widget implements DTarget {
                 Utils.setprefb("maplocked", Config.maplocked);
             }
         };
-        add(lock, 110, 13);
+        add(mmap, new Coord(1, 31));
+        add(pclaim, 4, -3);
+        add(vclaim, 4, -8);
+        add(center, 50, -8);
+        add(lock, 110, 5);
+        pack();
     }
 
     protected void added() {
         parent.setfocus(this);
-    }
-
-    public void chcap(String cap) {
-        if (cap == null)
-            this.cap = null;
-        else
-            this.cap = cf.render(cap);
     }
 
     public void cdraw(GOut g) {
@@ -89,12 +105,6 @@ public class MinimapWnd extends Widget implements DTarget {
         Coord mdo, cbr;
         g.image(cl, tlo);
         mdo = tlo.add(cl.sz().x, 0);
-        cbr = mdo.add(cmw, cm.sz().y);
-        for (int x = 0; x < cmw; x += cm.sz().x)
-            g.image(cm, mdo.add(x, 0), Coord.z, cbr);
-        g.image(cr, tlo.add(cl.sz().x + cmw, 0));
-        g.image(cap.tex(), tlo.add(cpo));
-        mdo = tlo.add(cl.sz().x + cmw + cr.sz().x, 0);
         cbr = tlo.add(wsz.add(-tr.sz().x, tm.sz().y));
         for (; mdo.x < cbr.x; mdo.x += tm.sz().x)
             g.image(tm, mdo, Coord.z, cbr);
@@ -102,10 +112,6 @@ public class MinimapWnd extends Widget implements DTarget {
 
         mdo = tlo.add(0, cl.sz().y);
         cbr = tlo.add(lm.sz().x, wsz.y - bl.sz().y);
-        if (cbr.y - mdo.y >= lb.sz().y) {
-            cbr.y -= lb.sz().y;
-            g.image(lb, new Coord(tlo.x, cbr.y));
-        }
         for (; mdo.y < cbr.y; mdo.y += lm.sz().y)
             g.image(lm, mdo, Coord.z, cbr);
 
@@ -158,9 +164,6 @@ public class MinimapWnd extends Widget implements DTarget {
         atl = ctl.add(mrgn);
         cmw = (cap == null) ? 0 : (cap.sz().x);
         cmw = Math.max(cmw, wsz.x / 4);
-        cptl = new Coord(ctl.x, tlo.y);
-        cpsz = tlo.add(cpo.x + cmw, cm.sz().y).sub(cptl);
-        cmw = cmw - (cl.sz().x - cpo.x) - 5;
         cbtn.c = xlate(tlo.add(wsz.x - cbtn.sz.x, 0), false);
         for (Widget ch = child; ch != null; ch = ch.next)
             ch.presize();
@@ -172,8 +175,7 @@ public class MinimapWnd extends Widget implements DTarget {
         } else if (msg == "dt") {
             dt = (Integer) args[0] != 0;
         } else if (msg == "cap") {
-            String cap = (String) args[0];
-            chcap(cap.equals("") ? null : cap);
+            return;
         } else {
             super.uimsg(msg, args);
         }
@@ -205,8 +207,7 @@ public class MinimapWnd extends Widget implements DTarget {
             return true;
         }
 
-        Coord cpc = c.sub(cptl);
-        if (c.isect(ctl, csz) || (c.isect(cptl, cpsz) && (cm.back.getRaster().getSample(cpc.x % cm.back.getWidth(), cpc.y, 3) >= 128))) {
+        if (c.isect(ctl, csz)) {
             if (button == 1) {
                 dm = ui.grabmouse(this);
                 doff = c;
@@ -284,7 +285,7 @@ public class MinimapWnd extends Widget implements DTarget {
 
         if (minimized) {
             szr = asz;
-            resize(new Coord(asz.x, 27));
+            resize(new Coord(asz.x, 24));
         } else {
             resize(szr);
         }

@@ -46,7 +46,7 @@ public class LocalMiniMap extends Widget {
     private String session;
     private UI.Grab dragging;
     private Coord doff = Coord.z;
-    private Coord delta = Utils.getprefc("mmapdelta", Coord.z);
+    private Coord delta = Coord.z;
     private Coord mgo = null;
     private Coord prevplg = null;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
@@ -361,7 +361,6 @@ public class LocalMiniMap extends Widget {
         if (dragging != null) {
             delta = delta.add(c.sub(doff));
             doff = c;
-            Utils.setprefc("mmapdelta", delta);
         }
     }
 

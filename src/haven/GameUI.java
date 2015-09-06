@@ -42,7 +42,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Avaview portrait;
     public MenuGrid menu;
     public MapView map;
-    public Widget mmap;
     public Fightview fv;
     private List<Widget> meters = new LinkedList<Widget>();
     private Text lasterr;
@@ -519,37 +518,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     private MinimapWnd minimap() {
-        mmap = new LocalMiniMap(Utils.getprefc("mmapsz", new Coord(290, 271)), map);
-        IButton pclaim = new IButton("gfx/hud/lbtn-vil", "", "-d", "-h") {
-            {tooltip = Text.render("Display personal claims");}
-            public void click() {
-                if((map != null) && !map.visol(0))
-                    map.enol(0, 1);
-                else
-                    map.disol(0, 1);
-            }
-        };
-        IButton vclaim = new IButton("gfx/hud/lbtn-claim", "", "-d", "-h") {
-            {tooltip = Text.render("Display village claims");}
-            public void click() {
-                if((map != null) && !map.visol(2))
-                    map.enol(2, 3);
-                else
-                    map.disol(2, 3);
-            }
-        };
-        IButton center = new IButton("gfx/hud/center", "", "", "") {
-            {tooltip = Text.render("Center the map on player");}
-            public void click() {
-                ((LocalMiniMap)mmap).center();
-            }
-        };
         Coord mwsz = Utils.getprefc("mmapwndsz", new Coord(290, 310));
-        minimapWnd = new MinimapWnd(mwsz, mmap, pclaim, vclaim, center);
-        minimapWnd.add(mmap, new Coord(1, 39));
-        minimapWnd.add(pclaim, 4, 5);
-        minimapWnd.add(vclaim, 4, 0);
-        minimapWnd.add(center, 50, 0);
+        minimapWnd = new MinimapWnd(mwsz, map);
         add(minimapWnd, Utils.getprefc("mmapc", new Coord(10, 100)));
         return minimapWnd;
     }
