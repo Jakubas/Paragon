@@ -74,6 +74,7 @@ public class Config {
     public static List<LoginData> logins = new ArrayList<LoginData>();
     public static boolean maplocked = Utils.getprefb("maplocked", false);
     public static boolean mapwndlocked = Utils.getprefb("mapwndlocked", false);
+    public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;

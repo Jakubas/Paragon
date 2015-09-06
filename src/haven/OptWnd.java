@@ -172,6 +172,17 @@ public class OptWnd extends Window {
                     }, new Coord(0, y + 15));
                 }
                 y += 35;
+                add(new CheckBox("Disable tile transitions (requires restart)") {
+                    {
+                        a = Config.disabletiletrans;
+                    }
+                    public void set(boolean val) {
+                        Config.disabletiletrans = val;
+                        Utils.setprefb("disabletiletrans", val);
+                        a = val;
+                    }
+                }, new Coord(0, y));
+                y += 35;
                 add(new Button(200, "Reset to defaults") {
                     public void click() {
                         cf.cfg.resetprefs();
