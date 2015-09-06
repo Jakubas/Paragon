@@ -44,7 +44,7 @@ public class LocalMiniMap extends Widget {
     private Coord cc = null;
     private MapTile cur = null;
     private String session;
-    private UI.Grab resizing;
+    private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Utils.getprefc("mmapdelta", Coord.z);
     private Coord mgo = null;
@@ -350,15 +350,15 @@ public class LocalMiniMap extends Widget {
             else
                 mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), button, ui.modflags(), 0, (int) gob.id, gob.rc, 0, -1);
 
-        } else if (button == 1) {
+        } else if (button == 1 && !Config.maplocked) {
             doff = c;
-            resizing = ui.grabmouse(this);
+            dragging = ui.grabmouse(this);
         }
         return true;
     }
 
     public void mousemove(Coord c) {
-        if (resizing != null) {
+        if (dragging != null) {
             delta = delta.add(c.sub(doff));
             doff = c;
             Utils.setprefc("mmapdelta", delta);
@@ -366,9 +366,9 @@ public class LocalMiniMap extends Widget {
     }
 
     public boolean mouseup(Coord c, int button) {
-        if (resizing != null) {
-            resizing.remove();
-            resizing = null;
+        if (dragging != null) {
+            dragging.remove();
+            dragging = null;
         }
         return (true);
     }

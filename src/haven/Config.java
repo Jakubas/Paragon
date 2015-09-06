@@ -72,6 +72,8 @@ public class Config {
     public static boolean showquality = Utils.getprefb("showquality", false);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
+    public static boolean maplocked = Utils.getprefb("maplocked", false);
+    public static boolean mapwndlocked = Utils.getprefb("mapwndlocked", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;

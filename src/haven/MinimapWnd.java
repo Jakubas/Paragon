@@ -22,6 +22,7 @@ public class MinimapWnd extends Widget implements DTarget {
     public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22), cpo = new Coord(36, 17);
     private Widget mmap;
     private IButton pclaim, vclaim, center;
+    private ToggleButton lock;
     private boolean minimized;
     private Coord szr;
     private boolean resizing;
@@ -59,6 +60,15 @@ public class MinimapWnd extends Widget implements DTarget {
         this.vclaim = vclaim;
         this.center = center;
         this.c = Coord.z;
+
+        lock = new ToggleButton("gfx/hud/lock", "gfx/hud/lockd", Config.maplocked) {
+            { tooltip = Text.render("Lock map dragging"); }
+            public void click() {
+                Config.maplocked = !Config.maplocked;
+                Utils.setprefb("maplocked", Config.maplocked);
+            }
+        };
+        add(lock, 110, 13);
     }
 
     protected void added() {
@@ -263,11 +273,13 @@ public class MinimapWnd extends Widget implements DTarget {
             pclaim.hide();
             vclaim.hide();
             center.hide();
+            lock.hide();
         } else {
             mmap.show();
             pclaim.show();
             vclaim.show();
             center.show();
+            lock.show();
         }
 
         if (minimized) {
