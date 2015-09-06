@@ -215,6 +215,8 @@ public class MinimapWnd extends Widget implements DTarget {
             mmap.sz.x = Math.min(Math.max(mmap.sz.x + d.x, minsz.x), maxsz.x);
             mmap.sz.y = Math.min(Math.max(mmap.sz.y + d.y, minsz.y), maxsz.y);
             pack();
+            Utils.setprefc("mmapwndsz", sz);
+            Utils.setprefc("mmapsz", mmap.sz);
         } else {
             if (dm != null)
                 this.c = this.c.add(c.add(doff.inv()));
