@@ -26,6 +26,7 @@
 
 package haven;
 
+import org.json.JSONArray;
 import java.awt.RenderingHints;
 import java.io.*;
 import java.nio.*;
@@ -208,6 +209,38 @@ public class Utils {
         try {
             prefs().put(prefname, val);
         } catch (SecurityException e) {
+        }
+    }
+
+    static String[] getprefsa(String prefname, String[] def) {
+        try {
+            String jsonstr = Utils.getpref(prefname, null);
+            if (jsonstr == null)
+                return null;
+            JSONArray ja = new JSONArray(jsonstr);
+            String[] ra = new String[ja.length()];
+            for (int i = 0; i < ja.length(); i++)
+                ra[i] = ja.getString(i);
+            return ra;
+        } catch (SecurityException e) {
+            return def;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return def;
+        }
+    }
+
+    static void setprefsa(String prefname, String[] val) {
+        try {
+            String jsonarr = "";
+            for (String s : val)
+                jsonarr += "\"" + s + "\",";
+            if (jsonarr.length() > 0)
+                jsonarr = jsonarr.substring(0, jsonarr.length()-1);
+            Utils.setpref(prefname, "[" + jsonarr + "]");
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

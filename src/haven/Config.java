@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static haven.Utils.getprop;
@@ -82,7 +83,14 @@ public class Config {
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
 
+    public final static String[] boulders = new String[]{"basalt", "limonite", "schist", "dolomite", "magnetite", "gneiss",
+            "granite", "malachite", "hematite", "porphyry", "ilmenite", "quartz", "cassiterite", "limestone", "sandstone",
+            "chalcopyrite", "cinnabar", "feldspar", "marble", "ras"};
+    public static String[] boulderssel = Utils.getprefsa("boulderssel", null);
+
     static {
+        Arrays.sort(Config.boulders);
+
         String p;
         if ((p = getprop("haven.authck", null)) != null)
             authck = Utils.hex2byte(p);

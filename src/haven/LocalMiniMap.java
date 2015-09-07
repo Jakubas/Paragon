@@ -184,12 +184,12 @@ public class LocalMiniMap extends Widget {
                         Resource res = gob.getres();
                         try {
                             if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
-                                Coord pc = p2c(gob.rc);
+                                Coord pc = p2c(gob.rc).add(delta);
                                 g.chcolor(Color.BLACK);
-                                g.fellipse(pc.add(delta), new Coord(5, 5));
+                                g.fellipse(pc, new Coord(5, 5));
                                 KinInfo kininfo = gob.getattr(KinInfo.class);
                                 g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                                g.fellipse(pc.add(delta), new Coord(4, 4));
+                                g.fellipse(pc, new Coord(4, 4));
                                 g.chcolor();
                                 if (Config.alarmunknown && kininfo == null) {
                                     if (!sgobs.contains(gob.id)) {
@@ -205,6 +205,44 @@ public class LocalMiniMap extends Widget {
                             }
                         } catch (Exception e) {
                         }
+                    }
+
+                    Resource res = gob.getres();
+                    if(res != null && res.name.startsWith("gfx/terobjs/bumlings")) {
+                        boolean recognized = false;
+
+                        if (Config.boulderssel != null) {
+                            for (String boulderName : Config.boulderssel) {
+                                if (res.basename().startsWith(boulderName)) {
+                                    Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                    g.chcolor(Color.BLACK);
+                                    g.frect(pc, new Coord(6, 6));
+                                    g.chcolor(new Color(0x777777));
+                                    g.frect(pc.add(1, 1), new Coord(4, 4));
+                                    g.chcolor();
+                                    recognized = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!recognized) {
+                            for (String boulderName : Config.boulders) {
+                                if (res.basename().startsWith(boulderName)) {
+                                    recognized = true;
+                                    break;
+                                }
+                            }
+                            if (!recognized) {
+                                Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                g.chcolor(Color.BLACK);
+                                g.frect(pc, new Coord(6, 6));
+                                g.chcolor(Color.RED);
+                                g.frect(pc.add(1, 1), new Coord(4, 4));
+                                g.chcolor();
+                            }
+                        }
+
                     }
                 } catch (Loading l) {
                 }

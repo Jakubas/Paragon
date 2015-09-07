@@ -26,9 +26,6 @@
 
 package haven;
 
-import java.util.*;
-import java.awt.font.TextAttribute;
-
 public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general;
     public Panel current;
@@ -172,7 +169,7 @@ public class OptWnd extends Window {
                     }, new Coord(0, y + 15));
                 }
                 y += 35;
-                add(new CheckBox("Disable tile transitions (requires restart)") {
+                add(new CheckBox("Disable biome tile transitions (requires logout)") {
                     {
                         a = Config.disabletiletrans;
                     }
@@ -421,6 +418,28 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
+        map.add(new Label("Show boulders:"), new Coord(180, 0));
+        CheckListbox mgs = new CheckListbox(130, 11) {
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Config.boulderssel = getselected();
+                Utils.setprefsa("boulderssel", Config.boulderssel);
+            }
+        };
+        for (String boulder : Config.boulders) {
+            boolean selected = false;
+            if (Config.boulderssel != null) {
+                for (String sboulder : Config.boulderssel) {
+                    if (sboulder.equals(boulder)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+            mgs.items.add(new CheckListboxItem(boulder, selected));
+        }
+        map.add(mgs, new Coord(180, 15));
+
         map.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
         map.pack();
 
@@ -480,4 +499,7 @@ public class OptWnd extends Window {
         chpanel(main);
         super.show();
     }
+
+
+
 }
