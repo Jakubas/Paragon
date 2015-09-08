@@ -219,7 +219,7 @@ public class LocalMiniMap extends Widget {
                                         Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
                                         g.chcolor(Color.BLACK);
                                         g.frect(pc, new Coord(6, 6));
-                                        g.chcolor(new Color(0x777777));
+                                        g.chcolor(Color.CYAN);
                                         g.frect(pc.add(1, 1), new Coord(4, 4));
                                         g.chcolor();
                                         recognized = true;
@@ -251,7 +251,7 @@ public class LocalMiniMap extends Widget {
                                 for (String name : Config.bushessel) {
                                     if (basename.startsWith(name)) {
                                         Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                        g.atextstroked("*", pc, new Color(0x777777), Color.BLACK);
+                                        g.atextstroked("*", pc, Color.CYAN, Color.BLACK);
                                         recognized = true;
                                         break;
                                     }
@@ -277,7 +277,7 @@ public class LocalMiniMap extends Widget {
                                 for (String name : Config.treessel) {
                                     if (basename.equals(name)) {
                                         Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                        g.atextstroked("\u25B2", pc, new Color(0x777777), Color.BLACK);
+                                        g.atextstroked("\u25B2", pc, Color.CYAN, Color.BLACK);
                                         recognized = true;
                                         break;
                                     }
