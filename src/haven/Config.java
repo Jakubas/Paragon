@@ -97,12 +97,11 @@ public class Config {
             "caprifole", "redcurrant"};
     public static String[] bushessel = Utils.getprefsa("bushessel", null);
 
-    public final static String[] trees = new String[]{"alder", "birchfall", "corkoak", "plumtree", "alderfall","juniper",
-            "crabappletree", "kingsoak", "oak", "walnuttree", "birdcherrytree", "larch", "oakfall", "poplar", "whitebeam",
-            "appletree", "cypress", "buckthorn", "laurel", "ash", "elm", "rowan", "willow", "cedar", "linden", "olivetree",
-            "aspen",  "fir", "baywillow", "goldenchain", "peartree", "sallow", "yew", "cherry", "maple", "beech",
-            "chestnuttree", "hazel", "spruce", "beechfall", "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum",
-            "pine", "birch", "planetree"};
+    public final static String[] trees = new String[]{"alder", "corkoak", "plumtree", "juniper", "crabappletree", "kingsoak",
+            "oak", "walnuttree", "birdcherrytree", "larch", "poplar", "whitebeam", "appletree", "cypress", "buckthorn",
+            "laurel", "ash", "elm", "rowan", "willow", "cedar", "linden", "olivetree", "aspen",  "fir", "baywillow",
+            "goldenchain", "peartree", "sallow", "yew", "cherry", "maple", "beech", "chestnuttree", "hazel", "spruce",
+            "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum", "pine", "birch", "planetree"};
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
     static {
