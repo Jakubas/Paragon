@@ -200,10 +200,15 @@ public class WItem extends Widget implements DTarget {
                 g.aimage(itemnum.get(), sz, 1, 1);
             }
             if (item.meter > 0) {
-                double a = ((double) item.meter) / 100.0;
-                g.chcolor(255, 255, 255, 64);
-                Coord half = sz.div(2);
-                g.prect(half, half.inv(), half, a * Math.PI * 2);
+                if (Config.itemmeterbar) {
+                    g.chcolor(220, 60, 60, 255);
+                    g.frect(Coord.z, new Coord((int) (sz.x / (100 / (double) item.meter)), 4));
+                } else {
+                    double a = ((double) item.meter) / 100.0;
+                    g.chcolor(255, 255, 255, 64);
+                    Coord half = sz.div(2);
+                    g.prect(half, half.inv(), half, a * Math.PI * 2);
+                }
                 g.chcolor();
             }
             if (Config.showquality) {

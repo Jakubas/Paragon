@@ -388,6 +388,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        display.add(new CheckBox("Display item completion progress as bar") {
+            {
+                a = Config.itemmeterbar;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("itemmeterbar", val);
+                Config.itemmeterbar = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         display.pack();
