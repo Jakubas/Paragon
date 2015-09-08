@@ -37,7 +37,6 @@ public class WItem extends Widget implements DTarget {
     public final GItem item;
     private Resource cspr = null;
     private Message csdt = Message.nil;
-    private final static Coord qc = new Coord(0, 20);
 
     public WItem(GItem item) {
         super(sqsz);
@@ -214,7 +213,7 @@ public class WItem extends Widget implements DTarget {
             if (Config.showquality) {
                 GItem.Quality quality = item.getMaxQuality();
                 if (quality != null) {
-                    g.atextstroked(quality.val + "", qc, quality.color, Color.BLACK);
+                    g.atextstroked(quality.val + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
                     g.chcolor();
                 }
             }
