@@ -391,11 +391,14 @@ public class LocalMiniMap extends Widget {
         if (cur != null) {
             int hcount = (sz.x / cmaps.x / 2) + 1;
             int vcount = (sz.y / cmaps.y / 2) + 1;
-            for (int x = -hcount; x <= hcount; x++) {
-                for (int y = -vcount; y <= vcount; y++) {
+
+            int tdax = Math.abs(delta.x / cmaps.x) + 1;
+            int tday = Math.abs(delta.y / cmaps.y) + 1;
+
+            for (int x = -hcount - tdax ; x <= hcount + tdax; x++) {
+                for (int y = -vcount - tday ; y <= vcount + tday; y++) {
                     BufferedImage mt = maptiles.get(cur.ul.add(x * cmaps.x, y * cmaps.y));
-                    if (mt != null)
-                    {
+                    if (mt != null) {
                         Coord offset = cur.ul.sub(cc).add(sz.div(2));
                         g.image(mt, new Coord(cmaps.x + x * cmaps.x, cmaps.y + y * cmaps.y).add(offset).add(delta));
                     }
