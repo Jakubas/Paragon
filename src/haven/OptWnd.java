@@ -186,7 +186,7 @@ public class OptWnd extends Window {
                         curcf.destroy();
                         curcf = null;
                     }
-                }, new Coord(100, 180));
+                }, new Coord(200, 180));
                 pack();
             }
         }
