@@ -9,7 +9,7 @@ public class UpdateWnd extends Window {
     public UpdateWnd(String durl, String version) {
         super(Coord.z, "Update");
         final String url = durl;
-        add(new Label("New update is available - " + version), new Coord(20, 40));
+        add(new Label("New update is available - v" + version), new Coord(20, 40));
         add(new Button(200, "Download") {
             public void click() {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
