@@ -411,6 +411,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        display.add(new CheckBox("Show action progress percentage") {
+            {
+                a = Config.showprogressperc;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showprogressperc", val);
+                Config.showprogressperc = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         display.pack();

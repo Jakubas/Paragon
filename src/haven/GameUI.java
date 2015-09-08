@@ -26,6 +26,7 @@
 
 package haven;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -35,6 +36,7 @@ import static haven.Inventory.invsq;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
     public static final Text.Foundry errfoundry = new Text.Foundry(Text.dfont, 14, new Color(192, 0, 0));
+    public static final Text.Foundry progressf = new Text.Foundry(Text.sansb, 12);
     private static final int blpw = 142, brpw = 142;
     public final String chrid;
     public final long plid;
@@ -560,6 +562,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             curprogb = bf;
         }
         g.aimage(curprog, new Coord(sz.x / 2, (sz.y * 4) / 10), 0.5, 0.5);
+
+        if (Config.showprogressperc) {
+            String progstr = new DecimalFormat("#.#").format(prog * 100) + "%";
+            int adj = progstr.length() == 2 ? 10 : 14;
+            g.atextstroked(progstr, new Coord(sz.x / 2 - adj, (sz.y * 4) / 10 - curprog.sz().y / 2 + 1), Color.WHITE, Color.BLACK, progressf);
+        }
     }
 
     public void draw(GOut g) {

@@ -294,7 +294,11 @@ public class Text {
     }
 
     public static Line renderstroked(String text, Color c, Color stroke) {
-        return (std.renderstroked(text, c, stroke));
+        return (renderstroked(text, c, stroke, std));
+    }
+
+    public static Line renderstroked(String text, Color c, Color stroke, Foundry foundry) {
+        return (foundry.renderstroked(text, c, stroke));
     }
 
     public Tex tex() {
