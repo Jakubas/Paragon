@@ -208,41 +208,98 @@ public class LocalMiniMap extends Widget {
                     }
 
                     Resource res = gob.getres();
-                    if(res != null && res.name.startsWith("gfx/terobjs/bumlings")) {
-                        boolean recognized = false;
+                    if(res != null) {
+                        String basename = res.basename();
+                        if (res.name.startsWith("gfx/terobjs/bumlings")) {
+                            boolean recognized = false;
 
-                        if (Config.boulderssel != null) {
-                            for (String boulderName : Config.boulderssel) {
-                                if (res.basename().startsWith(boulderName)) {
+                            if (Config.boulderssel != null) {
+                                for (String name : Config.boulderssel) {
+                                    if (basename.startsWith(name)) {
+                                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                        g.chcolor(Color.BLACK);
+                                        g.frect(pc, new Coord(6, 6));
+                                        g.chcolor(new Color(0x777777));
+                                        g.frect(pc.add(1, 1), new Coord(4, 4));
+                                        g.chcolor();
+                                        recognized = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!recognized) {
+                                for (String name : Config.boulders) {
+                                    if (basename.startsWith(name)) {
+                                        recognized = true;
+                                        break;
+                                    }
+                                }
+                                if (!recognized) {
                                     Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
                                     g.chcolor(Color.BLACK);
                                     g.frect(pc, new Coord(6, 6));
-                                    g.chcolor(new Color(0x777777));
+                                    g.chcolor(Color.RED);
                                     g.frect(pc.add(1, 1), new Coord(4, 4));
                                     g.chcolor();
-                                    recognized = true;
-                                    break;
                                 }
                             }
-                        }
+                        } else if (res.name.startsWith("gfx/terobjs/bushes")) {
+                            boolean recognized = false;
 
-                        if (!recognized) {
-                            for (String boulderName : Config.boulders) {
-                                if (res.basename().startsWith(boulderName)) {
-                                    recognized = true;
-                                    break;
+                            if (Config.bushessel != null) {
+                                for (String name : Config.bushessel) {
+                                    if (basename.startsWith(name)) {
+                                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                        g.atextstroked("*", pc, new Color(0x777777), Color.BLACK);
+                                        recognized = true;
+                                        break;
+                                    }
                                 }
                             }
+
                             if (!recognized) {
-                                Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                g.chcolor(Color.BLACK);
-                                g.frect(pc, new Coord(6, 6));
-                                g.chcolor(Color.RED);
-                                g.frect(pc.add(1, 1), new Coord(4, 4));
-                                g.chcolor();
+                                for (String name : Config.bushes) {
+                                    if (basename.startsWith(name)) {
+                                        recognized = true;
+                                        break;
+                                    }
+                                }
+                                if (!recognized) {
+                                    Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                    g.atextstroked("*", pc, Color.RED, Color.BLACK);
+                                }
+                            }
+                        } else if (res.name.startsWith("gfx/terobjs/trees")) {
+                            boolean recognized = false;
+
+                            if (Config.treessel != null) {
+                                for (String name : Config.treessel) {
+                                    if (basename.equals(name)) {
+                                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                        g.atextstroked("\u25B2", pc, new Color(0x777777), Color.BLACK);
+                                        recognized = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!recognized) {
+                                for (String name : Config.trees) {
+                                    if (basename.equals(name)) {
+                                        recognized = true;
+                                        break;
+                                    }
+                                }
+                                if (!recognized && !basename.endsWith("log") &&
+                                        !basename.endsWith("fall") &&
+                                        !basename.endsWith("stump") &&
+                                        !basename.equals("oldtrunk")) {
+                                    Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
+                                    g.atextstroked("\u25B2", pc, Color.RED, Color.BLACK);
+                                }
                             }
                         }
-
                     }
                 } catch (Loading l) {
                 }

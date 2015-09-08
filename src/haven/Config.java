@@ -88,8 +88,24 @@ public class Config {
             "chalcopyrite", "cinnabar", "feldspar", "marble", "ras"};
     public static String[] boulderssel = Utils.getprefsa("boulderssel", null);
 
+    public final static String[] bushes = new String[]{"arrowwood", "crampbark", "sandthorn", "blackberrybush", "dogrose",
+            "spindlebush", "blackcurrant", "elderberrybush", "teabush", "blackthorn", "gooseberrybush", "tibast",
+            "bogmyrtle", "hawthorn", "tundrarose", "boxwood", "holly", "woodbine", "bsnightshade", "raspberrybush",
+            "caprifole", "redcurrant"};
+    public static String[] bushessel = Utils.getprefsa("bushessel", null);
+
+    public final static String[] trees = new String[]{"alder", "birchfall", "corkoak", "plumtree", "alderfall","juniper",
+            "crabappletree", "kingsoak", "oak", "walnuttree", "birdcherrytree", "larch", "oakfall", "poplar", "whitebeam",
+            "appletree", "cypress", "buckthorn", "laurel", "ash", "elm", "rowan", "willow", "cedar", "linden", "olivetree",
+            "aspen",  "fir", "baywillow", "goldenchain", "peartree", "sallow", "yew", "cherry", "maple", "beech",
+            "chestnuttree", "hazel", "spruce", "beechfall", "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum",
+            "pine", "birch"};
+    public static String[] treessel = Utils.getprefsa("treessel", null);
+
     static {
         Arrays.sort(Config.boulders);
+        Arrays.sort(Config.bushes);
+        Arrays.sort(Config.trees);
 
         String p;
         if ((p = getprop("haven.authck", null)) != null)

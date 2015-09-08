@@ -69,7 +69,7 @@ public class OptWnd extends Window {
     public class VideoPanel extends Panel {
         public VideoPanel(Panel back) {
             super();
-            add(new PButton(200, "Back", 27, back), new Coord(100, 220));
+            add(new PButton(200, "Back", 27, back), new Coord(200, 220));
             pack();
         }
 
@@ -204,7 +204,7 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(boolean gopts) {
-        super(new Coord(410, 250), "Options", true);
+        super(new Coord(600, 250), "Options", true);
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -225,18 +225,18 @@ public class OptWnd extends Window {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(100, 160));
+            }, new Coord(210, 160));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(100, 190));
+            }, new Coord(210, 190));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(100, 220));
+        }, new Coord(210, 220));
         main.pack();
 
         // -------------------------------------------- audio
@@ -323,7 +323,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(170, y));
 
-        audio.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
+        audio.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         audio.pack();
 
         // -------------------------------------------- display
@@ -389,7 +389,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        display.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
+        display.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         display.pack();
 
         // -------------------------------------------- map
@@ -419,7 +419,7 @@ public class OptWnd extends Window {
         }, new Coord(0, y));
 
         map.add(new Label("Show boulders:"), new Coord(180, 0));
-        CheckListbox mgs = new CheckListbox(130, 11) {
+        CheckListbox boulderlist = new CheckListbox(130, 11) {
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
                 Config.boulderssel = getselected();
@@ -436,11 +436,56 @@ public class OptWnd extends Window {
                     }
                 }
             }
-            mgs.items.add(new CheckListboxItem(boulder, selected));
+            boulderlist.items.add(new CheckListboxItem(boulder, selected));
         }
-        map.add(mgs, new Coord(180, 15));
+        map.add(boulderlist, new Coord(180, 15));
 
-        map.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
+        map.add(new Label("Show bushes:"), new Coord(325, 0));
+        CheckListbox bushlist = new CheckListbox(130, 11) {
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Config.bushessel = getselected();
+                Utils.setprefsa("bushessel", Config.bushessel);
+            }
+        };
+        for (String bush : Config.bushes) {
+            boolean selected = false;
+            if (Config.bushessel != null) {
+                for (String sbush : Config.bushessel) {
+                    if (sbush.equals(bush)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+            bushlist.items.add(new CheckListboxItem(bush, selected));
+        }
+        map.add(bushlist, new Coord(325, 15));
+
+        map.add(new Label("Show trees:"), new Coord(470, 0));
+        CheckListbox treelist = new CheckListbox(130, 11) {
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Config.treessel = getselected();
+                Utils.setprefsa("treessel", Config.treessel);
+            }
+        };
+        for (String tree : Config.trees) {
+            boolean selected = false;
+            if (Config.treessel != null) {
+                for (String stree : Config.treessel) {
+                    if (stree.equals(tree)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+            treelist.items.add(new CheckListboxItem(tree, selected));
+        }
+        map.add(treelist, new Coord(470, 15));
+
+
+        map.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         map.pack();
 
         // -------------------------------------------- general
@@ -476,7 +521,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        general.add(new PButton(200, "Back", 27, main), new Coord(100, 220));
+        general.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         general.pack();
 
 
