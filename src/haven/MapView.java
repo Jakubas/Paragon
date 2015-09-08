@@ -53,6 +53,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private Coord3f camoff = new Coord3f(Coord3f.o);
     public double shake = 0.0;
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
+    private String tooltip;
 
     public interface Delayed {
         public void run(GOut g);
@@ -1288,6 +1289,19 @@ public class MapView extends PView implements DTarget, Console.Directory {
             if ((placing.lastmc == null) || !placing.lastmc.equals(c)) {
                 delay(placing.new Adjust(c, ui.modflags()));
             }
+        } else if (ui.modshift) {
+            delay(new Hittest(c) {
+                public void hit(Coord pc, Coord mc, ClickInfo inf) {
+                    if (inf != null && inf.gob != null) {
+                        Resource res = inf.gob.getres();
+                        if (res != null) {
+                            tooltip = res.name;
+                            return;
+                        }
+                    }
+                    tooltip = null;
+                }
+            });
         }
     }
 
@@ -1345,6 +1359,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
         if (selection != null) {
             if (selection.tt != null)
                 return (selection.tt);
+        } else if (tooltip != null && ui.modshift) {
+            return Text.render(tooltip);
         }
         return (super.tooltip(c, prev));
     }
