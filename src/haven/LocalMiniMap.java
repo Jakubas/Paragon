@@ -32,23 +32,14 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 import haven.resutil.Ridges;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import java.text.SimpleDateFormat;
-import java.io.Writer;
-import java.io.FileWriter;
 
 public class LocalMiniMap extends Widget {
     public final MapView mv;
     private Coord cc = null;
     private MapTile cur = null;
-    private String session;
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
-    private Coord mgo = null;
-    private Coord prevplg = null;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>();
@@ -146,15 +137,6 @@ public class LocalMiniMap extends Widget {
             }
         }
         return (buf);
-    }
-
-    private void save(BufferedImage img, Coord c) {
-        String fileName = String.format("map/%s/tile_%d_%d.png", session, c.x, c.y);
-        try {
-            File outputfile = new File(fileName);
-            ImageIO.write(img, "png", outputfile);
-        } catch (IOException e) {
-        }
     }
 
     public LocalMiniMap(Coord sz, MapView mv) {
@@ -341,28 +323,12 @@ public class LocalMiniMap extends Widget {
 
         final Coord plg = cc.div(cmaps);
         if ((cur == null) || !plg.equals(cur.c)) {
-            if (mgo == null)
-                mgo = plg;
             Defer.Future<MapTile> f;
             synchronized (cache) {
                 f = cache.get(plg);
                 if (f == null) {
                     f = Defer.later(new Defer.Callable<MapTile>() {
                         public MapTile call() {
-                            if (prevplg == null || plg.dist(prevplg) > 10) {
-                                session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
-                                (new File("map/" + session)).mkdirs();
-                                try {
-                                    Writer cursesf = new FileWriter("map/currentsession.js");
-                                    cursesf.write("var currentSession = '" + session + "';\n");
-                                    cursesf.close();
-
-                                } catch (IOException e) {
-                                }
-                                mgo = plg;
-                            }
-                            prevplg = plg;
-
                             Coord ul = plg.mul(cmaps).sub(cmaps);
                             Coord mtc = cmaps.mul(3);
                             TexI im = new TexI(drawmap(ul, mtc));
@@ -373,8 +339,6 @@ public class LocalMiniMap extends Widget {
                                     for (int y = -1; y <= 1; y++) {
                                         BufferedImage si = im.back.getSubimage(x * tw + tw, y * th + th, tw, th);
                                         maptiles.put(ul.add(x * tw, y * th), TexI.convert2tile(si, cmaps));
-                                        if (Config.savemmap)
-                                            save(si, plg.add(x, y).sub(mgo));
                                     }
                                 }
                             }

@@ -26,11 +26,11 @@
 
 package haven;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.lang.ref.*;
 
 import haven.Resource.Tileset;
-import haven.Resource.Tile;
 
 public class MCache {
     public static final Coord tilesz = new Coord(11, 11);
@@ -457,6 +457,18 @@ public class MCache {
                     g.fill(msg);
                     req.remove(c);
                     olseq++;
+                    final Grid _g = g;
+                    final MCache _this = this;
+                    Defer.later(new Defer.Callable<Void>() {
+                        public Void call() {
+                            try {
+                                new MapGridSave(_this, _g);
+                            } catch(Loading e) {
+                                Defer.later(this);
+                            }
+                            return null;
+                        }
+                    });
                 }
             }
         }
