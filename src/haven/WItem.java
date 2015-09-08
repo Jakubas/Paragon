@@ -28,6 +28,7 @@ package haven;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static haven.Inventory.sqsz;
@@ -210,11 +211,20 @@ public class WItem extends Widget implements DTarget {
                 }
                 g.chcolor();
             }
+
             if (Config.showquality) {
-                GItem.Quality quality = item.getMaxQuality();
-                if (quality != null) {
-                    g.atextstroked(quality.val + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
-                    g.chcolor();
+                if (Config.showqualitymode == 0) {
+                    GItem.Quality quality = item.qualityMax();
+                    if (quality != null) {
+                        g.atextstroked((int)quality.val + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                        g.chcolor();
+                    }
+                } else {
+                    GItem.Quality quality = item.qualityAvg();
+                    if (quality != null) {
+                        g.atextstroked(new DecimalFormat("#.#").format(quality.val), new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                        g.chcolor();
+                    }
                 }
             }
         } else {

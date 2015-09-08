@@ -371,13 +371,12 @@ public class OptWnd extends Window {
                 val = Config.badcamsensitivity;
             }
             public void changed() {
-                System.out.println("sens: " + val);
                 Config.badcamsensitivity = val;
                 Utils.setprefi("badcamsensitivity", val);
             }
         }, new Coord(160, y));
         y += 35;
-        display.add(new CheckBox("Show item quality") {
+        display.add(new CheckBox("Show item quality:") {
             {
                 a = Config.showquality;
             }
@@ -388,6 +387,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        display.add(new Label("Highest"), new Coord(120, y + 1));
+        display.add(new HSlider(30, 0, 1, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.showqualitymode;
+            }
+            public void changed() {
+                Config.showqualitymode = val;
+                Utils.setprefi("showqualitymode", val);
+            }
+        }, new Coord(160, y));
+        display.add(new Label("Average"), new Coord(195, y + 1));
         y += 35;
         display.add(new CheckBox("Display item completion progress as bar") {
             {

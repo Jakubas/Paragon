@@ -71,6 +71,7 @@ public class Config {
     public static boolean alarmred = Utils.getprefb("alarmred", false);
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", false);
+    public static int showqualitymode = Utils.getprefi("showqualitymode", 0);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
     public static boolean maplocked = Utils.getprefb("maplocked", false);
