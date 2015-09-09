@@ -196,7 +196,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 maxq.color = Color.WHITE;
 
             if (essence != null && substance != null && vitality != null)
-                avgq = new Quality((essence.val + substance.val + vitality.val)/3, maxq.color);
+                avgq = new Quality(Math.round(Math.pow(essence.val * substance.val * vitality.val, 1.0/3.0)), maxq.color);
         } catch (Exception ex) {
         }
     }
