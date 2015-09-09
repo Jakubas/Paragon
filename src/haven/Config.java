@@ -79,6 +79,7 @@ public class Config {
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
     public static boolean itemmeterbar = Utils.getprefb("itemmeterbar", false);
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", false);
+    public static boolean timersalarm = Utils.getprefb("timersalarm", false);
 
     public static byte[] authck = null;
     public static String prefspec = "hafen";

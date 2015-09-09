@@ -57,11 +57,14 @@ public class Glob {
     public Indir<Resource> sky1 = null, sky2 = null;
     public double skyblend = 0.0;
     private Map<Indir<Resource>, Object> wmap = new HashMap<Indir<Resource>, Object>();
+    public static TimersThread timersThread;
 
     public Glob(Session sess) {
         this.sess = sess;
         map = new MCache(sess);
         party = new Party(this);
+        timersThread = new TimersThread();
+        timersThread.start();
     }
 
     @Resource.PublishedCode(name = "wtr")
@@ -240,6 +243,7 @@ public class Glob {
                     epoch = System.currentTimeMillis();
                     if (!inc)
                         lastrep = 0;
+                    timersThread.tick(time, epoch);
                     break;
                 case GMSG_LIGHT:
                     synchronized (this) {

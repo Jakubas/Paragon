@@ -68,6 +68,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public String polowner;
     public Bufflist buffs;
     public MinimapWnd minimapWnd;
+    public TimersWnd timerswnd;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -143,6 +144,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         opts.hide();
         zerg = add(new Zergwnd(), 187, 50);
         zerg.hide();
+
+        timerswnd = new TimersWnd(this);
+        add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
     }
 
     /* Ice cream */
