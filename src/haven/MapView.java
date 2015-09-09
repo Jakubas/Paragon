@@ -1387,6 +1387,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
 
     public boolean globtype(char c, KeyEvent ev) {
+        int code = ev.getKeyCode();
+        if(code == KeyEvent.VK_ADD)
+            camera.wheel(Coord.z, -1);
+        else if(code == KeyEvent.VK_SUBTRACT)
+            camera.wheel(Coord.z, 1);
+
         return (false);
     }
 
