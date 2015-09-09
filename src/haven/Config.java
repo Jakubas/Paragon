@@ -89,7 +89,7 @@ public class Config {
 
     public final static String[] boulders = new String[]{"basalt", "limonite", "schist", "dolomite", "magnetite", "gneiss",
             "granite", "malachite", "hematite", "porphyry", "ilmenite", "quartz", "cassiterite", "limestone", "sandstone",
-            "chalcopyrite", "cinnabar", "feldspar", "marble", "ras", "flint", "hornsilver"};
+            "chalcopyrite", "cinnabar", "feldspar", "marble", "ras", "flint", "hornsilver", "blackcoal"};
     public static String[] boulderssel = Utils.getprefsa("boulderssel", null);
 
     public final static String[] bushes = new String[]{"arrowwood", "crampbark", "sandthorn", "blackberrybush", "dogrose",
