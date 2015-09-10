@@ -31,8 +31,10 @@ public class TimersWnd extends Window {
         };
         add(chkalarm, new Coord(350, 15));
 
-        Glob.timersThread.load();
         List<TimerWdg> timers = Glob.timersThread.getall();
+        if (timers.size() == 0)
+            Glob.timersThread.load();
+        timers = Glob.timersThread.getall();
         for (int i = 0; i < timers.size(); i++) {
             TimerWdg timer = timers.get(i);
             add(timer, new Coord(20, 50  + (i * TimerWdg.height)));
