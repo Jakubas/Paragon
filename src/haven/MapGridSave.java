@@ -17,13 +17,14 @@ public class MapGridSave {
     private MCache map;
     private MCache.Grid g;
     private static Coord mgs;
+    private static Coord mglp;
     private static String session;
 
     public MapGridSave(MCache map, MCache.Grid g) {
         this.map = map;
         this.g = g;
         boolean abort = false;
-        if (mgs == null || g.gc.dist(mgs) > 10) {
+        if (mgs == null || g.gc.dist(mglp) > 10) {
             session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
             (new File("map/" + session)).mkdirs();
             try {
@@ -34,6 +35,9 @@ public class MapGridSave {
                 abort = true;
             }
             mgs = g.gc;
+            mglp = g.gc;
+        } else {
+            mglp  = g.gc;
         }
 
         if (!abort)
