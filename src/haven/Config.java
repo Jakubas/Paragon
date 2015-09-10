@@ -81,6 +81,7 @@ public class Config {
     public static boolean itempercentage = Utils.getprefb("itempercentage", false);
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", false);
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
+    public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
     public static int chatfontsize = Utils.getprefi("chatfontsize", 0);
 
     public static byte[] authck = null;

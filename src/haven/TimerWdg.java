@@ -117,7 +117,7 @@ public class TimerWdg extends Widget {
         GameUI gui = ((TimersWnd) parent).gui;
         gui.add(new TimerDoneWindow(name), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
         if (Config.timersalarm)
-            Audio.play(timersfx, 0.8);
+            Audio.play(timersfx, Config.timersalarmvol);
     }
 
     public void edit() {
