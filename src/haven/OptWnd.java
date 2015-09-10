@@ -424,6 +424,21 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
+        // -------------------------------------------- display 2nd column
+        y = 0;
+        display.add(new Label("Chat font size (requires restart): Small"), new Coord(260, y + 1));
+        display.add(new HSlider(40, 0, 3, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.chatfontsize;
+            }
+            public void changed() {
+                Config.chatfontsize = val;
+                Utils.setprefi("chatfontsize", val);
+            }
+        }, new Coord(452, y));
+        display.add(new Label("Large"), new Coord(495, y + 1));
+
         display.add(new PButton(200, "Back", 27, main), new Coord(200, 220));
         display.pack();
 
