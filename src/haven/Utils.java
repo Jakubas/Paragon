@@ -267,10 +267,8 @@ public class Utils {
     static void setprefjsona(String prefname, JSONObject[] val) {
         try {
             String jsonarr = "";
-            for (JSONObject o : val) {
+            for (JSONObject o : val)
                 jsonarr += o.toString() + ",";
-                System.out.println("object " + o.toString());
-            }
             if (jsonarr.length() > 0)
                 jsonarr = jsonarr.substring(0, jsonarr.length()-1);
             Utils.setpref(prefname, "[" + jsonarr + "]");

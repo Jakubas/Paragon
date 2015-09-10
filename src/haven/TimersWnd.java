@@ -31,20 +31,19 @@ public class TimersWnd extends Window {
         };
         add(chkalarm, new Coord(350, 15));
 
-
+        Glob.timersThread.load();
         List<TimerWdg> timers = Glob.timersThread.getall();
         for (int i = 0; i < timers.size(); i++) {
             TimerWdg timer = timers.get(i);
-            // add(timer, new Coord(20, tsy + (i * 24) + (i*TimerWdg.vspace)));
+            add(timer, new Coord(20, 50  + (i * TimerWdg.height)));
         }
-
         resize(width, timers.size() * TimerWdg.height + 60);
     }
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn) {
-            reqdestroy();
+            hide();
         } else {
             super.wdgmsg(sender, msg, args);
         }
@@ -53,7 +52,7 @@ public class TimersWnd extends Window {
     @Override
     public boolean type(char key, java.awt.event.KeyEvent ev) {
         if (key == 27) {
-            reqdestroy();
+            hide();
             return true;
         }
         return super.type(key, ev);

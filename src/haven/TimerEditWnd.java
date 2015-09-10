@@ -47,11 +47,12 @@ public class TimerEditWnd extends Window {
                     if (timer.active)
                         timer.stop();
                     timer.name = txtname.text;
-                    int hours = Integer.parseInt(txthours.text == "" ? "0" : txthours.text);
-                    int minutes = Integer.parseInt(txtminutes.text == "" ? "0" : txtminutes.text);
+                    int hours = Integer.parseInt(txthours.text.equals("") ? "0" : txthours.text);
+                    int minutes = Integer.parseInt(txtminutes.text.equals("") ? "0" : txtminutes.text);
                     timer.duration = (60 * hours + minutes) * 60 * 1000;
                     timer.updateName();
                     timer.updateDuration();
+                    Glob.timersThread.save();
                     parent.reqdestroy();
                 }
             };
@@ -59,8 +60,8 @@ public class TimerEditWnd extends Window {
             add = new Button(60, "Add") {
                 @Override
                 public void click() {
-                    long hours = Long.parseLong(txthours.text == "" ? "0" : txthours.text);
-                    long minutes = Long.parseLong(txtminutes.text == "" ? "0" : txtminutes.text);
+                    long hours = Long.parseLong(txthours.text.equals("") ? "0" : txthours.text);
+                    long minutes = Long.parseLong(txtminutes.text.equals("") ? "0" : txtminutes.text);
                     long duration = (60 * hours + minutes) * 60 * 1000;
                     int y = 0;
                     List<TimerWdg> timers = Glob.timersThread.getall();
@@ -72,6 +73,7 @@ public class TimerEditWnd extends Window {
                         y = 20;
 
                     gui.timerswnd.add(Glob.timersThread.add(txtname.text, duration), new Coord(20, y + TimerWdg.height));
+                    Glob.timersThread.save();
                     gui.timerswnd.resize(TimersWnd.width, timers.size() * TimerWdg.height + 60);
                     parent.reqdestroy();
                 }

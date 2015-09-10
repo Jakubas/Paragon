@@ -1,6 +1,8 @@
 package haven;
 
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,6 @@ public class TimersThread extends Thread {
 
                     timer.elapsed = globtime() / 3 - timer.start;
                     timer.updateRemaining();
-                    //System.out.println("glob: " + globtime());
-                    // System.out.println(timer.elapsed);
-                    // System.out.println("_time: " + time + " _epoch: " + epoch);
 
                     if (timer.elapsed >= timer.duration) {
                         timer.done();
@@ -61,6 +60,27 @@ public class TimersThread extends Thread {
         }
     }
 
+    public void save() {
+        synchronized (timers) {
+            JSONObject[] timersjson = new JSONObject[timers.size()];
+            for (int i = 0; i < timers.size(); i++) {
+                final TimerWdg timer = timers.get(i);
+                timersjson[i] = new JSONObject().put("name", timer.name).put("duration", timer.duration);
+            }
+            Utils.setprefjsona("timers", timersjson);
+        }
+    }
+
+    public void load() {
+        JSONObject[] tstarr = Utils.getprefjsona("timers", null);
+        if (tstarr == null)
+            return;
+        for (int i = 0; i < tstarr.length; i++) {
+            JSONObject t = tstarr[i];
+            add(t.getString("name"), t.getLong("duration"));
+        }
+    }
+
     private long lastrep = 0;
     private long rgtime = 0;
 
@@ -72,8 +92,6 @@ public class TimersThread extends Thread {
         } else {
             long gd = (now - lastrep) * 3;
             rgtime += gd;
-            if (Math.abs(rgtime + gd - raw) > 1000)
-                rgtime = rgtime + (long) ((raw - rgtime) * (1.0 - Math.pow(10.0, -(now - lastrep) / 1000.0)));
         }
         lastrep = now;
         return rgtime;

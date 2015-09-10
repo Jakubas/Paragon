@@ -791,6 +791,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return (true);
         } else if (key == 17 /*ctrl+q*/) {
             timerswnd.show(!timerswnd.visible);
+            timerswnd.raise();
             return true;
         }
         return (super.globtype(key, ev));

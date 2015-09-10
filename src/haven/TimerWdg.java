@@ -102,6 +102,7 @@ public class TimerWdg extends Widget {
                 timer.c.y -= height;
         }
         parent.resize(TimersWnd.width, timers.size() * TimerWdg.height + 60);
+        Glob.timersThread.save();
     }
 
     public void stop() {
