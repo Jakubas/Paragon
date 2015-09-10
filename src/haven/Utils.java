@@ -27,6 +27,8 @@
 package haven;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.awt.RenderingHints;
 import java.io.*;
 import java.nio.*;
@@ -235,6 +237,40 @@ public class Utils {
             String jsonarr = "";
             for (String s : val)
                 jsonarr += "\"" + s + "\",";
+            if (jsonarr.length() > 0)
+                jsonarr = jsonarr.substring(0, jsonarr.length()-1);
+            Utils.setpref(prefname, "[" + jsonarr + "]");
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static JSONObject[] getprefjsona(String prefname, JSONObject[] def) {
+        try {
+            String jsonstr = Utils.getpref(prefname, null);
+            if (jsonstr == null)
+                return null;
+            JSONArray ja = new JSONArray(jsonstr);
+            JSONObject[] ra = new JSONObject[ja.length()];
+            for (int i = 0; i < ja.length(); i++)
+                ra[i] = ja.getJSONObject(i);
+            return ra;
+        } catch (SecurityException e) {
+            return def;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return def;
+        }
+    }
+
+    static void setprefjsona(String prefname, JSONObject[] val) {
+        try {
+            String jsonarr = "";
+            for (JSONObject o : val) {
+                jsonarr += o.toString() + ",";
+                System.out.println("object " + o.toString());
+            }
             if (jsonarr.length() > 0)
                 jsonarr = jsonarr.substring(0, jsonarr.length()-1);
             Utils.setpref(prefname, "[" + jsonarr + "]");
