@@ -34,6 +34,7 @@ import java.util.*;
 import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
+    public static final Text.Foundry bushf = new Text.Foundry(Text.sansb, 12);
     public final MapView mv;
     private Coord cc = null;
     private MapTile cur = null;
@@ -233,7 +234,7 @@ public class LocalMiniMap extends Widget {
                                 for (String name : Config.bushessel) {
                                     if (basename.startsWith(name)) {
                                         Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                        g.atextstroked("*", pc, Color.CYAN, Color.BLACK);
+                                        g.atextstroked("*", pc, Color.CYAN, Color.BLACK, bushf);
                                         recognized = true;
                                         break;
                                     }
@@ -249,7 +250,7 @@ public class LocalMiniMap extends Widget {
                                 }
                                 if (!recognized) {
                                     Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                    g.atextstroked("*", pc, Color.RED, Color.BLACK);
+                                    g.atextstroked("*", pc, Color.RED, Color.BLACK, bushf);
                                 }
                             }
                         } else if (res.name.startsWith("gfx/terobjs/trees")) {
