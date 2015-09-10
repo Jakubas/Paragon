@@ -146,6 +146,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         zerg.hide();
 
         timerswnd = new TimersWnd(this);
+        timerswnd.hide();
         add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
     }
 
@@ -788,6 +789,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if ((key == 27) && (map != null) && !map.hasfocus) {
             setfocus(map);
             return (true);
+        } else if (key == 17 /*ctrl+q*/) {
+            timerswnd.show(!timerswnd.visible);
+            return true;
         }
         return (super.globtype(key, ev));
     }

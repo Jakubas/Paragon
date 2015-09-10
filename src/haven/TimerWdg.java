@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TimerWdg extends Widget {
     public static final Text.Foundry foundry = new Text.Foundry(Text.sansb, 12).aa(true);
+    private static final Resource timersfx = Resource.local().loadwait("sfx/timer");
     public final static int height = 31;
     private final static int txty = 8;
     public String name;
@@ -114,6 +115,8 @@ public class TimerWdg extends Widget {
         stop();
         GameUI gui = ((TimersWnd) parent).gui;
         gui.add(new TimerDoneWindow(name), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
+        if (Config.timersalarm)
+            Audio.play(timersfx, 0.8);
     }
 
     public void edit() {
