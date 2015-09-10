@@ -793,6 +793,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             timerswnd.show(!timerswnd.visible);
             timerswnd.raise();
             return true;
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
+            if (map != null)
+                map.togglegrid();
         }
         return (super.globtype(key, ev));
     }
