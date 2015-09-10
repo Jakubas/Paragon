@@ -439,7 +439,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        display.add(new CheckBox("Show action progress percentage") {
+        display.add(new CheckBox("Show hourglass percentage") {
             {
                 a = Config.showprogressperc;
             }
