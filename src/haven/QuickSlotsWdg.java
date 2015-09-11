@@ -84,7 +84,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
         if (button == 1 && c.x > 44 && c.x < 50) {
             dragging = ui.grabmouse(this);
             dc = c;
-            return false;
+            return true;
         }
         dragging = null;
         Equipory e = getequipory();
