@@ -228,6 +228,7 @@ public class Widget {
     }
 
     public <T extends Widget> T add(T child, Coord c) {
+        child.c = c;
         if (child instanceof Window) {
             try {
                 Window wnd = (Window)child;
@@ -236,7 +237,6 @@ public class Widget {
             } catch (Exception e) {
             }
         }
-        child.c = c;
         return (add(child));
     }
 
