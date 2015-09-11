@@ -14,7 +14,7 @@ public class TimerWdg extends Widget {
     private Label lbltime, lblname;
     private Button btnstart, btnstop, btndel, btnedit;
 
-    public TimerWdg(String name, long duration) {
+    public TimerWdg(String name, long duration, long start) {
         this.name = name;
         this.duration = duration;
 
@@ -55,6 +55,9 @@ public class TimerWdg extends Widget {
         add(btnstop, new Coord(270, 3));
         add(btnedit, new Coord(334, 3));
         add(btndel, new Coord(395, 3));
+
+        if (start != 0)
+            start(start);
     }
 
     @Override
@@ -89,6 +92,14 @@ public class TimerWdg extends Widget {
         btnstart.hide();
         btnstop.show();
         active = true;
+        Glob.timersThread.save();
+    }
+
+    public void start(long start) {
+        this.start = start;
+        btnstart.hide();
+        btnstop.show();
+        active = true;
     }
 
     public void delete() {
@@ -118,6 +129,7 @@ public class TimerWdg extends Widget {
         gui.add(new TimerDoneWindow(name), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
         if (Config.timersalarm)
             Audio.play(timersfx, Config.timersalarmvol);
+        Glob.timersThread.save();
     }
 
     public void edit() {

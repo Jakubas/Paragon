@@ -72,7 +72,7 @@ public class TimerEditWnd extends Window {
                     if (y == 0)
                         y = 20;
 
-                    gui.timerswnd.add(Glob.timersThread.add(txtname.text, duration), new Coord(20, y + TimerWdg.height));
+                    gui.timerswnd.add(Glob.timersThread.add(txtname.text, duration, 0), new Coord(20, y + TimerWdg.height));
                     Glob.timersThread.save();
                     gui.timerswnd.resize(TimersWnd.width, timers.size() * TimerWdg.height + 60);
                     parent.reqdestroy();

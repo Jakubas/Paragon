@@ -1,6 +1,7 @@
 package haven;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,9 +41,9 @@ public class TimersThread extends Thread {
         }
     }
 
-    public TimerWdg add(String name, long duration) {
+    public TimerWdg add(String name, long duration, long start) {
         synchronized (timers) {
-            TimerWdg timer = new TimerWdg(name, duration);
+            TimerWdg timer = new TimerWdg(name, duration, start);
             timers.add(timer);
             return timer;
         }
@@ -65,7 +66,10 @@ public class TimersThread extends Thread {
             JSONObject[] timersjson = new JSONObject[timers.size()];
             for (int i = 0; i < timers.size(); i++) {
                 final TimerWdg timer = timers.get(i);
-                timersjson[i] = new JSONObject().put("name", timer.name).put("duration", timer.duration);
+                timersjson[i] = new JSONObject()
+                        .put("name", timer.name)
+                        .put("duration", timer.duration)
+                        .put("start", timer.active ? timer.start : 0);
             }
             Utils.setprefjsona("timers", timersjson);
         }
@@ -77,7 +81,12 @@ public class TimersThread extends Thread {
             return;
         for (int i = 0; i < tstarr.length; i++) {
             JSONObject t = tstarr[i];
-            add(t.getString("name"), t.getLong("duration"));
+            long start = 0;
+            try {
+                start = t.getLong("start");
+            } catch (JSONException e) {
+            }
+            add(t.getString("name"), t.getLong("duration"), start);
         }
     }
 
