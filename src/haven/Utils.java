@@ -199,6 +199,13 @@ public class Utils {
         return (prefs);
     }
 
+    static void delpref(String prefname) {
+        try {
+            prefs().remove(prefname);
+        } catch (SecurityException e) {
+        }
+    }
+
     static String getpref(String prefname, String def) {
         try {
             return (prefs().get(prefname, def));
