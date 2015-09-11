@@ -69,7 +69,7 @@ public class OptWnd extends Window {
     public class VideoPanel extends Panel {
         public VideoPanel(Panel back) {
             super();
-            add(new PButton(200, "Back", 27, back), new Coord(200, 260));
+            add(new PButton(200, "Back", 27, back), new Coord(200, 360));
             pack();
         }
 
@@ -186,7 +186,7 @@ public class OptWnd extends Window {
                         curcf.destroy();
                         curcf = null;
                     }
-                }, new Coord(200, 220));
+                }, new Coord(200, 320));
                 pack();
             }
         }
@@ -204,7 +204,7 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(boolean gopts) {
-        super(new Coord(600, 300), "Options", true);
+        super(new Coord(600, 400), "Options", true);
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -225,18 +225,18 @@ public class OptWnd extends Window {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(210, 200));
+            }, new Coord(210, 300));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(210, 230));
+            }, new Coord(210, 330));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(210, 260));
+        }, new Coord(210, 360));
         main.pack();
 
         // -------------------------------------------- audio
@@ -361,7 +361,7 @@ public class OptWnd extends Window {
                 Utils.setprefd("chatalarmvol", vol);
             }
         }, new Coord(170, y));
-        audio.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
+        audio.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
         audio.pack();
 
         // -------------------------------------------- display
@@ -512,7 +512,17 @@ public class OptWnd extends Window {
             }
         }, new Coord(260, y));
 
-        display.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
+        display.add(new Button(220, "Reset Windows (req. restart)") {
+            @Override
+            public void click() {
+                for (String wndcap : Window.persistentwnds)
+                    Utils.delpref(wndcap + "_c");
+                Utils.delpref("mmapc");
+                Utils.delpref("quickslotsc");
+            }
+        }, new Coord(190, 320));
+
+        display.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
         display.pack();
 
         // -------------------------------------------- map
@@ -608,7 +618,7 @@ public class OptWnd extends Window {
         map.add(treelist, new Coord(470, 15));
 
 
-        map.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
+        map.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
         map.pack();
 
         // -------------------------------------------- general
@@ -644,7 +654,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        general.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
+        general.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
         general.pack();
 
 
@@ -667,7 +677,4 @@ public class OptWnd extends Window {
         chpanel(main);
         super.show();
     }
-
-
-
 }
