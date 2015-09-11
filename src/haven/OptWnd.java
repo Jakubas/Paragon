@@ -552,7 +552,7 @@ public class OptWnd extends Window {
         }, new Coord(0, y));
 
         map.add(new Label("Show boulders:"), new Coord(180, 0));
-        CheckListbox boulderlist = new CheckListbox(130, 12) {
+        CheckListbox boulderlist = new CheckListbox(130, 18) {
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
                 Config.boulderssel = getselected();
@@ -574,7 +574,7 @@ public class OptWnd extends Window {
         map.add(boulderlist, new Coord(180, 15));
 
         map.add(new Label("Show bushes:"), new Coord(325, 0));
-        CheckListbox bushlist = new CheckListbox(130, 12) {
+        CheckListbox bushlist = new CheckListbox(130, 18) {
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
                 Config.bushessel = getselected();
@@ -596,7 +596,7 @@ public class OptWnd extends Window {
         map.add(bushlist, new Coord(325, 15));
 
         map.add(new Label("Show trees:"), new Coord(470, 0));
-        CheckListbox treelist = new CheckListbox(130, 12) {
+        CheckListbox treelist = new CheckListbox(130, 18) {
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
                 Config.treessel = getselected();
