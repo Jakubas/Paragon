@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.awt.datatransfer.*;
 
 public class ChatUI extends Widget {
+    private static final Resource alarmsfx = Resource.local().loadwait("sfx/chatalarm");
     public static final RichText.Foundry fndsml = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(10f), TextAttribute.FOREGROUND, Color.BLACK));
     public static final RichText.Foundry fndmed = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(12f), TextAttribute.FOREGROUND, Color.BLACK));
     public static final RichText.Foundry fndlrg = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(14f), TextAttribute.FOREGROUND, Color.BLACK));
@@ -834,6 +835,7 @@ public class ChatUI extends Widget {
 
     public static class PrivChat extends EntryChannel {
         private final int other;
+        private long lastmsg = 0;
 
         public class InMessage extends SimpleMessage {
             public InMessage(String text, int w) {
@@ -861,6 +863,12 @@ public class ChatUI extends Widget {
                     append(cmsg);
                     notify(cmsg, 3);
                     save(cmsg.text().text, getparent(GameUI.class).buddies.find(other).name);
+
+                    long time = System.currentTimeMillis();
+                    if (lastmsg == 0 || (time-lastmsg)/1000/60 > 10) {
+                        Audio.play(alarmsfx, Config.chatalarmvol);
+                        lastmsg = time;
+                    }
                 } else if (t.equals("out")) {
                     OutMessage om = new OutMessage(line, iw());
                     append(om);

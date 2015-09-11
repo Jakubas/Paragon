@@ -337,7 +337,30 @@ public class OptWnd extends Window {
                 Utils.setprefd("timersalarmvol", vol);
             }
         }, new Coord(0, y));
-        
+        y += 35;
+        audio.add(new CheckBox("Alarm on new private chat") {
+            {
+                a = Config.chatalarm;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chatalarm", val);
+                Config.chatalarm = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        audio.add(new HSlider(100, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.chatalarmvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.chatalarmvol = vol;
+                Utils.setprefd("chatalarmvol", vol);
+            }
+        }, new Coord(170, y));
         audio.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
         audio.pack();
 
