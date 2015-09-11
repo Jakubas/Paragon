@@ -228,7 +228,16 @@ public class Widget {
     }
 
     public <T extends Widget> T add(T child, Coord c) {
-        child.c = c;
+        if (child instanceof Window) {
+            try {
+                Window wnd = (Window)child;
+                if (Window.persistentwnds.contains(wnd.cap.text))
+                    child.c = Utils.getprefc(wnd.cap.text + "_c", c);
+            } catch (Exception e) {
+            }
+        } else {
+            child.c = c;
+        }
         return (add(child));
     }
 

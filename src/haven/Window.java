@@ -29,6 +29,9 @@ package haven;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static haven.PUtils.*;
 
@@ -87,6 +90,9 @@ public class Window extends Widget implements DTarget {
     public int cmw;
     private UI.Grab dm = null;
     private Coord doff;
+    public static final Set<String> persistentwnds = new HashSet<String>(
+            Arrays.asList("Inventory", "Equipment", "Crafting", "Character Sheet", "Kith & Kin", "Crate", "Cupboard",
+                    "Barrel"));
 
     @RName("wnd")
     public static class $_ implements Factory {
@@ -275,6 +281,8 @@ public class Window extends Widget implements DTarget {
         if (dm != null) {
             dm.remove();
             dm = null;
+            if (persistentwnds.contains(cap.text))
+                Utils.setprefc(cap.text + "_c", this.c);
         } else {
             super.mouseup(c, button);
         }
