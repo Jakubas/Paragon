@@ -91,8 +91,8 @@ public class Window extends Widget implements DTarget {
     private UI.Grab dm = null;
     private Coord doff;
     public static final Set<String> persistentwnds = new HashSet<String>(
-            Arrays.asList("Inventory", "Equipment", "Crafting", "Character Sheet", "Kith & Kin", "Crate", "Cupboard",
-                    "Barrel"));
+            Arrays.asList("Timers", "Inventory", "Equipment", "Crafting", "Character Sheet", "Kith & Kin", "Crate",
+                    "Cupboard", "Barrel"));
 
     @RName("wnd")
     public static class $_ implements Factory {
