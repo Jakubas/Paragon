@@ -235,9 +235,8 @@ public class Widget {
                     child.c = Utils.getprefc(wnd.cap.text + "_c", c);
             } catch (Exception e) {
             }
-        } else {
-            child.c = c;
         }
+        child.c = c;
         return (add(child));
     }
 
