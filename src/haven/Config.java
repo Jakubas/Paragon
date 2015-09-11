@@ -83,6 +83,7 @@ public class Config {
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
     public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
     public static int chatfontsize = Utils.getprefi("chatfontsize", 0);
+    public static boolean quickslots = Utils.getprefb("quickslots", false);
 
     public static byte[] authck = null;
     public static String prefspec = "hafen";

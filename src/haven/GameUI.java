@@ -48,7 +48,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private List<Widget> meters = new LinkedList<Widget>();
     private Text lasterr;
     private long errtime;
-    private Window invwnd, equwnd, makewnd;
+    public Window invwnd, equwnd, makewnd;
     public Inventory maininv;
     public CharWnd chrwdg;
     public BuddyWnd buddies;
@@ -69,6 +69,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Bufflist buffs;
     public MinimapWnd minimapWnd;
     public TimersWnd timerswnd;
+    public QuickSlotsWdg quickslots;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -148,6 +149,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         timerswnd = new TimersWnd(this);
         timerswnd.hide();
         add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
+
+        quickslots = new QuickSlotsWdg();
+        if (!Config.quickslots)
+            quickslots.hide();
+        add(quickslots, Utils.getprefc("quickslotsc", new Coord(20, HavenPanel.h-50)));
     }
 
     /* Ice cream */

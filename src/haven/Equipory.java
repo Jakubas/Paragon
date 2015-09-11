@@ -64,6 +64,7 @@ public class Equipory extends Widget implements DTarget {
     }
 
     Map<GItem, WItem[]> wmap = new HashMap<GItem, WItem[]>();
+    public WItem[] quickslots = new WItem[ecoords.length];
 
     @RName("epry")
     public static class $_ implements Factory {
@@ -110,7 +111,7 @@ public class Equipory extends Widget implements DTarget {
             WItem[] v = new WItem[args.length];
             for (int i = 0; i < args.length; i++) {
                 int ep = (Integer) args[i];
-                v[i] = add(new WItem(g), ecoords[ep].add(1, 1));
+                v[i] = quickslots[ep] = add(new WItem(g), ecoords[ep].add(1, 1));
             }
             wmap.put(g, v);
         } else {
@@ -122,8 +123,15 @@ public class Equipory extends Widget implements DTarget {
         super.cdestroy(w);
         if (w instanceof GItem) {
             GItem i = (GItem) w;
-            for (WItem v : wmap.remove(i))
+            for (WItem v : wmap.remove(i)) {
                 ui.destroy(v);
+                for (int qsi = 0; qsi < ecoords.length; qsi++) {
+                    if (quickslots[qsi] == v) {
+                        quickslots[qsi] = null;
+                        break;
+                    }
+                }
+            }
         }
     }
 

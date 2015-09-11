@@ -465,6 +465,29 @@ public class OptWnd extends Window {
             }
         }, new Coord(452, y));
         display.add(new Label("Large"), new Coord(495, y + 1));
+        y += 35;
+        display.add(new CheckBox("Show quick hand slots") {
+            {
+                a = Config.quickslots;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("quickslots", val);
+                Config.quickslots = val;
+                a = val;
+
+                try {
+                    Widget qs = ((GameUI) parent.parent.parent).quickslots;
+                    if (qs != null) {
+                        if (val)
+                            qs.show();
+                        else
+                            qs.hide();
+                    }
+                } catch (ClassCastException e) { // in case we are at the login screen
+                }
+            }
+        }, new Coord(260, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(200, 260));
         display.pack();
