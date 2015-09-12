@@ -19,7 +19,7 @@ public class MinimapWnd extends Widget implements DTarget {
     public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22);
     private final Widget mmap;
     private final MapView map;
-    private IButton pclaim, vclaim, center;
+    private IButton pclaim, vclaim, center, viewdist, grid;
     private ToggleButton lock;
     private boolean minimized;
     private Coord szr;
@@ -86,11 +86,28 @@ public class MinimapWnd extends Widget implements DTarget {
                 Utils.setprefb("maplocked", Config.maplocked);
             }
         };
-        add(mmap, new Coord(1, 31));
+        viewdist = new IButton("gfx/hud/viewdist", "", "", "") {
+            {tooltip = Text.render("Show view distance box");}
+            public void click() {
+                Config.mapshowviewdist = !Config.mapshowviewdist;
+                Utils.setprefb("mapshowviewdist", Config.mapshowviewdist);
+            }
+        };
+        grid = new IButton("gfx/hud/grid", "", "", "") {
+            {tooltip = Text.render("Show map grid");}
+            public void click() {
+                Config.mapshowgrid = !Config.mapshowgrid;
+                Utils.setprefb("maplocked", Config.mapshowgrid);
+            }
+        };
+
+        add(mmap, 1, 31);
         add(pclaim, 4, -3);
         add(vclaim, 4, -8);
         add(center, 50, -8);
         add(lock, 110, 5);
+        add(viewdist, 99, -8);
+        add(grid, 126, -8);
         pack();
     }
 
@@ -275,12 +292,16 @@ public class MinimapWnd extends Widget implements DTarget {
             vclaim.hide();
             center.hide();
             lock.hide();
+            viewdist.hide();
+            grid.hide();
         } else {
             mmap.show();
             pclaim.show();
             vclaim.show();
             center.show();
             lock.show();
+            viewdist.show();
+            grid.show();
         }
 
         if (minimized) {

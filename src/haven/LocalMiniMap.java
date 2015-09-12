@@ -34,6 +34,8 @@ import java.util.*;
 import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
+    private static final Tex gridblue = Resource.loadtex("gfx/hud/mmap/gridblue");
+    private static final Tex gridred = Resource.loadtex("gfx/hud/mmap/gridred");
     public static final Text.Foundry bushf = new Text.Foundry(Text.sansb, 12);
     private static final Text.Foundry partyf = bushf;
     public final MapView mv;
@@ -356,10 +358,16 @@ public class LocalMiniMap extends Widget {
                     BufferedImage mt = maptiles.get(cur.ul.add(x * cmaps.x, y * cmaps.y));
                     if (mt != null) {
                         Coord offset = cur.ul.sub(cc).add(sz.div(2));
-                        g.image(mt, new Coord(cmaps.x + x * cmaps.x, cmaps.y + y * cmaps.y).add(offset).add(delta));
+                        Coord mtc = new Coord(cmaps.x + x * cmaps.x, cmaps.y + y * cmaps.y).add(offset).add(delta);
+                        g.image(mt, mtc);
+                        if (Config.mapshowgrid)
+                            g.image(gridred, mtc);
                     }
                 }
             }
+
+            if (Config.mapshowviewdist)
+                g.image(gridblue, p2c(mv.player().rc).add(delta).sub(44, 44));
 
             try {
                 synchronized (ui.sess.glob.party.memb) {

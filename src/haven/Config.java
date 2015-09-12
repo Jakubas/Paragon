@@ -77,6 +77,8 @@ public class Config {
     public static List<LoginData> logins = new ArrayList<LoginData>();
     public static boolean maplocked = Utils.getprefb("maplocked", false);
     public static boolean mapwndlocked = Utils.getprefb("mapwndlocked", false);
+    public static boolean mapshowgrid = Utils.getprefb("mapshowgrid", false);
+    public static boolean mapshowviewdist = Utils.getprefb("mapshowviewdist", false);
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
     public static boolean itemmeterbar = Utils.getprefb("itemmeterbar", false);
     public static boolean itempercentage = Utils.getprefb("itempercentage", false);
