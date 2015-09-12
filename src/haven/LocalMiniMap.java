@@ -157,8 +157,8 @@ public class LocalMiniMap extends Widget {
                                     ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
                                 }
 
-                                if (!ispartymember) {
-                                    Coord pc = p2c(gob.rc).add(delta);
+                                Coord pc = p2c(gob.rc).add(delta);
+                                if (!ispartymember && pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
                                     g.chcolor(Color.BLACK);
                                     g.fellipse(pc, new Coord(5, 5));
                                     KinInfo kininfo = gob.getattr(KinInfo.class);
