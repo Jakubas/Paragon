@@ -69,7 +69,7 @@ public class OptWnd extends Window {
     public class VideoPanel extends Panel {
         public VideoPanel(Panel back) {
             super();
-            add(new PButton(200, "Back", 27, back), new Coord(200, 360));
+            add(new PButton(200, "Back", 27, back), new Coord(270, 360));
             pack();
         }
 
@@ -186,7 +186,7 @@ public class OptWnd extends Window {
                         curcf.destroy();
                         curcf = null;
                     }
-                }, new Coord(200, 320));
+                }, new Coord(270, 320));
                 pack();
             }
         }
@@ -204,7 +204,7 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(boolean gopts) {
-        super(new Coord(600, 400), "Options", true);
+        super(new Coord(740, 400), "Options", true);
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -225,18 +225,18 @@ public class OptWnd extends Window {
                 public void click() {
                     getparent(GameUI.class).act("lo", "cs");
                 }
-            }, new Coord(210, 300));
+            }, new Coord(270, 300));
             main.add(new Button(200, "Log out") {
                 public void click() {
                     getparent(GameUI.class).act("lo");
                 }
-            }, new Coord(210, 330));
+            }, new Coord(270, 330));
         }
         main.add(new Button(200, "Close") {
             public void click() {
                 OptWnd.this.hide();
             }
-        }, new Coord(210, 360));
+        }, new Coord(270, 360));
         main.pack();
 
         // -------------------------------------------- audio
@@ -385,7 +385,7 @@ public class OptWnd extends Window {
                 Utils.setprefd("studyalarmvol", vol);
             }
         }, new Coord(170, y));
-        audio.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
+        audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
         // -------------------------------------------- display
@@ -556,9 +556,9 @@ public class OptWnd extends Window {
                 Utils.delpref("mmapc");
                 Utils.delpref("quickslotsc");
             }
-        }, new Coord(190, 320));
+        }, new Coord(260, 320));
 
-        display.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
+        display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         display.pack();
 
         // -------------------------------------------- map
@@ -653,8 +653,30 @@ public class OptWnd extends Window {
         }
         map.add(treelist, new Coord(470, 15));
 
+        map.add(new Label("Hide icons:"), new Coord(615, 0));
+        CheckListbox iconslist = new CheckListbox(130, 18) {
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Config.iconssel = getselected();
+                Utils.setprefsa("iconssel", Config.iconssel);
+            }
+        };
+        for (String icon : Config.icons) {
+            boolean selected = false;
+            if (Config.iconssel != null) {
+                for (String sicon : Config.iconssel) {
+                    if (sicon.equals(icon)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+            iconslist.items.add(new CheckListboxItem(icon, selected));
+        }
+        map.add(iconslist, new Coord(615, 15));
 
-        map.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
+
+        map.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         map.pack();
 
         // -------------------------------------------- general
@@ -690,7 +712,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
 
-        general.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
+        general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
 
 

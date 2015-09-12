@@ -146,12 +146,23 @@ public class LocalMiniMap extends Widget {
             for (Gob gob : oc) {
                 try {
                     GobIcon icon = gob.getattr(GobIcon.class);
+                    Resource res = gob.getres();
                     if (icon != null) {
-                        Coord gc = p2c(gob.rc);
-                        Tex tex = icon.tex();
-                        g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
+                        boolean ignore = false;
+                        if (Config.iconssel != null) {
+                            for (String name : Config.iconssel) {
+                                if (res.basename().equals(name)) {
+                                    ignore = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!ignore) {
+                            Coord gc = p2c(gob.rc);
+                            Tex tex = icon.tex();
+                            g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
+                        }
                     } else if (Config.showplayersmmap) {
-                        Resource res = gob.getres();
                         try {
                             if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
                                 boolean ispartymember = false;
@@ -184,7 +195,6 @@ public class LocalMiniMap extends Widget {
                         }
                     }
 
-                    Resource res = gob.getres();
                     if(res != null) {
                         String basename = res.basename();
                         if (res.name.startsWith("gfx/terobjs/bumlings")) {

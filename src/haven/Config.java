@@ -116,10 +116,16 @@ public class Config {
             "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum", "pine", "birch", "planetree"};
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
+    public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken",
+            "spindlytaproot", "stingingnettle"};
+    public static String[] iconssel = Utils.getprefsa("iconssel", null);
+
+
     static {
         Arrays.sort(Config.boulders);
         Arrays.sort(Config.bushes);
         Arrays.sort(Config.trees);
+        Arrays.sort(Config.icons);
 
         String p;
         if ((p = getprop("haven.authck", null)) != null)
