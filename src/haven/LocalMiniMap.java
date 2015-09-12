@@ -82,14 +82,20 @@ public class LocalMiniMap extends Widget {
         for (c.y = 0; c.y < sz.y; c.y++) {
             for (c.x = 0; c.x < sz.x; c.x++) {
                 int t = m.gettile(ul.add(c));
+                BufferedImage tex = tileimg(t, texes);
+                int rgb = 0;
+                if (tex != null)
+                    rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                            Utils.floormod(c.y + ul.y, tex.getHeight()));
+                buf.setRGB(c.x, c.y, rgb);
+
                 try {
-                    BufferedImage tex = tileimg(t, texes);
-                    int rgb = 0;
-                    if (tex != null)
-                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
-                                Utils.floormod(c.y + ul.y, tex.getHeight()));
-                    buf.setRGB(c.x, c.y, rgb);
-                }  catch (Exception e) {
+                    if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
+                            (m.gettile(ul.add(c).add(1, 0)) > t) ||
+                            (m.gettile(ul.add(c).add(0, -1)) > t) ||
+                            (m.gettile(ul.add(c).add(0, 1)) > t))
+                        buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                } catch (Exception e) {
                 }
             }
         }
@@ -114,19 +120,6 @@ public class LocalMiniMap extends Widget {
             }
         }
 
-        for (c.y = 0; c.y < sz.y; c.y++) {
-            for (c.x = 0; c.x < sz.x; c.x++) {
-                try {
-                    int t = m.gettile(ul.add(c));
-                    if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
-                            (m.gettile(ul.add(c).add(1, 0)) > t) ||
-                            (m.gettile(ul.add(c).add(0, -1)) > t) ||
-                            (m.gettile(ul.add(c).add(0, 1)) > t))
-                        buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
-                } catch (Exception e) {
-                }
-            }
-        }
         return (buf);
     }
 
