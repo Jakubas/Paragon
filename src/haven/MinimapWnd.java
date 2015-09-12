@@ -256,14 +256,12 @@ public class MinimapWnd extends Widget implements DTarget {
     public boolean mouseup(Coord c, int button) {
         resizing = false;
 
-        if (dm != null)
-            Utils.setprefc("mmapc", this.c);
-
         if (dm != null) {
+            Utils.setprefc("mmapc", this.c);
             dm.remove();
             dm = null;
         } else {
-            super.mouseup(c, button);
+            return super.mouseup(c, button);
         }
         return true;
     }
