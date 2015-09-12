@@ -35,6 +35,7 @@ import static haven.Inventory.sqsz;
 
 public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
+    private static final Resource studyalarmsfx = Resource.local().loadwait("sfx/study");
     public final GItem item;
     private Resource cspr = null;
     private Message csdt = Message.nil;
@@ -261,5 +262,14 @@ public class WItem extends Widget implements DTarget {
     public boolean iteminteract(Coord cc, Coord ul) {
         item.wdgmsg("itemact", ui.modflags());
         return (true);
+    }
+
+    public void destroy() {
+        if (Config.studyalarm) {
+            Curiosity ci = ItemInfo.find(Curiosity.class, item.info());
+            if (ci != null && item.meter == 99)
+                Audio.play(studyalarmsfx, Config.studyalarmvol);
+        }
+        super.destroy();
     }
 }

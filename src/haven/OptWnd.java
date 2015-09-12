@@ -361,6 +361,30 @@ public class OptWnd extends Window {
                 Utils.setprefd("chatalarmvol", vol);
             }
         }, new Coord(170, y));
+        y += 35;
+        audio.add(new CheckBox("Alarm when curio finishes") {
+            {
+                a = Config.studyalarm;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("studyalarm", val);
+                Config.studyalarm = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        audio.add(new HSlider(100, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.studyalarmvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.studyalarmvol = vol;
+                Utils.setprefd("studyalarmvol", vol);
+            }
+        }, new Coord(170, y));
         audio.add(new PButton(200, "Back", 27, main), new Coord(200, 360));
         audio.pack();
 

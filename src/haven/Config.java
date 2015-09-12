@@ -89,7 +89,8 @@ public class Config {
     public static boolean quickslots = Utils.getprefb("quickslots", false);
     public static boolean chatalarm = Utils.getprefb("chatalarm", false);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
-
+    public static boolean studyalarm = Utils.getprefb("studyalarm", false);
+    public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;
