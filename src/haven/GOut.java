@@ -320,6 +320,14 @@ public class GOut {
         checkerr();
     }
 
+    public void atextstroked(String text, int y, Color color, Color stroke, Text.Foundry foundry) {
+        Text t = Text.renderstroked(text, color, stroke, foundry);
+        Tex T = t.tex();
+        image(T, new Coord(sz.x / 2 - t.sz().x/2, y));
+        T.dispose();
+        checkerr();
+    }
+
     public void poly(Coord... c) {
         st.set(cur2d);
         apply();

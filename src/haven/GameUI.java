@@ -574,11 +574,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         g.aimage(curprog, new Coord(sz.x / 2, (sz.y * 4) / 10), 0.5, 0.5);
 
-        if (Config.showprogressperc) {
-            String progstr = new DecimalFormat("#.#").format(prog * 100) + "%";
-            int adj = progstr.length() == 2 ? 10 : 14;
-            g.atextstroked(progstr, new Coord(sz.x / 2 - adj, (sz.y * 4) / 10 - curprog.sz().y / 2 + 1), Color.WHITE, Color.BLACK, progressf);
-        }
+        if (Config.showprogressperc)
+            g.atextstroked((int)(prog * 100) + "%", (sz.y * 4) / 10 - curprog.sz().y / 2 + 1, Color.WHITE, Color.BLACK, progressf);
     }
 
     public void draw(GOut g) {
