@@ -266,9 +266,12 @@ public class WItem extends Widget implements DTarget {
 
     public void destroy() {
         if (Config.studyalarm) {
-            Curiosity ci = ItemInfo.find(Curiosity.class, item.info());
-            if (ci != null && item.meter == 99)
-                Audio.play(studyalarmsfx, Config.studyalarmvol);
+            try {
+                Curiosity ci = ItemInfo.find(Curiosity.class, item.info());
+                if (ci != null && item.meter == 99)
+                    Audio.play(studyalarmsfx, Config.studyalarmvol);
+            } catch (Loading l) {
+            }
         }
         super.destroy();
     }
