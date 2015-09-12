@@ -29,6 +29,7 @@ package haven;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
@@ -45,17 +46,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private Quality maxq, avgq;
 
     public class Quality {
-        public float val;
+        public double val;
+        public long valwhole;
         public Color color;
 
-        public Quality(int val, Color color) {
+        public Quality(double val, Color color) {
             this.val = val;
             this.color = color;
-        }
-
-        public Quality(float val, Color color) {
-            this.val = val;
-            this.color = color;
+            valwhole = Math.round(val);
         }
     }
 
@@ -196,7 +194,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 maxq.color = Color.WHITE;
 
             if (essence != null && substance != null && vitality != null)
-                avgq = new Quality(Math.round(Math.pow(essence.val * substance.val * vitality.val, 1.0/3.0)), maxq.color);
+                avgq = new Quality(Math.cbrt(essence.val * substance.val * vitality.val), maxq.color);
         } catch (Exception ex) {
         }
     }

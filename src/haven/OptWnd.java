@@ -438,6 +438,18 @@ public class OptWnd extends Window {
         }, new Coord(160, y));
         display.add(new Label("Average"), new Coord(195, y + 1));
         y += 35;
+        display.add(new CheckBox("Round item quality to a whole number") {
+            {
+                a = Config.qualitywhole;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitywhole", val);
+                Config.qualitywhole = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         display.add(new CheckBox("Display item completion as progress bar") {
             {
                 a = Config.itemmeterbar;

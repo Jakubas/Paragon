@@ -218,14 +218,13 @@ public class WItem extends Widget implements DTarget {
                 if (Config.showqualitymode == 0) {
                     GItem.Quality quality = item.qualityMax();
                     if (quality != null) {
-                        g.atextstroked((int)quality.val + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
-                        g.chcolor();
+                        g.atextstroked(quality.valwhole + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
                     }
                 } else {
                     GItem.Quality quality = item.qualityAvg();
                     if (quality != null) {
-                        g.atextstroked(new DecimalFormat("#.#").format(quality.val), new Coord(0, sz.y - 12), quality.color, Color.BLACK);
-                        g.chcolor();
+                        String val = Config.qualitywhole ? quality.valwhole + "" : new DecimalFormat("#.#").format(quality.val);
+                        g.atextstroked(val, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
                     }
                 }
             }
