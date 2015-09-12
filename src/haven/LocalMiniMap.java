@@ -50,6 +50,7 @@ public class LocalMiniMap extends Widget {
             return size() > 7;
         }
     };
+    private long[] partymembers;
 
     public static class MapTile {
         public final Coord ul, c;
@@ -151,22 +152,29 @@ public class LocalMiniMap extends Widget {
                         Resource res = gob.getres();
                         try {
                             if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
-                                Coord pc = p2c(gob.rc).add(delta);
-                                g.chcolor(Color.BLACK);
-                                g.fellipse(pc, new Coord(5, 5));
-                                KinInfo kininfo = gob.getattr(KinInfo.class);
-                                g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                                g.fellipse(pc, new Coord(4, 4));
-                                g.chcolor();
-                                if (Config.alarmunknown && kininfo == null) {
-                                    if (!sgobs.contains(gob.id)) {
-                                        sgobs.add(gob.id);
-                                        Audio.play(alarmplayersfx, Config.alarmunknownvol);
-                                    }
-                                } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
-                                    if (!sgobs.contains(gob.id)) {
-                                        sgobs.add(gob.id);
-                                        Audio.play(alarmplayersfx, Config.alarmredvol);
+                                boolean ispartymember = false;
+                                synchronized (ui.sess.glob.party.memb) {
+                                    ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
+                                }
+
+                                if (!ispartymember) {
+                                    Coord pc = p2c(gob.rc).add(delta);
+                                    g.chcolor(Color.BLACK);
+                                    g.fellipse(pc, new Coord(5, 5));
+                                    KinInfo kininfo = gob.getattr(KinInfo.class);
+                                    g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                                    g.fellipse(pc, new Coord(4, 4));
+                                    g.chcolor();
+                                    if (Config.alarmunknown && kininfo == null) {
+                                        if (!sgobs.contains(gob.id)) {
+                                            sgobs.add(gob.id);
+                                            Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                                        }
+                                    } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+                                        if (!sgobs.contains(gob.id)) {
+                                            sgobs.add(gob.id);
+                                            Audio.play(alarmplayersfx, Config.alarmredvol);
+                                        }
                                     }
                                 }
                             }
@@ -355,13 +363,11 @@ public class LocalMiniMap extends Widget {
 
             try {
                 synchronized (ui.sess.glob.party.memb) {
-                    for (Party.Member m : ui.sess.glob.party.memb.values()) {
-                        if (Config.showplayersmmap) {
-                            Gob pl = mv.player();
-                            if (pl != null && m.gobid != pl.id)
-                                continue;
-                        }
-
+                    Collection<Party.Member> members = ui.sess.glob.party.memb.values();
+                    int size = members.size();
+                    partymembers = size > 1 ? new long[members.size()] : null;
+                    int x = 0;
+                    for (Party.Member m : members) {
                         Coord ptc;
                         try {
                             ptc = m.getc();
@@ -372,7 +378,10 @@ public class LocalMiniMap extends Widget {
                             continue;
                         ptc = p2c(ptc);
                         g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), new Color(m.col.getRed(), m.col.getGreen(), m.col.getBlue()), Color.BLACK, partyf);
+                        if (size > 1)
+                            partymembers[x++] = m.gobid;
                     }
+
                 }
             } catch (Loading l) {
             }
