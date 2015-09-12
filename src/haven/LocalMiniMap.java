@@ -371,7 +371,7 @@ public class LocalMiniMap extends Widget {
                         if (ptc == null)
                             continue;
                         ptc = p2c(ptc);
-                        g.atextstroked("\u2716", ptc.add(delta), new Color(m.col.getRed(), m.col.getGreen(), m.col.getBlue()), Color.BLACK, partyf);
+                        g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), new Color(m.col.getRed(), m.col.getGreen(), m.col.getBlue()), Color.BLACK, partyf);
                     }
                 }
             } catch (Loading l) {
