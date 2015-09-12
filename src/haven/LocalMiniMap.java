@@ -43,27 +43,17 @@ public class LocalMiniMap extends Widget {
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
-    private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>();
-    private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(5, 0.75f, true) {
+    private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(36, 0.75f);
+    private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(7, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
-            if (size() > 5) {
-                try {
-                    MapTile t = eldest.getValue().get();
-                    t.img.dispose();
-                } catch (RuntimeException e) {
-                }
-                return (true);
-            }
-            return (false);
+            return size() > 7;
         }
     };
 
     public static class MapTile {
-        public final Tex img;
         public final Coord ul, c;
 
-        public MapTile(Tex img, Coord ul, Coord c) {
-            this.img = img;
+        public MapTile(Coord ul, Coord c) {
             this.ul = ul;
             this.c = c;
         }
@@ -331,19 +321,18 @@ public class LocalMiniMap extends Widget {
                     f = Defer.later(new Defer.Callable<MapTile>() {
                         public MapTile call() {
                             Coord ul = plg.mul(cmaps).sub(cmaps);
-                            Coord mtc = cmaps.mul(3);
-                            TexI im = new TexI(drawmap(ul, mtc));
-                            if (im.back != null) {
-                                int tw = cmaps.x;
-                                int th = cmaps.y;
-                                for (int x = -1; x <= 1; x++) {
-                                    for (int y = -1; y <= 1; y++) {
-                                        BufferedImage si = im.back.getSubimage(x * tw + tw, y * th + th, tw, th);
-                                        maptiles.put(ul.add(x * tw, y * th), TexI.convert2tile(si, cmaps));
-                                    }
-                                }
-                            }
-                            return (new MapTile(im, ul, plg));
+                            // offsets are hardcoded since we don't want to do bunch of unnecessary multiplications
+                            maptiles.put(ul.add(-100, -100), drawmap(ul, cmaps));
+                            maptiles.put(ul.add(0, -100), drawmap(ul.add(100, 0), cmaps));
+                            maptiles.put(ul.add(100, -100), drawmap(ul.add(200, 0), cmaps));
+                            maptiles.put(ul.add(-100, 0), drawmap(ul.add(0, 100), cmaps));
+                            maptiles.put(ul, drawmap(ul.add(100, 100), cmaps));
+                            maptiles.put(ul.add(100, 0), drawmap(ul.add(200, 100), cmaps));
+                            maptiles.put(ul.add(-100, 100), drawmap(ul.add(0, 200), cmaps));
+                            maptiles.put(ul.add(0, 100), drawmap(ul.add(100, 200), cmaps));
+                            maptiles.put(ul.add(100, 100), drawmap(ul.add(200, 200), cmaps));
+
+                            return (new MapTile(ul, plg));
                         }
                     });
                     cache.put(plg, f);
