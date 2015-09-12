@@ -35,6 +35,7 @@ import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
     public static final Text.Foundry bushf = new Text.Foundry(Text.sansb, 12);
+    private static final Text.Foundry partyf = bushf;
     public final MapView mv;
     private Coord cc = null;
     private MapTile cur = null;
@@ -370,9 +371,7 @@ public class LocalMiniMap extends Widget {
                         if (ptc == null)
                             continue;
                         ptc = p2c(ptc);
-                        g.chcolor(m.col.getRed(), m.col.getGreen(), m.col.getBlue(), 128);
-                        g.image(MiniMap.plx.layer(Resource.imgc).tex(), ptc.add(MiniMap.plx.layer(Resource.negc).cc.inv().add(delta)));
-                        g.chcolor();
+                        g.atextstroked("\u2716", ptc.add(delta), new Color(m.col.getRed(), m.col.getGreen(), m.col.getBlue()), Color.BLACK, partyf);
                     }
                 }
             } catch (Loading l) {
