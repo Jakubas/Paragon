@@ -170,7 +170,8 @@ public class Makewindow extends Widget {
                             if (name.equals(attr.attr.nm)) {
                                 Text tas = Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
                                 Tex T = tas.tex();
-                                g.image(T, c.add(3, t.sz().y / 2 - tas.sz().y / 2));
+                                Coord sz = tas.sz();
+                                g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 T.dispose();
                                 c = c.add(sz.x + 8, 0);
                                 break;
@@ -180,7 +181,8 @@ public class Makewindow extends Widget {
                             if (name.equals(attr.attr.nm)) {
                                 Text tab =  Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
                                 Tex T = tab.tex();
-                                g.image(T, c.add(3, t.sz().y / 2 - tab.sz().y / 2));
+                                Coord sz = tab.sz();
+                                g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 T.dispose();
                                 c = c.add(sz.x + 8, 0);
                                 break;
