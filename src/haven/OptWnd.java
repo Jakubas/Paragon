@@ -548,12 +548,14 @@ public class OptWnd extends Window {
             }
         }, new Coord(260, y));
 
-        display.add(new Button(220, "Reset Windows (req. restart)") {
+        display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {
                 for (String wndcap : Window.persistentwnds)
                     Utils.delpref(wndcap + "_c");
                 Utils.delpref("mmapc");
+                Utils.delpref("mmapwndsz");
+                Utils.delpref("mmapsz");
                 Utils.delpref("quickslotsc");
             }
         }, new Coord(260, 320));

@@ -25,7 +25,7 @@ public class MinimapWnd extends Widget implements DTarget {
     private Coord szr;
     private boolean resizing;
     private Coord doff;
-    private static final Coord minsz = new Coord(110, 130), maxsz = new Coord(700, 700);
+    private static final Coord minsz = new Coord(110, 130);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
     public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, 14).aa(true), ctex)) {
         protected BufferedImage proc(Text text) {
@@ -240,8 +240,8 @@ public class MinimapWnd extends Widget implements DTarget {
         if (resizing && dm != null) {
             Coord d = c.sub(doff);
             doff = c;
-            mmap.sz.x = Math.min(Math.max(mmap.sz.x + d.x, minsz.x), maxsz.x);
-            mmap.sz.y = Math.min(Math.max(mmap.sz.y + d.y, minsz.y), maxsz.y);
+            mmap.sz.x = Math.max(mmap.sz.x + d.x, minsz.x);
+            mmap.sz.y = Math.max(mmap.sz.y + d.y, minsz.y);
             pack();
             Utils.setprefc("mmapwndsz", sz);
             Utils.setprefc("mmapsz", mmap.sz);
