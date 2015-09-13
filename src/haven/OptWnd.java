@@ -274,7 +274,7 @@ public class OptWnd extends Window {
                 ui.audio.amb.setvolume(val / 1000.0);
             }
         }, new Coord(0, y));
-        y += 35;
+        y += 20;
         audio.add(new CheckBox("Alarm on unknown players") {
             {
                 a = Config.alarmunknown;
@@ -286,7 +286,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        audio.add(new HSlider(100, 0, 1000, 0) {
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int)(Config.alarmunknownvol * 1000);
@@ -297,8 +298,8 @@ public class OptWnd extends Window {
                 Config.alarmunknownvol = vol;
                 Utils.setprefd("alarmunknowvol", vol);
             }
-        }, new Coord(170, y));
-        y += 35;
+        }, new Coord(0, y));
+        y += 20;
         audio.add(new CheckBox("Alarm on red players") {
             {
                 a = Config.alarmred;
@@ -310,7 +311,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        audio.add(new HSlider(100, 0, 1000, 0) {
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmredvol * 1000);
@@ -321,8 +323,8 @@ public class OptWnd extends Window {
                 Config.alarmredvol = vol;
                 Utils.setprefd("alarmredvol", vol);
             }
-        }, new Coord(170, y));
-        y += 30;
+        }, new Coord(0, y));
+        y += 20;
         audio.add(new Label("Timers alarm volume"), new Coord(0, y));
         y += 15;
         audio.add(new HSlider(200, 0, 1000, 0) {
@@ -337,7 +339,7 @@ public class OptWnd extends Window {
                 Utils.setprefd("timersalarmvol", vol);
             }
         }, new Coord(0, y));
-        y += 35;
+        y += 20;
         audio.add(new CheckBox("Alarm on new private chat") {
             {
                 a = Config.chatalarm;
@@ -349,7 +351,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        audio.add(new HSlider(100, 0, 1000, 0) {
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.chatalarmvol * 1000);
@@ -360,8 +363,8 @@ public class OptWnd extends Window {
                 Config.chatalarmvol = vol;
                 Utils.setprefd("chatalarmvol", vol);
             }
-        }, new Coord(170, y));
-        y += 35;
+        }, new Coord(0, y));
+        y += 20;
         audio.add(new CheckBox("Alarm when curio finishes") {
             {
                 a = Config.studyalarm;
@@ -373,7 +376,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        audio.add(new HSlider(100, 0, 1000, 0) {
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.studyalarmvol * 1000);
@@ -384,7 +388,40 @@ public class OptWnd extends Window {
                 Config.studyalarmvol = vol;
                 Utils.setprefd("studyalarmvol", vol);
             }
-        }, new Coord(170, y));
+        }, new Coord(0, y));
+
+        // -------------------------------------------- audio 2nd column
+        y = 0;
+        audio.add(new Label("'Chip' sound volume"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxchipvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxchipvol = vol;
+                Utils.setprefd("sfxchipvol", vol);
+            }
+        }, new Coord(250, y));
+        y += 20;
+        audio.add(new Label("'Squeak' sound volume"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxsqueakvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxsqueakvol = vol;
+                Utils.setprefd("sfxsqueakvol", vol);
+            }
+        }, new Coord(250, y));
+
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 

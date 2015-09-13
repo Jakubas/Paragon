@@ -68,7 +68,14 @@ public class AudioSprite {
 
         public ClipSprite(Owner owner, Resource res, Resource.Audio clip) {
             super(owner, res);
-            this.clip = new ActAudio.PosClip(new Audio.Monitor(clip.stream()) {
+            haven.Audio.CS stream = clip.stream();
+
+            if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
+                stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
+            else if (Config.sfxsqueakvol != 1.0 && "sfx/squeak".equals(res.name))
+                stream = new Audio.VolAdjust(stream, Config.sfxsqueakvol);
+
+            this.clip = new ActAudio.PosClip(new Audio.Monitor(stream) {
                 protected void eof() {
                     super.eof();
                     done = true;

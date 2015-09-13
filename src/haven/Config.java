@@ -91,6 +91,8 @@ public class Config {
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
+    public static double sfxchipvol = Utils.getprefd("sfxchipvol", 1.0);
+    public static double sfxsqueakvol = Utils.getprefd("sfxsqueakvol", 1.0);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;
