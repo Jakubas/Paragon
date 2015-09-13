@@ -32,7 +32,6 @@
 	<pathelement path="lib/jorbis.jar" />
 	<pathelement path="lib/jogg.jar" />
 	<pathelement path="lib/jglob.jar" />
-	<pathelement path="lib/json-20141113.jar" />
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:-options" />
@@ -57,9 +56,6 @@
       <patternset excludes="META-INF/**" />
     </unjar>
     <unjar src="lib/jglob.jar" dest="build/classes-lib">
-      <patternset excludes="META-INF/**" />
-    </unjar>
-    <unjar src="lib/json-20141113.jar" dest="build/classes-lib">
       <patternset excludes="META-INF/**" />
     </unjar>
   </target>
