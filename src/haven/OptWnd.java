@@ -584,7 +584,18 @@ public class OptWnd extends Window {
                 }
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show Attribute/Ability values in craft window") {
+            {
+                a = Config.showcraftcap;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("showcraftcap", val);
+                Config.showcraftcap = val;
+                a = val;
+            }
+        }, new Coord(260, y));
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {

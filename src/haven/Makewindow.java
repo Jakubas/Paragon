@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.Color;
 
 public class Makewindow extends Widget {
+    private static final Text.Foundry capval = new Text.Foundry(new Font("Sans", Font.PLAIN, 12)).aa(true);
     Widget obtn, cbtn;
     List<Spec> inputs = Collections.emptyList();
     List<Spec> outputs = Collections.emptyList();
@@ -150,11 +151,42 @@ public class Makewindow extends Widget {
         if (qmod != null) {
             g.image(qmodl.tex(), new Coord(0, qmy + 4));
             c = new Coord(xoff, qmy);
+
+            CharWnd chrwdg = null;
+            try {
+                chrwdg = ((GameUI) parent.parent).chrwdg;
+            } catch (Exception e) { // fail silently
+            }
+
             for (Indir<Resource> qm : qmod) {
                 try {
                     Tex t = qm.get().layer(Resource.imgc).tex();
                     g.image(t, c);
                     c = c.add(t.sz().x + 1, 0);
+
+                    if (Config.showcraftcap && chrwdg != null) {
+                        String name = qm.get().basename();
+                        for (CharWnd.SAttr attr : chrwdg.skill) {
+                            if (name.equals(attr.attr.nm)) {
+                                Text tas = Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
+                                Tex T = tas.tex();
+                                g.image(T, c.add(3, t.sz().y / 2 - tas.sz().y / 2));
+                                T.dispose();
+                                c = c.add(sz.x + 8, 0);
+                                break;
+                            }
+                        }
+                        for (CharWnd.Attr attr : chrwdg.base) {
+                            if (name.equals(attr.attr.nm)) {
+                                Text tab =  Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
+                                Tex T = tab.tex();
+                                g.image(T, c.add(3, t.sz().y / 2 - tab.sz().y / 2));
+                                T.dispose();
+                                c = c.add(sz.x + 8, 0);
+                                break;
+                            }
+                        }
+                    }
                 } catch (Loading l) {
                 }
             }
