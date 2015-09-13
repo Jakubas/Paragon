@@ -168,7 +168,7 @@ public class Makewindow extends Widget {
                         String name = qm.get().basename();
                         for (CharWnd.SAttr attr : chrwdg.skill) {
                             if (name.equals(attr.attr.nm)) {
-                                Text tas = Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
+                                Text tas = Text.renderstroked(attr.attr.comp + "", Color.WHITE, Color.BLACK, capval);
                                 Tex T = tas.tex();
                                 Coord sz = tas.sz();
                                 g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
@@ -179,7 +179,7 @@ public class Makewindow extends Widget {
                         }
                         for (CharWnd.Attr attr : chrwdg.base) {
                             if (name.equals(attr.attr.nm)) {
-                                Text tab =  Text.renderstroked(attr.attr.base + "", Color.WHITE, Color.BLACK, capval);
+                                Text tab =  Text.renderstroked(attr.attr.comp + "", Color.WHITE, Color.BLACK, capval);
                                 Tex T = tab.tex();
                                 Coord sz = tab.sz();
                                 g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
