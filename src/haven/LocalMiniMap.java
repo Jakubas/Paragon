@@ -376,8 +376,11 @@ public class LocalMiniMap extends Widget {
                 }
             }
 
-            if (Config.mapshowviewdist)
-                g.image(gridblue, p2c(mv.player().rc).add(delta).sub(44, 44));
+            if (Config.mapshowviewdist) {
+                Gob player = mv.player();
+                if (player != null)
+                    g.image(gridblue, p2c(player.rc).add(delta).sub(44, 44));
+            }
 
             try {
                 synchronized (ui.sess.glob.party.memb) {
