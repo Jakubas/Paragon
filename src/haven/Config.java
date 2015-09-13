@@ -116,8 +116,8 @@ public class Config {
             "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum", "pine", "birch", "planetree"};
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
-    public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken",
-            "spindlytaproot", "stingingnettle"};
+    public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
+            "spindlytaproot", "stingingnettle", "dragonfly"};
     public static String[] iconssel = Utils.getprefsa("iconssel", null);
 
 
