@@ -1350,12 +1350,12 @@ public class ChatUI extends Widget {
         if (Config.chatsave) {
             try {
                 if (Config.chatlog == null) {
-                    File file = new File(Config.chatfile);
                     OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(Config.chatfile, true),
                             Charset.forName("UTF-8").newEncoder());
                     Config.chatlog = new PrintWriter(osw, true);
                 }
-                Config.chatlog.println(text);
+                String date = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss] ").format(new Date());
+                Config.chatlog.println(date + (Config.chattimestamp ? text.substring(8) : text));
             } catch (IOException e) {
                 e.printStackTrace();
             }
