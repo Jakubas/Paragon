@@ -1,0 +1,148 @@
+Version 1.11.1
+    Fixed:
+        * Crash on log out.
+        * Java 7 compatibility.
+        * Chat logs encoding for non Lating letters.
+
+    Misc:
+        * Preserve Stockpile, Tub, and Cauldron window positions.
+
+
+Version 1.11.0
+    New:
+        * Option to display view distance box and minimap grid.
+        * Sound alarm when curiosity finishes studying.
+        * Option to show average quality without rounding to a whole number.
+        * List for hiding some of the default minimap icons.
+
+
+    Fixed:
+        * Quick slots widget dragging.
+        * Daylight cycle.
+        * Draw 'x' instead of a circle for party members when 'show players' option is enabled.
+        * Slightly more visible xfor party memebers.
+
+
+Version 1.10.0
+    New:
+        * Quick hand equipment slots.
+        * Optional sound notification on new private chats.
+        * Preserve window positions.
+        * Slider for adjusting timer alarm volume.
+
+    Fixed:
+        * Persist timers across client restarts.
+
+
+Version 1.9.0
+    New:
+        * Grid overlay.
+
+    Fixed:
+        * Issue with map tile dumps being saved to new folder each time.
+
+
+Version 1.8.0
+    New:
+        * Timers.
+        * Configurable chat font size.
+        * Option to show hourglass percentage. 
+        * Option to display item completion as percentage.
+        * Camera zoom using numpad +/-.
+        * Updated boulders/bushes/trees lists.
+
+    Fixed:
+        * Issue with map tiles inside the minimap window not being drawn sometimes when dragging.
+        * Map tiles compatibility with TP mapping tool.
+        * Calculate average quality using root mean square instead of arithmetic mean.
+
+
+Version 1.7.1
+    New:
+        * Updated boulders and trees list.
+
+
+Version 1.7.0
+    New:
+        * Option to show boulder/bushes/trees on minimap.
+        * Show Gob resource name when pointing at it and holding Shift.
+        * Option to display item completion progress as bar.
+        * Option to choose between the type of quality to show - highest or average.
+
+    Fixed:
+        * Fixed item quality text position for items taking more than one slot.
+        * Changed mass transfer key combination to use Alt.
+
+
+Version 1.6.3
+    New:
+        * Cleaner minimap window.
+        * Button for disabling map dragging.
+        * Option to disable biome edge transitions. 
+
+    Fixed:
+        * Map size not being preserved between restarts.
+        * Crash when Shift+right clicking items in the character screen.
+
+
+Version 1.6.2
+    New:
+        * Nightvision can be toggled now using Ctrl+N.
+        * Option to set "bad" camera scrolling sensitivity.
+
+    Fixed:
+        * Restored minimap clicking.
+
+
+Version 1.6.1
+    Fixed:
+        * Alarm on unknown player setting not being preserved.
+        * Crash in item quality retrieval.
+
+
+Version 1.6.0
+    New:
+        * Persistent, resizable, and movable map.
+        * Account management.
+        * Option to show item quality.
+
+
+Version 1.5.0
+    New:
+        * Alarm sounds on unknown and red players.
+        * Save chat logs to disk and optionally show timestamps.
+
+    Fixed:
+        * Fixed possible rare crash when logging out.
+
+
+Version 1.4.0
+    New:
+        * Automatic check for updates. 
+        * Study box locking.
+        * Free camera rotation.
+
+
+Version 1.3.0
+    New:
+        * Option to always show kin names.
+        * Option to show players on minimap.
+
+    Fixed:
+        * Another hotfix for ArrayIndexOutOfBoundsException in the vanilla code.
+
+
+Version 1.2.0
+    New:
+        * Floating minimap.
+        * Dropping/transferring identical items.
+
+    Fixed:
+        * Hotfix for ArrayIndexOutOfBoundsException in the vanilla code.
+
+
+Version 1.1.0
+    New:
+        * Daylight mode.
+        * Better font.
+
