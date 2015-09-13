@@ -16,6 +16,18 @@ Amber is a client for Haven & Hearth. Main differences from the vanilla client i
 - Chat logs saving to disk and time-stamps.
 - Option to show item quality.
 - Account management.
+- Option to disable biome edge transitions.
+- Option to show certain boulders/bushes/trees on minimap and hide default icons.
+- Optional bar/percentage item progress.
+- Configurable chat font size.
+- Timers.
+- Hourglass percentage.
+- Camera zoom using numpad +/-.
+- Grid overlay (merged from k-t).
+- Quick hand equipment slots.
+- Sound notification on private chats.
+- Window positions preserved across restarts.
+- Sound alarm when curio finishes studying.
 - ...and some additional fixes.
 
 
