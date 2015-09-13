@@ -26,9 +26,8 @@
 
 package haven;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
@@ -40,7 +39,6 @@ import java.text.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.net.URL;
 import java.util.regex.*;
-import java.io.IOException;
 import java.awt.datatransfer.*;
 
 public class ChatUI extends Widget {
@@ -1348,13 +1346,14 @@ public class ChatUI extends Widget {
                     name + ": " + text);
     }
 
-    private static void save(String text) {
+    private synchronized static void save(String text) {
         if (Config.chatsave) {
             try {
                 if (Config.chatlog == null) {
                     File file = new File(Config.chatfile);
-                    FileWriter fw = new FileWriter(file, true);
-                    Config.chatlog = new PrintWriter(fw, true);
+                    OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(Config.chatfile, true),
+                            Charset.forName("UTF-8").newEncoder());
+                    Config.chatlog = new PrintWriter(osw, true);
                 }
                 Config.chatlog.println(text);
             } catch (IOException e) {
