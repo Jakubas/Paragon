@@ -1,5 +1,5 @@
 Version 1.12.0
-    Fixed:
+    New:
         * Slider for reducing volume of stone chipping and boat squeaking sounds.
         * Custom resurces override support.
         * Show attribute/ability values in craft window. 
