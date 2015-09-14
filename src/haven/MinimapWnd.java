@@ -58,19 +58,25 @@ public class MinimapWnd extends Widget implements DTarget {
         pclaim = new IButton("gfx/hud/lbtn-vil", "", "-d", "-h") {
             {tooltip = Text.render("Display personal claims");}
             public void click() {
-                if((map != null) && !map.visol(0))
+                if((map != null) && !map.visol(0)) {
                     map.enol(0, 1);
-                else
+                    Utils.setprefb("showpclaim", true);
+                } else {
                     map.disol(0, 1);
+                    Utils.setprefb("showpclaim", false);
+                }
             }
         };
         vclaim = new IButton("gfx/hud/lbtn-claim", "", "-d", "-h") {
             {tooltip = Text.render("Display village claims");}
             public void click() {
-                if((map != null) && !map.visol(2))
+                if ((map != null) && !map.visol(2)) {
                     map.enol(2, 3);
-                else
+                    Utils.setprefb("showvclaim", true);
+                } else {
                     map.disol(2, 3);
+                    Utils.setprefb("showvclaim", false);
+                }
             }
         };
         center = new IButton("gfx/hud/center", "", "", "") {
@@ -109,6 +115,11 @@ public class MinimapWnd extends Widget implements DTarget {
         add(viewdist, 99, -8);
         add(grid, 126, -8);
         pack();
+
+        if (Utils.getprefb("showpclaim", false))
+            map.enol(0, 1);
+        if (Utils.getprefb("showvclaim", false))
+            map.enol(2, 3);
     }
 
     protected void added() {
