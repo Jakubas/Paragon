@@ -1,3 +1,15 @@
+Version 1.12.0
+    Fixed:
+        * Slider for reducing volume of stone chipping and boat squeaking sounds.
+        * Custom resurces override support.
+        * Show attribute/ability values in craft window. 
+        * Show object health.
+
+    Misc:
+        * Write dates in chat logs.
+        * Preserve show pclaims/vclaims selection between restarts.
+
+
 Version 1.11.1
     Fixed:
         * Crash on log out.
