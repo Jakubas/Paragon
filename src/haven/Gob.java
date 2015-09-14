@@ -26,6 +26,7 @@
 
 package haven;
 
+import java.awt.*;
 import java.util.*;
 
 public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
@@ -39,6 +40,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public final Glob glob;
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
     public Collection<Overlay> ols = new LinkedList<Overlay>();
+    private static final String[] gobhpstr = new String[] { "25%", "50%", "75%" };
+    private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -196,9 +199,20 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (ol.spr instanceof Overlay.SetupMod)
                 ((Overlay.SetupMod) ol.spr).setupmain(rl);
         }
-        GobHealth hlt = getattr(GobHealth.class);
-        if (hlt != null)
+        final GobHealth hlt = getattr(GobHealth.class);
+        if (hlt != null) {
             rl.prepc(hlt.getfx());
+            if (Config.showgobhp) {
+                PView.Draw2D d = new PView.Draw2D() {
+                    public void draw2d(GOut g) {
+                        if (sc != null && hlt.hp < 4) {
+                            g.atextstroked(gobhpstr[hlt.hp - 1], sc.sub(15, 10), Color.WHITE, Color.BLACK, gobhpf);
+                        }
+                    }
+                };
+                rl.add(d, null);
+            }
+        }
         Drawable d = getattr(Drawable.class);
         if (d != null)
             d.setup(rl);

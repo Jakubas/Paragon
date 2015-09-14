@@ -596,6 +596,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show objects health") {
+            {
+                a = Config.showgobhp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showgobhp", val);
+                Config.showgobhp = val;
+                a = val;
+            }
+        }, new Coord(260, y));
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {
