@@ -219,7 +219,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             d.setup(rl);
             if (Config.showplantgrowstage) {
                 try {
-                    if (getres().name.startsWith("gfx/terobjs/plants")) {
+                    Resource res = getres();
+                    if (res != null && res.name.startsWith("gfx/terobjs/plants")) {
                         PView.Draw2D staged = new PView.Draw2D() {
                             public void draw2d(GOut g) {
                                 if (sc != null) {
