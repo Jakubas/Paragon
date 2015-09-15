@@ -42,7 +42,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Collection<Overlay> ols = new LinkedList<Overlay>();
     private static final String[] gobhpstr = new String[] { "25%", "50%", "75%" };
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
-    private static final Color stagecolor = new Color(94, 91, 229);
+    private static final Color stagecolor = new Color(235, 235, 235);
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
