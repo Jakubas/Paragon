@@ -118,7 +118,7 @@ public class Config {
             "oak", "walnuttree", "birdcherrytree", "larch", "poplar", "whitebeam", "appletree", "cypress", "buckthorn",
             "laurel", "ash", "elm", "rowan", "willow", "cedar", "linden", "olivetree", "aspen",  "fir", "baywillow",
             "goldenchain", "peartree", "sallow", "yew", "cherry", "maple", "beech", "chestnuttree", "hazel", "spruce",
-            "hornbeam", "mirkwood", "conkertree", "mulberry", "sweetgum", "pine", "birch", "planetree"};
+            "hornbeam", "oldtrunk", "conkertree", "mulberry", "sweetgum", "pine", "birch", "planetree"};
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
