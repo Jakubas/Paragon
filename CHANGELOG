@@ -1,3 +1,14 @@
+Version 1.13.0
+    New:
+        * Show plants growth stage.
+        * Change speed using Shift+Q/W/E/R.
+        * Option to show all three elements subtance/essense/vitality as quality.
+        * Quality for curiosities is shown now as LP gain multiplier.
+
+    Misc:
+        * Fixed mirkwood map highlighting.
+
+
 Version 1.12.0
     New:
         * Slider for reducing volume of stone chipping and boat squeaking sounds.

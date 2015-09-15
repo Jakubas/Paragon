@@ -28,6 +28,11 @@ Amber is a client for Haven & Hearth. Main differences from the vanilla client i
 - Sound notification on private chats.
 - Window positions preserved across restarts.
 - Sound alarm when curio finishes studying.
+- Slider for reducing volume of stone chipping and boat squeaking sounds.
+- Custom resources support (res folder).
+- Show attribute/ability values in craft window.
+- Show object health.
+- Show plants growth stage.
 - ...and some additional fixes.
 
 
