@@ -95,6 +95,7 @@ public class Config {
     public static double sfxsqueakvol = Utils.getprefd("sfxsqueakvol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", false);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
+    public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;

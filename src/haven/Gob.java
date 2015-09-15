@@ -42,6 +42,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Collection<Overlay> ols = new LinkedList<Overlay>();
     private static final String[] gobhpstr = new String[] { "25%", "50%", "75%" };
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
+    private static final Color stagecolor = new Color(94, 91, 229);
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -214,8 +215,29 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
         }
         Drawable d = getattr(Drawable.class);
-        if (d != null)
+        if (d != null) {
             d.setup(rl);
+            if (Config.showplantgrowstage) {
+                try {
+                    if (getres().name.startsWith("gfx/terobjs/plants")) {
+                        PView.Draw2D staged = new PView.Draw2D() {
+                            public void draw2d(GOut g) {
+                                if (sc != null) {
+                                    GAttrib rd = getattr(ResDrawable.class);
+                                    if (rd != null) {
+                                        int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
+                                        if (stage > 0)
+                                            g.atextstroked((stage + 1) + "", sc, stagecolor, Color.BLACK, gobhpf);
+                                    }
+                                }
+                            }
+                        };
+                        rl.add(staged, null);
+                    }
+                } catch (Loading le) {
+                }
+            }
+        }
         Speaking sp = getattr(Speaking.class);
         if (sp != null)
             rl.add(sp.fx, null);

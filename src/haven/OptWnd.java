@@ -608,6 +608,19 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show plants growth stage") {
+            {
+                a = Config.showplantgrowstage;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showplantgrowstage", val);
+                Config.showplantgrowstage = val;
+                a = val;
+            }
+        }, new Coord(260, y));
+
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {
@@ -619,7 +632,6 @@ public class OptWnd extends Window {
                 Utils.delpref("quickslotsc");
             }
         }, new Coord(260, 320));
-
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         display.pack();
 

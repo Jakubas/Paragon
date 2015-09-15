@@ -398,4 +398,8 @@ public abstract class Message {
         }
         return (this);
     }
+
+    public int peekrbuf(int i) {
+        return rbuf[i];
+    }
 }
