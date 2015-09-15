@@ -196,14 +196,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 double q = Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0));
                 maxq = avgq = new Quality(e, s, v, q, Color.WHITE, true);
             } else {
-                if (e >= s && e >= v)
+                if (e == s && e == v)
+                    maxq = new Quality(e, s, v, e, Color.WHITE, false);
+                else if (e >= s && e >= v)
                     maxq = new Quality(e, s, v, e, essenceclr, false);
                 else if (s >= e && s >= v)
                     maxq = new Quality(e, s, v, s, substanceclr, false);
-                else if (v >= e && v >= s)
-                    maxq = new Quality(e, s, v, v, vitalityclr, false);
                 else
-                    maxq = new Quality(e, s, v, v, Color.WHITE, false);
+                    maxq = new Quality(e, s, v, v, vitalityclr, false);
 
                 avgq = new Quality(e, s, v, (double)(e + s + v)/3.0, maxq.color, false);
             }
