@@ -10,7 +10,7 @@ public class MinimapWnd extends Widget implements DTarget {
     public static final Tex bg = Resource.loadtex("gfx/hud/wnd/lg/bg");
     public static final Tex cl = Resource.loadtex("gfx/hud/wndmap/lg/cl");
     public static final Tex tm = Resource.loadtex("gfx/hud/wnd/lg/tm");
-    public static final Tex tr = Resource.loadtex("gfx/hud/wnd/lg/tr");
+    public static final Tex tr = Resource.loadtex("gfx/hud/wndmap/lg/tr");
     public static final Tex lm = Resource.loadtex("gfx/hud/wndmap/lg/lm");
     public static final Tex rm = Resource.loadtex("gfx/hud/wnd/lg/rm");
     public static final Tex bl = Resource.loadtex("gfx/hud/wndmap/lg/bl");
