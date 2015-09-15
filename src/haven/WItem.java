@@ -218,14 +218,24 @@ public class WItem extends Widget implements DTarget {
             if (Config.showquality) {
                 if (Config.showqualitymode == 0) {
                     GItem.Quality quality = item.qualityMax();
-                    if (quality != null) {
-                        g.atextstroked(quality.valwhole + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                    if (quality != null && quality.valwhole != 0) {
+                        if (quality.curio)
+                            g.atextstroked(quality.valfmt, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                        else
+                            g.atextstroked(quality.valwhole + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                    }
+                } else if (Config.showqualitymode == 1) {
+                    GItem.Quality quality = item.qualityAvg();
+                    if (quality != null && quality.valwhole != 0) {
+                        String val = Config.qualitywhole && !quality.curio ? quality.valwhole + "" : quality.valfmt;
+                        g.atextstroked(val, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
                     }
                 } else {
                     GItem.Quality quality = item.qualityAvg();
-                    if (quality != null) {
-                        String val = Config.qualitywhole ? quality.valwhole + "" : new DecimalFormat("#.#").format(quality.val);
-                        g.atextstroked(val, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                    if (quality != null && quality.valwhole != 0) {
+                        g.atextstroked(quality.e+"", new Coord(0, sz.y - 32), GItem.essenceclr, Color.BLACK);
+                        g.atextstroked(quality.s+"", new Coord(0, sz.y - 22), GItem.substanceclr, Color.BLACK);
+                        g.atextstroked(quality.v+"", new Coord(0, sz.y - 12), GItem.vitalityclr, Color.BLACK);
                     }
                 }
             }

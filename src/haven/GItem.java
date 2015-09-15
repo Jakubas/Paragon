@@ -40,19 +40,27 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private GSprite spr;
     private Object[] rawinfo;
     private List<ItemInfo> info = Collections.emptyList();
-    private static final Color essenceclr = new Color(202, 110, 244);
-    private static final Color substanceclr = new Color(208, 189, 44);
-    private static final Color vitalityclr = new Color(157, 201, 72);
+    public static final Color essenceclr = new Color(202, 110, 244);
+    public static final Color substanceclr = new Color(208, 189, 44);
+    public static final Color vitalityclr = new Color(157, 201, 72);
     private Quality maxq, avgq;
 
     public class Quality {
+        public int e, s, v;
         public double val;
         public long valwhole;
+        public String valfmt;
         public Color color;
+        public boolean curio;
 
-        public Quality(double val, Color color) {
+        public Quality(int e, int s, int v, double val, Color color, boolean curio) {
+            this.e = e;
+            this.s = s;
+            this.v = v;
             this.val = val;
             this.color = color;
+            this.curio = curio;
+            valfmt = new DecimalFormat(curio ? "#.###" : "#.#").format(val);
             valwhole = Math.round(val);
         }
     }
@@ -163,38 +171,42 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     public void qualityCalc() {
-        Quality essence = null;
-        Quality substance = null;
-        Quality vitality = null;
+        int e = 0, s = 0, v = 0;
+        boolean curio = false;
         try {
             for (ItemInfo info : info()) {
                 if (info.getClass().getSimpleName().equals("QBuff")) {
                     try {
                         String name = (String) info.getClass().getDeclaredField("name").get(info);
                         int val = (Integer) info.getClass().getDeclaredField("q").get(info);
-                        if ("Essence".equals(name)) {
-                            essence = new Quality(val, essenceclr);
-                            if (maxq == null || maxq.val < essence.val)
-                                maxq = essence;
-                        } else if ("Substance".equals(name)) {
-                            substance = new Quality(val, substanceclr);
-                            if (maxq == null || maxq.val < substance.val)
-                                maxq = substance;
-                        } else if ("Vitality".equals(name)) {
-                            vitality = new Quality(val, vitalityclr);
-                            if (maxq == null || maxq.val < vitality.val)
-                                maxq = vitality;
-                        }
+                        if ("Essence".equals(name))
+                            e = val;
+                        else if ("Substance".equals(name))
+                            s = val;
+                        else if ("Vitality".equals(name))
+                            v = val;
                     } catch (Exception ex) {
                     }
+                } else if (info.getClass() == Curiosity.class) {
+                    curio = true;
                 }
             }
 
-            if (essence.val == substance.val && essence.val == vitality.val)
-                maxq.color = Color.WHITE;
+            if (curio) {
+                double q = Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0));
+                maxq = avgq = new Quality(e, s, v, q, Color.WHITE, true);
+            } else {
+                if (e >= s && e >= v)
+                    maxq = new Quality(e, s, v, e, essenceclr, false);
+                else if (s >= e && s >= v)
+                    maxq = new Quality(e, s, v, s, substanceclr, false);
+                else if (v >= e && v >= s)
+                    maxq = new Quality(e, s, v, v, vitalityclr, false);
+                else
+                    maxq = new Quality(e, s, v, v, Color.WHITE, false);
 
-            if (essence != null && substance != null && vitality != null)
-                avgq = new Quality(Math.cbrt(essence.val * substance.val * vitality.val), maxq.color);
+                avgq = new Quality(e, s, v, (double)(e + s + v)/3.0, maxq.color, false);
+            }
         } catch (Exception ex) {
         }
     }
