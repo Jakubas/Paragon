@@ -43,6 +43,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final String[] gobhpstr = new String[] { "25%", "50%", "75%" };
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
     private static final Color stagecolor = new Color(235, 235, 235);
+    private static final Tex[] cropstg = new Tex[] {
+            Text.renderstroked("2", stagecolor, Color.BLACK, gobhpf).tex(),
+            Text.renderstroked("3", stagecolor, Color.BLACK, gobhpf).tex(),
+            Text.renderstroked("4", stagecolor, Color.BLACK, gobhpf).tex(),
+            Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex() // just in case..
+    };
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -220,20 +226,22 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (Config.showplantgrowstage) {
                 try {
                     Resource res = getres();
-                    if (res != null && res.name.startsWith("gfx/terobjs/plants")) {
-                        PView.Draw2D staged = new PView.Draw2D() {
-                            public void draw2d(GOut g) {
-                                if (sc != null) {
-                                    GAttrib rd = getattr(ResDrawable.class);
-                                    if (rd != null) {
-                                        int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
-                                        if (stage > 0)
-                                            g.atextstroked((stage + 1) + "", sc, stagecolor, Color.BLACK, gobhpf);
+                    if (res != null && res.name.startsWith("gfx/terobjs/plants") && !res.name.endsWith("trellis")) {
+                        GAttrib rd = getattr(ResDrawable.class);
+                        if (rd != null) {
+                            try {
+                                final int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
+                                PView.Draw2D staged = new PView.Draw2D() {
+                                    public void draw2d(GOut g) {
+                                        if (sc != null && stage > 0 && stage < 5) {
+                                            g.image(cropstg[stage-1], sc);
+                                        }
                                     }
-                                }
+                                };
+                                rl.add(staged, null);
+                            } catch (ArrayIndexOutOfBoundsException e) { // ignored
                             }
-                        };
-                        rl.add(staged, null);
+                        }
                     }
                 } catch (Loading le) {
                 }
