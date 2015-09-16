@@ -27,8 +27,6 @@
 package haven;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -43,25 +41,43 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public static final Color essenceclr = new Color(202, 110, 244);
     public static final Color substanceclr = new Color(208, 189, 44);
     public static final Color vitalityclr = new Color(157, 201, 72);
-    private Quality maxq, avgq;
+    private Quality quality;
 
     public class Quality {
         public int e, s, v;
-        public double val;
-        public long valwhole;
-        public String valfmt;
+        public int max;
+        public String avgfmt;
+        public String avgwholefmt;
+        public String lpgainfmt;
         public Color color;
         public boolean curio;
 
-        public Quality(int e, int s, int v, double val, Color color, boolean curio) {
+        public Quality(int e, int s, int v, boolean curio) {
             this.e = e;
             this.s = s;
             this.v = v;
-            this.val = val;
-            this.color = color;
             this.curio = curio;
-            valfmt = new DecimalFormat(curio ? "#.###" : "#.#").format(val);
-            valwhole = Math.round(val);
+
+            if (e == s && e == v) {
+                max = e;
+                color = Color.WHITE;
+            } else if (e >= s && e >= v) {
+                max = e;
+                color = essenceclr;
+            } else if (s >= e && s >= v) {
+                max = s;
+                color = substanceclr;
+            } else {
+                max = v;
+                color = vitalityclr;
+            }
+
+            double avg =  (double)(e + s + v)/3.0;
+            double lpgain = curio ? Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0)) : 0;
+
+            avgfmt = new DecimalFormat("#.#").format(avg);
+            lpgainfmt = new DecimalFormat("#.###").format(lpgain);
+            avgwholefmt = Math.round(avg) + "";
         }
     }
 
@@ -191,35 +207,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                     curio = true;
                 }
             }
-
-            if (curio) {
-                double q = Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0));
-                maxq = avgq = new Quality(e, s, v, q, Color.WHITE, true);
-            } else {
-                if (e == s && e == v)
-                    maxq = new Quality(e, s, v, e, Color.WHITE, false);
-                else if (e >= s && e >= v)
-                    maxq = new Quality(e, s, v, e, essenceclr, false);
-                else if (s >= e && s >= v)
-                    maxq = new Quality(e, s, v, s, substanceclr, false);
-                else
-                    maxq = new Quality(e, s, v, v, vitalityclr, false);
-
-                avgq = new Quality(e, s, v, (double)(e + s + v)/3.0, maxq.color, false);
-            }
+            quality = new Quality(e, s, v, curio);
         } catch (Exception ex) {
         }
     }
 
-    public Quality qualityMax() {
-        if (maxq == null)
+    public Quality quality() {
+        if (quality == null)
             qualityCalc();
-        return maxq;
-    }
-
-    public Quality qualityAvg() {
-        if (avgq == null)
-            qualityCalc();
-        return avgq;
+        return quality;
     }
 }

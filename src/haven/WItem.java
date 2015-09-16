@@ -216,23 +216,29 @@ public class WItem extends Widget implements DTarget {
             }
 
             if (Config.showquality) {
+                GItem.Quality quality = item.quality();
                 if (Config.showqualitymode == 0) {
-                    GItem.Quality quality = item.qualityMax();
-                    if (quality != null && quality.valwhole != 0) {
-                        if (quality.curio)
-                            g.atextstroked(quality.valfmt, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
-                        else
-                            g.atextstroked(quality.valwhole + "", new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                    if (quality != null && quality.max != 0) {
+                        String q = quality.max + "";
+                        Color c = quality.color;
+                        if (quality.curio && Config.showlpgainmult) {
+                            q = quality.lpgainfmt;
+                            c = Color.WHITE;
+                        }
+                        g.atextstroked(q, new Coord(0, sz.y - 12), c, Color.BLACK);
                     }
                 } else if (Config.showqualitymode == 1) {
-                    GItem.Quality quality = item.qualityAvg();
-                    if (quality != null && quality.valwhole != 0) {
-                        String val = Config.qualitywhole && !quality.curio ? quality.valwhole + "" : quality.valfmt;
-                        g.atextstroked(val, new Coord(0, sz.y - 12), quality.color, Color.BLACK);
+                    if (quality != null && quality.max != 0) {
+                        String q = Config.qualitywhole ? quality.avgwholefmt : quality.avgfmt;
+                        Color c = quality.color;
+                        if (quality.curio && Config.showlpgainmult) {
+                            q = quality.lpgainfmt;
+                            c = Color.WHITE;
+                        }
+                        g.atextstroked(q, new Coord(0, sz.y - 12), c, Color.BLACK);
                     }
                 } else {
-                    GItem.Quality quality = item.qualityAvg();
-                    if (quality != null && quality.valwhole != 0) {
+                    if (quality != null && quality.max != 0) {
                         g.atextstroked(quality.e+"", new Coord(0, sz.y - 32), GItem.essenceclr, Color.BLACK);
                         g.atextstroked(quality.s+"", new Coord(0, sz.y - 22), GItem.substanceclr, Color.BLACK);
                         g.atextstroked(quality.v+"", new Coord(0, sz.y - 12), GItem.vitalityclr, Color.BLACK);

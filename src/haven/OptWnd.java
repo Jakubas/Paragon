@@ -500,6 +500,18 @@ public class OptWnd extends Window {
         display.add(new Label("Avg"), new Coord(155, y - 10));
         display.add(new Label("All"), new Coord(200, y - 10));
         y += 35;
+        display.add(new CheckBox("Show LP gain multiplier for curios") {
+            {
+                a = Config.showlpgainmult;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showlpgainmult", val);
+                Config.showlpgainmult = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         display.add(new CheckBox("Round item quality to a whole number") {
             {
                 a = Config.qualitywhole;
