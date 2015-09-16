@@ -134,18 +134,21 @@ public class Speedget extends Widget {
                 set(n);
             }
             return (true);
-        } else if (key == 81 /* shift+q */) {
-            set(0);
-            return true;
-        } else if (key == 87 /* shift+w */) {
-            set(1);
-            return true;
-        } else if (key == 69 /* shift+e */) {
-            set(2);
-            return true;
-        } else if (key == 82 /* shift+r */) {
-            set(3);
-            return true;
+        } else if (ev.isShiftDown()) {
+            int c = ev.getKeyCode();
+            if (c == KeyEvent.VK_Q) {
+                set(0);
+                return true;
+            } else if (c == KeyEvent.VK_W) {
+                set(1);
+                return true;
+            } else if (c == KeyEvent.VK_E) {
+                set(2);
+                return true;
+            } else if (c == KeyEvent.VK_R) {
+                set(3);
+                return true;
+            }
         }
         return (super.globtype(key, ev));
     }
