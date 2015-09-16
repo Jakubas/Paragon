@@ -40,8 +40,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public final Glob glob;
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
     public Collection<Overlay> ols = new LinkedList<Overlay>();
-    private static final String[] gobhpstr = new String[] { "25%", "50%", "75%" };
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
+    private static final Tex[] gobhp = new Tex[] {
+            Text.renderstroked("25%", Color.WHITE, Color.BLACK, gobhpf).tex(),
+            Text.renderstroked("50%", Color.WHITE, Color.BLACK, gobhpf).tex(),
+            Text.renderstroked("75%", Color.WHITE, Color.BLACK, gobhpf).tex()
+    };
     private static final Color stagecolor = new Color(235, 235, 235);
     private static final Tex[] cropstg = new Tex[] {
             Text.renderstroked("2", stagecolor, Color.BLACK, gobhpf).tex(),
@@ -212,9 +216,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (Config.showgobhp) {
                 PView.Draw2D d = new PView.Draw2D() {
                     public void draw2d(GOut g) {
-                        if (sc != null && hlt.hp < 4) {
-                            g.atextstroked(gobhpstr[hlt.hp - 1], sc.sub(15, 10), Color.WHITE, Color.BLACK, gobhpf);
-                        }
+                        if (sc != null && hlt.hp < 4)
+                            g.image(gobhp[hlt.hp - 1], sc.sub(15, 10));
                     }
                 };
                 rl.add(d, null);
@@ -234,7 +237,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                                 PView.Draw2D staged = new PView.Draw2D() {
                                     public void draw2d(GOut g) {
                                         if (sc != null && stage > 0 && stage < 5) {
-                                            g.image(cropstg[stage-1], sc);
+                                            g.image(cropstg[stage - 1], sc);
                                         }
                                     }
                                 };
