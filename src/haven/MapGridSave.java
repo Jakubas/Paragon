@@ -24,7 +24,10 @@ public class MapGridSave {
         this.map = map;
         this.g = g;
         boolean abort = false;
-        if (mgs == null || g.gc.dist(mglp) > 10) {
+
+        BufferedImage img = drawmap(MCache.cmaps);
+
+        if ((mgs == null || g.gc.dist(mglp) > 10) && img != null) {
             session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
             (new File("map/" + session)).mkdirs();
             try {
@@ -40,8 +43,8 @@ public class MapGridSave {
             mglp  = g.gc;
         }
 
-        if (!abort)
-            save(drawmap(MCache.cmaps));
+        if (!abort && img != null)
+            save(img);
     }
 
     public void save(BufferedImage img) {
@@ -73,9 +76,12 @@ public class MapGridSave {
         BufferedImage[] texes = new BufferedImage[256];
         BufferedImage buf = TexI.mkbuf(sz);
         Coord c = new Coord();
+        int blackpxs = 0;
         for (c.y = 0; c.y < sz.y; c.y++) {
             for (c.x = 0; c.x < sz.x; c.x++) {
                 int t = g.gettile(c);
+                if (t == 100)
+                    blackpxs++;
                 BufferedImage tex = tileimg(t, texes);
                 int rgb = 0;
                 if (tex != null)
@@ -84,6 +90,9 @@ public class MapGridSave {
                 buf.setRGB(c.x, c.y, rgb);
             }
         }
+        
+        if (blackpxs >= 9500) // if 95% black
+            return null;
 
         for (c.y = 1; c.y < sz.y - 1; c.y++) {
             for (c.x = 1; c.x < sz.x - 1; c.x++) {
