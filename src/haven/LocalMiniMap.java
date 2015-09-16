@@ -46,14 +46,16 @@ public class LocalMiniMap extends Widget {
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
-    private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(36, 0.75f);
+    private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
     private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(7, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
             return size() > 7;
         }
     };
     private long[] partymembers;
-
+    private final static Tex bushicn = Text.renderstroked("\u22C6", Color.CYAN, Color.BLACK, bushf).tex();
+    private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
+    
     public static class MapTile {
         public final Coord ul, c;
 
@@ -237,8 +239,7 @@ public class LocalMiniMap extends Widget {
                             if (Config.bushessel != null) {
                                 for (String name : Config.bushessel) {
                                     if (basename.startsWith(name)) {
-                                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                        g.atextstroked("*", pc, Color.CYAN, Color.BLACK, bushf);
+                                        g.image(bushicn, p2c(gob.rc).add(delta).sub(3, 3));
                                         recognized = true;
                                         break;
                                     }
@@ -254,7 +255,7 @@ public class LocalMiniMap extends Widget {
                                 }
                                 if (!recognized) {
                                     Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                    g.atextstroked("*", pc, Color.RED, Color.BLACK, bushf);
+                                    g.atextstroked("/u22C6", pc, Color.RED, Color.BLACK, bushf);
                                 }
                             }
                         } else if (res.name.startsWith("gfx/terobjs/trees")) {
@@ -263,8 +264,7 @@ public class LocalMiniMap extends Widget {
                             if (Config.treessel != null) {
                                 for (String name : Config.treessel) {
                                     if (basename.equals(name)) {
-                                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                        g.atextstroked("\u25B2", pc, Color.CYAN, Color.BLACK);
+                                        g.image(treeicn, p2c(gob.rc).add(delta).sub(3, 3));
                                         recognized = true;
                                         break;
                                     }
