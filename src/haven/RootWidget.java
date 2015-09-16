@@ -55,6 +55,9 @@ public class RootWidget extends ConsoleHost {
             } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_N) {
                 Config.daylight = !Config.daylight;
                 Utils.setprefb("daylight", Config.daylight);
+            } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_P) {
+                Config.showplantgrowstage = !Config.showplantgrowstage;
+                Utils.setprefb("showplantgrowstage", Config.showplantgrowstage);
             } else if (key == ':') {
                 entercmd();
             } else if (key != 0) {

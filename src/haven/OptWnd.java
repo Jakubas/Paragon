@@ -621,18 +621,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show plants growth stage") {
-            {
-                a = Config.showplantgrowstage;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showplantgrowstage", val);
-                Config.showplantgrowstage = val;
-                a = val;
-            }
-        }, new Coord(260, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
