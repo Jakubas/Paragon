@@ -52,10 +52,9 @@ public class LocalMiniMap extends Widget {
             return size() > 7;
         }
     };
-    private long[] partymembers;
     private final static Tex bushicn = Text.renderstroked("\u22C6", Color.CYAN, Color.BLACK, bushf).tex();
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
-    
+
     public static class MapTile {
         public final Coord ul, c;
 
@@ -385,24 +384,16 @@ public class LocalMiniMap extends Widget {
             try {
                 synchronized (ui.sess.glob.party.memb) {
                     Collection<Party.Member> members = ui.sess.glob.party.memb.values();
-                    int size = members.size();
-                    partymembers = size > 1 ? new long[members.size()] : null;
-                    int x = 0;
                     for (Party.Member m : members) {
                         Coord ptc;
                         try {
                             ptc = m.getc();
                         } catch (MCache.LoadingMap e) {
-                            ptc = null;
-                        }
-                        if (ptc == null)
                             continue;
+                        }
                         ptc = p2c(ptc);
-                        g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), new Color(m.col.getRed(), m.col.getGreen(), m.col.getBlue()), Color.BLACK, partyf);
-                        if (size > 1)
-                            partymembers[x++] = m.gobid;
+                        g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), m.col, Color.BLACK, partyf);
                     }
-
                 }
             } catch (Loading l) {
             }
