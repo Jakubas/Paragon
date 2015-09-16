@@ -54,6 +54,7 @@ public class LocalMiniMap extends Widget {
     };
     private final static Tex bushicn = Text.renderstroked("\u22C6", Color.CYAN, Color.BLACK, bushf).tex();
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
+    private Coord plgprev;
 
     public static class MapTile {
         public final Coord ul, c;
@@ -333,6 +334,9 @@ public class LocalMiniMap extends Widget {
                 if (f == null) {
                     f = Defer.later(new Defer.Callable<MapTile>() {
                         public MapTile call() {
+                            if (plgprev == null || plg.dist(plgprev) > 10)
+                                maptiles.clear();
+                            plgprev = plg;
                             Coord ul = plg.mul(cmaps).sub(cmaps);
                             // offsets are hardcoded since we don't want to do bunch of unnecessary multiplications
                             maptiles.put(ul.add(-100, -100), drawmap(ul, cmaps));
