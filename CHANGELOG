@@ -1,12 +1,21 @@
+Version 1.13.1
+    Fixed:
+        * Shift+Q/W/E/R not working on non english keyboard layouts.
+        * LP gain multiplier for curios is now optional.
+        * Issue with crop stage routine taking into account trellis objects.
+        * Significant performance hit when show crop stage option is turned on.
+        * Changed crop stage display to be togglable using Ctrl+P.
+
+
 Version 1.13.0
     New:
         * Show plants growth stage.
         * Change speed using Shift+Q/W/E/R.
-        * Option to show all three elements subtance/essense/vitality as quality.
+        * Option to show all three elements substance/essence/vitality as quality.
         * Quality for curiosities is shown now as LP gain multiplier.
 
-    Misc:
-        * Fixed mirkwood map highlighting.
+    Fixed:
+        * Mirkwood map highlighting.
 
 
 Version 1.12.0
