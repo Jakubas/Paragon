@@ -26,8 +26,8 @@
 
 package haven;
 
+import java.awt.*;
 import java.util.*;
-import java.awt.Color;
 
 public class Glob {
     public static final int GMSG_TIME = 0;
@@ -77,13 +77,16 @@ public class Glob {
     }
 
     public static class CAttr extends Observable {
+        private static final Text.Foundry capval = new Text.Foundry(Text.sansb, 12).aa(true);
         String nm;
         int base, comp;
+        public Tex comptex;
 
         public CAttr(String nm, int base, int comp) {
             this.nm = nm.intern();
             this.base = base;
             this.comp = comp;
+            this.comptex = Text.renderstroked(comp + "", Color.WHITE, Color.BLACK, capval).tex();
         }
 
         public void update(int base, int comp) {
@@ -93,6 +96,7 @@ public class Glob {
             this.comp = comp;
             setChanged();
             notifyObservers(null);
+            this.comptex = Text.renderstroked(comp + "", Color.WHITE, Color.BLACK, capval).tex();
         }
     }
 

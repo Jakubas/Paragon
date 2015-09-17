@@ -31,7 +31,6 @@ import java.awt.Font;
 import java.awt.Color;
 
 public class Makewindow extends Widget {
-    private static final Text.Foundry capval = new Text.Foundry(new Font("Sans", Font.PLAIN, 12)).aa(true);
     Widget obtn, cbtn;
     List<Spec> inputs = Collections.emptyList();
     List<Spec> outputs = Collections.emptyList();
@@ -168,22 +167,16 @@ public class Makewindow extends Widget {
                         String name = qm.get().basename();
                         for (CharWnd.SAttr attr : chrwdg.skill) {
                             if (name.equals(attr.attr.nm)) {
-                                Text tas = Text.renderstroked(attr.attr.comp + "", Color.WHITE, Color.BLACK, capval);
-                                Tex T = tas.tex();
-                                Coord sz = tas.sz();
-                                g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
-                                T.dispose();
+                                Coord sz = attr.attr.comptex.sz();
+                                g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 c = c.add(sz.x + 8, 0);
                                 break;
                             }
                         }
                         for (CharWnd.Attr attr : chrwdg.base) {
                             if (name.equals(attr.attr.nm)) {
-                                Text tab =  Text.renderstroked(attr.attr.comp + "", Color.WHITE, Color.BLACK, capval);
-                                Tex T = tab.tex();
-                                Coord sz = tab.sz();
-                                g.image(T, c.add(3, t.sz().y / 2 - sz.y / 2));
-                                T.dispose();
+                                Coord sz = attr.attr.comptex.sz();
+                                g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 c = c.add(sz.x + 8, 0);
                                 break;
                             }
@@ -217,7 +210,7 @@ public class Makewindow extends Widget {
                     Tex t = qm.get().layer(Resource.imgc).tex();
                     if (mc.isect(c, t.sz()))
                         return (qm.get().layer(Resource.tooltip).t);
-                    c = c.add(t.sz().x + 1, 0);
+                    c = c.add(t.sz().x + 1 + (Config.showcraftcap ? 21 : 0), 0);
                 }
             } catch (Loading l) {
             }
