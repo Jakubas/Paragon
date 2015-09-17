@@ -97,6 +97,7 @@ public class Config {
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", false);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
+    public static boolean notifykinonline = Utils.getprefb("notifykinonline", false);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;
