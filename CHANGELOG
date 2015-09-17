@@ -1,3 +1,13 @@
+Version 1.13.2
+    New:
+        * Notify when kin comes online
+        * Log changes to base attributes.
+        * Shift+Alt+LMB for mass transferring. Old combination Alt + RMB still works too.
+
+    Misc:
+        * All-around optimizations.
+
+
 Version 1.13.1
     Fixed:
         * Shift+Q/W/E/R not working on non english keyboard layouts.
