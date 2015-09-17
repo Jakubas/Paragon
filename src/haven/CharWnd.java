@@ -439,9 +439,11 @@ public class CharWnd extends Window {
             Resource res = Resource.local().loadwait("gfx/hud/chr/" + attr);
             this.nm = attr;
             this.img = res.layer(Resource.imgc).tex();
-            this.rnm = attrf.render(res.layer(Resource.tooltip).t);
+            String tooltip = res.layer(Resource.tooltip).t;
+            this.rnm = attrf.render(tooltip);
             this.attr = glob.cattr.get(attr);
             this.bg = bg;
+            this.attr.addObserver(new ChangeObserver(tooltip));
         }
 
         public void tick(double dt) {
@@ -479,6 +481,20 @@ public class CharWnd extends Window {
 
         public void lvlup() {
             lvlt = 1.0;
+        }
+
+        private class ChangeObserver implements Observer {
+            private String name;
+            public ChangeObserver(String name) {
+                this.name = name;
+            }
+            @Override
+            public void update(Observable o, Object arg) {
+                if (arg != null) {
+                    Integer basediff = (Integer) arg;
+                    ((GameUI) parent.parent.parent).syslog.append(name + (basediff > 0 ? " +" + basediff : " " + basediff), Color.LIGHT_GRAY);
+                }
+            }
         }
     }
 

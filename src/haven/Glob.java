@@ -92,10 +92,11 @@ public class Glob {
         public void update(int base, int comp) {
             if ((base == this.base) && (comp == this.comp))
                 return;
+            Integer basediff = base - this.base;
             this.base = base;
             this.comp = comp;
             setChanged();
-            notifyObservers(null);
+            notifyObservers(basediff);
             this.comptex = Text.renderstroked(comp + "", Color.WHITE, Color.BLACK, capval).tex();
         }
     }
