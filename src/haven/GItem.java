@@ -44,20 +44,15 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private Quality quality;
 
     public class Quality {
-        public int e, s, v;
         public int max;
-        public String avgfmt;
-        public String avgwholefmt;
-        public String lpgainfmt;
-        public Color color;
+        public Tex etex, stex, vtex;
+        public Tex maxtex, avgtex, avgwholetex, lpgaintex;
         public boolean curio;
 
         public Quality(int e, int s, int v, boolean curio) {
-            this.e = e;
-            this.s = s;
-            this.v = v;
             this.curio = curio;
 
+            Color color;
             if (e == s && e == v) {
                 max = e;
                 color = Color.WHITE;
@@ -75,9 +70,13 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             double avg =  (double)(e + s + v)/3.0;
             double lpgain = curio ? Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0)) : 0;
 
-            avgfmt = new DecimalFormat("#.#").format(avg);
-            lpgainfmt = new DecimalFormat("#.###").format(lpgain);
-            avgwholefmt = Math.round(avg) + "";
+            etex = Text.renderstroked(e + "", essenceclr, Color.BLACK).tex();
+            stex = Text.renderstroked(s + "", substanceclr, Color.BLACK).tex();
+            vtex = Text.renderstroked(v + "", vitalityclr, Color.BLACK).tex();
+            maxtex = Text.renderstroked(max + "", color, Color.BLACK).tex();
+            avgtex = Text.renderstroked(new DecimalFormat("#.#").format(avg), color, Color.BLACK).tex();
+            lpgaintex = Text.renderstroked(new DecimalFormat("#.###").format(lpgain), Color.WHITE, Color.BLACK).tex();
+            avgwholetex = Text.renderstroked(Math.round(avg) + "", color, Color.BLACK).tex();
         }
     }
 

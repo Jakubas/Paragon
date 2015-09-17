@@ -217,31 +217,19 @@ public class WItem extends Widget implements DTarget {
 
             if (Config.showquality) {
                 GItem.Quality quality = item.quality();
-                if (Config.showqualitymode == 0) {
-                    if (quality != null && quality.max != 0) {
-                        String q = quality.max + "";
-                        Color c = quality.color;
-                        if (quality.curio && Config.showlpgainmult) {
-                            q = quality.lpgainfmt;
-                            c = Color.WHITE;
-                        }
-                        g.atextstroked(q, new Coord(0, sz.y - 12), c, Color.BLACK);
-                    }
-                } else if (Config.showqualitymode == 1) {
-                    if (quality != null && quality.max != 0) {
-                        String q = Config.qualitywhole ? quality.avgwholefmt : quality.avgfmt;
-                        Color c = quality.color;
-                        if (quality.curio && Config.showlpgainmult) {
-                            q = quality.lpgainfmt;
-                            c = Color.WHITE;
-                        }
-                        g.atextstroked(q, new Coord(0, sz.y - 12), c, Color.BLACK);
-                    }
-                } else {
-                    if (quality != null && quality.max != 0) {
-                        g.atextstroked(quality.e+"", new Coord(0, sz.y - 32), GItem.essenceclr, Color.BLACK);
-                        g.atextstroked(quality.s+"", new Coord(0, sz.y - 22), GItem.substanceclr, Color.BLACK);
-                        g.atextstroked(quality.v+"", new Coord(0, sz.y - 12), GItem.vitalityclr, Color.BLACK);
+                if (quality != null && quality.max != 0) {
+                    if (Config.showqualitymode == 0) {
+                        Tex q = (quality.curio && Config.showlpgainmult) ? quality.lpgaintex : quality.maxtex;
+                        g.image(q, new Coord(0, sz.y - 12));
+                    } else if (Config.showqualitymode == 1) {
+                        Tex q = Config.qualitywhole ? quality.avgwholetex : quality.avgtex;
+                        if (quality.curio && Config.showlpgainmult)
+                            q = quality.lpgaintex;
+                        g.image(q, new Coord(0, sz.y - 12));
+                    } else {
+                        g.image(quality.etex, new Coord(0, sz.y - 32));
+                        g.image(quality.stex, new Coord(0, sz.y - 22));
+                        g.image(quality.vtex, new Coord(0, sz.y - 12));
                     }
                 }
             }
