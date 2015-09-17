@@ -51,8 +51,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             Text.renderstroked("2", stagecolor, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("3", stagecolor, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("4", stagecolor, Color.BLACK, gobhpf).tex(),
-            Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex() // just in case..
+            Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex()
     };
+    private PView.Draw2D[] cropstgd = new  PView.Draw2D[4];
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -105,6 +106,16 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         this.id = id;
         this.frame = frame;
         loc.tick();
+        for (int i = 0; i < 4; i++) {
+            final int fini = i;
+            cropstgd[i] = new PView.Draw2D() {
+                public void draw2d(GOut g) {
+                    if (sc != null) {
+                        g.image(cropstg[fini], sc);
+                    }
+                }
+            };
+        }
     }
 
     public Gob(Glob glob, Coord c) {
@@ -233,15 +244,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                         GAttrib rd = getattr(ResDrawable.class);
                         if (rd != null) {
                             try {
-                                final int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
-                                PView.Draw2D staged = new PView.Draw2D() {
-                                    public void draw2d(GOut g) {
-                                        if (sc != null && stage > 0 && stage < 5) {
-                                            g.image(cropstg[stage - 1], sc);
-                                        }
-                                    }
-                                };
-                                rl.add(staged, null);
+                                int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
+                                if (stage > 0 && stage < 5)
+                                    rl.add(cropstgd[stage-1], null);
                             } catch (ArrayIndexOutOfBoundsException e) { // ignored
                             }
                         }
