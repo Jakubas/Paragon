@@ -242,6 +242,8 @@ public class WItem extends Widget implements DTarget {
         if (btn == 1) {
             if (ui.modctrl && ui.modmeta)
                 wdgmsg("drop-identical", item.resource().name);
+            else if (ui.modshift && ui.modmeta)
+                wdgmsg("transfer-identical", item.resource().name);
             else if (ui.modshift)
                 item.wdgmsg("transfer", c);
             else if (ui.modctrl)
