@@ -395,8 +395,11 @@ public class LocalMiniMap extends Widget {
                         } catch (MCache.LoadingMap e) {
                             continue;
                         }
-                        ptc = p2c(ptc);
-                        g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), m.col, Color.BLACK, partyf);
+                        try {
+                            ptc = p2c(ptc);
+                            g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), m.col, Color.BLACK, partyf);
+                        } catch (NullPointerException npe) { // in case chars are in different words
+                        }
                     }
                 }
             } catch (Loading l) {
