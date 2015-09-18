@@ -459,16 +459,18 @@ public class MCache {
                     olseq++;
                     final Grid _g = g;
                     final MCache _this = this;
-                    Defer.later(new Defer.Callable<Void>() {
-                        public Void call() {
-                            try {
-                                new MapGridSave(_this, _g);
-                            } catch(Loading e) {
-                                Defer.later(this);
+                    if (Config.savemmap) {
+                        Defer.later(new Defer.Callable<Void>() {
+                            public Void call() {
+                                try {
+                                    new MapGridSave(_this, _g);
+                                } catch (Loading e) {
+                                    Defer.later(this);
+                                }
+                                return null;
                             }
-                            return null;
-                        }
-                    });
+                        });
+                    }
                 }
             }
         }

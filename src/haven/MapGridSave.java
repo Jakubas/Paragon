@@ -16,7 +16,7 @@ import java.util.Date;
 public class MapGridSave {
     private MCache map;
     private MCache.Grid g;
-    private static Coord mgs;
+    public static Coord mgs;
     private static Coord mglp;
     private static String session;
 

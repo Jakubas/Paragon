@@ -658,6 +658,7 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("savemmap", val);
                 Config.savemmap = val;
+                MapGridSave.mgs = null;
                 a = val;
             }
         }, new Coord(0, y));
