@@ -799,6 +799,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
             if (map != null)
                 map.togglegrid();
+            return true;
         }
         return (super.globtype(key, ev));
     }
