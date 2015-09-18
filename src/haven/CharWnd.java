@@ -491,8 +491,11 @@ public class CharWnd extends Window {
             @Override
             public void update(Observable o, Object arg) {
                 if (arg != null) {
-                    Integer basediff = (Integer) arg;
-                    ((GameUI) parent.parent.parent).syslog.append(name + (basediff > 0 ? " +" + basediff : " " + basediff), Color.LIGHT_GRAY);
+                    int basediff = (Integer) arg;
+                    if (basediff != 0) {
+                        String msg = name + (basediff > 0 ? " +" + basediff : " " + basediff);
+                        ((GameUI) parent.parent.parent).syslog.append(msg, Color.LIGHT_GRAY);
+                    }
                 }
             }
         }
