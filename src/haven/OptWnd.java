@@ -296,7 +296,7 @@ public class OptWnd extends Window {
             public void changed() {
                 double vol = val / 1000.0;
                 Config.alarmunknownvol = vol;
-                Utils.setprefd("alarmunknowvol", vol);
+                Utils.setprefd("alarmunknownvol", vol);
             }
         }, new Coord(0, y));
         y += 20;
