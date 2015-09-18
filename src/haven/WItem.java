@@ -204,15 +204,14 @@ public class WItem extends Widget implements DTarget {
                 if (Config.itemmeterbar) {
                     g.chcolor(220, 60, 60, 255);
                     g.frect(Coord.z, new Coord((int) (sz.x / (100 / (double) item.meter)), 4));
-                } else if (Config.itempercentage) {
-                    g.atextstroked(String.format("%d%%", item.meter), new Coord(0, 0), Color.WHITE, Color.BLACK);
-                } else {
+                    g.chcolor();
+                } else if (!Config.itempercentage){
                     double a = ((double) item.meter) / 100.0;
                     g.chcolor(255, 255, 255, 64);
                     Coord half = sz.div(2);
                     g.prect(half, half.inv(), half, a * Math.PI * 2);
+                    g.chcolor();
                 }
-                g.chcolor();
             }
 
             if (Config.showquality) {
@@ -232,6 +231,10 @@ public class WItem extends Widget implements DTarget {
                         g.image(quality.vtex, new Coord(0, sz.y - 12));
                     }
                 }
+            }
+
+            if (item.meter > 0 && Config.itempercentage) {
+                g.atextstroked(String.format("%d%%", item.meter), new Coord(0, 0), Color.WHITE, Color.BLACK);
             }
         } else {
             g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
