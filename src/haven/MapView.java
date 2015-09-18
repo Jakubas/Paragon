@@ -1405,7 +1405,16 @@ public class MapView extends PView implements DTarget, Console.Directory {
             camera.wheel(Coord.z, -1);
         else if(code == KeyEvent.VK_SUBTRACT)
             camera.wheel(Coord.z, 1);
-
+        else if (ev.isShiftDown() && code == KeyEvent.VK_C) {
+            if (camera != null) {
+                String cam =  camera instanceof OrthoCam ? "bad" : "ortho";
+                String[] args = new String[0];
+                camera = makecam(camtypes.get(cam) , args);
+                Utils.setpref("defcam", cam);
+                Utils.setprefb("camargs", Utils.serialize(args));
+            }
+            return true;
+        }
         return (false);
     }
 
