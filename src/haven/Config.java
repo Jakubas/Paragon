@@ -56,8 +56,8 @@ public class Config {
     public static int mainport = getint("haven.mainport", 1870);
     public static int authport = getint("haven.authport", 1871);
     public static boolean softres = getprop("haven.softres", "on").equals("on");
-
-    public static boolean showflo = Utils.getprefb("showflo", true);
+    public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
+    public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", false);
     public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);

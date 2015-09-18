@@ -180,6 +180,30 @@ public class OptWnd extends Window {
                     }
                 }, new Coord(0, y));
                 y += 35;
+                add(new CheckBox("Disable flavor objects including ambient sounds") {
+                    {
+                        a = Config.hideflocomplete;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("hideflocomplete", val);
+                        Config.hideflocomplete = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
+                y += 35;
+                add(new CheckBox("Hide flavor objects (requires logout)") {
+                    {
+                        a = Config.hideflovisual;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("hideflovisual", val);
+                        Config.hideflovisual = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
+
                 add(new Button(200, "Reset to defaults") {
                     public void click() {
                         cf.cfg.resetprefs();
@@ -427,18 +451,6 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- display
         y = 0;
-        display.add(new CheckBox("Show flavour objects") {
-            {
-                a = Config.showflo;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showflo", val);
-                Config.showflo = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         display.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;

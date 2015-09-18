@@ -163,6 +163,11 @@ public class MCache {
                     if (set.flavobjs.size() > 0) {
                         if ((fp % set.flavprob) == 0) {
                             Indir<Resource> r = set.flavobjs.pick(rp % set.flavobjs.tw);
+                            if (Config.hideflovisual) {
+                                Resource res = r.get();
+                                if (res != null && res.name.startsWith("gfx/tiles/"))
+                                    continue;
+                            }
                             Gob g = new Flavobj(c.add(tc).mul(tilesz).add(tilesz.div(2)), a * 2 * Math.PI);
                             g.setattr(new ResDrawable(g, r, Message.nil));
                             Coord cc = c.div(cutsz);
