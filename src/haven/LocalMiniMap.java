@@ -303,8 +303,18 @@ public class LocalMiniMap extends Widget {
                     if (icon != null) {
                         Coord gc = p2c(gob.rc);
                         Coord sz = icon.tex().sz();
-                        if (c.isect(gc.sub(sz.div(2)), sz))
+                        if (c.isect(gc.sub(sz.div(2)), sz)) {
+                            if (Config.iconssel != null) {
+                                Resource res = icon.res.get();
+                                if (res != null) {
+                                    for (String name : Config.iconssel) {
+                                        if (res.basename().equals(name))
+                                            return null;
+                                    }
+                                }
+                            }
                             return (gob);
+                        }
                     }
                 } catch (Loading l) {
                 }
