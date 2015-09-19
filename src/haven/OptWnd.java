@@ -203,6 +203,18 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
+                y += 35;
+                add(new CheckBox("Show weather") {
+                    {
+                        a = Config.showweather;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("showweather", val);
+                        Config.showweather = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
 
                 add(new Button(200, "Reset to defaults") {
                     public void click() {

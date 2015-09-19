@@ -649,11 +649,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
             } else {
                 amb = null;
             }
-            for (Glob.Weather w : glob.weather)
-                w.gsetup(rl);
-            for (Glob.Weather w : glob.weather) {
-                if (w instanceof Rendered)
-                    rl.add((Rendered) w, null);
+            if (Config.showweather) {
+                for (Glob.Weather w : glob.weather)
+                    w.gsetup(rl);
+                for (Glob.Weather w : glob.weather) {
+                    if (w instanceof Rendered)
+                        rl.add((Rendered) w, null);
+                }
             }
         }
     /* XXX: MSAA level should be configurable. */
