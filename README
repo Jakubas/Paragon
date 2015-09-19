@@ -1,40 +1,5 @@
                                 Amber
 
-Amber is a client for Haven & Hearth. Main differences from the vanilla client include:
-
-- Option to hide flavor objects.
-- Daylight mode.
-- Better fonts.
-- Map data saving to disk.
-- Persistent, resizable, and movable map.
-- Improved item transfer between inventory and containers.
-- Option to always show kin names.
-- Show players on minimap.
-- Study box locking.
-- Free camera rotation.
-- Alarm sounds on unknown and red players.
-- Chat logs saving to disk and time-stamps.
-- Option to show item quality.
-- Account management.
-- Option to disable biome edge transitions.
-- Option to show certain boulders/bushes/trees on minimap and hide default icons.
-- Optional bar/percentage item progress.
-- Configurable chat font size.
-- Timers.
-- Hourglass percentage.
-- Camera zoom using numpad +/-.
-- Grid overlay (merged from k-t).
-- Quick hand equipment slots.
-- Sound notification on private chats.
-- Window positions preserved across restarts.
-- Sound alarm when curio finishes studying.
-- Slider for reducing volume of stone chipping and boat squeaking sounds.
-- Custom resources support (res folder).
-- Show attribute/ability values in craft window.
-- Show object health.
-- Show plants growth stage.
-- ...and some additional fixes.
-
-
-
-https://github.com/romovs/amber
+Amber is a custom client for Haven & Hearth. It provides a number of power user 
+features not present in the vanilla client as well as some fixes and performance
+optimization settings. See CHANGELOG for a complete list of features.
