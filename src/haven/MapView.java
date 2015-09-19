@@ -29,6 +29,7 @@ package haven;
 import static haven.MCache.tilesz;
 
 import haven.GLProgram.VarID;
+import haven.resutil.BPRadSprite;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -53,10 +54,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public double shake = 0.0;
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     private String tooltip;
-
     private boolean showgrid;
     private TileOutline gridol;
     private Coord lasttc = Coord.z;
+    private static final Map<String, Gob.Overlay> radmap = new HashMap<String, Gob.Overlay>(1) {{
+        put("gfx/terobjs/minesupport", new Gob.Overlay(new BPRadSprite(null, null, new MessageBuf(new byte[]{-24, 3}, 0, 2))));
+    }};
 
     public interface Delayed {
         public void run(GOut g);
@@ -452,7 +455,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
         this.glob = glob;
         this.cc = cc;
         this.plgob = plgob;
-    this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
+        this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
+        toggleradius(Config.showterobjsrad);
         setcanfocus(true);
     }
 
@@ -1414,6 +1418,11 @@ public class MapView extends PView implements DTarget, Console.Directory {
                 Utils.setprefb("camargs", Utils.serialize(args));
             }
             return true;
+        } else if (ev.isControlDown() && code == KeyEvent.VK_D) {
+            Config.showterobjsrad = !Config.showterobjsrad;
+            Utils.setprefb("showterobjsrad", Config.showterobjsrad);
+            toggleradius(Config.showterobjsrad);
+            return true;
         }
         return (false);
     }
@@ -1426,6 +1435,24 @@ public class MapView extends PView implements DTarget, Console.Directory {
             return Text.render(tooltip);
         }
         return (super.tooltip(c, prev));
+    }
+
+    private void toggleradius(boolean show) {
+        synchronized (glob.oc) {
+            for (Gob gob : glob.oc) {
+                try {
+                    Resource res = gob.getres();
+                    if (res != null && radmap.containsKey(res.name)) {
+                        Gob.Overlay rovl = radmap.get(res.name);
+                        if (show)
+                            gob.ols.add(rovl);
+                        else
+                            gob.ols.remove(rovl);
+                    }
+                } catch (Loading le) {
+                }
+            }
+        }
     }
 
     public class GrabXL implements Grabber {
