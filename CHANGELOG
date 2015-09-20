@@ -1,3 +1,18 @@
+Version 1.14.0
+    New:
+        * Show mine support radius with ctrl+d.
+        * Change between bad and ortho camera with shift+c.
+        * Option for hiding flavor objects but keeping the ambient sounds.
+        * Option for hiding weather.
+
+    Fixed:
+        * 'alarm on unknown' volume slider not being preserved between restarts.
+        * 'save map tiles to disk' option not disabling tile dumps when unchecked.
+        * Prevent clicking on hidden icons.
+        * Don't log attribute changes with 0 change.
+        * Render item percentage on top so it won't be hidden behind quality.
+
+
 Version 1.13.3
     Fixed:
         * Crash when partying characters located in different worlds.
