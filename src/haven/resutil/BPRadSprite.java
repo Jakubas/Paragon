@@ -15,10 +15,9 @@ public class BPRadSprite extends Sprite {
     final NormalArray nrma;
     final ShortBuffer sidx;
 
-    public BPRadSprite(Owner owner, Resource res, Message std) {
-        super(owner, res);
+    public BPRadSprite(float rad) {
+        super(null, null);
 
-        float rad = (float) std.uint16() / 10.0F;
         int per = Math.max(24, (int) (2 * Math.PI * (double) rad / 11.0D));
         FloatBuffer pa = Utils.mkfbuf(per * 3 * 2);
         FloatBuffer na = Utils.mkfbuf(per * 3 * 2);
