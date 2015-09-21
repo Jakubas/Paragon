@@ -150,7 +150,7 @@ public class LocalMiniMap extends Widget {
                 try {
                     GobIcon icon = gob.getattr(GobIcon.class);
                     Resource res = gob.getres();
-                    if (icon != null) {
+                    if (res != null && (icon != null || Config.additonalicons.containsKey(res.name))) {
                         boolean ignore = false;
                         if (Config.iconssel != null) {
                             for (String name : Config.iconssel) {
@@ -162,7 +162,7 @@ public class LocalMiniMap extends Widget {
                         }
                         if (!ignore) {
                             Coord gc = p2c(gob.rc);
-                            Tex tex = icon.tex();
+                            Tex tex = icon != null ? icon.tex() : Config.additonalicons.get(res.name);
                             g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
                         }
                     } else if (Config.showplayersmmap) {

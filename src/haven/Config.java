@@ -32,9 +32,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static haven.Utils.getprop;
 
@@ -126,10 +124,14 @@ public class Config {
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
-            "spindlytaproot", "stingingnettle", "dragonfly"};
+            "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram"};
     public static String[] iconssel = Utils.getprefsa("iconssel", null);
 
-
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>() {{
+        put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
+        put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
+    }};
+    
     static {
         Arrays.sort(Config.boulders);
         Arrays.sort(Config.bushes);
