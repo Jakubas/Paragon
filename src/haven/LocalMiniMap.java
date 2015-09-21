@@ -55,6 +55,7 @@ public class LocalMiniMap extends Widget {
     private final static Tex bushicn = Text.renderstroked("\u22C6", Color.CYAN, Color.BLACK, bushf).tex();
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
     private Coord plgprev;
+    private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
 
     public static class MapTile {
         public final Coord ul, c;
@@ -407,7 +408,12 @@ public class LocalMiniMap extends Widget {
                         }
                         try {
                             ptc = p2c(ptc);
-                            g.atextstroked("\u2716", ptc.add(delta).sub(6, 6), m.col, Color.BLACK, partyf);
+                            Tex tex = xmap.get(m.col);
+                            if (tex == null) {
+                                tex = Text.renderstroked("\u2716",  m.col, Color.BLACK, partyf).tex();
+                                xmap.put(m.col, tex);
+                            }
+                            g.image(tex, ptc.add(delta).sub(6, 6));
                         } catch (NullPointerException npe) { // in case chars are in different words
                         }
                     }
