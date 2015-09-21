@@ -494,7 +494,7 @@ public class CharWnd extends Window {
                     int basediff = (Integer) arg;
                     if (basediff != 0) {
                         String msg = name + (basediff > 0 ? " +" + basediff : " " + basediff);
-                        ((GameUI) parent.parent.parent).syslog.append(msg, Color.LIGHT_GRAY);
+                        gameui().syslog.append(msg, Color.LIGHT_GRAY);
                     }
                 }
             }
