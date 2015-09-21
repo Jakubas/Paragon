@@ -274,14 +274,20 @@ public class WItem extends Widget implements DTarget {
     }
 
     public void destroy() {
-        if (Config.studyalarm) {
-            try {
-                Curiosity ci = ItemInfo.find(Curiosity.class, item.info());
-                if (ci != null && item.meter == 99)
-                    Audio.play(studyalarmsfx, Config.studyalarmvol);
-            } catch (Loading l) {
+        Curiosity ci = null;
+        try {
+            ci = ItemInfo.find(Curiosity.class, item.info());
+            if (ci != null && item.meter >= 99) {
+                Resource.Tooltip tt = item.resource().layer(Resource.Tooltip.class);
+                if (tt != null)
+                    gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
             }
+        } catch (Loading l) {
         }
+
+        if (Config.studyalarm && ci != null && item.meter >= 99)
+            Audio.play(studyalarmsfx, Config.studyalarmvol);
+
         super.destroy();
     }
 }
