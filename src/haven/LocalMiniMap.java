@@ -256,7 +256,7 @@ public class LocalMiniMap extends Widget {
                                 }
                                 if (!recognized) {
                                     Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                                    g.atextstroked("/u22C6", pc, Color.RED, Color.BLACK, bushf);
+                                    g.atextstroked("\u22C6", pc, Color.RED, Color.BLACK, bushf);
                                 }
                             }
                         } else if (res.name.startsWith("gfx/terobjs/trees")) {
