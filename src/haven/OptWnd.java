@@ -215,6 +215,18 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
+                y += 35;
+                add(new CheckBox("Simple crops (req. logout)") {
+                    {
+                        a = Config.simplecrops;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("simplecrops", val);
+                        Config.simplecrops = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
 
                 add(new Button(200, "Reset to defaults") {
                     public void click() {
