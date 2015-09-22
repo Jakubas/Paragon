@@ -1,3 +1,14 @@
+Version 1.15.0
+    New:
+        * Simplified crops.
+        * Icons for battering rams and toads.
+        * Add message to system log when curio finishes studying.
+
+    Fixed:
+        * Radius for stone supports not showing.
+        * Different types of meat were considered as same item when mass transferring/dropping.
+
+
 Version 1.14.0
     New:
         * Show mine support radius with ctrl+d.
