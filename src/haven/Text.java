@@ -35,6 +35,7 @@ public class Text {
     public static final Font sans = new Font("Sans", Font.PLAIN, 10);
     public static final Font sansb = new Font("Sans", Font.BOLD, 10);
     public static final Font mono = new Font("Monospaced", Font.PLAIN, 10);
+    public static final Font fraktur = Resource.local().loadwait("ui/fraktur").layer(Resource.Font.class).font;
     public static final Font dfont = sans;
     public static final Foundry std;
     public final BufferedImage img;
