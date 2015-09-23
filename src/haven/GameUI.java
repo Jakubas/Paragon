@@ -844,8 +844,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void resize(Coord sz) {
         this.sz = sz;
-        chat.resize(sz.x - blpw - brpw);
-        chat.move(new Coord(blpw, sz.y));
+        chat.resize(Config.chatsz.equals(Coord.z) ? new Coord(sz.x - brpw, 111) : Config.chatsz);
+        chat.move(new Coord(0, sz.y));
+        if (!Utils.getprefb("chatvis", true))
+            chat.sresize(0);
         if (map != null)
             map.resize(sz);
         beltwdg.c = new Coord(blpw + 10, sz.y - beltwdg.sz.y - 5);

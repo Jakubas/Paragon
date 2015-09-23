@@ -50,6 +50,7 @@ public class ChatUI extends Widget {
     public static final RichText.Foundry fnd;
     public static final Text.Foundry qfnd = new Text.Foundry(Text.dfont, 12, new java.awt.Color(192, 255, 192));
     public static final int selw = 130;
+    private static final int brpw = 142, beltw = 410;
     public static final Coord marg = new Coord(9, 9);
     public static final Color[] urgcols = new Color[]{
             null,
@@ -1186,6 +1187,7 @@ public class ChatUI extends Widget {
     public void resize(Coord sz) {
         super.resize(sz);
         this.c = base.add(0, -this.sz.y);
+
         chansel.resize(new Coord(selw, this.sz.y - marg.y));
         if (sel != null)
             sel.resize(new Coord(this.sz.x - marg.x - sel.c.x, this.sz.y - sel.c.y));
@@ -1196,10 +1198,6 @@ public class ChatUI extends Widget {
     public void sresize(int h) {
         clearanims(Spring.class);
         new Spring(targeth = h);
-    }
-
-    public void resize(int w) {
-        resize(new Coord(w, sz.y));
     }
 
     public void move(Coord base) {
@@ -1241,11 +1239,18 @@ public class ChatUI extends Widget {
 
     private UI.Grab dm = null;
     private Coord doff;
-    public int savedh = Math.max(111, Utils.getprefi("chatsize", 111));
+    public int savedh = Math.max(111, Config.chatsz.y);
 
+    private boolean resizehoriz = false;
     public boolean mousedown(Coord c, int button) {
         int bmfx = (sz.x - bmf.sz().x) / 2;
-        if ((button == 1) && (c.y < bmf.sz().y) && (c.x >= bmfx) && (c.x <= (bmfx + bmf.sz().x))) {
+        if (button == 1 && c.x > sz.x - 9) {
+            dm = ui.grabmouse(this);
+            doff = c;
+            resizehoriz = true;
+            return (true);
+        }
+        else if ((button == 1) && (c.y < bmf.sz().y) && (c.x >= bmfx) && (c.x <= (bmfx + bmf.sz().x))) {
             dm = ui.grabmouse(this);
             doff = c;
             return (true);
@@ -1256,7 +1261,12 @@ public class ChatUI extends Widget {
 
     public void mousemove(Coord c) {
         if (dm != null) {
-            resize(sz.x, savedh = Math.max(111, sz.y + doff.y - c.y));
+            if (resizehoriz) {
+                resize(Math.max(beltw, Math.min(parent.sz.x - brpw, sz.x + c.x - doff.x)), savedh);
+                doff = c;
+            } else {
+                resize(sz.x, savedh = Math.max(111, sz.y + doff.y - c.y));
+            }
         } else {
             super.mousemove(c);
         }
@@ -1266,7 +1276,8 @@ public class ChatUI extends Widget {
         if (dm != null) {
             dm.remove();
             dm = null;
-            Utils.setprefi("chatsize", savedh);
+            Utils.setprefc("chatsz", sz);
+            resizehoriz = false;
             return (true);
         } else {
             return (super.mouseup(c, button));
