@@ -108,8 +108,21 @@ public class Inventory extends Widget implements DTarget {
             for (WItem item : getitems((GItem) args[0]))
                 item.item.wdgmsg("drop", Coord.z);
         } else if(msg.equals("transfer-identical")) {
-            for (WItem item : getitems((GItem) args[0])) {
-                item.item.wdgmsg("transfer", Coord.z);
+            Window stockpile = gameui().getwnd("Stockpile");
+            if (stockpile == null) {
+                for (WItem item : getitems((GItem) args[0]))
+                    item.item.wdgmsg("transfer", Coord.z);
+            } else {
+                for (Widget w = stockpile.lchild; w != null; w = w.prev) {
+                    if (w instanceof ISBox) {
+                        ISBox isb = (ISBox) w;
+                        for (WItem item : getitems((GItem) args[0])) {
+                            item.item.wdgmsg("take", Coord.z);
+                            isb.drop(null, null);
+                        }
+                        break;
+                    }
+                }
             }
         } else {
             super.wdgmsg(sender, msg, args);

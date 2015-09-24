@@ -906,6 +906,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         wdgmsg("act", al);
     }
 
+    public Window getwnd(String cap) {
+        for (Widget w = lchild; w != null; w = w.prev) {
+            if (w instanceof Window) {
+                Window wnd = (Window) w;
+                if (wnd.cap != null && cap.equals(wnd.cap.text))
+                    return wnd;
+            }
+        }
+        return null;
+    }
+
     public class FKeyBelt extends Belt implements DTarget, DropTarget {
         public final int beltkeys[] = {KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4,
                 KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8,
