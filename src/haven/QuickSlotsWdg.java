@@ -91,7 +91,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null) {
-                w.mousedown(Coord.z, button);
+                w.mousedown(new Coord(w.sz.x / 2, w.sz.y / 2), button);
                 return true;
             }
         }
