@@ -217,23 +217,18 @@ public class WItem extends Widget implements DTarget {
             if (Config.showquality) {
                 GItem.Quality quality = item.quality();
                 if (quality != null && quality.max != 0) {
-                    if (Config.showqualitymode == 0) {
-                        Tex q = (quality.curio && Config.showlpgainmult) ? quality.lpgaintex : quality.maxtex;
-                        g.image(q, new Coord(0, sz.y - 12));
-                    } else if (Config.showqualitymode == 1) {
-                        Tex q = Config.qualitywhole ? quality.avgwholetex : quality.avgtex;
-                        if (quality.curio && Config.showlpgainmult)
-                            q = quality.lpgaintex;
-                        g.image(q, new Coord(0, sz.y - 12));
-                    } else if (Config.showqualitymode == 2) {
+                    if (Config.showqualitymode == 2) {
                         g.image(quality.etex, new Coord(0, sz.y - 32));
                         g.image(quality.stex, new Coord(0, sz.y - 22));
                         g.image(quality.vtex, new Coord(0, sz.y - 12));
+                    } else if (quality.curio && Config.showlpgainmult) {
+                        g.image(quality.lpgaintex, new Coord(0, sz.y - 12));
+                    } else if (Config.showqualitymode == 0) {
+                        g.image(quality.maxtex, new Coord(0, sz.y - 12));
+                    } else if (Config.showqualitymode == 1) {
+                        g.image(Config.qualitywhole ? quality.avgwholetex : quality.avgtex, new Coord(0, sz.y - 12));
                     } else {
-                        Tex q = Config.qualitywhole ? quality.avgsvwholetex : quality.avgsvtex;
-                        if (quality.curio && Config.showlpgainmult)
-                            q = quality.lpgaintex;
-                        g.image(q, new Coord(0, sz.y - 12));
+                        g.image(Config.qualitywhole ? quality.avgsvwholetex : quality.avgsvtex, new Coord(0, sz.y - 12));
                     }
                 }
             }
