@@ -117,7 +117,7 @@ public class Inventory extends Widget implements DTarget {
                     if (w instanceof ISBox) {
                         ISBox isb = (ISBox) w;
                         for (WItem item : getitems((GItem) args[0])) {
-                            item.item.wdgmsg("take", Coord.z);
+                            item.item.wdgmsg("take", new Coord(item.sz.x / 2, item.sz.y / 2));
                             isb.drop(null, null);
                         }
                         break;
