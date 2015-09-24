@@ -43,10 +43,12 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public static final Color vitalityclr = new Color(157, 201, 72);
     private Quality quality;
 
-    public class Quality {
+    public static class Quality {
+        private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
+        private static final DecimalFormat longfmt = new DecimalFormat("#.###");
         public int max;
         public Tex etex, stex, vtex;
-        public Tex maxtex, avgtex, avgwholetex, lpgaintex;
+        public Tex maxtex, avgtex, avgwholetex, lpgaintex, avgsvtex, avgsvwholetex;
         public boolean curio;
 
         public Quality(int e, int s, int v, boolean curio) {
@@ -68,15 +70,17 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             }
 
             double avg =  (double)(e + s + v)/3.0;
+            double avgsv =  (double)(s + v)/2.0;
             double lpgain = curio ? Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0)) : 0;
-
             etex = Text.renderstroked(e + "", essenceclr, Color.BLACK).tex();
             stex = Text.renderstroked(s + "", substanceclr, Color.BLACK).tex();
             vtex = Text.renderstroked(v + "", vitalityclr, Color.BLACK).tex();
             maxtex = Text.renderstroked(max + "", color, Color.BLACK).tex();
-            avgtex = Text.renderstroked(new DecimalFormat("#.#").format(avg), color, Color.BLACK).tex();
-            lpgaintex = Text.renderstroked(new DecimalFormat("#.###").format(lpgain), Color.WHITE, Color.BLACK).tex();
+            avgtex = Text.renderstroked(shortfmt.format(avg), color, Color.BLACK).tex();
+            avgsvtex = Text.renderstroked(shortfmt.format(avgsv), color, Color.BLACK).tex();
+            lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();
             avgwholetex = Text.renderstroked(Math.round(avg) + "", color, Color.BLACK).tex();
+            avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", color, Color.BLACK).tex();
         }
     }
 

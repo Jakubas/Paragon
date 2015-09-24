@@ -511,7 +511,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(160, y));
         y += 35;
-        display.add(new CheckBox("Show item quality:") {
+        display.add(new CheckBox("Show item quality") {
             {
                 a = Config.showquality;
             }
@@ -522,7 +522,13 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        display.add(new HSlider(90, 0, 2, 0) {
+        y += 20;
+        display.add(new Label("High"), new Coord(0, y));
+        display.add(new Label("Avg of E/S/V"), new Coord(40, y));
+        display.add(new Label("All"), new Coord(130, y));
+        display.add(new Label("Avg of S/V"), new Coord(160, y));
+        y += 10;
+        display.add(new HSlider(210, 0, 3, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = Config.showqualitymode;
@@ -531,11 +537,8 @@ public class OptWnd extends Window {
                 Config.showqualitymode = val;
                 Utils.setprefi("showqualitymode", val);
             }
-        }, new Coord(120, y));
-        display.add(new Label("High"), new Coord(120, y - 10));
-        display.add(new Label("Avg"), new Coord(155, y - 10));
-        display.add(new Label("All"), new Coord(200, y - 10));
-        y += 35;
+        }, new Coord(0, y));
+        y += 25;
         display.add(new CheckBox("Show LP gain multiplier for curios") {
             {
                 a = Config.showlpgainmult;

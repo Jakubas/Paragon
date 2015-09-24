@@ -225,10 +225,15 @@ public class WItem extends Widget implements DTarget {
                         if (quality.curio && Config.showlpgainmult)
                             q = quality.lpgaintex;
                         g.image(q, new Coord(0, sz.y - 12));
-                    } else {
+                    } else if (Config.showqualitymode == 2) {
                         g.image(quality.etex, new Coord(0, sz.y - 32));
                         g.image(quality.stex, new Coord(0, sz.y - 22));
                         g.image(quality.vtex, new Coord(0, sz.y - 12));
+                    } else {
+                        Tex q = Config.qualitywhole ? quality.avgsvwholetex : quality.avgsvtex;
+                        if (quality.curio && Config.showlpgainmult)
+                            q = quality.lpgaintex;
+                        g.image(q, new Coord(0, sz.y - 12));
                     }
                 }
             }
