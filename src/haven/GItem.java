@@ -42,6 +42,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public static final Color substanceclr = new Color(208, 189, 44);
     public static final Color vitalityclr = new Color(157, 201, 72);
     private Quality quality;
+    public Tex metertex;
 
     public static class Quality {
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
@@ -188,6 +189,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             rawinfo = args;
         } else if (name == "meter") {
             meter = (Integer) args[0];
+            metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK).tex();
         }
     }
 

@@ -233,9 +233,8 @@ public class WItem extends Widget implements DTarget {
                 }
             }
 
-            if (item.meter > 0 && Config.itempercentage) {
-                g.atextstroked(String.format("%d%%", item.meter), new Coord(0, 0), Color.WHITE, Color.BLACK);
-            }
+            if (item.meter > 0 && Config.itempercentage && item.metertex != null)
+                g.image(item.metertex, Coord.z);
         } else {
             g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
         }
