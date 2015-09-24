@@ -71,14 +71,16 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
             double avg =  (double)(e + s + v)/3.0;
             double avgsv =  (double)(s + v)/2.0;
-            double lpgain = curio ? Math.sqrt(Math.sqrt((double)(e * e + s * s + v * v) / 300.0)) : 0;
+            if (curio) {
+                double lpgain = Math.sqrt(Math.sqrt((double) (e * e + s * s + v * v) / 300.0));
+                lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();
+            }
             etex = Text.renderstroked(e + "", essenceclr, Color.BLACK).tex();
             stex = Text.renderstroked(s + "", substanceclr, Color.BLACK).tex();
             vtex = Text.renderstroked(v + "", vitalityclr, Color.BLACK).tex();
             maxtex = Text.renderstroked(max + "", color, Color.BLACK).tex();
             avgtex = Text.renderstroked(shortfmt.format(avg), color, Color.BLACK).tex();
             avgsvtex = Text.renderstroked(shortfmt.format(avgsv), color, Color.BLACK).tex();
-            lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();
             avgwholetex = Text.renderstroked(Math.round(avg) + "", color, Color.BLACK).tex();
             avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", color, Color.BLACK).tex();
         }
