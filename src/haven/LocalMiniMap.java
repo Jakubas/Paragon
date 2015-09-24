@@ -165,7 +165,7 @@ public class LocalMiniMap extends Widget {
                             Tex tex = icon != null ? icon.tex() : Config.additonalicons.get(res.name);
                             g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
                         }
-                    } else if (Config.showplayersmmap) {
+                    } else if (Config.showplayersmmap || Config.autohearth) {
                         try {
                             if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
                                 boolean ispartymember = false;
@@ -174,17 +174,22 @@ public class LocalMiniMap extends Widget {
                                 }
 
                                 Coord pc = p2c(gob.rc).add(delta);
-                                if (!ispartymember && pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
-                                    g.chcolor(Color.BLACK);
-                                    g.fellipse(pc, new Coord(5, 5));
+                                if (!ispartymember) {
                                     KinInfo kininfo = gob.getattr(KinInfo.class);
-                                    g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                                    g.fellipse(pc, new Coord(4, 4));
-                                    g.chcolor();
-                                    if (Config.alarmunknown && kininfo == null) {
+                                    if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
+                                        g.chcolor(Color.BLACK);
+                                        g.fellipse(pc, new Coord(5, 5));
+                                        g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                                        g.fellipse(pc, new Coord(4, 4));
+                                        g.chcolor();
+                                    }
+
+                                    if ((Config.alarmunknown || Config.autohearth) && kininfo == null) {
                                         if (!sgobs.contains(gob.id)) {
                                             sgobs.add(gob.id);
                                             Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                                            if (Config.autohearth)
+                                                gameui().menu.wdgmsg("act", new Object[] { "travel", "hearth" });
                                         }
                                     } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
                                         if (!sgobs.contains(gob.id)) {
