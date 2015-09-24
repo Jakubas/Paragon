@@ -25,7 +25,7 @@ public class MinimapWnd extends Widget implements DTarget {
     private Coord szr;
     private boolean resizing;
     private Coord doff;
-    private static final Coord minsz = new Coord(110, 130);
+    private static final Coord minsz = new Coord(215, 130);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
     public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, 14).aa(true), ctex)) {
         protected BufferedImage proc(Text text) {
