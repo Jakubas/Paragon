@@ -126,12 +126,13 @@ public class Config {
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
-            "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram"};
+            "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram", "rowboat"};
     public static String[] iconssel = Utils.getprefsa("iconssel", null);
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>() {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(3) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
+        put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
     }};
     
     static {
