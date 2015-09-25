@@ -40,15 +40,15 @@ public class LocalMiniMap extends Widget {
     private static final Text.Foundry partyf = bushf;
     public final MapView mv;
     private Coord cc = null;
-    private MapTile cur = null;
+    private Coord cur = null;
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
-    private final Map<Coord, Defer.Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(7, 0.75f, true) {
-        protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<MapTile>> eldest) {
+    private final Map<Coord, Defer.Future<Coord>> cache = new LinkedHashMap<Coord, Defer.Future<Coord>>(7, 0.75f, true) {
+        protected boolean removeEldestEntry(Map.Entry<Coord, Defer.Future<Coord>> eldest) {
             return size() > 7;
         }
     };
@@ -56,15 +56,6 @@ public class LocalMiniMap extends Widget {
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
     private Coord plgprev;
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
-
-    public static class MapTile {
-        public final Coord ul, c;
-
-        public MapTile(Coord ul, Coord c) {
-            this.ul = ul;
-            this.c = c;
-        }
-    }
 
     private BufferedImage tileimg(int t, BufferedImage[] texes) {
         BufferedImage img = texes[t];
@@ -343,29 +334,27 @@ public class LocalMiniMap extends Widget {
             return;
 
         final Coord plg = cc.div(cmaps);
-        if ((cur == null) || !plg.equals(cur.c)) {
-            Defer.Future<MapTile> f;
+        if ((cur == null) || !plg.equals(cur)) {
+            Defer.Future<Coord> f;
             synchronized (cache) {
                 f = cache.get(plg);
                 if (f == null) {
-                    f = Defer.later(new Defer.Callable<MapTile>() {
-                        public MapTile call() {
+                    f = Defer.later(new Defer.Callable<Coord>() {
+                        public Coord call() {
                             if (plgprev == null || plg.dist(plgprev) > 10)
                                 maptiles.clear();
                             plgprev = plg;
-                            Coord ul = plg.mul(cmaps).sub(cmaps);
-                            // offsets are hardcoded since we don't want to do bunch of unnecessary multiplications
-                            maptiles.put(ul.add(-100, -100), drawmap(ul, cmaps));
-                            maptiles.put(ul.add(0, -100), drawmap(ul.add(100, 0), cmaps));
-                            maptiles.put(ul.add(100, -100), drawmap(ul.add(200, 0), cmaps));
-                            maptiles.put(ul.add(-100, 0), drawmap(ul.add(0, 100), cmaps));
-                            maptiles.put(ul, drawmap(ul.add(100, 100), cmaps));
-                            maptiles.put(ul.add(100, 0), drawmap(ul.add(200, 100), cmaps));
-                            maptiles.put(ul.add(-100, 100), drawmap(ul.add(0, 200), cmaps));
-                            maptiles.put(ul.add(0, 100), drawmap(ul.add(100, 200), cmaps));
-                            maptiles.put(ul.add(100, 100), drawmap(ul.add(200, 200), cmaps));
-
-                            return (new MapTile(ul, plg));
+                            Coord ul = plg.mul(cmaps);
+                            maptiles.put(plg.add(-1, -1), drawmap(ul.add(-100, -100), cmaps));
+                            maptiles.put(plg.add(0, -1), drawmap(ul.add(0, -100), cmaps));
+                            maptiles.put(plg.add(1, -1), drawmap(ul.add(100, -100), cmaps));
+                            maptiles.put(plg.add(-1, 0), drawmap(ul.add(-100, 0), cmaps));
+                            maptiles.put(plg, drawmap(ul, cmaps));
+                            maptiles.put(plg.add(1, 0), drawmap(ul.add(100, 0), cmaps));
+                            maptiles.put(plg.add(-1, 1), drawmap(ul.add(-100, 100), cmaps));
+                            maptiles.put(plg.add(0, 1), drawmap(ul.add(0, 100), cmaps));
+                            maptiles.put(plg.add(1, 1), drawmap(ul.add(100, 100), cmaps));
+                            return plg;
                         }
                     });
                     cache.put(plg, f);
@@ -376,18 +365,26 @@ public class LocalMiniMap extends Widget {
             }
         }
         if (cur != null) {
-            int hcount = (sz.x / cmaps.x / 2) + 1;
-            int vcount = (sz.y / cmaps.y / 2) + 1;
+            int ht = (sz.x / 100 + 2) / 2;
+            int vt = (sz.y / 100 + 2) / 2;
+            if (vt == 1)
+                vt++;
 
-            int tdax = Math.abs(delta.x / cmaps.x) + 1;
-            int tday = Math.abs(delta.y / cmaps.y) + 1;
+            int pox = cur.x * 100 - cc.x + sz.x / 2 + delta.x;
+            int poy = cur.y * 100 - cc.y + sz.y / 2 + delta.y;
 
-            for (int x = -hcount - tdax ; x <= hcount + tdax; x++) {
-                for (int y = -vcount - tday ; y <= vcount + tday; y++) {
-                    BufferedImage mt = maptiles.get(cur.ul.add(x * cmaps.x, y * cmaps.y));
+            int tox = pox / 100 - 1;
+            int toy = poy / 100 - 1;
+
+            for (int x = -ht; x <= ht; x++) {
+                for (int y = -vt; y <= vt; y++) {
+                    BufferedImage mt = maptiles.get(cur.add(x - tox, y - toy));
                     if (mt != null) {
-                        Coord offset = cur.ul.sub(cc).add(sz.div(2));
-                        Coord mtc = new Coord(cmaps.x + x * cmaps.x, cmaps.y + y * cmaps.y).add(offset).add(delta);
+                        int mtcx = (x - tox) * 100 + pox;
+                        int mtcy = (y - toy) * 100 + poy;
+                        if (mtcx + 100 < 0 || mtcx > sz.x || mtcy + 100 < 0 || mtcy > sz.y)
+                            continue;
+                        Coord mtc = new Coord(mtcx, mtcy);
                         g.image(mt, mtc);
                         if (Config.mapshowgrid)
                             g.image(gridred, mtc);
