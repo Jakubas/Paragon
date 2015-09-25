@@ -103,7 +103,7 @@ public class MinimapWnd extends Widget implements DTarget {
             {tooltip = Text.render("Show map grid");}
             public void click() {
                 Config.mapshowgrid = !Config.mapshowgrid;
-                Utils.setprefb("maplocked", Config.mapshowgrid);
+                Utils.setprefb("mapshowgrid", Config.mapshowgrid);
             }
         };
 
