@@ -301,16 +301,20 @@ public class LocalMiniMap extends Widget {
                         Coord gc = p2c(gob.rc);
                         Coord sz = icon.tex().sz();
                         if (c.isect(gc.sub(sz.div(2)), sz)) {
+                            boolean ignore = false;
                             if (Config.iconssel != null) {
                                 Resource res = icon.res.get();
                                 if (res != null) {
                                     for (String name : Config.iconssel) {
-                                        if (res.basename().equals(name))
-                                            return null;
+                                        if (res.basename().equals(name)) {
+                                            ignore = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                            return (gob);
+                            if (!ignore)
+                                return (gob);
                         }
                     }
                 } catch (Loading l) {
