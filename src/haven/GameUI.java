@@ -455,6 +455,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             child.resize(sz);
             map = add((MapView) child, Coord.z);
             map.lower();
+            map.glob.gui = this;
             if (minimapWnd != null)
                 ui.destroy(minimapWnd);
             minimapWnd = minimap();

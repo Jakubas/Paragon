@@ -100,6 +100,7 @@ public class Config {
     public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
     public static boolean autohearth = Utils.getprefb("autohearth", false);
+    public static boolean servertime = Utils.getprefb("servertime", false);
     public static Coord chatsz = Utils.getprefc("chatsz", Coord.z);
     public static byte[] authck = null;
     public static String prefspec = "hafen";

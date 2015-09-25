@@ -58,6 +58,10 @@ public class Glob {
     public double skyblend = 0.0;
     private Map<Indir<Resource>, Object> wmap = new HashMap<Indir<Resource>, Object>();
     public static TimersThread timersThread;
+    public GameUI gui;
+    private long lasttime;
+    private static final long SEC_DAY = 60*60*24;
+    private static final Color timeclr = new Color(177, 144, 173);
 
     public Glob(Session sess) {
         this.sess = sess;
@@ -249,6 +253,17 @@ public class Glob {
                     if (!inc)
                         lastrep = 0;
                     timersThread.tick(time, epoch);
+                    if (Config.servertime && gui != null && gui.syslog != null) {
+                        long tm = globtime() / 1000;
+                        if (tm - lasttime > 3 * 60 * 20) {
+                            lasttime = tm;
+                            long day = tm / SEC_DAY;
+                            long secintoday = tm % SEC_DAY;
+                            long mm = (secintoday % 3600) / 60;
+                            long h = secintoday / 3600;
+                            gui.syslog.append(String.format("Server Time: Day %d, %02d:%02d.", day, h, mm), timeclr);
+                        }
+                    }
                     break;
                 case GMSG_LIGHT:
                     synchronized (this) {
