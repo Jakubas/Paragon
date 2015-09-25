@@ -107,13 +107,13 @@ public class MinimapWnd extends Widget implements DTarget {
             }
         };
 
-        add(mmap, 1, 31);
-        add(pclaim, 4, -3);
-        add(vclaim, 4, -8);
-        add(center, 50, -8);
-        add(lock, 110, 5);
-        add(viewdist, 99, -8);
-        add(grid, 126, -8);
+        add(mmap, 1, 27);
+        add(pclaim, 4, -5);
+        add(vclaim, 4, -10);
+        add(center, 50, -10);
+        add(lock, 110, 3);
+        add(viewdist, 99, -10);
+        add(grid, 126, -10);
         pack();
 
         if (Utils.getprefb("showpclaim", false))
