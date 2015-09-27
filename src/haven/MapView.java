@@ -459,7 +459,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
         this.cc = cc;
         this.plgob = plgob;
         this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
-        toggleradius(Config.showterobjsrad);
         setcanfocus(true);
     }
 
@@ -569,6 +568,20 @@ public class MapView extends PView implements DTarget, Console.Directory {
             }
         }
         rl.add(gob, GLState.compose(extra, xf, gob.olmod, gob.save));
+
+        try {
+            Resource res = gob.getres();
+            if (res != null && radmap.containsKey(res.name)) {
+                Gob.Overlay rovl = radmap.get(res.name);
+                if (Config.showterobjsrad) {
+                    if (!gob.ols.contains(rovl))
+                        gob.ols.add(rovl);
+                } else {
+                    gob.ols.remove(rovl);
+                }
+            }
+        } catch (Loading le) {
+        }
     }
 
     private final Rendered gobs = new Rendered() {
@@ -1428,7 +1441,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
         } else if (ev.isControlDown() && code == KeyEvent.VK_D) {
             Config.showterobjsrad = !Config.showterobjsrad;
             Utils.setprefb("showterobjsrad", Config.showterobjsrad);
-            toggleradius(Config.showterobjsrad);
             return true;
         }
         return (false);
@@ -1442,24 +1454,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
             return Text.render(tooltip);
         }
         return (super.tooltip(c, prev));
-    }
-
-    private void toggleradius(boolean show) {
-        synchronized (glob.oc) {
-            for (Gob gob : glob.oc) {
-                try {
-                    Resource res = gob.getres();
-                    if (res != null && radmap.containsKey(res.name)) {
-                        Gob.Overlay rovl = radmap.get(res.name);
-                        if (show)
-                            gob.ols.add(rovl);
-                        else
-                            gob.ols.remove(rovl);
-                    }
-                } catch (Loading le) {
-                }
-            }
-        }
     }
 
     public class GrabXL implements Grabber {
