@@ -63,12 +63,15 @@ public class Glob {
     private static final long SEC_DAY = 60*60*24;
     private static final Color timeclr = new Color(177, 144, 173);
 
+    static {
+        timersThread = new TimersThread();
+        timersThread.start();
+    }
+
     public Glob(Session sess) {
         this.sess = sess;
         map = new MCache(sess);
         party = new Party(this);
-        timersThread = new TimersThread();
-        timersThread.start();
     }
 
     @Resource.PublishedCode(name = "wtr")
