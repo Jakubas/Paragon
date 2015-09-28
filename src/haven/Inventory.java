@@ -109,7 +109,9 @@ public class Inventory extends Widget implements DTarget {
                 item.item.wdgmsg("drop", Coord.z);
         } else if(msg.equals("transfer-identical")) {
             Window stockpile = gameui().getwnd("Stockpile");
-            if (stockpile == null) {
+            Window smelter = gameui().getwnd("Ore Smelter");
+            Window kiln = gameui().getwnd("Kiln");
+            if (stockpile == null || smelter != null || kiln != null) {
                 for (WItem item : getitems((GItem) args[0]))
                     item.item.wdgmsg("transfer", Coord.z);
             } else {
