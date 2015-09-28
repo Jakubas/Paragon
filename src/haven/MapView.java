@@ -682,8 +682,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
         if (rl.cfg.pref.outline.val)
             rl.add(outlines, null);
         rl.add(map, null);
-    if (showgrid)
-        rl.add(gridol, null);
+        if (showgrid)
+            rl.add(gridol, null);
         rl.add(mapol, null);
         rl.add(gobs, null);
         if (placing != null)
