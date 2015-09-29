@@ -32,6 +32,7 @@ public class TileOutline implements Rendered {
         BGL gl = g.gl;
         FloatBuffer vbuf = getCurrentBuffer();
         vbuf.rewind();
+        gl.glLineWidth(1.0F);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vbuf);
         gl.glDrawArrays(GL2.GL_LINES, 0, area * 4);
