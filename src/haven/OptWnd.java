@@ -704,7 +704,7 @@ public class OptWnd extends Window {
         y = 0;
         map.add(new CheckBox("Show players on minimap") {
             {
-                a = Utils.getprefb("showplayersmmap", false);
+                a = Config.showplayersmmap;
             }
 
             public void set(boolean val) {
@@ -716,13 +716,25 @@ public class OptWnd extends Window {
         y += 35;
         map.add(new CheckBox("Save map tiles to disk") {
             {
-                a = Utils.getprefb("savemmap", true);
+                a = Config.savemmap;
             }
 
             public void set(boolean val) {
                 Utils.setprefb("savemmap", val);
                 Config.savemmap = val;
                 MapGridSave.mgs = null;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        map.add(new CheckBox("MMB to drag & L/RMB to move") {
+            {
+                a = Config.alternmapctrls;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alternmapctrls", val);
+                Config.alternmapctrls = val;
                 a = val;
             }
         }, new Coord(0, y));
