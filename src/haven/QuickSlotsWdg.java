@@ -8,8 +8,8 @@ public class QuickSlotsWdg extends Widget implements DTarget {
     private static final Color bg = new Color(40, 50, 34);
     private static final Coord slotsz = new Coord(44, 44);
     private static final Coord itemsz = new Coord(42, 42);
-    private static final Coord lc = Coord.z;
-    private static final Coord rc = new Coord(50, 0);
+    public static final Coord lc = Coord.z;
+    public static final Coord rc = new Coord(50, 0);
     private UI.Grab dragging;
     private Coord dc;
 

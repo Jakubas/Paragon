@@ -804,6 +804,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (map != null)
                 map.togglegrid();
             return true;
+        }  else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_1) {
+            quickslots.drop(QuickSlotsWdg.lc, Coord.z);
+            quickslots.mousedown(QuickSlotsWdg.lc, 1);
+            return true;
+        } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_2) {
+            quickslots.drop(QuickSlotsWdg.rc, Coord.z);
+            quickslots.mousedown(QuickSlotsWdg.rc, 1);
+            return true;
         }
         return (super.globtype(key, ev));
     }
