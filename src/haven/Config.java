@@ -37,6 +37,7 @@ import java.util.*;
 import static haven.Utils.getprop;
 
 public class Config {
+    public static final boolean iswindows = System.getProperty("os.name").startsWith("Windows");
     public static String authuser = getprop("haven.authuser", null);
     public static String authserv = getprop("haven.authserv", null);
     public static String defserv = getprop("haven.defserv", "127.0.0.1");
