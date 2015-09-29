@@ -86,6 +86,7 @@ public class Config {
     public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
     public static int chatfontsize = Utils.getprefi("chatfontsize", 0);
     public static boolean quickslots = Utils.getprefb("quickslots", false);
+    public static boolean statuswdgvisible = Utils.getprefb("statuswdgvisible", false);
     public static boolean chatalarm = Utils.getprefb("chatalarm", false);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
@@ -104,7 +105,7 @@ public class Config {
     public static Coord chatsz = Utils.getprefc("chatsz", Coord.z);
     public static byte[] authck = null;
     public static String prefspec = "hafen";
-    public static String version;
+    public static String version = "1.16-v1.00";
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;

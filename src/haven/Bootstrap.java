@@ -125,6 +125,8 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                     continue retry;
                 }
             } else {
+                AuthClient.NativeCred nativecreds;
+
                 ui.uimsg(1, "passwd", loginname, savepw);
                 while (true) {
                     Message msg;
@@ -135,6 +137,7 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                     if (msg.id == 1) {
                         if (msg.name == "login") {
                             creds = (AuthClient.Credentials) msg.args[0];
+                            nativecreds = (AuthClient.NativeCred) msg.args[0];
                             savepw = (Boolean) msg.args[1];
                             loginname = creds.name();
                             break;
@@ -147,6 +150,8 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                     try {
                         try {
                             acctname = creds.tryauth(auth);
+                            StatusWdg.username = nativecreds.username;
+                            StatusWdg.pass = nativecreds.pass;
                         } catch (AuthClient.Credentials.AuthException e) {
                             ui.uimsg(1, "error", e.getMessage());
                             continue retry;
