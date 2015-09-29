@@ -156,45 +156,7 @@ public class LocalMiniMap extends Widget {
                             Tex tex = icon != null ? icon.tex() : Config.additonalicons.get(res.name);
                             g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
                         }
-                    } else if (Config.showplayersmmap || Config.autohearth) {
-                        try {
-                            if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
-                                boolean ispartymember = false;
-                                synchronized (ui.sess.glob.party.memb) {
-                                    ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
-                                }
-
-                                Coord pc = p2c(gob.rc).add(delta);
-                                if (!ispartymember) {
-                                    KinInfo kininfo = gob.getattr(KinInfo.class);
-                                    if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
-                                        g.chcolor(Color.BLACK);
-                                        g.fellipse(pc, new Coord(5, 5));
-                                        g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                                        g.fellipse(pc, new Coord(4, 4));
-                                        g.chcolor();
-                                    }
-
-                                    if ((Config.alarmunknown || Config.autohearth) && kininfo == null) {
-                                        if (!sgobs.contains(gob.id)) {
-                                            sgobs.add(gob.id);
-                                            Audio.play(alarmplayersfx, Config.alarmunknownvol);
-                                            if (Config.autohearth)
-                                                gameui().menu.wdgmsg("act", new Object[] { "travel", "hearth" });
-                                        }
-                                    } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
-                                        if (!sgobs.contains(gob.id)) {
-                                            sgobs.add(gob.id);
-                                            Audio.play(alarmplayersfx, Config.alarmredvol);
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
-
-                    if(res != null) {
+                    } else if (res != null) {
                         String basename = res.basename();
                         if (res.name.startsWith("gfx/terobjs/bumlings")) {
                             boolean recognized = false;
@@ -283,6 +245,50 @@ public class LocalMiniMap extends Widget {
                                     g.atextstroked("\u25B2", pc, Color.RED, Color.BLACK);
                                 }
                             }
+                        }
+                    }
+                } catch (Loading l) {
+                }
+            }
+            
+            for (Gob gob : oc) {
+                try {
+                    if (Config.showplayersmmap || Config.autohearth) {
+                        try {
+                            Resource res = gob.getres();
+                            if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
+                                boolean ispartymember = false;
+                                synchronized (ui.sess.glob.party.memb) {
+                                    ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
+                                }
+
+                                Coord pc = p2c(gob.rc).add(delta);
+                                if (!ispartymember) {
+                                    KinInfo kininfo = gob.getattr(KinInfo.class);
+                                    if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
+                                        g.chcolor(Color.BLACK);
+                                        g.fellipse(pc, new Coord(5, 5));
+                                        g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                                        g.fellipse(pc, new Coord(4, 4));
+                                        g.chcolor();
+                                    }
+
+                                    if ((Config.alarmunknown || Config.autohearth) && kininfo == null) {
+                                        if (!sgobs.contains(gob.id)) {
+                                            sgobs.add(gob.id);
+                                            Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                                            if (Config.autohearth)
+                                                gameui().menu.wdgmsg("act", new Object[]{"travel", "hearth"});
+                                        }
+                                    } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+                                        if (!sgobs.contains(gob.id)) {
+                                            sgobs.add(gob.id);
+                                            Audio.play(alarmplayersfx, Config.alarmredvol);
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
                         }
                     }
                 } catch (Loading l) {
