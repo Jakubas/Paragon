@@ -64,7 +64,7 @@ public class StatusWdg extends Widget {
 
         java.util.List<String> command = new ArrayList<>();
         command.add("ping");
-        command.add("-n");
+        command.add(Config.iswindows ? "-n" : "-c");
         command.add("1");
         command.add("game.havenandhearth.com");
 
@@ -80,9 +80,15 @@ public class StatusWdg extends Widget {
                 output += line;
             }
 
-            // Reply from 87.245.198.59: bytes=32 time=2ms TTL=53
-            // Ответ от 213.180.204.3: число байт=32 время=12мс TTL=55
-            Pattern pattern = Pattern.compile(".+?=32 .+?=(\\d+).*? TTL=.+");
+            Pattern pattern;
+            if (Config.iswindows) {
+                // Reply from 87.245.198.59: bytes=32 time=2ms TTL=53
+                // Ответ от 213.180.204.3: число байт=32 время=12мс TTL=55
+                pattern = Pattern.compile(".+?=32 .+?=(\\d+).*? TTL=.+");
+            } else {
+                // 64 bytes from ansgar.seatribe.se (213.239.201.139): icmp_seq=1 ttl=47 time=71.4 ms
+                pattern = Pattern.compile(".+?time=(\\d+\\.?\\d*) ms");
+            }
             Matcher matcher = pattern.matcher(output);
             while (matcher.find()) {
                 ping = matcher.group(1);
