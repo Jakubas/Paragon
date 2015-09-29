@@ -370,6 +370,8 @@ public class LocalMiniMap extends Widget {
         }
         if (cur != null) {
             int ht = (sz.x / 100 + 2) / 2;
+            if (ht == 2)
+                ht++;
             int vt = (sz.y / 100 + 2) / 2;
             if (vt == 1)
                 vt++;
