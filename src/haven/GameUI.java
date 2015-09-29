@@ -70,6 +70,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public MinimapWnd minimapWnd;
     public TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
+    public StatusWdg statuswindow;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -154,6 +155,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (!Config.quickslots)
             quickslots.hide();
         add(quickslots, Utils.getprefc("quickslotsc", new Coord(430, HavenPanel.h-160)));
+
+        statuswindow = new StatusWdg();
+        if (!Config.statuswdgvisible)
+            statuswindow.hide();
+        add(statuswindow, new Coord(HavenPanel.w / 2, 5));
     }
 
     /* Ice cream */
@@ -804,6 +810,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (map != null)
                 map.togglegrid();
             return true;
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
+            boolean curstatus = statuswindow.visible;
+            statuswindow.show(!curstatus);
+            Utils.setprefb("statuswdgvisible", !curstatus);
+            Config.statuswdgvisible = !curstatus;
+            return true;
         }  else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_1) {
             quickslots.drop(QuickSlotsWdg.lc, Coord.z);
             quickslots.mousedown(QuickSlotsWdg.lc, 1);
@@ -860,6 +872,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (map != null)
             map.resize(sz);
         beltwdg.c = new Coord(blpw + 10, sz.y - beltwdg.sz.y - 5);
+        statuswindow.c = new Coord(HavenPanel.w / 2, 5);
         super.resize(sz);
     }
 
