@@ -90,9 +90,9 @@ public class ISBox extends Widget implements DTarget {
                 wdgmsg("click");
             return (true);
         } else if (button == 3) {
-            if (ui.modshift){
-                // we assume inv max size is 7*6.
-                for (int i = 0; i < 7*6; i++)
+            if (ui.modshift) {
+                // we assume inv max size is 7*8.
+                for (int i = 0; i < 7*8; i++)
                     wdgmsg("xfer");
                 return true;
             }
