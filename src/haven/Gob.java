@@ -54,6 +54,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex()
     };
     private PView.Draw2D[] cropstgd = new  PView.Draw2D[4];
+    private Overlay gobpath = null;
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -197,6 +198,24 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public void setattr(GAttrib a) {
         Class<? extends GAttrib> ac = attrclass(a.getClass());
         attr.put(ac, a);
+
+        if (Config.showplayerpaths || Config.showanimalpaths) {
+            try {
+                Resource res = getres();
+                if (res != null && a.getClass() == LinMove.class) {
+                    boolean isplayer = "body".equals(res.basename());
+                    if (isplayer && Config.showplayerpaths || !isplayer && Config.showanimalpaths) {
+                        if (gobpath == null) {
+                            gobpath = new Overlay(new GobPath(this));
+                            ols.add(gobpath);
+                        }
+                        ((GobPath) gobpath.spr).lm = (LinMove) a;
+                    }
+                }
+
+            } catch (Exception e) { // fail silently
+            }
+        }
     }
 
     public <C extends GAttrib> C getattr(Class<C> c) {
@@ -208,6 +227,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     public void delattr(Class<? extends GAttrib> c) {
         attr.remove(attrclass(c));
+        if (attrclass(c) == Moving.class) {
+            ols.remove(gobpath);
+            gobpath = null;
+        }
     }
 
     public void draw(GOut g) {
@@ -347,4 +370,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     }
 
     public final GobLocation loc = new GobLocation();
+
+    public boolean isplayer() {
+        return MapView.plgob == id;
+    }
 }

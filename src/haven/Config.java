@@ -101,6 +101,8 @@ public class Config {
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
     public static boolean autohearth = Utils.getprefb("autohearth", false);
     public static boolean servertime = Utils.getprefb("servertime", false);
+    public static boolean showplayerpaths = Utils.getprefb("showplayerpaths", false);
+    public static boolean showanimalpaths = Utils.getprefb("showanimalpaths", false);
     public static boolean autopick = Utils.getprefb("autopick", false);
     public static Coord chatsz = Utils.getprefc("chatsz", Coord.z);
     public static byte[] authck = null;

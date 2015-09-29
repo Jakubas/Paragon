@@ -38,7 +38,7 @@ import java.lang.reflect.*;
 import javax.media.opengl.*;
 
 public class MapView extends PView implements DTarget, Console.Directory {
-    public long plgob = -1;
+    public static long plgob = -1;
     public Coord cc;
     public final Glob glob;
     private int view = 2;
