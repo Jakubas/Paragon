@@ -21,9 +21,9 @@ public class StatusWdg extends Widget {
     private static ThreadGroup tg = new ThreadGroup("StatusUpdaterThreadGroup");
     private String statusupdaterthreadname = "StatusUpdater";
 
-    private String hearthlingsplaying = "?";
-    private String pingtime = "?";
-    private String accountstatus = "?";
+    private Tex hearthlingsplaying = Text.render("Players: ?", Color.WHITE).tex();
+    private Tex pingtime = Text.render("Ping: ?", Color.WHITE).tex();
+    private Tex accountstatus = Text.render("Account status: ?", Color.WHITE).tex();
 
     private static SSLSocketFactory sslfactory;
 
@@ -93,7 +93,7 @@ public class StatusWdg extends Widget {
             hearthlingscount = "?";
 
         synchronized (StatusWdg.class) {
-            hearthlingsplaying = hearthlingscount;
+            hearthlingsplaying = Text.render(String.format("Players: %s", hearthlingscount), Color.WHITE).tex();
         }
     }
 
@@ -140,7 +140,7 @@ public class StatusWdg extends Widget {
         }
 
         synchronized (this) {
-            pingtime = ping;
+            pingtime = Text.render(String.format("Ping: %s ms", ping), Color.WHITE).tex();
         }
     }
 
@@ -205,7 +205,7 @@ public class StatusWdg extends Widget {
             status = "?";
 
         synchronized (StatusWdg.class) {
-            accountstatus = status;
+            accountstatus = Text.render(String.format("Account status: %s", status), Color.WHITE).tex();
         }
     }
 
@@ -294,16 +294,10 @@ public class StatusWdg extends Widget {
     @Override
     public void draw(GOut g) {
         synchronized (StatusWdg.class) {
-            java.util.List<Tex> texturesToDisplay = new ArrayList<>();
-
-            Text herthlingsplayingtext = Text.render(String.format("Players: %s", this.hearthlingsplaying), Color.WHITE);
-            texturesToDisplay.add(herthlingsplayingtext.tex());
-
-            Text pingtimetext = Text.render(String.format("Ping: %s ms", this.pingtime), Color.WHITE);
-            texturesToDisplay.add(pingtimetext.tex());
-
-            Text accountstatustext = Text.render(String.format("Account status: %s", this.accountstatus), Color.WHITE);
-            texturesToDisplay.add(accountstatustext.tex());
+            java.util.List<Tex> texturesToDisplay = new ArrayList<>(3);
+            texturesToDisplay.add(this.hearthlingsplaying);
+            texturesToDisplay.add(this.pingtime);
+            texturesToDisplay.add(this.accountstatus);
 
             int requiredwidth = 0;
             int requiredheight = 0;
