@@ -273,6 +273,11 @@ public class StatusWdg extends Widget {
             while ((line = br.readLine()) != null) {
                 urlcontent += line;
             }
+        } catch (SocketException se) {
+            // don't print socket exceptions when network is unreachable to prevent console spamming on bad connections
+            if (!se.getMessage().equals("Network is unreachable"))
+                se.printStackTrace();
+            return "";
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
             return "";
