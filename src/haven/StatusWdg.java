@@ -1,8 +1,12 @@
 package haven;
 
+import javax.net.ssl.*;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,6 +24,40 @@ public class StatusWdg extends Widget {
     private String hearthlingsplaying = "?";
     private String pingtime = "?";
     private String accountstatus = "?";
+
+    private static SSLSocketFactory sslfactory;
+
+    static {
+        InputStream crt = null;
+        try {
+            KeyStore keystore  = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(null);
+            crt = Resource.class.getResourceAsStream("websrv.crt");
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            keystore.setCertificateEntry("havenandhearth", cf.generateCertificate(crt));
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keystore);
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(null, tmf.getTrustManagers(), null);
+            sslfactory = ctx.getSocketFactory();
+        } catch (CertificateException ce) {
+            ce.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (NoSuchAlgorithmException nsae) {
+            nsae.printStackTrace();
+        } catch (KeyStoreException kse) {
+            kse.printStackTrace();
+        } catch (KeyManagementException kme) {
+            kme.printStackTrace();
+        } finally {
+            try {
+                if (crt != null)
+                    crt.close();
+            } catch (IOException ioe) {
+            }
+        }
+    }
 
     public StatusWdg() {
         synchronized (StatusWdg.class) {
@@ -47,7 +85,7 @@ public class StatusWdg extends Widget {
     private void updatehearthlingscount() {
         String hearthlingscount = "?";
 
-        String mainpagecontent = geturlcontent("http://www.havenandhearth.com/portal/");
+        String mainpagecontent = geturlcontent("https://www.havenandhearth.com/portal/");
         if (!mainpagecontent.isEmpty())
             hearthlingscount = getstringbetween(mainpagecontent, "There are", "hearthlings playing").trim();
 
@@ -107,9 +145,12 @@ public class StatusWdg extends Widget {
     }
 
     private boolean mklogin() {
+        if (sslfactory == null)
+            return false;
         try {
-            URL url = new URL("http://www.havenandhearth.com/portal/sec/login");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            URL url = new URL("https://www.havenandhearth.com/portal/sec/login");
+            HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
+            conn.setSSLSocketFactory(sslfactory);
 
             Map<String,Object> params = new LinkedHashMap<>();
             params.put("username", username);
@@ -135,7 +176,7 @@ public class StatusWdg extends Widget {
             wr.close();
 
             int responsecode = conn.getResponseCode();
-            if (responsecode != HttpURLConnection.HTTP_OK)
+            if (responsecode != HttpsURLConnection.HTTP_OK)
                 return false;
         } catch (IOException ex) {
             return false;
@@ -149,7 +190,7 @@ public class StatusWdg extends Widget {
 
         int retriescount = 0;
         while (retriescount < 2) {
-            String profilepagecontent = geturlcontent("http://www.havenandhearth.com/portal/profile");
+            String profilepagecontent = geturlcontent("https://www.havenandhearth.com/portal/profile");
             status = removehtmltags(getstringbetween(profilepagecontent, "Account status:", "(All times")).trim();
             if (status.isEmpty()) {
                 mklogin();
@@ -214,6 +255,8 @@ public class StatusWdg extends Widget {
     }
 
     private String geturlcontent(String url) {
+        if (sslfactory == null)
+            return "";
         URL url_;
         InputStream is = null;
         BufferedReader br;
@@ -221,7 +264,9 @@ public class StatusWdg extends Widget {
 
         try {
             url_ = new URL(url);
-            is = url_.openStream();
+            HttpsURLConnection conn = (HttpsURLConnection)url_.openConnection();
+            conn.setSSLSocketFactory(sslfactory);
+            is = conn.getInputStream();
             br = new BufferedReader(new InputStreamReader(is));
 
             String line;
