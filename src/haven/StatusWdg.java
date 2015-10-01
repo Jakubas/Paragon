@@ -78,16 +78,12 @@ public class StatusWdg extends Widget {
         }
     }
 
-    private String removehtmltags(String input) {
-        return input.replaceAll("\\<[^>]*>", "");
-    }
-
     private void updatehearthlingscount() {
         String hearthlingscount = "?";
 
         String mainpagecontent = geturlcontent("https://www.havenandhearth.com/portal/");
         if (!mainpagecontent.isEmpty())
-            hearthlingscount = getstringbetween(mainpagecontent, "There are", "hearthlings playing").trim();
+            hearthlingscount = StringExtensions.getstringbetween(mainpagecontent, "There are", "hearthlings playing").trim();
 
         if (hearthlingscount.isEmpty())
             hearthlingscount = "?";
@@ -191,7 +187,7 @@ public class StatusWdg extends Widget {
         int retriescount = 0;
         while (retriescount < 2) {
             String profilepagecontent = geturlcontent("https://www.havenandhearth.com/portal/profile");
-            status = removehtmltags(getstringbetween(profilepagecontent, "Account status:", "(All times")).trim();
+            status = StringExtensions.removehtmltags(StringExtensions.getstringbetween(profilepagecontent, "Account status:", "(All times")).trim();
             if (status.isEmpty()) {
                 mklogin();
                 ++retriescount;
@@ -240,18 +236,6 @@ public class StatusWdg extends Widget {
             }
         }, this.statusupdaterthreadname);
         statusupdaterthread.start();
-    }
-
-    private static String getstringbetween(String input, String leftdelimiter, String rightdelimiter) {
-        int leftdelimiterposition = input.indexOf(leftdelimiter);
-        if (leftdelimiterposition == -1)
-            return "";
-
-        int rightdelimiterposition = input.indexOf(rightdelimiter);
-        if (rightdelimiterposition == -1)
-            return "";
-
-        return input.substring(leftdelimiterposition + leftdelimiter.length(), rightdelimiterposition);
     }
 
     private String geturlcontent(String url) {

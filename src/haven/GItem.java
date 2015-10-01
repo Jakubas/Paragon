@@ -27,6 +27,8 @@
 package haven;
 
 import java.awt.Color;
+import java.io.*;
+import java.net.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -43,6 +45,9 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public static final Color vitalityclr = new Color(157, 201, 72);
     private Quality quality;
     public Tex metertex;
+    private static Map<String, Double> studytimes = new HashMap<>();
+    private double studytime = 0.0;
+    public Tex timelefttex;
 
     public static class Quality {
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
@@ -120,10 +125,98 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public GItem(Indir<Resource> res, Message sdt) {
         this.res = res;
         this.sdt = new MessageBuf(sdt);
+
+        new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    try {
+                        Curiosity ci = ItemInfo.find(Curiosity.class, info());
+                        if (ci == null) {
+                            return;
+                        }
+
+                        break;
+                    } catch (Exception ex) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie) {
+                            return;
+                        }
+                    }
+                }
+
+                double st = getstudytime();
+                synchronized (this) {
+                    studytime = st;
+                }
+
+                updatetimelefttex();
+            }
+        }).start();
     }
 
     public GItem(Indir<Resource> res) {
         this(res, Message.nil);
+    }
+
+    private double getstudytime() {
+        String name = ItemInfo.find(ItemInfo.Name.class, info()).str.text;
+        name = name.replace(' ', '_');
+
+        synchronized (GItem.class) {
+            if (studytimes.containsKey(name))
+                return studytimes.get(name);
+        }
+
+        StringBuilder wikipagecontent = new StringBuilder();
+        InputStream is = null;
+        try {
+            URL url = new URL(String.format("http://ringofbrodgar.com/wiki/%s", name));
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            is = conn.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                wikipagecontent.append(line);
+            }
+        } catch (IOException ioe) {
+            return 0;
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException ioe) {
+                // NOP
+            }
+        }
+
+        // <b>Study Time</b></td><td colspan="2">2</td></tr>
+        String st = StringExtensions.getstringbetween(wikipagecontent.toString(), "<b>Study Time</b>", "</tr>");
+        st = StringExtensions.removehtmltags(st).trim();
+
+        double studytime = st.isEmpty() ? 0.0 : Double.valueOf(st);
+        if (studytime != 0.0) {
+            synchronized (GItem.class) {
+                studytimes.put(name, studytime);
+            }
+        }
+
+        return studytime;
+    }
+
+    private void updatetimelefttex() {
+        synchronized (this) {
+            if (studytime == 0.0) {
+                return;
+            }
+
+            double timeneeded = studytime * 60;
+            int timeleft = (int) timeneeded * (100 - meter) / 100;
+            int hoursleft = timeleft / 60;
+            int minutesleft = timeleft - hoursleft * 60;
+            timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
+        }
     }
 
     private Random rnd = null;
@@ -190,6 +283,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         } else if (name == "meter") {
             meter = (Integer) args[0];
             metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK).tex();
+            updatetimelefttex();
         }
     }
 

@@ -235,6 +235,9 @@ public class WItem extends Widget implements DTarget {
 
             if (item.meter > 0 && Config.itempercentage && item.metertex != null)
                 g.image(item.metertex, Coord.z);
+
+            if (Config.showstudylefttime && item.timelefttex != null)
+                g.image(item.timelefttex, new Coord(0, sz.y - item.timelefttex.sz().y));
         } else {
             g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
         }
