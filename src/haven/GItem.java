@@ -126,6 +126,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         this.res = res;
         this.sdt = new MessageBuf(sdt);
 
+        startstudytimeupdaterthread();
+    }
+
+    public GItem(Indir<Resource> res) {
+        this(res, Message.nil);
+    }
+
+    private void startstudytimeupdaterthread() {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
@@ -155,17 +163,15 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }).start();
     }
 
-    public GItem(Indir<Resource> res) {
-        this(res, Message.nil);
-    }
-
     private double getstudytime() {
         String name = ItemInfo.find(ItemInfo.Name.class, info()).str.text;
         name = name.replace(' ', '_');
 
         synchronized (GItem.class) {
-            if (studytimes.containsKey(name))
-                return studytimes.get(name);
+            double studytime = studytimes.getOrDefault(name, 0.0);
+            if (studytime != 0.0) {
+                return studytime;
+            }
         }
 
         StringBuilder wikipagecontent = new StringBuilder();
@@ -181,7 +187,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 wikipagecontent.append(line);
             }
         } catch (IOException ioe) {
-            return 0;
+            return 0.0;
         } finally {
             try {
                 if (is != null)
@@ -208,6 +214,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private void updatetimelefttex() {
         synchronized (this) {
             if (studytime == 0.0) {
+                startstudytimeupdaterthread();
                 return;
             }
 
@@ -215,6 +222,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             int timeleft = (int) timeneeded * (100 - meter) / 100;
             int hoursleft = timeleft / 60;
             int minutesleft = timeleft - hoursleft * 60;
+
             timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
         }
     }
