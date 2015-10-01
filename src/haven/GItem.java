@@ -214,7 +214,6 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private void updatetimelefttex() {
         synchronized (this) {
             if (studytime == 0.0) {
-                startstudytimeupdaterthread();
                 return;
             }
 

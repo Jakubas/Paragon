@@ -233,7 +233,7 @@ public class WItem extends Widget implements DTarget {
                 }
             }
 
-            if (Config.showstudylefttime && quality != null && quality.curio) {
+            if (Config.showstudylefttime && quality != null && quality.curio && item.timelefttex != null) {
                 g.image(item.timelefttex, Coord.z);
             } else if (item.meter > 0 && Config.itempercentage && item.metertex != null) {
                 g.image(item.metertex, Coord.z);
