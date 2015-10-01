@@ -138,6 +138,16 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             public void run() {
                 while (true) {
                     try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ie) {
+                        return;
+                    }
+
+                    try {
+                        if (rawinfo == null) {
+                            continue;
+                        }
+
                         Curiosity ci = ItemInfo.find(Curiosity.class, info());
                         if (ci == null) {
                             return;
@@ -145,11 +155,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
                         break;
                     } catch (Exception ex) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ie) {
-                            return;
-                        }
+                        // NOP
                     }
                 }
 
