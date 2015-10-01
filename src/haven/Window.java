@@ -93,7 +93,8 @@ public class Window extends Widget implements DTarget {
     private Coord doff;
     public static final Set<String> persistentwnds = new HashSet<String>(
             Arrays.asList("Timers", "Inventory", "Equipment", "Crafting", "Character Sheet", "Kith & Kin", "Crate",
-                    "Cupboard", "Barrel", "Table", "Cauldron", "Stockpile", "Tub", "Ore Smelter", "Land survey"));
+                    "Cupboard", "Barrel", "Table", "Cauldron", "Stockpile", "Tub", "Ore Smelter", "Land survey",
+                    "Quiver"));
 
     @RName("wnd")
     public static class $_ implements Factory {
