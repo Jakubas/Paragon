@@ -1,3 +1,27 @@
+Version 1.17.0
+    New:
+        * Show overall armor class in the equipment window.
+        * Simulate left mouse click on quick slots with alt+1/2.
+        * Option to automatically select Pick action.
+        * Player and animal paths.
+        * Status widget.
+        * Option for alternative controls for minimap using MMB for dragging and L/RMB for moving.
+
+    Fixed:
+        * Gob radius not showing when loading new area. 
+        * Mine support radius expanding below ground level.
+        * Mass transfer from inventory to kiln/smelter instead of stockpile if both windows are open.
+        * Timers re-initializing multiple times during re-logging.
+        * Minimap not rendering under certain conditions when the window is set to minimal width.
+        * Potential hang when entering or leaving houses/cellars.
+
+    Misc:
+        * Slightly reduced the duration of player alarm sound. 
+        * Optimization related to quick slots rendering.
+        * Render player dots on top of all other icons.
+        * Save Quiver window position.
+
+
 Version 1.16.0
     New:
         * Horizontally resizable chat.
