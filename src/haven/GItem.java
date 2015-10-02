@@ -45,9 +45,9 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public static final Color vitalityclr = new Color(157, 201, 72);
     private Quality quality;
     public Tex metertex;
-    private static Map<String, Double> studytimes = new HashMap<>();
     private double studytime = 0.0;
     public Tex timelefttex;
+    private String name = "";
 
     public static class Quality {
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
@@ -125,102 +125,36 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public GItem(Indir<Resource> res, Message sdt) {
         this.res = res;
         this.sdt = new MessageBuf(sdt);
-
-        startstudytimeupdaterthread();
     }
 
     public GItem(Indir<Resource> res) {
         this(res, Message.nil);
     }
 
-    private void startstudytimeupdaterthread() {
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ie) {
-                        return;
-                    }
-
-                    try {
-                        if (rawinfo == null) {
-                            continue;
-                        }
-
-                        Curiosity ci = ItemInfo.find(Curiosity.class, info());
-                        if (ci == null) {
-                            return;
-                        }
-
-                        break;
-                    } catch (Exception ex) {
-                        // NOP
-                    }
-                }
-
-                double st = getstudytime();
-                synchronized (this) {
-                    studytime = st;
-                }
-
-                updatetimelefttex();
-            }
-        }).start();
-    }
-
-    private double getstudytime() {
-        String name = ItemInfo.find(ItemInfo.Name.class, info()).str.text;
-        name = name.replace(' ', '_');
-
-        synchronized (GItem.class) {
-            double studytime = studytimes.getOrDefault(name, 0.0);
-            if (studytime != 0.0) {
-                return studytime;
-            }
+    public String getname() {
+        if (rawinfo == null) {
+            return "";
         }
 
-        StringBuilder wikipagecontent = new StringBuilder();
-        InputStream is = null;
         try {
-            URL url = new URL(String.format("http://ringofbrodgar.com/wiki/%s", name));
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            is = conn.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                wikipagecontent.append(line);
-            }
-        } catch (IOException ioe) {
-            return 0.0;
-        } finally {
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException ioe) {
-                // NOP
-            }
+            return ItemInfo.find(ItemInfo.Name.class, info()).str.text;
+        } catch (Exception ex) {
+            return "";
         }
-
-        // <b>Study Time</b></td><td colspan="2">2</td></tr>
-        String st = StringExtensions.getstringbetween(wikipagecontent.toString(), "<b>Study Time</b>", "</tr>");
-        st = StringExtensions.removehtmltags(st).trim();
-
-        double studytime = st.isEmpty() ? 0.0 : Double.valueOf(st);
-        if (studytime != 0.0) {
-            synchronized (GItem.class) {
-                studytimes.put(name, studytime);
-            }
-        }
-
-        return studytime;
     }
 
-    private void updatetimelefttex() {
+    public boolean updatetimelefttex() {
         synchronized (this) {
+            if (name.isEmpty()) {
+                if ((name = getname()).isEmpty()) {
+                    return false;
+                }
+            }
+
             if (studytime == 0.0) {
-                return;
+                if ((studytime = StudyTimes.getstudytime(getname())) == 0.0) {
+                    return false;
+                }
             }
 
             double timeneeded = studytime * 60;
@@ -230,6 +164,8 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
             timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
         }
+
+        return true;
     }
 
     private Random rnd = null;
@@ -296,7 +232,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         } else if (name == "meter") {
             meter = (Integer) args[0];
             metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK).tex();
-            updatetimelefttex();
+            timelefttex = null;
         }
     }
 
