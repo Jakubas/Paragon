@@ -1,7 +1,6 @@
 package haven;
 
 import java.io.*;
-import java.util.*;
 
 import org.jsoup.*;
 import org.jsoup.nodes.*;
