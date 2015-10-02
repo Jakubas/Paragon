@@ -219,18 +219,19 @@ public class StatusWdg extends Widget {
                     return;
 
                 while (true) {
-                    updatehearthlingscount();
-                    if (Thread.interrupted())
-                        return;
+                    if (visible) {
+                        updatehearthlingscount();
+                        if (Thread.interrupted())
+                            return;
 
-                    updatepingtime();
-                    if (Thread.interrupted())
-                        return;
+                        updatepingtime();
+                        if (Thread.interrupted())
+                            return;
 
-                    updateaccountstatus();
-                    if (Thread.interrupted())
-                        return;
-
+                        updateaccountstatus();
+                        if (Thread.interrupted())
+                            return;
+                    }
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {
