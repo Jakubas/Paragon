@@ -27,8 +27,6 @@
 package haven;
 
 import java.awt.Color;
-import java.io.*;
-import java.net.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
