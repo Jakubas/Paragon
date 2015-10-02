@@ -227,6 +227,18 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
+                y += 35;
+                add(new CheckBox("Simple foragables (req. logout)") {
+                    {
+                        a = Config.simpleforage;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("simpleforage", val);
+                        Config.simpleforage = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
 
                 add(new Button(200, "Reset to defaults") {
                     public void click() {
