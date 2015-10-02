@@ -816,11 +816,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Utils.setprefb("statuswdgvisible", !curstatus);
             Config.statuswdgvisible = !curstatus;
             return true;
-        }  else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_1) {
+        }  else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             quickslots.drop(QuickSlotsWdg.lc, Coord.z);
             quickslots.mousedown(QuickSlotsWdg.lc, 1);
             return true;
-        } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_2) {
+        } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_X) {
             quickslots.drop(QuickSlotsWdg.rc, Coord.z);
             quickslots.mousedown(QuickSlotsWdg.rc, 1);
             return true;
