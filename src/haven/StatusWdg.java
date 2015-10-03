@@ -29,6 +29,9 @@ public class StatusWdg extends Widget {
     private Tex pingtime = pingtimedef;
     private Tex accountstatus = accountstatusdef;
 
+    private static final int RETRY_COUNT = 6;
+    private int retries;
+
     private static SSLSocketFactory sslfactory;
 
     static {
@@ -64,6 +67,7 @@ public class StatusWdg extends Widget {
     }
 
     public StatusWdg() {
+        retries = 0;
         synchronized (StatusWdg.class) {
             Thread[] activethreads = new Thread[tg.activeCount()];
             int count = tg.enumerate(activethreads);
@@ -151,6 +155,9 @@ public class StatusWdg extends Widget {
     private boolean mklogin() {
         if (sslfactory == null || username == null || pass == null || "".equals(username))
             return false;
+        if (retries++ > RETRY_COUNT)
+            return false;
+
         try {
             URL url = new URL("https://www.havenandhearth.com/portal/sec/login");
             HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
