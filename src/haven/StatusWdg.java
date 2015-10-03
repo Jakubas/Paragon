@@ -145,7 +145,7 @@ public class StatusWdg extends Widget {
     }
 
     private boolean mklogin() {
-        if (sslfactory == null)
+        if (sslfactory == null || username == null || pass == null || "".equals(username))
             return false;
         try {
             URL url = new URL("https://www.havenandhearth.com/portal/sec/login");
@@ -214,9 +214,11 @@ public class StatusWdg extends Widget {
             public void run() {
                 CookieHandler.setDefault(new CookieManager());
 
-                mklogin();
-                if (Thread.interrupted())
-                    return;
+                if (visible) {
+                    mklogin();
+                    if (Thread.interrupted())
+                        return;
+                }
 
                 while (true) {
                     if (visible) {
