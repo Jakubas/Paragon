@@ -21,9 +21,13 @@ public class StatusWdg extends Widget {
     private static ThreadGroup tg = new ThreadGroup("StatusUpdaterThreadGroup");
     private String statusupdaterthreadname = "StatusUpdater";
 
-    private Tex hearthlingsplaying = Text.render("Players: ?", Color.WHITE).tex();
-    private Tex pingtime = Text.render("Ping: ?", Color.WHITE).tex();
-    private Tex accountstatus = Text.render("Account status: ?", Color.WHITE).tex();
+    private static final Tex hearthlingsplayingdef = Text.render("Players: ?", Color.WHITE).tex();
+    private static final Tex pingtimedef = Text.render("Ping: ?", Color.WHITE).tex();
+    private static final Tex accountstatusdef = Text.render("Account status: ?", Color.WHITE).tex();
+
+    private Tex hearthlingsplaying = hearthlingsplayingdef;
+    private Tex pingtime = pingtimedef;
+    private Tex accountstatus = accountstatusdef;
 
     private static SSLSocketFactory sslfactory;
 
@@ -321,5 +325,13 @@ public class StatusWdg extends Widget {
             requiredheight = y;
             this.sz = new Coord(requiredwidth, requiredheight);
         }
+    }
+
+    @Override
+    public void hide() {
+        hearthlingsplaying = hearthlingsplayingdef;
+        pingtime = pingtimedef;
+        accountstatus = accountstatusdef;
+        super.hide();
     }
 }
