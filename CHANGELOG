@@ -1,3 +1,9 @@
+Version 1.17.2
+    Fixed:
+        * Alt+1/2 hotkeys for quickslots changed to Alt+Z/X.
+        * Issue with status widget attempting to connect with null username.
+
+
 Version 1.17.1
     Fixed:
         * Fixed crash in equipment window drawing routine.
