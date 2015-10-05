@@ -207,7 +207,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 g.interrupt();
-                System.exit(0);
             }
 
             public void windowActivated(WindowEvent e) {
