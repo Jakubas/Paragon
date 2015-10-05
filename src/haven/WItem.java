@@ -214,8 +214,8 @@ public class WItem extends Widget implements DTarget {
                 }
             }
 
+            GItem.Quality quality = item.quality();
             if (Config.showquality) {
-                GItem.Quality quality = item.quality();
                 if (quality != null && quality.max != 0) {
                     if (Config.showqualitymode == 2) {
                         g.image(quality.etex, new Coord(0, sz.y - 32));
@@ -233,8 +233,21 @@ public class WItem extends Widget implements DTarget {
                 }
             }
 
-            if (item.meter > 0 && Config.itempercentage && item.metertex != null)
+            boolean studylefttimedisplayed = false;
+            if (Config.showstudylefttime && quality != null && quality.curio && item.meter > 0) {
+                if (item.timelefttex == null) {
+                    item.updatetimelefttex();
+                }
+
+                if (item.timelefttex != null) {
+                    g.image(item.timelefttex, Coord.z);
+                    studylefttimedisplayed = true;
+                }
+            }
+
+            if (!studylefttimedisplayed && item.meter > 0 && Config.itempercentage && item.metertex != null) {
                 g.image(item.metertex, Coord.z);
+            }
         } else {
             g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
         }
