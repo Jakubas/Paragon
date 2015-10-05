@@ -287,6 +287,7 @@ public class WItem extends Widget implements DTarget {
     }
 
     public void destroy() {
+        super.destroy();
         Curiosity ci = null;
         try {
             ci = ItemInfo.find(Curiosity.class, item.info());
@@ -294,13 +295,35 @@ public class WItem extends Widget implements DTarget {
                 Resource.Tooltip tt = item.resource().layer(Resource.Tooltip.class);
                 if (tt != null)
                     gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
+
+                if (Config.autostudy) {
+                    Window invwnd = gameui().getwnd("Inventory");
+                    Resource res = item.resource();
+                    if (res != null) {
+                        for (Widget invwdg = invwnd.lchild; invwdg != null; invwdg = invwdg.prev) {
+                            if (invwdg instanceof Inventory) {
+                                Inventory inv = (Inventory) invwdg;
+                                for (Widget witm = inv.lchild; witm != null; witm = witm.prev) {
+                                    if (witm instanceof WItem) {
+                                        GItem ngitm = ((WItem) witm).item;
+                                        Resource nres = ngitm.resource();
+                                        if (nres != null && nres.name.equals(res.name)) {
+                                            ngitm.wdgmsg("take", witm.c);
+                                            ((Inventory) parent).drop(Coord.z, c);
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         } catch (Loading l) {
         }
 
         if (Config.studyalarm && ci != null && item.meter >= 99)
             Audio.play(studyalarmsfx, Config.studyalarmvol);
-
-        super.destroy();
     }
 }
