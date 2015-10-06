@@ -247,10 +247,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         final GobHealth hlt = getattr(GobHealth.class);
         if (hlt != null) {
             rl.prepc(hlt.getfx());
-            if (Config.showgobhp) {
+            if (Config.showgobhp && hlt.hp < 4) {
                 PView.Draw2D d = new PView.Draw2D() {
                     public void draw2d(GOut g) {
-                        if (sc != null && hlt.hp < 4)
+                        if (sc != null)
                             g.image(gobhp[hlt.hp - 1], sc.sub(15, 10));
                     }
                 };
