@@ -239,14 +239,6 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
-
-                add(new Button(200, "Reset to defaults") {
-                    public void click() {
-                        cf.cfg.resetprefs();
-                        curcf.destroy();
-                        curcf = null;
-                    }
-                }, new Coord(270, 320));
                 pack();
             }
         }
