@@ -1,3 +1,23 @@
+Version 1.18.0
+    New:
+        * Option to show remaining study time for curios.
+        * Shift+Ctrl+LMB on an item in inventory/container opens relevant wiki page.
+        * Auto study.
+        * Icons for dead rabbits and chicken.
+        * Additional quality option: lowest of E/S/V.
+        * Tree growth stages.
+
+    Fixed:
+        * Do not allow dropping over existing curios when study is locked.
+        * Fixed map tiles not rendering under certain conditions when minimap window was maximized.
+        * Don't save map tiles for houses and cellars.
+        * When mass transferring to a full stockpile last item would hang on the cursor.
+
+    Misc:
+        * Command line argument '-c' for forcing hardware cursor.
+        * Value set with :bghz is now remembered across restarts.
+
+
 Version 1.17.2
     Fixed:
         * Alt+1/2 hotkeys for quickslots changed to Alt+Z/X.
