@@ -417,22 +417,39 @@ public class MapView extends PView implements DTarget, Console.Directory {
         }
 
         public boolean keydown(KeyEvent ev) {
-            if (ev.getKeyCode() == KeyEvent.VK_LEFT) {
-                tangl = (float) (Math.PI * 0.5 * (Math.floor((tangl / (Math.PI * 0.5)) - 0.51) + 0.5));
-                return (true);
-            } else if (ev.getKeyCode() == KeyEvent.VK_RIGHT) {
-                tangl = (float) (Math.PI * 0.5 * (Math.floor((tangl / (Math.PI * 0.5)) + 0.51) + 0.5));
-                return (true);
-            } else if (ev.getKeyCode() == KeyEvent.VK_UP) {
-                chfield(tfield - 50);
-                return (true);
-            } else if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
-                chfield(tfield + 50);
-                return (true);
-            } else if (ev.getKeyCode() == KeyEvent.VK_HOME) {
-                tangl = angl + (float) Utils.cangle(-(float) Math.PI * 0.25f - angl);
-                chfield((float) (100 * Math.sqrt(2)));
+            if (ui.modctrl) {
+                if (ev.getKeyCode() == KeyEvent.VK_LEFT) {
+                    tangl = (float) (2 * Math.PI);
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    tangl = (float) Math.PI;
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_UP) {
+                    tangl = (float) (3 * Math.PI / 2);
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
+                    tangl = (float) (Math.PI / 2);
+                    return (true);
+                }
+            } else {
+                if (ev.getKeyCode() == KeyEvent.VK_LEFT) {
+                    tangl = (float) (Math.PI * 0.5 * (Math.floor((tangl / (Math.PI * 0.5)) - 0.51) + 0.5));
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    tangl = (float) (Math.PI * 0.5 * (Math.floor((tangl / (Math.PI * 0.5)) + 0.51) + 0.5));
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_UP) {
+                    chfield(tfield - 50);
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
+                    chfield(tfield + 50);
+                    return (true);
+                } else if (ev.getKeyCode() == KeyEvent.VK_HOME) {
+                    tangl = angl + (float) Utils.cangle(-(float) Math.PI * 0.25f - angl);
+                    chfield((float) (100 * Math.sqrt(2)));
+                }
             }
+
             return (false);
         }
     }
