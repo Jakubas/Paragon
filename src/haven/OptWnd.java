@@ -239,6 +239,18 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
+                y += 35;
+                add(new CheckBox("Show FPS") {
+                    {
+                        a = Config.showfps;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("showfps", val);
+                        Config.showfps = val;
+                        a = val;
+                    }
+                }, new Coord(0, y));
                 pack();
             }
         }
