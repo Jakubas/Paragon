@@ -242,7 +242,7 @@ public class OptWnd extends Window {
                 y += 35;
                 add(new CheckBox("Hide crops") {
                     {
-                        a = Config.simpleforage;
+                        a = Config.hidecrops;
                     }
 
                     public void set(boolean val) {
