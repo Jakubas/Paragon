@@ -477,13 +477,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             };
             invwnd.add(maininv = (Inventory) child, Coord.z);
             invwnd.pack();
-            invwnd.hide();
+            invwnd.show(Config.showinvonlogin);
             add(invwnd, new Coord(100, 100));
         } else if (place == "equ") {
             equwnd = new Hidewnd(Coord.z, "Equipment");
             equwnd.add(child, Coord.z);
             equwnd.pack();
-            equwnd.hide();
+            equwnd.show(Config.showequiponlogin);
             add(equwnd, new Coord(400, 10));
         } else if (place == "hand") {
             GItem g = add((GItem) child);
@@ -492,7 +492,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             updhand();
         } else if (place == "chr") {
             chrwdg = add((CharWnd) child, new Coord(300, 50));
-            chrwdg.hide();
+            chrwdg.show(Config.showchrsheetonlogin);
         } else if (place == "craft") {
             final Widget mkwdg = child;
             makewnd = new Window(Coord.z, "Crafting", true) {
