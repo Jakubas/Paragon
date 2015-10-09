@@ -1,3 +1,14 @@
+Version 1.18.1
+    New:
+        * Option to completely hide crops.
+        * Ctrl+Up/Right/Down/Left snaps the ortho camera to N, E, S, W respectively.
+        * Option to automatically select the 'Harvest' action.
+
+    Fixed:
+        * Average quality calculation.
+        * Growth stages for bushes not showing.
+
+
 Version 1.18.0
     New:
         * Option to show remaining study time for curios.
