@@ -73,9 +73,6 @@ public class Speedget extends Widget {
             runonloginset = true;
         }
 
-        if (Config.alwaysrun && max > 1 && cur != 2)
-            set(2);
-
         int x = 0;
         for (int i = 0; i < 4; i++) {
             Tex t;
