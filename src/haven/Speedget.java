@@ -33,6 +33,7 @@ public class Speedget extends Widget {
     public static final String tips[];
     public static final Coord tsz;
     public int cur, max;
+    public boolean runonloginset;
 
     static {
         String[] names = {"crawl", "walk", "run", "sprint"};
@@ -67,6 +68,14 @@ public class Speedget extends Widget {
     }
 
     public void draw(GOut g) {
+        if (Config.runonlogin && !runonloginset && max > 1) {
+            set(2);
+            runonloginset = true;
+        }
+
+        if (Config.alwaysrun && max > 1 && cur != 2)
+            set(2);
+
         int x = 0;
         for (int i = 0; i < 4; i++) {
             Tex t;
