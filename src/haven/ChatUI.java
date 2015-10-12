@@ -65,6 +65,7 @@ public class ChatUI extends Widget {
     private QuickLine qline = null;
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
     private UI.Grab qgrab;
+    public static final String CMD_PREFIX_HLIGHT = "@";
 
     public ChatUI(int w, int h) {
         super(new Coord(w, h));
@@ -778,6 +779,20 @@ public class ChatUI extends Widget {
             if (msg == "msg") {
                 Integer from = (Integer) args[0];
                 String line = (String) args[1];
+
+                if (name.equals("Area Chat") && line.startsWith(CMD_PREFIX_HLIGHT)) {
+                    try {
+                        long gobid = Long.parseLong(line.substring(1));
+                        Gob gob = gameui().map.glob.oc.getgob(gobid);
+                        if (gob != null) {
+                            gob.delattr(GobHighlight.class);
+                            gob.setattr(new GobHighlight(gob));
+                            return;
+                        }
+                    } catch (NumberFormatException nfe) {
+                    }
+                }
+
                 if (from == null) {
                     MyMessage my = new MyMessage(line, iw());
                     append(my);
