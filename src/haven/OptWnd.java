@@ -713,6 +713,44 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show inventory on login") {
+            {
+                a = Config.showinvonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showinvonlogin", val);
+                Config.showinvonlogin = val;
+                a = val;
+            }
+        }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show equipment on login") {
+            {
+                a = Config.showequiponlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showequiponlogin", val);
+                Config.showequiponlogin = val;
+                a = val;
+            }
+        }, new Coord(260, y));
+
+        // -------------------------------------------- display 3rd column
+        y = 0;
+        display.add(new CheckBox("Show character sheet on login") {
+            {
+                a = Config.showchrsheetonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showchrsheetonlogin", val);
+                Config.showchrsheetonlogin = val;
+                a = val;
+            }
+        }, new Coord(540, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
