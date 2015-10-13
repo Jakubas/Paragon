@@ -737,6 +737,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show fill amount bars for buckets/flasks") {
+            {
+                a = Config.showfillamount;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showfillamount", val);
+                Config.showfillamount = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
