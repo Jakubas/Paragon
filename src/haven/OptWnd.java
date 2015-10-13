@@ -736,6 +736,12 @@ public class OptWnd extends Window {
                 Utils.delpref("mmapsz");
                 Utils.delpref("quickslotsc");
                 Utils.delpref("chatsz");
+                Utils.delpref("chatvis");
+                Utils.delpref("gui-bl-visible");
+                Utils.delpref("gui-br-visible");
+                Utils.delpref("gui-ul-visible");
+                Utils.delpref("gui-ur-visible");
+                Utils.delpref("menu-visible");
             }
         }, new Coord(260, 320));
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
