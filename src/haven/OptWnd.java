@@ -713,6 +713,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        display.add(new CheckBox("Show inventory on login") {
+            {
+                a = Config.showinvonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showinvonlogin", val);
+                Config.showinvonlogin = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
