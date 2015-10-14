@@ -253,7 +253,7 @@ public class WItem extends Widget implements DTarget {
                 g.image(item.metertex, Coord.z);
             }
 
-            if (Config.showfillamount) {
+            if (Config.showcontentsbars) {
                 try {
                     for (ItemInfo info : item.info()) {
                         if (info instanceof ItemInfo.Contents) {

@@ -753,14 +753,14 @@ public class OptWnd extends Window {
             }
         }, new Coord(260, y));
         y += 35;
-        display.add(new CheckBox("Show fill amount bars for buckets/flasks") {
+        display.add(new CheckBox("Show contents bars for buckets/flasks") {
             {
-                a = Config.showfillamount;
+                a = Config.showcontentsbars;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("showfillamount", val);
-                Config.showfillamount = val;
+                Utils.setprefb("showcontentsbars", val);
+                Config.showcontentsbars = val;
                 a = val;
             }
         }, new Coord(260, y));

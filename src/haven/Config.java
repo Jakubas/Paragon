@@ -117,7 +117,7 @@ public class Config {
     public static Coord chatsz = Utils.getprefc("chatsz", Coord.z);
     public static boolean alternmapctrls = Utils.getprefb("alternmapctrls", false);
     public static boolean autostudy = Utils.getprefb("autostudy", true);
-    public static boolean showfillamount = Utils.getprefb("showfillamount", false);
+    public static boolean showcontentsbars = Utils.getprefb("showcontentsbars", false);
     public static boolean dropseeds = Utils.getprefb("dropseeds", false);
     public static boolean hwcursor = false;
     public static byte[] authck = null;
