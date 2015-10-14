@@ -1,3 +1,23 @@
+Version 1.19.0
+    New:
+        * Object highlighting with Alt+LMB.
+        * Option to set running speed on login.
+        * Option to show inventory on login.
+        * Option to display FPS.
+        * Option to show contents bars for buckets, flasks, and waterskins.
+        * Combat schools renaming.
+        * Slider for adjusting Quern sound volume.
+        * Option to automatically drop seeds from inventory.
+
+    Fixed:
+        * Armor class summary not being recalculated under certain conditions.
+
+    Misc:
+        * Reset Windows button will reset hidden UI in addition to windows positions.
+        * Status widget displays server time now in addition to previous information.
+        * Cupboards support in auto study.
+
+
 Version 1.18.1
     New:
         * Option to completely hide crops.
