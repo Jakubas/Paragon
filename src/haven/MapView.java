@@ -63,6 +63,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
         put("gfx/terobjs/trough", new Gob.Overlay(new BPRadSprite(200.0F, -10.0F)));
         put("gfx/terobjs/beehive", new Gob.Overlay(new BPRadSprite(151.0F, -10.0F)));
     }};
+    private long lastmmhittest = System.currentTimeMillis();
+    private Coord lasthittestc = Coord.z;
 
     public interface Delayed {
         public void run(GOut g);
@@ -1398,30 +1400,36 @@ public class MapView extends PView implements DTarget, Console.Directory {
                 delay(placing.new Adjust(c, ui.modflags()));
             }
         } else if (ui.modshift) {
-            delay(new Hittest(c) {
-                public void hit(Coord pc, Coord mc, ClickInfo inf) {
-                    if (inf != null && inf.gob != null) {
-                        Resource res = inf.gob.getres();
-                        if (res != null) {
-                            tooltip = res.name;
-                            return;
+            long now = System.currentTimeMillis();
+            if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
+                lastmmhittest = now;
+                lasthittestc = c;
+                delay(new Hittest(c) {
+                    public void hit(Coord pc, Coord mc, ClickInfo inf) {
+                        if (inf != null && inf.gob != null) {
+                            Resource res = inf.gob.getres();
+                            if (res != null) {
+                                tooltip = res.name;
+                                return;
+                            }
+                        } else {
+                            MCache map = ui.sess.glob.map;
+                            int t = map.gettile(mc.div(tilesz));
+                            Resource res = map.tilesetr(t);
+                            if (res != null) {
+                                tooltip = res.name;
+                                return;
+                            }
                         }
-                    } else {
-                        MCache map = ui.sess.glob.map;
-                        int t = map.gettile(mc.div(tilesz));
-                        Resource res = map.tilesetr(t);
-                        if (res != null) {
-                            tooltip = res.name;
-                            return;
-                        }
-                    }
-                    tooltip = null;
-                }
+                        tooltip = null;
 
-                public void nohit(Coord pc) {
-                    tooltip = null;
-                }
-            });
+                    }
+
+                    public void nohit(Coord pc) {
+                        tooltip = null;
+                    }
+                });
+            }
         }
     }
 
