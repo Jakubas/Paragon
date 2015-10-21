@@ -218,8 +218,11 @@ public class Fightview extends Widget {
             return;
         } else if (msg == "del") {
             Relation rel = getrel((Integer) args[0]);
+            ui.sess.glob.oc.removedmgoverlay(rel.gobid);
             rel.remove();
             lsrel.remove(rel);
+            if (lsrel.size() == 0)
+                ui.sess.glob.oc.removedmgoverlay(MapView.plgob);
             if (rel == current)
                 setcur(null);
             return;

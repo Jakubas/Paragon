@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+import java.util.List;
 
 public class OCache implements Iterable<Gob> {
     /* XXX: Use weak refs */
@@ -34,6 +35,17 @@ public class OCache implements Iterable<Gob> {
     private Map<Long, Gob> objs = new TreeMap<Long, Gob>();
     private Map<Long, Integer> deleted = new TreeMap<Long, Integer>();
     private Glob glob;
+    private Map<Long, Damage> gobdmgs = new HashMap<Long, Damage>();
+
+    public static class Damage {
+        public int dmg;
+        public int arm;
+
+        public Damage(int dmg, int arm) {
+            this.dmg = dmg;
+            this.arm = arm;
+        }
+    }
 
     public OCache(Glob glob) {
         this.glob = glob;
@@ -103,6 +115,11 @@ public class OCache implements Iterable<Gob> {
             } else {
                 Gob g = new Gob(glob, Coord.z, id, frame);
                 objs.put(id, g);
+                if (Config.showdmgop || Config.showdmgmy) {
+                    Damage dmg = gobdmgs.get(id);
+                    if (dmg != null)
+                        g.ols.add(new Gob.Overlay(DamageSprite.ID, new DamageSprite(dmg.dmg, dmg.arm, g)));
+                }
                 return (g);
             }
         } else {
@@ -273,6 +290,8 @@ public class OCache implements Iterable<Gob> {
             sdt = new MessageBuf(sdt);
             if (ol == null) {
                 g.ols.add(ol = new Gob.Overlay(olid, resid, sdt));
+                if (sdt.rt == 7 && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
+                    setdmgoverlay(g, resid, new MessageBuf(sdt));
             } else if (!ol.sdt.equals(sdt)) {
                 if (ol.spr instanceof Gob.Overlay.CUpd) {
                     ol.sdt = new MessageBuf(sdt);
@@ -280,6 +299,8 @@ public class OCache implements Iterable<Gob> {
                 } else {
                     g.ols.remove(ol);
                     g.ols.add(ol = new Gob.Overlay(olid, resid, sdt));
+                    if (sdt.rt == 7 && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
+                        setdmgoverlay(g, resid, new MessageBuf(sdt));
                 }
             }
             ol.delign = prs;
@@ -288,6 +309,50 @@ public class OCache implements Iterable<Gob> {
                 ((Gob.Overlay.CDel) ol.spr).delete();
             else
                 g.ols.remove(ol);
+        }
+    }
+
+    private void setdmgoverlay(final Gob g, final Indir<Resource> resid, final MessageBuf sdt) {
+        final int dmg = sdt.int32();
+        sdt.uint8();
+        final int clr = sdt.uint16();
+        if (clr != 61455 /* damage */ && clr != 36751 /* armor damage */)
+            return;
+
+        Defer.later(new Defer.Callable<Void>() {
+            public Void call() {
+                try {
+                    Resource res = resid.get();
+                    if (res != null && res.name.equals("gfx/fx/floatimg")) {
+                        Gob.Overlay dmgo = g.findol(DamageSprite.ID);
+                        DamageSprite dmgspr;
+                        if (dmgo == null) {
+                            dmgspr = new DamageSprite(dmg, clr == 36751, g);
+                            dmgo = new Gob.Overlay(DamageSprite.ID, dmgspr);
+                            g.ols.add(dmgo);
+                        } else if (dmgo.spr instanceof DamageSprite) {
+                            dmgspr = (DamageSprite) dmgo.spr;
+                            dmgspr.update(dmg, clr == 36751);
+                        } else {
+                            return null;
+                        }
+                        gobdmgs.put(g.id, dmgspr.getdmg());
+                    }
+                } catch (Loading le) {
+                    Defer.later(this);
+                }
+                return null;
+            }
+        });
+    }
+
+    public synchronized void removedmgoverlay(long gobid) {
+        Gob gob = objs.get(gobid);
+        if (gob != null) {
+            Gob.Overlay ol = gob.findol(DamageSprite.ID);
+            if (ol != null)
+                gob.ols.remove(ol);
+            gobdmgs.remove(gobid);
         }
     }
 

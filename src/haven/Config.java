@@ -120,7 +120,8 @@ public class Config {
     public static boolean autostudy = Utils.getprefb("autostudy", true);
     public static boolean showcontentsbars = Utils.getprefb("showcontentsbars", false);
     public static boolean dropseeds = Utils.getprefb("dropseeds", false);
-    public static boolean showdmg = Utils.getprefb("showdmg", false);
+    public static boolean showdmgop = Utils.getprefb("showdmgop", false);
+    public static boolean showdmgmy = Utils.getprefb("showdmgmy", false);
     public static boolean hwcursor = false;
     public static byte[] authck = null;
     public static String prefspec = "hafen";

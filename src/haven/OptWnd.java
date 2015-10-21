@@ -27,7 +27,7 @@
 package haven;
 
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display, map, general;
+    public final Panel main, video, audio, display, map, general, combat;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -287,6 +287,7 @@ public class OptWnd extends Window {
         display = add(new Panel());
         map = add(new Panel());
         general = add(new Panel());
+        combat = add(new Panel());
 
         int y;
 
@@ -295,6 +296,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Display settings", 'd', display), new Coord(0, 60));
         main.add(new PButton(200, "Map settings", 'm', map), new Coord(0, 90));
         main.add(new PButton(200, "General settings", 'g', general), new Coord(210, 0));
+        main.add(new PButton(200, "Combat settings", 'c', combat), new Coord(210, 30));
 
         if (gopts) {
             main.add(new Button(200, "Switch character") {
@@ -1048,6 +1050,35 @@ public class OptWnd extends Window {
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
+
+        // -------------------------------------------- combat
+        y = 0;
+        combat.add(new CheckBox("Display damage received by opponents") {
+            {
+                a = Config.showdmgop;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdmgop", val);
+                Config.showdmgop = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Display damage received by me") {
+            {
+                a = Config.showdmgmy;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdmgmy", val);
+                Config.showdmgmy = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+
+        combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        combat.pack();
 
         chpanel(main);
     }

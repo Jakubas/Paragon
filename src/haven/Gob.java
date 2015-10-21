@@ -78,6 +78,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             this.spr = spr;
         }
 
+        public Overlay(int id, Sprite spr) {
+            this.id = id;
+            this.res = null;
+            this.sdt = null;
+            this.spr = spr;
+        }
+
         public static interface CDel {
             public void delete();
         }
