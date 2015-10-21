@@ -71,6 +71,7 @@ public class Config {
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", false);
     public static int showqualitymode = Utils.getprefi("showqualitymode", 0);
+    public static boolean arithavg = Utils.getprefb("arithavg", false);
     public static boolean qualitywhole = Utils.getprefb("qualitywhole", true);
     public static boolean showlpgainmult = Utils.getprefb("showlpgainmult", false);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
@@ -119,6 +120,7 @@ public class Config {
     public static boolean autostudy = Utils.getprefb("autostudy", true);
     public static boolean showcontentsbars = Utils.getprefb("showcontentsbars", false);
     public static boolean dropseeds = Utils.getprefb("dropseeds", false);
+    public static boolean showdmg = Utils.getprefb("showdmg", false);
     public static boolean hwcursor = false;
     public static byte[] authck = null;
     public static String prefspec = "hafen";

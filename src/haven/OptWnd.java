@@ -595,6 +595,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        display.add(new CheckBox("Use arithmetic average") {
+            {
+                a = Config.arithavg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("arithavg", val);
+                Config.arithavg = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         display.add(new CheckBox("Round item quality to a whole number") {
             {
                 a = Config.qualitywhole;
