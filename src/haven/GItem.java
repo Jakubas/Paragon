@@ -242,6 +242,8 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             }
         } else if (name == "tt") {
             info = null;
+            if (rawinfo != null)
+                quality = null;
             rawinfo = args;
         } else if (name == "meter") {
             meter = (Integer) args[0];
