@@ -26,7 +26,6 @@
 
 package haven;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -71,6 +70,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
     public StatusWdg statuswindow;
+    private boolean updhanddestroyed = false;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -448,10 +448,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if ((hand.isEmpty() && (vhand != null)) || ((vhand != null) && !hand.contains(vhand.item))) {
             ui.destroy(vhand);
             vhand = null;
+            if (ui.modctrl && ui.modshift && map.lastinterpc != null)
+                updhanddestroyed = true;
         }
         if (!hand.isEmpty() && (vhand == null)) {
             DraggedItem fi = hand.iterator().next();
             vhand = add(new ItemDrag(fi.dc, fi.item));
+            if (ui.modctrl && ui.modshift && updhanddestroyed) {
+                map.iteminteractreplay();
+                updhanddestroyed = false;
+            }
         }
     }
 

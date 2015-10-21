@@ -1463,20 +1463,37 @@ public class MapView extends PView implements DTarget, Console.Directory {
         return (true);
     }
 
+    public Coord lastinterpc;
+    private Coord lastintermc;
+    private int lastintergobid;
+    private Coord lastintergobrc;
+    private int lastintermid;
+
     public boolean iteminteract(Coord cc, Coord ul) {
         delay(new Hittest(cc) {
             public void hit(Coord pc, Coord mc, ClickInfo inf) {
                 if (inf == null) {
                     wdgmsg("itemact", pc, mc, ui.modflags());
                 } else {
-                    if (inf.ol == null)
-                        wdgmsg("itemact", pc, mc, ui.modflags(), 0, (int) inf.gob.id, inf.gob.rc, 0, getid(inf.r));
-                    else
+                    if (inf.ol == null) {
+                        lastinterpc = pc;
+                        lastintermc = mc;
+                        lastintergobid = (int) inf.gob.id;
+                        lastintergobrc = inf.gob.rc;
+                        lastintermid = getid(inf.r);
+                        wdgmsg("itemact", pc, mc, ui.modflags(), 0, lastintergobid, lastintergobrc, 0, lastintermid);
+                    }
+                    else {
                         wdgmsg("itemact", pc, mc, ui.modflags(), 1, (int) inf.gob.id, inf.gob.rc, inf.ol.id, getid(inf.r));
+                    }
                 }
             }
         });
         return (true);
+    }
+
+    public void iteminteractreplay() {
+        wdgmsg("itemact", lastinterpc, lastintermc, ui.modflags(), 0, lastintergobid, lastintergobrc, 0, lastintermid);
     }
 
     public boolean keydown(KeyEvent ev) {
