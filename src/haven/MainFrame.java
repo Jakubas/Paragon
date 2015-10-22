@@ -386,6 +386,10 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
             }).start();
 
         Config.cmdline(args);
+
+        if (Config.playerposfile != null)
+            new Thread(new PlayerPosStreamer(), "Player position thread").start();
+
         try {
             javabughack();
         } catch (InterruptedException e) {
