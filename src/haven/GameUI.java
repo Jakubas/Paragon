@@ -816,7 +816,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (map != null)
                 map.togglegrid();
             return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_M) {
             boolean curstatus = statuswindow.visible;
             statuswindow.show(!curstatus);
             Utils.setprefb("statuswdgvisible", !curstatus);
