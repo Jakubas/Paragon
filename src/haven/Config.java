@@ -122,6 +122,7 @@ public class Config {
     public static boolean dropseeds = Utils.getprefb("dropseeds", false);
     public static boolean showdmgop = Utils.getprefb("showdmgop", false);
     public static boolean showdmgmy = Utils.getprefb("showdmgmy", false);
+    public static boolean hidegobs = Utils.getprefb("hidegobs", false);
     public static boolean hwcursor = false;
     public static byte[] authck = null;
     public static String prefspec = "hafen";

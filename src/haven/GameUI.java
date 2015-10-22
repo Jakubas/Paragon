@@ -833,6 +833,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_S) {
             HavenPanel.needtotakescreenshot = true;
             return true;
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
+            Config.hidegobs = !Config.hidegobs;
+            Utils.setprefb("hidegobs", Config.hidegobs);
+            return true;
         }
         return (super.globtype(key, ev));
     }
