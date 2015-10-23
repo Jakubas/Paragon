@@ -35,17 +35,8 @@ public class OCache implements Iterable<Gob> {
     private Map<Long, Gob> objs = new TreeMap<Long, Gob>();
     private Map<Long, Integer> deleted = new TreeMap<Long, Integer>();
     private Glob glob;
-    private Map<Long, Damage> gobdmgs = new HashMap<Long, Damage>();
-
-    public static class Damage {
-        public int dmg;
-        public int arm;
-
-        public Damage(int dmg, int arm) {
-            this.dmg = dmg;
-            this.arm = arm;
-        }
-    }
+    private Map<Long, DamageSprite> gobdmgs = new HashMap<Long, DamageSprite>();
+    public boolean isfight = false;
 
     public OCache(Glob glob) {
         this.glob = glob;
@@ -76,8 +67,23 @@ public class OCache implements Iterable<Gob> {
             ArrayList<Gob> copy = new ArrayList<Gob>();
             for (Gob g : this)
                 copy.add(g);
-            for (Gob g : copy)
+            for (Gob g : copy) {
                 g.ctick(dt);
+                if (Config.showdmgop || Config.showdmgmy) {
+                    Gob.Overlay dmgol = g.findol(DamageSprite.ID);
+                    if (dmgol != null)
+                        g.ols.remove(dmgol);
+                    if (isfight) {
+                        DamageSprite dmgspr = gobdmgs.get(g.id);
+                        if (dmgspr != null) {
+                            if (dmgspr.owner == g)
+                                g.ols.add(new Gob.Overlay(DamageSprite.ID, dmgspr));
+                            else
+                                g.ols.add(new Gob.Overlay(DamageSprite.ID, new DamageSprite(dmgspr.dmg, dmgspr.arm, g)));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -115,11 +121,6 @@ public class OCache implements Iterable<Gob> {
             } else {
                 Gob g = new Gob(glob, Coord.z, id, frame);
                 objs.put(id, g);
-                if (Config.showdmgop || Config.showdmgmy) {
-                    Damage dmg = gobdmgs.get(id);
-                    if (dmg != null)
-                        g.ols.add(new Gob.Overlay(DamageSprite.ID, new DamageSprite(dmg.dmg, dmg.arm, g)));
-                }
                 return (g);
             }
         } else {
@@ -290,7 +291,7 @@ public class OCache implements Iterable<Gob> {
             sdt = new MessageBuf(sdt);
             if (ol == null) {
                 g.ols.add(ol = new Gob.Overlay(olid, resid, sdt));
-                if (sdt.rt == 7 && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
+                if (sdt.rt == 7 && isfight && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
                     setdmgoverlay(g, resid, new MessageBuf(sdt));
             } else if (!ol.sdt.equals(sdt)) {
                 if (ol.spr instanceof Gob.Overlay.CUpd) {
@@ -299,7 +300,7 @@ public class OCache implements Iterable<Gob> {
                 } else {
                     g.ols.remove(ol);
                     g.ols.add(ol = new Gob.Overlay(olid, resid, sdt));
-                    if (sdt.rt == 7 && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
+                    if (sdt.rt == 7 && isfight && (Config.showdmgop && !g.isplayer() || Config.showdmgmy && g.isplayer()))
                         setdmgoverlay(g, resid, new MessageBuf(sdt));
                 }
             }
@@ -324,19 +325,13 @@ public class OCache implements Iterable<Gob> {
                 try {
                     Resource res = resid.get();
                     if (res != null && res.name.equals("gfx/fx/floatimg")) {
-                        Gob.Overlay dmgo = g.findol(DamageSprite.ID);
-                        DamageSprite dmgspr;
-                        if (dmgo == null) {
-                            dmgspr = new DamageSprite(dmg, clr == 36751, g);
-                            dmgo = new Gob.Overlay(DamageSprite.ID, dmgspr);
-                            g.ols.add(dmgo);
-                        } else if (dmgo.spr instanceof DamageSprite) {
-                            dmgspr = (DamageSprite) dmgo.spr;
-                            dmgspr.update(dmg, clr == 36751);
-                        } else {
-                            return null;
+                        synchronized (gobdmgs) {
+                            DamageSprite dmgspr = gobdmgs.get(g.id);
+                            if (dmgspr == null)
+                                gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
+                            else
+                                dmgspr.update(dmg, clr == 36751);
                         }
-                        gobdmgs.put(g.id, dmgspr.getdmg());
                     }
                 } catch (Loading le) {
                     Defer.later(this);
@@ -346,12 +341,8 @@ public class OCache implements Iterable<Gob> {
         });
     }
 
-    public synchronized void removedmgoverlay(long gobid) {
-        Gob gob = objs.get(gobid);
-        if (gob != null) {
-            Gob.Overlay ol = gob.findol(DamageSprite.ID);
-            if (ol != null)
-                gob.ols.remove(ol);
+    public void removedmgoverlay(long gobid) {
+        synchronized (gobdmgs) {
             gobdmgs.remove(gobid);
         }
     }
