@@ -837,7 +837,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Config.hidegobs = !Config.hidegobs;
             Utils.setprefb("hidegobs", Config.hidegobs);
             return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_D) {
+        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_D) {
             Config.dropseeds = !Config.dropseeds;
             Utils.setprefb("dropseeds", Config.dropseeds);
             info("Seeds auto dropping is " + (Config.dropseeds ? "ON" : "OFF"), Color.WHITE);
