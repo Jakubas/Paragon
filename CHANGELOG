@@ -1,3 +1,23 @@
+Version 1.20.0
+    New:
+        * Hotkey for taking screenshots.
+        * Option to use arithmetic mean when calculating average quality.
+        * Option to display cumulative damage for players/animals.
+        * Quick filling of troughs/smelters/etc.
+        * Tree hiding.
+        * Player position streaming to external mapping tools.
+
+    Fixed:
+        * Contents bars not calculated correctly for buckets containing seeds. 
+        * Quality not being updated when stacking items.
+
+    Misc:
+        * Contents bars are shown on quicklosts as well now.
+        * Shift + pointing at a ground tile will show its resource name similarly to objects.
+        * Display base and buffed values for base attributes separately.  
+        * Option for auto dropping seeds in options window has been removed in favor of a hotkey.
+
+
 Version 1.19.0
     New:
         * Object highlighting with Alt+LMB.
