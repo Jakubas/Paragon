@@ -1,3 +1,8 @@
+Version 1.20.1
+    Fixed:
+        * Seeds drop hotkey changed to shift+d to prevent conflict with radius toggling.
+
+
 Version 1.20.0
     New:
         * Hotkey for taking screenshots.
