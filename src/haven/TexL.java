@@ -37,7 +37,7 @@ public abstract class TexL extends TexGL {
     protected Mipmapper mipmap = null;
     private Future<Prepared> decode = null;
 
-    protected abstract BufferedImage fill();
+    public abstract BufferedImage fill();
 
     public TexL(Coord sz) {
         super(sz);

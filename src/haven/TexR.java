@@ -115,7 +115,7 @@ public class TexR extends Resource.Layer implements Resource.IDLayer<Integer> {
             }));
         }
 
-        protected BufferedImage fill() {
+	public BufferedImage fill() {
             if (mask == null) {
                 return (rd(TexR.this.img));
             } else {
