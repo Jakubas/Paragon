@@ -19,7 +19,7 @@ public class StatusWdg extends Widget {
     public static String pass;
 
     private static ThreadGroup tg = new ThreadGroup("StatusUpdaterThreadGroup");
-    private String statusupdaterthreadname = "StatusUpdater";
+    private static final String statusupdaterthreadname = "StatusUpdater";
 
     private static final Tex hearthlingsplayingdef = Text.render("Players: ?", Color.WHITE).tex();
     private static final Tex pingtimedef = Text.render("Ping: ?", Color.WHITE).tex();
@@ -71,19 +71,7 @@ public class StatusWdg extends Widget {
     public StatusWdg() {
         retries = 0;
         synchronized (StatusWdg.class) {
-            Thread[] activethreads = new Thread[tg.activeCount()];
-            int count = tg.enumerate(activethreads);
-            for (int i = 0; i < count; i++) {
-                if (activethreads[i].getName().equals(this.statusupdaterthreadname)) {
-                    activethreads[i].interrupt();
-                    try {
-                        activethreads[i].join();
-                    } catch (InterruptedException ex) {
-                        // NOP
-                    }
-                }
-            }
-
+            tg.interrupt();
             startupdaterthread();
         }
     }
@@ -282,7 +270,7 @@ public class StatusWdg extends Widget {
                     }
                 }
             }
-        }, this.statusupdaterthreadname);
+        }, statusupdaterthreadname);
         statusupdaterthread.start();
     }
 
