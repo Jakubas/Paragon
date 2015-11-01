@@ -448,13 +448,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if ((hand.isEmpty() && (vhand != null)) || ((vhand != null) && !hand.contains(vhand.item))) {
             ui.destroy(vhand);
             vhand = null;
-            if (ui.modctrl && ui.modshift && map.lastinterpc != null)
+            if (ui.modctrl && ui.modshift && map.lastinterpc != null && !Config.disablequickfill)
                 updhanddestroyed = true;
         }
         if (!hand.isEmpty() && (vhand == null)) {
             DraggedItem fi = hand.iterator().next();
             vhand = add(new ItemDrag(fi.dc, fi.item));
-            if (ui.modctrl && ui.modshift && updhanddestroyed) {
+            if (ui.modctrl && ui.modshift && updhanddestroyed && !Config.disablequickfill) {
                 map.iteminteractreplay();
                 updhanddestroyed = false;
             }
