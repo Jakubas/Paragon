@@ -123,7 +123,6 @@ public class Config {
     public static boolean showdmgop = Utils.getprefb("showdmgop", false);
     public static boolean showdmgmy = Utils.getprefb("showdmgmy", false);
     public static boolean hidegobs = Utils.getprefb("hidegobs", false);
-    public static boolean disablequickfill = Utils.getprefb("disablequickfill", false);
     public static boolean qualitybg = Utils.getprefb("qualitybg", false);
     public static boolean hwcursor = false;
     public static String playerposfile;

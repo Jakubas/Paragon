@@ -42,6 +42,7 @@ public class UI {
     public Coord mc = Coord.z, lcc = Coord.z;
     public Session sess;
     public boolean modshift, modctrl, modmeta, modsuper;
+    public int keycode;
     public Object lasttip;
     long lastevent, lasttick;
     public Widget mouseon;
@@ -290,6 +291,7 @@ public class UI {
 
     public void keydown(KeyEvent ev) {
         setmods(ev);
+        keycode = ev.getKeyCode();
         for (Grab g : c(keygrab)) {
             if (g.wdg.keydown(ev))
                 return;
@@ -300,6 +302,7 @@ public class UI {
 
     public void keyup(KeyEvent ev) {
         setmods(ev);
+        keycode = -1;
         for (Grab g : c(keygrab)) {
             if (g.wdg.keyup(ev))
                 return;

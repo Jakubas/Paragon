@@ -1082,18 +1082,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Disable quick filling with shift+ctrl") {
-            {
-                a = Config.disablequickfill;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("disablequickfill", val);
-                Config.disablequickfill = val;
-                a = val;
-            }
-        }, new Coord(0, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
