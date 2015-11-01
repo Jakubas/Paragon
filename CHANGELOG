@@ -1,3 +1,15 @@
+Version 1.20.3
+    New:
+        * Added option to draw backgrounds for quality values.
+
+    Fixed:
+        * Freezing when switching characters with enabled status display (ctrl+m).
+
+    Misc:
+        * Changed quick filling hotkey (shift+ctrl) to shift+z. 
+        * Changed hotkey for tile name tooltip (shift) to shift+ctrl.
+
+
 Version 1.20.2
     Misc:
         * Upstream changes merge.
