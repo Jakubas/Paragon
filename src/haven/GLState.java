@@ -85,7 +85,7 @@ public abstract class GLState {
     private static Slot<?>[] idlist = new Slot<?>[0];
 
     public static class Slot<T extends GLState> {
-        private static boolean dirty = false;
+        private volatile static boolean dirty = false;
         private static Collection<Slot<?>> all = new LinkedList<Slot<?>>();
         public final Type type;
         public final int id;
@@ -184,14 +184,16 @@ public abstract class GLState {
         }
 
         public static void update() {
-            synchronized (Slot.class) {
-                if (!dirty)
-                    return;
-                makedeps(all);
-                deplist = new Slot<?>[all.size()];
-                for (Slot s : all)
-                    deplist[s.depid] = s;
-                dirty = false;
+            if (dirty) {
+                synchronized (Slot.class) {
+                    if (dirty) {
+                        makedeps(all);
+                        deplist = new Slot<?>[all.size()];
+                        for (Slot s : all)
+                            deplist[s.depid] = s;
+                        dirty = false;
+                    }
+                }
             }
         }
 
@@ -317,7 +319,6 @@ public abstract class GLState {
     }
 
     public static int bufdiff(Buffer f, Buffer t, boolean[] trans, boolean[] repl) {
-        Slot.update();
         int cost = 0;
         f.adjust();
         t.adjust();
@@ -487,18 +488,19 @@ public abstract class GLState {
         }
 
         public void apply(GOut g) {
+            Slot.update();
             long st = 0;
             if (Config.profile) st = System.nanoTime();
-            if (trans.length < slotnum) {
+            Slot<?>[] deplist = GLState.deplist;
+            if (trans.length < deplist.length) {
                 synchronized (Slot.class) {
-                    trans = new boolean[slotnum];
-                    repl = new boolean[slotnum];
-                    shaders = Utils.extend(shaders, slotnum);
-                    nshaders = Utils.extend(shaders, slotnum);
+                    trans = new boolean[deplist.length];
+                    repl = new boolean[deplist.length];
+                    shaders = Utils.extend(shaders, deplist.length);
+                    nshaders = Utils.extend(shaders, deplist.length);
                 }
             }
             bufdiff(cur, next, trans, repl);
-            Slot<?>[] deplist = GLState.deplist;
             nproghash = proghash;
             for (int i = trans.length - 1; i >= 0; i--) {
                 nshaders[i] = shaders[i];
@@ -558,7 +560,7 @@ public abstract class GLState {
                     }
                     if (!pdirty)
                         prog.adirty(deplist[i]);
-                // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= trans.length
+                    // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= trans.length
                 } else if (id < trans.length && trans[id]) {
                     cur.states[id].applyto(g, next.states[id]);
                     if (debug)
@@ -571,7 +573,7 @@ public abstract class GLState {
                         stcheckerr(g, "applyfrom", cur.states[id]);
                     if (!pdirty)
                         prog.adirty(deplist[i]);
-                // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= shaders.length
+                    // FIXME: dirty fix for ArrayIndexOutOfBoundsException on id >= shaders.length
                 } else if (pdirty && (id < shaders.length && shaders[id] != null)) {
                     cur.states[id].reapply(g);
                     if (debug)
@@ -770,7 +772,7 @@ public abstract class GLState {
             if (now - lastclean > 60000) {
                 for (int i = 0; i < ptab.length; i++) {
                     SavedProg c, p;
-		    for(c = ptab[i], p = null; c != null; c = c.next) {
+                    for (c = ptab[i], p = null; c != null; c = c.next) {
                         if (!c.used) {
                             if (p != null)
                                 p.next = c.next;
@@ -780,11 +782,11 @@ public abstract class GLState {
                             nprog--;
                         } else {
                             c.used = false;
-			    p = c;
+                            p = c;
                         }
                     }
                 }
-		/* XXX: Rehash into smaller table? It's probably not a
+        /* XXX: Rehash into smaller table? It's probably not a
 		 * problem, but it might be nice just for
 		 * completeness. */
                 lastclean = now;
