@@ -1399,7 +1399,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
             if ((placing.lastmc == null) || !placing.lastmc.equals(c)) {
                 delay(placing.new Adjust(c, ui.modflags()));
             }
-        } else if (ui.modshift) {
+        } else if (ui.modshift && !ui.modctrl) {
             long now = System.currentTimeMillis();
             if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
                 lastmmhittest = now;
@@ -1412,7 +1412,23 @@ public class MapView extends PView implements DTarget, Console.Directory {
                                 tooltip = res.name;
                                 return;
                             }
-                        } else {
+                        }
+                        tooltip = null;
+                    }
+
+                    public void nohit(Coord pc) {
+                        tooltip = null;
+                    }
+                });
+            }
+        } else if (ui.modshift && ui.modctrl) {
+            long now = System.currentTimeMillis();
+            if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
+                lastmmhittest = now;
+                lasthittestc = c;
+                delay(new Hittest(c) {
+                    public void hit(Coord pc, Coord mc, ClickInfo inf) {
+                        if (inf == null) {
                             MCache map = ui.sess.glob.map;
                             int t = map.gettile(mc.div(tilesz));
                             Resource res = map.tilesetr(t);
@@ -1422,7 +1438,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
                             }
                         }
                         tooltip = null;
-
                     }
 
                     public void nohit(Coord pc) {
