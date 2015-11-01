@@ -41,6 +41,7 @@ public class WItem extends Widget implements DTarget {
     private Resource cspr = null;
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
+    private static final Color qualitybg = new Color(20, 20, 20, 250);
 
     public WItem(GItem item) {
         super(sqsz);
@@ -219,20 +220,50 @@ public class WItem extends Widget implements DTarget {
             GItem.Quality quality = item.quality();
             if (Config.showquality) {
                 if (quality != null && quality.max != 0) {
+                    Coord btm = new Coord(0, sz.y - 12);
                     if (Config.showqualitymode == 2) {
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(new Coord(0, sz.y - 32), quality.etex.sz().add(1, -1));
+                            g.frect(new Coord(0, sz.y - 22), quality.stex.sz().add(1, -1));
+                            g.frect(btm, quality.vtex.sz().add(1, -1));
+                            g.chcolor();
+                        }
                         g.image(quality.etex, new Coord(0, sz.y - 32));
                         g.image(quality.stex, new Coord(0, sz.y - 22));
-                        g.image(quality.vtex, new Coord(0, sz.y - 12));
+                        g.image(quality.vtex, btm);
                     } else if (quality.curio && Config.showlpgainmult) {
-                        g.image(quality.lpgaintex, new Coord(0, sz.y - 12));
+                        g.image(quality.lpgaintex, btm);
                     } else if (Config.showqualitymode == 0) {
-                        g.image(quality.maxtex, new Coord(0, sz.y - 12));
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(new Coord(0, sz.y - 12), quality.maxtex.sz().add(1, -1));
+                            g.chcolor();
+                        }
+                        g.image(quality.maxtex, btm);
                     } else if (Config.showqualitymode == 1) {
-                        g.image(Config.qualitywhole ? quality.avgwholetex : quality.avgtex, new Coord(0, sz.y - 12));
+                        Tex t = Config.qualitywhole ? quality.avgwholetex : quality.avgtex;
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(btm, t.sz().add(1, -1));
+                            g.chcolor();
+                        }
+                        g.image(t, btm);
                     } else if (Config.showqualitymode == 3) {
-                        g.image(Config.qualitywhole ? quality.avgsvwholetex : quality.avgsvtex, new Coord(0, sz.y - 12));
+                        Tex t = Config.qualitywhole ? quality.avgsvwholetex : quality.avgsvtex;
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(btm, t.sz().add(1, -1));
+                            g.chcolor();
+                        }
+                        g.image(t, btm);
                     } else {
-                        g.image(quality.mintex, new Coord(0, sz.y - 12));
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(btm, quality.mintex.sz().add(1, -1));
+                            g.chcolor();
+                        }
+                        g.image(quality.mintex, btm);
                     }
                 }
             }

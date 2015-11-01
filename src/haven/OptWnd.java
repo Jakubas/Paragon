@@ -598,6 +598,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        display.add(new CheckBox("Draw background for quality values") {
+            {
+                a = Config.qualitybg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitybg", val);
+                Config.qualitybg = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         display.add(new CheckBox("Display item completion as progress bar") {
             {
                 a = Config.itemmeterbar;
