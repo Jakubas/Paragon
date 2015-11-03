@@ -233,6 +233,11 @@ public class WItem extends Widget implements DTarget {
                         g.image(quality.stex, new Coord(0, sz.y - 22));
                         g.image(quality.vtex, btm);
                     } else if (quality.curio && Config.showlpgainmult) {
+                        if (Config.qualitybg) {
+                            g.chcolor(qualitybg);
+                            g.frect(new Coord(0, sz.y - 12), quality.lpgaintex.sz().add(1, -1));
+                            g.chcolor();
+                        }
                         g.image(quality.lpgaintex, btm);
                     } else if (Config.showqualitymode == 0) {
                         if (Config.qualitybg) {
