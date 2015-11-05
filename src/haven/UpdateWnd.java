@@ -10,7 +10,19 @@ public class UpdateWnd extends Window {
         super(Coord.z, "Update");
         final String url = durl;
         add(new Label("New update is available - v" + version), new Coord(20, 40));
-        add(new Button(200, "Download") {
+        add(new Button(200, "Download Update") {
+            public void click() {
+                Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+                if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        desktop.browse(new URI(url.substring(0, url.length()-4) + "-upd.zip"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Coord(0, 80));
+        add(new Button(200, "Full Client Download") {
             public void click() {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -21,7 +33,7 @@ public class UpdateWnd extends Window {
                     }
                 }
             }
-        }, new Coord(0, 80));
+        }, new Coord(0, 125));
         pack();
         this.c = new Coord(HavenPanel.w/2-sz.x/2, HavenPanel.h/2-sz.y/2);
     }

@@ -101,9 +101,13 @@
  <target name="dist" depends="rebuild">
     <zip destfile="${basedir}/${name}-${version}.zip" update="false">
         <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
-        <fileset dir="${basedir}" includes="README"/>
+        <fileset dir="${basedir}" includes="README, CHANGELOG"/>
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
         <fileset dir="etc" includes="*.bat"/>
+    </zip>
+    <zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
+        <fileset dir="build" includes="amber-res.jar, hafen.jar" />
+        <fileset dir="${basedir}" includes="CHANGELOG"/>
     </zip>
   </target>
 
