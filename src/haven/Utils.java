@@ -245,7 +245,7 @@ public class Utils {
             for (String s : val)
                 jsonarr += "\"" + s + "\",";
             if (jsonarr.length() > 0)
-                jsonarr = jsonarr.substring(0, jsonarr.length()-1);
+                jsonarr = jsonarr.substring(0, jsonarr.length() - 1);
             Utils.setpref(prefname, "[" + jsonarr + "]");
         } catch (SecurityException e) {
         } catch (Exception ex) {
@@ -277,7 +277,7 @@ public class Utils {
             for (JSONObject o : val)
                 jsonarr += o.toString() + ",";
             if (jsonarr.length() > 0)
-                jsonarr = jsonarr.substring(0, jsonarr.length()-1);
+                jsonarr = jsonarr.substring(0, jsonarr.length() - 1);
             Utils.setpref(prefname, "[" + jsonarr + "]");
         } catch (SecurityException e) {
         } catch (Exception ex) {
@@ -413,7 +413,7 @@ public class Utils {
     public static long int64d(byte[] buf, int off) {
         long b = 0;
         for (int i = 0; i < 8; i++)
-	    b |= ((long)ub(buf[off + i])) << (i * 8);
+            b |= ((long) ub(buf[off + i])) << (i * 8);
         return (b);
     }
 
@@ -1229,7 +1229,7 @@ public class Utils {
         try {
             enc = in.getBytes("utf-8");
         } catch (java.io.UnsupportedEncodingException e) {
-	    /* ¦] */
+        /* ¦] */
             throw (new Error(e));
         }
         for (byte c : enc) {
@@ -1266,6 +1266,15 @@ public class Utils {
         } catch (java.net.MalformedURLException e) {
             throw (new RuntimeException(e));
         }
+    }
+
+    public static <C> C hascause(Throwable t, Class<C> c) {
+        while (t != null) {
+            if (c.isInstance(t))
+                return (c.cast(t));
+            t = t.getCause();
+        }
+        return (null);
     }
 
     static {

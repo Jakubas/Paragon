@@ -333,7 +333,12 @@ public class CharWnd extends Window {
             if (tip != lasttip) {
                 for (El el : els)
                     el.hl = false;
-                FoodInfo finf = (tip == null) ? null : ItemInfo.find(FoodInfo.class, tip.item().info());
+                FoodInfo finf;
+                try {
+                    finf = (tip == null) ? null : ItemInfo.find(FoodInfo.class, tip.item().info());
+                } catch (Loading l) {
+                    finf = null;
+                }
                 if (finf != null) {
                     for (int i = 0; i < els.size(); i++) {
                         El el = els.get(i);
@@ -481,9 +486,11 @@ public class CharWnd extends Window {
 
         private class ChangeObserver implements Observer {
             private String name;
+
             public ChangeObserver(String name) {
                 this.name = name;
             }
+
             @Override
             public void update(Observable o, Object arg) {
                 if (arg != null) {
@@ -1465,7 +1472,7 @@ public class CharWnd extends Window {
         } else if (place == "fmg") {
             fgt.add(child, 0, 0);
             if (child instanceof FightWnd)
-                ((FightWnd)child).loadschools();
+                ((FightWnd) child).loadschools();
         } else if (place == "wound") {
             this.wound = (Wound.Info) child;
             woundbox.add(child, Coord.z);

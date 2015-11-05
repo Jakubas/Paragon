@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 
 public class MapGridSave {
@@ -18,8 +18,10 @@ public class MapGridSave {
     private MCache.Grid g;
     public static Coord gul;
     public static Coord mgs;
-    private static Coord mglp;
     private static String session;
+    private static Boolean sessinited = false;
+
+    private static Map<Coord, Long> initgrids = new HashMap<Coord, Long>(9);
 
     public MapGridSave(MCache map, MCache.Grid g) {
         this.map = map;
@@ -28,20 +30,38 @@ public class MapGridSave {
 
         BufferedImage img = drawmap(MCache.cmaps);
 
-        if ((mgs == null || g.gc.dist(mglp) > 10) && img != null) {
-            session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
-            (new File("map/" + session)).mkdirs();
-            try {
-                Writer cursesf = new FileWriter("map/currentsession.js");
-                cursesf.write("var currentSession = '" + session + "';\n");
-                cursesf.close();
-            } catch (IOException e) {
-                abort = true;
+        int xd = Math.abs(g.gc.x);
+        int yd = Math.abs(g.gc.y);
+        if ((xd == 0 || xd == 1) && (yd == 0 || yd == 1)) {
+            synchronized (initgrids) {
+                boolean newsess = false;
+                Long id = initgrids.get(g.gc);
+                if (id == null) {
+                    initgrids.put(g.gc, g.id);
+                    if (initgrids.size() == 1)
+                        newsess = true;
+                } else if (id != g.id) {
+                    initgrids.clear();
+                    initgrids.put(g.gc, g.id);
+                    newsess = true;
+                }
+
+                if ((mgs == null || newsess) && img != null) {
+                    session = (new SimpleDateFormat("yyyy-MM-dd HH.mm.ss")).format(new Date(System.currentTimeMillis()));
+                    (new File("map/" + session)).mkdirs();
+                    try {
+                        Writer cursesf = new FileWriter("map/currentsession.js");
+                        cursesf.write("var currentSession = '" + session + "';\n");
+                        cursesf.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        abort = true;
+                    }
+                    mgs = g.gc;
+                    gul = g.ul;
+                }
             }
-            mgs = g.gc;
-            gul = g.ul;
         }
-        mglp = g.gc;
 
         if (!abort && img != null)
             save(img);
