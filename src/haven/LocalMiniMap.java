@@ -414,18 +414,20 @@ public class LocalMiniMap extends Widget {
             int tox = pox / 100 - 1;
             int toy = poy / 100 - 1;
 
-            for (int x = -ht; x < ht + ht; x++) {
-                for (int y = -vt; y < vt + vt; y++) {
-                    BufferedImage mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
-                    if (mt != null) {
-                        int mtcx = (x - tox) * 100 + pox;
-                        int mtcy = (y - toy) * 100 + poy;
-                        if (mtcx + 100 < 0 || mtcx > sz.x || mtcy + 100 < 0 || mtcy > sz.y)
-                            continue;
-                        Coord mtc = new Coord(mtcx, mtcy);
-                        g.image(mt, mtc);
-                        if (Config.mapshowgrid)
-                            g.image(gridred, mtc);
+            if (maptiles.size() >= 9) {
+                for (int x = -ht; x < ht + ht; x++) {
+                    for (int y = -vt; y < vt + vt; y++) {
+                        BufferedImage mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
+                        if (mt != null) {
+                            int mtcx = (x - tox) * 100 + pox;
+                            int mtcy = (y - toy) * 100 + poy;
+                            if (mtcx + 100 < 0 || mtcx > sz.x || mtcy + 100 < 0 || mtcy > sz.y)
+                                continue;
+                            Coord mtc = new Coord(mtcx, mtcy);
+                            g.image(mt, mtc);
+                            if (Config.mapshowgrid)
+                                g.image(gridred, mtc);
+                        }
                     }
                 }
             }
