@@ -19,7 +19,6 @@ public class MapGridSave {
     public static Coord gul;
     public static Coord mgs;
     private static String session;
-    private static Boolean sessinited = false;
 
     private static Map<Coord, Long> initgrids = new HashMap<Coord, Long>(9);
 
