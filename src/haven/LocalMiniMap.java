@@ -42,15 +42,15 @@ public class LocalMiniMap extends Widget {
     private static final Text.Foundry partyf = bushf;
     public final MapView mv;
     private Coord cc = null;
-    private MapTile cur = null;
+    private MCache.Grid cur = null;
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
-    private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>>(7, 0.75f, true) {
-        protected boolean removeEldestEntry(Map.Entry<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> eldest) {
+    private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MCache.Grid>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MCache.Grid>>(7, 0.75f, true) {
+        protected boolean removeEldestEntry(Map.Entry<Pair<MCache.Grid, Integer>, Defer.Future<MCache.Grid>> eldest) {
             return size() > 7;
         }
     };
@@ -58,16 +58,6 @@ public class LocalMiniMap extends Widget {
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
-
-    public static class MapTile {
-        public final MCache.Grid grid;
-        public final int seq;
-
-        public MapTile(MCache.Grid grid, int seq) {
-            this.grid = grid;
-            this.seq = seq;
-        }
-    }
 
     private BufferedImage tileimg(int t, BufferedImage[] texes) {
         BufferedImage img = texes[t];
@@ -388,13 +378,13 @@ public class LocalMiniMap extends Widget {
             }
             final int seq = plg.seq;
 
-            if ((cur == null) || plg != cur.grid || seq != cur.seq) {
-                Defer.Future<MapTile> f;
+            if (cur == null || plg != cur || seq != cur.seq) {
+                Defer.Future<MCache.Grid> f;
                 synchronized (cache) {
                     f = cache.get(new Pair<MCache.Grid, Integer>(plg, seq));
                     if (f == null) {
-                        f = Defer.later(new Defer.Callable<MapTile>() {
-                            public MapTile call() {
+                        f = Defer.later(new Defer.Callable<MCache.Grid>() {
+                            public MCache.Grid call() {
                                 if (plg.gc.equals(Coord.z))
                                     maptiles.clear();
                                 Coord ul = plg.ul;
@@ -408,7 +398,7 @@ public class LocalMiniMap extends Widget {
                                 maptiles.put(gc.add(-1, 1), drawmap(ul.add(-100, 100), cmaps));
                                 maptiles.put(gc.add(0, 1), drawmap(ul.add(0, 100), cmaps));
                                 maptiles.put(gc.add(1, 1), drawmap(ul.add(100, 100), cmaps));
-                                return(new MapTile(plg, seq));
+                                return plg;
                             }
                         });
                         cache.put(new Pair<MCache.Grid, Integer>(plg, seq), f);
@@ -425,8 +415,8 @@ public class LocalMiniMap extends Widget {
             int ht = (hhalf / 100) + 2;
             int vt = (vhalf / 100) + 2;
 
-            int pox = cur.grid.gc.x * 100 - cc.x + hhalf + delta.x;
-            int poy = cur.grid.gc.y * 100 - cc.y + vhalf + delta.y;
+            int pox = cur.gc.x * 100 - cc.x + hhalf + delta.x;
+            int poy = cur.gc.y * 100 - cc.y + vhalf + delta.y;
 
             int tox = pox / 100 - 1;
             int toy = poy / 100 - 1;
@@ -434,7 +424,7 @@ public class LocalMiniMap extends Widget {
             if (maptiles.size() >= 9) {
                 for (int x = -ht; x < ht + ht; x++) {
                     for (int y = -vt; y < vt + vt; y++) {
-                        BufferedImage mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
+                        BufferedImage mt = maptiles.get(cur.gc.add(x - tox, y - toy));
                         if (mt != null) {
                             int mtcx = (x - tox) * 100 + pox;
                             int mtcy = (y - toy) * 100 + poy;
