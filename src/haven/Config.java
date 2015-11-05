@@ -163,6 +163,9 @@ public class Config {
         put("gfx/kritter/chicken/rooster", Resource.loadtex("gfx/icons/deadrooster"));
         put("gfx/kritter/rabbit/rabbit", Resource.loadtex("gfx/icons/deadrabbit"));
     }};
+
+    public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
+            "gfx/kritter/bat/bat", "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx"));
     
     static {
         Arrays.sort(Config.boulders);

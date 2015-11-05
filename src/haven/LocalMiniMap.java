@@ -31,6 +31,8 @@ import static haven.MCache.tilesz;
 import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
+import java.util.List;
+
 import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
@@ -146,12 +148,18 @@ public class LocalMiniMap extends Widget {
 
     public void drawicons(GOut g) {
         OCache oc = ui.sess.glob.oc;
+        List<Gob> dangergobs = new ArrayList<Gob>();
         synchronized (oc) {
             for (Gob gob : oc) {
                 try {
                     GobIcon icon = gob.getattr(GobIcon.class);
                     Resource res = gob.getres();
                     if (res != null && (icon != null || Config.additonalicons.containsKey(res.name))) {
+                        if (Config.dangerousgobres.contains(res.name)) {
+                            dangergobs.add(gob);
+                            continue;
+                        }
+
                         boolean ignore = false;
                         if (Config.iconssel != null) {
                             for (String name : Config.iconssel) {
@@ -258,6 +266,15 @@ public class LocalMiniMap extends Widget {
                         }
                     }
                 } catch (Loading l) {
+                }
+            }
+
+            for (Gob gob : dangergobs) {
+                GobIcon icon = gob.getattr(GobIcon.class);
+                if (icon != null) {
+                    Coord gc = p2c(gob.rc);
+                    Tex tex = icon.tex();
+                    g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
                 }
             }
             
