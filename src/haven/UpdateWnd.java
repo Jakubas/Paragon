@@ -5,17 +5,17 @@ import java.awt.event.KeyEvent;
 import java.net.URI;
 
 public class UpdateWnd extends Window {
+    private static final String dwnurl = "https://github.com/romovs/amber/releases/download/";
 
-    public UpdateWnd(String durl, String version) {
+    public UpdateWnd(final String version) {
         super(Coord.z, "Update");
-        final String url = durl;
         add(new Label("New update is available - v" + version), new Coord(20, 40));
         add(new Button(200, "Download Update") {
             public void click() {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        desktop.browse(new URI(url.substring(0, url.length()-4) + "-upd.zip"));
+                        desktop.browse(new URI(dwnurl + version + "/amber-" + version + "-upd.zip"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -27,7 +27,7 @@ public class UpdateWnd extends Window {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        desktop.browse(new URI(url));
+                        desktop.browse(new URI(dwnurl + version + "/amber-" + version + ".zip"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
