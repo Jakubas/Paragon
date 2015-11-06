@@ -1,3 +1,8 @@
+Version 1.20.7
+    Fixed:
+        * Crash when drawing hostile animal icons.
+
+
 Version 1.20.6
     Fixed:
         * Minimap flicker when changing locations.
