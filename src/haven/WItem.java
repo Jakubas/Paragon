@@ -42,6 +42,9 @@ public class WItem extends Widget implements DTarget {
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
     private static final Color qualitybg = new Color(20, 20, 20, 250);
+    public static final Color[] wearclr = new Color[] {
+        new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
+    };
 
     public WItem(GItem item) {
         super(sqsz);
@@ -296,6 +299,23 @@ public class WItem extends Widget implements DTarget {
                             ItemInfo.Contents imtcnt = (ItemInfo.Contents) info;
                             if (imtcnt.content > 0)
                                 drawamountbar(g, imtcnt.content, imtcnt.isseeds);
+                        }
+                    }
+                } catch (Exception e) { // fail silently if info is not ready
+                }
+            }
+
+            if (Config.showwearbars) {
+                try {
+                    for (ItemInfo info : item.info()) {
+                        if (info.getClass().getName().equals("Wear")) {
+                            double d = (Integer) info.getClass().getDeclaredField("d").get(info);
+                            double m = (Integer) info.getClass().getDeclaredField("m").get(info);
+                            double p = (m - d) / m;
+                            int h = (int) (p * (double) sz.y);
+                            g.chcolor(wearclr[p == 1.0 ? 3 : (int) (p / 0.25)]);
+                            g.frect(new Coord(sz.x - 3, sz.y - h), new Coord(3, h));
+                            g.chcolor();
                         }
                     }
                 } catch (Exception e) { // fail silently if info is not ready
