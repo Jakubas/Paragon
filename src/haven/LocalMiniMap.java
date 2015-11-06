@@ -260,11 +260,14 @@ public class LocalMiniMap extends Widget {
             }
 
             for (Gob gob : dangergobs) {
-                GobIcon icon = gob.getattr(GobIcon.class);
-                if (icon != null) {
-                    Coord gc = p2c(gob.rc);
-                    Tex tex = icon.tex();
-                    g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
+                try {
+                    GobIcon icon = gob.getattr(GobIcon.class);
+                    if (icon != null) {
+                        Coord gc = p2c(gob.rc);
+                        Tex tex = icon.tex();
+                        g.image(tex, gc.sub(tex.sz().div(2)).add(delta));
+                    }
+                } catch (Loading l) {
                 }
             }
             
