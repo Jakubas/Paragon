@@ -1,3 +1,12 @@
+Version 1.20.6
+    Fixed:
+        * Minimap flicker when changing locations.
+
+    Misc:
+        * Render icons for hostile animals on top of all other icons.
+        * Button in updates checker for downloading reduced size update archive.
+
+
 Version 1.20.5
     Misc:
         * Upstream changes merge.
