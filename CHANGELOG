@@ -1,3 +1,8 @@
+Version 1.20.8
+    Fixed:
+        * Updates checker buttons not leading to the right URLs.
+
+
 Version 1.20.7
     Fixed:
         * Crash when drawing hostile animal icons.
