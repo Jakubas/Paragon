@@ -26,6 +26,7 @@
 
 package haven;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
@@ -59,6 +60,11 @@ public class RootWidget extends ConsoleHost {
             } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_P) {
                 Config.showplantgrowstage = !Config.showplantgrowstage;
                 Utils.setprefb("showplantgrowstage", Config.showplantgrowstage);
+            } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_X) {
+                Config.tilecenter = !Config.tilecenter;
+                Utils.setprefb("tilecenter", Config.tilecenter);
+                GameUI gi = findchild(GameUI.class);
+                gi.info("Tile centering is " + (Config.tilecenter ? "ON" : "OFF"), Color.WHITE);
             } else if (key == ':') {
                 entercmd();
             } else if (key != 0) {
