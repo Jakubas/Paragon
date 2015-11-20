@@ -154,16 +154,18 @@ public class Config {
     public static String[] treessel = Utils.getprefsa("treessel", null);
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
-            "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram", "rowboat"};
+            "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram", "rowboat", "arrow", "boarspear"};
     public static String[] iconssel = Utils.getprefsa("iconssel", null);
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(6) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(8) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
         put("gfx/kritter/chicken/chicken", Resource.loadtex("gfx/icons/deadhen"));
         put("gfx/kritter/chicken/rooster", Resource.loadtex("gfx/icons/deadrooster"));
         put("gfx/kritter/rabbit/rabbit", Resource.loadtex("gfx/icons/deadrabbit"));
+        put("gfx/terobjs/items/arrow", Resource.loadtex("gfx/icons/arrow"));
+        put("gfx/terobjs/items/boarspear", Resource.loadtex("gfx/icons/arrow"));
     }};
 
     public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
