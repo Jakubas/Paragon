@@ -342,6 +342,27 @@ public class LocalMiniMap extends Widget {
                             if (!ignore)
                                 return (gob);
                         }
+                    } else { // custom icons
+                        Coord gc = p2c(gob.rc);
+                        Coord sz = new Coord(18, 18);
+                        if (c.isect(gc.sub(sz.div(2)), sz)) {
+                            boolean ignore = false;
+                            if (Config.iconssel != null) {
+                                Resource res = gob.getres();
+                                if (res != null && Config.additonalicons.containsKey(res.name)) {
+                                    for (String name : Config.iconssel) {
+                                        if (res.basename().equals(name)) {
+                                            ignore = true;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    ignore = true;
+                                }
+                            }
+                            if (!ignore)
+                                return (gob);
+                        }
                     }
                 } catch (Loading l) {
                 }
