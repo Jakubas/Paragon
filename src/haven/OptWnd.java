@@ -1107,6 +1107,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Use French (AZERTY) keyboard layout") {
+            {
+                a = Config.userazerty;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("userazerty", val);
+                Config.userazerty = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();

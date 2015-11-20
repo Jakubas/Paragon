@@ -1132,6 +1132,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (key != 0)
                 return (false);
             int c = ev.getKeyChar();
+            if (Config.userazerty)
+                c = Utils.azerty2qwerty((char) c);
             if ((c < KeyEvent.VK_0) || (c > KeyEvent.VK_9))
                 return (false);
             int i = Utils.floormod(c - KeyEvent.VK_0 - 1, 10);

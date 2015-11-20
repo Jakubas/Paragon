@@ -247,6 +247,9 @@ public class FlowerMenu extends Widget {
     }
 
     public boolean type(char key, java.awt.event.KeyEvent ev) {
+        if (Config.userazerty)
+            key = Utils.azerty2qwerty(key);
+
         if ((key >= '0') && (key <= '9')) {
             int opt = (key == '0') ? 10 : (key - '1');
             if (opt < opts.length) {

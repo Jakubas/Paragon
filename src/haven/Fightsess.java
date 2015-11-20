@@ -200,6 +200,9 @@ public class Fightsess extends Widget {
 
     public boolean globtype(char key, KeyEvent ev) {
         int c = ev.getKeyChar();
+        if (Config.userazerty)
+            c = Utils.azerty2qwerty((char) c);
+
         if((key == 0) && (c >= KeyEvent.VK_1) && (c < KeyEvent.VK_1 + actions.length)) {
             int n = c - KeyEvent.VK_1;
             if ((ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
