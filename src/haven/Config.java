@@ -126,6 +126,7 @@ public class Config {
     public static boolean hidegobs = Utils.getprefb("hidegobs", false);
     public static boolean qualitybg = Utils.getprefb("qualitybg", false);
     public static boolean showwearbars = Utils.getprefb("showwearbars", false);
+    public static boolean tilecenter = Utils.getprefb("tilecenter", false);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;
