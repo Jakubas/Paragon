@@ -1014,6 +1014,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        general.add(new CheckBox("Automatically select 'Eat' action") {
+            {
+                a = Config.autoeat;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoeat", val);
+                Config.autoeat = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         general.add(new CheckBox("Run on login") {
             {
                 a = Config.runonlogin;

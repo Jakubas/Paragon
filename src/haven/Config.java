@@ -114,6 +114,7 @@ public class Config {
     public static boolean showinvonlogin = Utils.getprefb("showinvonlogin", false);
     public static boolean autopick = Utils.getprefb("autopick", false);
     public static boolean autoharvest = Utils.getprefb("autoharvest", false);
+    public static boolean autoeat = Utils.getprefb("autoeat", false);
     public static boolean runonlogin = Utils.getprefb("runonlogin", false);
     public static Coord chatsz = Utils.getprefc("chatsz", Coord.z);
     public static boolean alternmapctrls = Utils.getprefb("alternmapctrls", false);

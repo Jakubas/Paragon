@@ -102,6 +102,7 @@ public class FlowerMenu extends Widget {
         public void ntick(double s) {
             Petal pick = null;
             Petal harvest = null;
+            Petal eat = null;
             for (Petal p : opts) {
                 p.move(p.ta + ((1 - s) * PI), p.tr * s);
                 p.a = s;
@@ -109,11 +110,15 @@ public class FlowerMenu extends Widget {
                     pick = p;
                 else if (p.name.equals("Harvest"))
                     harvest = p;
+                else if (p.name.equals("Eat"))
+                    eat = p;
             }
             if (Config.autopick && pick != null && s == 1.0)
                 choose(pick);
             else if (Config.autoharvest && harvest != null && s == 1.0)
                 choose(harvest);
+            else if (Config.autoeat && eat != null && s == 1.0)
+                choose(eat);
         }
     }
 
