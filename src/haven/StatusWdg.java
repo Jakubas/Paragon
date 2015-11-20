@@ -23,7 +23,7 @@ public class StatusWdg extends Widget {
 
     private static final Tex hearthlingsplayingdef = Text.render("Players: ?", Color.WHITE).tex();
     private static final Tex pingtimedef = Text.render("Ping: ?", Color.WHITE).tex();
-    private static final Tex accountstatusdef = Text.render("Account status: ?", Color.WHITE).tex();
+    private static final Tex accountstatusdef = Text.render("Account: ?", Color.WHITE).tex();
     private static final Tex servertimedef = Text.render("Server time: ?", Color.WHITE).tex();
 
     private Tex hearthlingsplaying = hearthlingsplayingdef;
@@ -191,7 +191,7 @@ public class StatusWdg extends Widget {
         int retriescount = 0;
         while (retriescount < 2) {
             String profilepagecontent = geturlcontent("https://www.havenandhearth.com/portal/profile");
-            status = removehtmltags(getstringbetween(profilepagecontent, "Account status:", "(All times")).trim();
+            status = removehtmltags(getstringbetween(profilepagecontent, "Account:", "(All times")).trim();
             if (status.isEmpty()) {
                 mklogin();
                 ++retriescount;
@@ -205,7 +205,7 @@ public class StatusWdg extends Widget {
             status = "?";
 
         synchronized (StatusWdg.class) {
-            accountstatus = Text.render(String.format("Account status: %s", status), Color.WHITE).tex();
+            accountstatus = Text.render(String.format("Account: %s", status), Color.WHITE).tex();
         }
     }
 
