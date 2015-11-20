@@ -129,6 +129,24 @@ public class Inventory extends Widget implements DTarget {
                     }
                 }
             }
+        } else if (msg.equals("transfer")) {
+            Window stockpile = gameui().getwnd("Stockpile");
+            if (stockpile == null) {
+                super.wdgmsg(sender, msg, args);
+                return;
+            }
+
+            for (Widget w = stockpile.lchild; w != null; w = w.prev) {
+                if (w instanceof ISBox) {
+                    ISBox isb = (ISBox) w;
+                    if (isb.getfreespace() <= 0)
+                        return;
+                    GItem gitem = (GItem)sender;
+                    gitem.wdgmsg("take", args[0]);
+                    isb.drop(null, null);
+                    break;
+                }
+            }
         } else {
             super.wdgmsg(sender, msg, args);
         }
