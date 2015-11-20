@@ -120,7 +120,6 @@ public class Config {
     public static boolean alternmapctrls = Utils.getprefb("alternmapctrls", false);
     public static boolean autostudy = Utils.getprefb("autostudy", true);
     public static boolean showcontentsbars = Utils.getprefb("showcontentsbars", false);
-    public static boolean dropseeds = Utils.getprefb("dropseeds", false);
     public static boolean showdmgop = Utils.getprefb("showdmgop", false);
     public static boolean showdmgmy = Utils.getprefb("showdmgmy", false);
     public static boolean hidegobs = Utils.getprefb("hidegobs", false);
