@@ -1342,7 +1342,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 
         protected void hit(Coord pc, Coord mc, ClickInfo inf) {
             if (inf == null) {
-                if (Config.tilecenter) {
+                if (Config.tilecenter && clickb == 3) {
                     mc.x = mc.x / 11 * 11 + 5;
                     mc.y = mc.y / 11 * 11 + 5;
                 }
