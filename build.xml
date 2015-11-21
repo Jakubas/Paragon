@@ -121,7 +121,10 @@
     <delete dir="build" />
   </target>
 
-  <target name="rebuild" depends="clean, jars">   
+  <target name="rebuild" depends="clean, jars">
+    <copy todir="build/res">
+        <fileset dir="custom_res/"/>
+    </copy>
   </target>
   
   <target name="profile" depends="jars">
