@@ -1492,6 +1492,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
         delay(new Hittest(cc) {
             public void hit(Coord pc, Coord mc, ClickInfo inf) {
                 if (inf == null) {
+                    if (Config.tilecenter) {
+                        mc.x = mc.x / 11 * 11 + 5;
+                        mc.y = mc.y / 11 * 11 + 5;
+                    }
                     wdgmsg("itemact", pc, mc, ui.modflags());
                 } else {
                     if (inf.ol == null) {
