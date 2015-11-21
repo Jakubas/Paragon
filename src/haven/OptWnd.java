@@ -1066,6 +1066,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Highlight current opponent") {
+            {
+                a = Config.hlightcuropp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hlightcuropp", val);
+                Config.hlightcuropp = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();

@@ -127,6 +127,7 @@ public class Config {
     public static boolean showwearbars = Utils.getprefb("showwearbars", false);
     public static boolean tilecenter = Utils.getprefb("tilecenter", false);
     public static boolean userazerty = Utils.getprefb("userazerty", false);
+    public static boolean hlightcuropp = Utils.getprefb("hlightcuropp", false);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;

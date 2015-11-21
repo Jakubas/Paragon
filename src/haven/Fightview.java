@@ -46,6 +46,7 @@ public class Fightview extends Widget {
     private Avaview curava;
     private Button curpurs;
     public final Bufflist buffs = add(new Bufflist());
+    private static final Gob.Overlay curol = new Gob.Overlay(new FightCurrentOpp());
 
     {
         buffs.hide();
@@ -132,6 +133,19 @@ public class Fightview extends Widget {
             curava.avagob = rel.gobid;
         }
         current = rel;
+
+        if (Config.hlightcuropp) {
+            if (current != null) {
+                Gob curgob = ui.sess.glob.oc.getgob(current.gobid);
+                if (curgob != null && !curgob.ols.contains(curol))
+                    curgob.ols.add(curol);
+            }
+            for (Relation r : lsrel) {
+                Gob relgob = ui.sess.glob.oc.getgob(r.gobid);
+                if (relgob != null && r != rel)
+                    relgob.ols.remove(curol);
+            }
+        }
     }
 
     public void destroy() {
@@ -221,6 +235,11 @@ public class Fightview extends Widget {
             Relation rel = getrel((Integer) args[0]);
             OCache oc = ui.sess.glob.oc;
             oc.removedmgoverlay(rel.gobid);
+            if (Config.hlightcuropp) {
+                Gob relgob = ui.sess.glob.oc.getgob(rel.gobid);
+                if (relgob != null)
+                    relgob.ols.remove(curol);
+            }
             rel.remove();
             lsrel.remove(rel);
             if (lsrel.size() == 0) {
