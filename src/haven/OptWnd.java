@@ -1078,6 +1078,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Aggro closest unknown/red player on Tab key") {
+            {
+                a = Config.agroclosest;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("agroclosest", val);
+                Config.agroclosest = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();

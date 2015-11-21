@@ -722,7 +722,7 @@ public class Widget {
                 if (focused.type(key, ev))
                     return (true);
                 if (focustab) {
-                    if (key == '\t') {
+                    if (key == '\t' && !Config.agroclosest) {
                         Widget f = focused;
                         while (true) {
                             if ((ev.getModifiers() & InputEvent.SHIFT_MASK) == 0) {

@@ -714,6 +714,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
 
         public boolean globtype(char key, KeyEvent ev) {
+            if (Config.agroclosest && key == 9)
+                return super.globtype(key, ev);
+
             if ((gkey != -1) && (key == gkey)) {
                 click();
                 return (true);
@@ -836,6 +839,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
             Config.hidegobs = !Config.hidegobs;
             Utils.setprefb("hidegobs", Config.hidegobs);
+            return true;
+        } else if (ev.getKeyCode() == KeyEvent.VK_TAB && Config.agroclosest) {
+            if (map != null)
+                map.aggroclosest();
             return true;
         }
         return (super.globtype(key, ev));
