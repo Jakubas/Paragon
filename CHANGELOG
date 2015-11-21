@@ -1,3 +1,19 @@
+Version 1.21.0
+    New:
+        * Item wear bars.
+        * Option to automatically select Eat action.
+        * Perform right clicks at the center of a tile when ctrl+x is toggled.
+        * Transfer single item to a stockpile on shift+lmb.
+        * Show arrows and boar spears on minimap.
+        * Items with custom icons (arrows, toads, etc) can be picked from minimap.
+        * Option to to use AZERTY (French) keyboard layout instead of QWERTY.
+        * Highlight current combat opponent.
+        * Aggro closest unknown/red player on Tab key.
+
+    Misc:
+        * Removed seeds dropping on shift+d.
+
+
 Version 1.20.8
     Fixed:
         * Updates checker buttons not leading to the right URLs.
