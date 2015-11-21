@@ -191,7 +191,7 @@ public class StatusWdg extends Widget {
         int retriescount = 0;
         while (retriescount < 2) {
             String profilepagecontent = geturlcontent("https://www.havenandhearth.com/portal/profile");
-            status = removehtmltags(getstringbetween(profilepagecontent, "Account:", "(All times")).trim();
+            status = removehtmltags(getstringbetween(profilepagecontent, "Account status:", "(All times")).trim();
             if (status.isEmpty()) {
                 mklogin();
                 ++retriescount;
