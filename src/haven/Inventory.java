@@ -183,10 +183,10 @@ public class Inventory extends Widget implements DTarget {
         return items;
     }
 
-    public void drink(int threshold) {
+    public boolean drink(int threshold) {
         IMeter.Meter stam = gameui().getmeter("stam", 0);
         if (stam == null || stam.a > threshold)
-            return;
+            return false;
 
         List<WItem> containers = getitems("Waterskin", "Waterflask");
 
@@ -199,7 +199,7 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         if (hotwater == null)
-            return;
+            return false;
 
         // find any additional containers and refill the hotkeyed one
         for (WItem w : containers) {
@@ -236,5 +236,6 @@ public class Inventory extends Widget implements DTarget {
                 }
             }
         }
+        return true;
     }
 }
