@@ -293,16 +293,9 @@ public class WItem extends Widget implements DTarget {
             }
 
             if (Config.showcontentsbars) {
-                try {
-                    for (ItemInfo info : item.info()) {
-                        if (info instanceof ItemInfo.Contents) {
-                            ItemInfo.Contents imtcnt = (ItemInfo.Contents) info;
-                            if (imtcnt.content > 0)
-                                drawamountbar(g, imtcnt.content, imtcnt.isseeds);
-                        }
-                    }
-                } catch (Exception e) { // fail silently if info is not ready
-                }
+                ItemInfo.Contents cnt = item.getcontents();
+                if (cnt != null && cnt.content > 0)
+                    drawamountbar(g, cnt.content, cnt.isseeds);
             }
 
             if (Config.showwearbars) {
