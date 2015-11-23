@@ -14,7 +14,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public void draw(GOut g) {
-        Equipory e = getequipory();
+        Equipory e = gameui().getequipory();
         if (e != null) {
             g.image(sbg, Coord.z);
             WItem left = e.quickslots[6];
@@ -73,7 +73,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public boolean drop(Coord cc, Coord ul) {
-        Equipory e = getequipory();
+        Equipory e = gameui().getequipory();
         if (e != null) {
             e.wdgmsg("drop", cc.x <= 47 ? 6 : 7);
             return true;
@@ -83,7 +83,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public boolean iteminteract(Coord cc, Coord ul) {
-        Equipory e = getequipory();
+        Equipory e = gameui().getequipory();
         if (e != null) {
             WItem w = e.quickslots[cc.x <= 47 ? 6 : 7];
             if (w != null) {
@@ -101,7 +101,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
             return true;
         }
         dragging = null;
-        Equipory e = getequipory();
+        Equipory e = gameui().getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null) {
@@ -130,16 +130,5 @@ public class QuickSlotsWdg extends Widget implements DTarget {
             return;
         }
         super.mousemove(c);
-    }
-
-    private Equipory getequipory() {
-        Window e = ((GameUI) parent).equwnd;
-        if (e != null) {
-            for (Widget w = e.lchild; w != null; w = w.prev) {
-                if (w instanceof Equipory)
-                    return (Equipory) w;
-            }
-        }
-        return null;
     }
 }
