@@ -141,7 +141,7 @@ public class WItem extends Widget implements DTarget {
 
     public abstract class AttrCache<T> {
         private List<ItemInfo> forinfo = null;
-        private T save = null;
+        public T save = null;
 
         public T get() {
             try {
