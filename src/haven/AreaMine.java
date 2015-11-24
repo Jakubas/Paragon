@@ -105,7 +105,8 @@ public class AreaMine implements Runnable {
             if (gui.maininv != null) {
                 if (gui.maininv.drink(80)) {
                     try {
-                        do Thread.sleep(200); while (gui.prog >= 0);
+                        Thread.sleep(1000);
+                        do Thread.sleep(300); while (gui.prog >= 0);
                     } catch (InterruptedException e) {
                         break mine;
                     }
@@ -117,6 +118,11 @@ public class AreaMine implements Runnable {
             Resource res = map.tilesetr(t);
             if (res == null || !res.name.startsWith("gfx/tiles/rocks/"))
                 continue;
+
+            // stop if low on energy
+            IMeter.Meter nrj = gui.getmeter("nrj", 0);
+            if (nrj.a < 35)
+                break mine;
 
             mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 1, 0);
 
@@ -153,7 +159,7 @@ public class AreaMine implements Runnable {
 
                 // otherwise if we are out of stamina - repeat
                 IMeter.Meter stam = gui.getmeter("stam", 0);
-                if (stam.a <= 20) {
+                if (stam.a <= 30) {
                     i--;
                     break;
                 }

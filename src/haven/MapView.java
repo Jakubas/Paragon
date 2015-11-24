@@ -65,7 +65,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }};
     private long lastmmhittest = System.currentTimeMillis();
     private Coord lasthittestc = Coord.z;
-    private AreaMine areamine;
+    public AreaMine areamine;
 
     public interface Delayed {
         public void run(GOut g);

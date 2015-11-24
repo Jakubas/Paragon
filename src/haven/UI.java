@@ -155,6 +155,18 @@ public class UI {
                 throw (new UIException("Null parent widget " + parent + " for " + id, type, cargs));
             Widget wdg = pwdg.makechild(f, pargs, cargs);
             bind(wdg, id);
+
+            // drop everything except water containers if in area mining mode
+            GameUI gui = pwdg.gameui();
+            if (gui != null && gui.map != null && gui.map.areamine != null && wdg instanceof GItem) {
+                if (gui.maininv == pwdg) {
+                    GItem itm = (GItem) wdg;
+                    String name = itm.getname();
+                    if (!name.equals("Waterflask") && !name.equals("Waterskin"))
+                        itm.wdgmsg("drop", Coord.z);
+
+                }
+            }
         }
     }
 
