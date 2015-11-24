@@ -1,3 +1,11 @@
+Version 1.21.1
+    New:
+        * [WIP] Automatic mining.
+
+    Misc:
+        * Upstream changes merge.
+
+
 Version 1.21.0
     New:
         * Item wear bars.
