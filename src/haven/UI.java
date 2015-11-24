@@ -160,11 +160,19 @@ public class UI {
             GameUI gui = pwdg.gameui();
             if (gui != null && gui.map != null && gui.map.areamine != null && wdg instanceof GItem) {
                 if (gui.maininv == pwdg) {
-                    GItem itm = (GItem) wdg;
-                    String name = itm.getname();
-                    if (!name.equals("Waterflask") && !name.equals("Waterskin"))
-                        itm.wdgmsg("drop", Coord.z);
-
+                    final GItem itm = (GItem) wdg;
+                    Defer.later(new Defer.Callable<Void>() {
+                        public Void call() {
+                            try {
+                                String name = itm.resource().name;
+                                if (!name.endsWith("waterflask") && !name.endsWith("waterskin"))
+                                    itm.wdgmsg("drop", Coord.z);
+                            } catch (Loading e) {
+                                Defer.later(this);
+                            }
+                            return null;
+                        }
+                    });
                 }
             }
         }

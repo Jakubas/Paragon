@@ -9,7 +9,7 @@ public class AreaMine implements Runnable {
     private MapView mv;
     private Coord a, b, c, d;
     private boolean terminate = false;
-    private Set<String> miningtools = new HashSet<String>(Arrays.asList(
+    private static final Set<String> miningtools = new HashSet<String>(Arrays.asList(
             "Pickaxe", "Stone Axe", "Metal Axe", "Battleaxe of the Twelfth Bay"));
 
     public AreaMine(Coord a, Coord b, MapView mv) {
@@ -119,9 +119,9 @@ public class AreaMine implements Runnable {
             if (res == null || !res.name.startsWith("gfx/tiles/rocks/"))
                 continue;
 
-            // stop if low on energy
+            // stop if energy < 1500%
             IMeter.Meter nrj = gui.getmeter("nrj", 0);
-            if (nrj.a < 35)
+            if (nrj.a < 30)
                 break mine;
 
             mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 1, 0);
@@ -132,7 +132,7 @@ public class AreaMine implements Runnable {
                 } catch (InterruptedException e) {
                     break mine;
                 }
-                System.out.println("loop");
+
                 if (terminate)
                     break mine;
 

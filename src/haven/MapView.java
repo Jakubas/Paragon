@@ -1383,18 +1383,20 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public boolean mousedown(Coord c, int button) {
         parent.setfocus(this);
 
-        synchronized (this) {
-            if (areamine != null) {
-                areamine.terminate();
-                areamine = null;
-            }
-            Resource curs = ui.root.getcurs(c);
-            if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-                if (ui.modshift && selection == null) {
-                    selection = new Selector(this);
-                } else if (selection != null) {
-                    selection.destroy();
-                    selection = null;
+        if (button != 2) {
+            synchronized (this) {
+                if (areamine != null) {
+                    areamine.terminate();
+                    areamine = null;
+                }
+                Resource curs = ui.root.getcurs(c);
+                if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
+                    if (ui.modshift && selection == null) {
+                        selection = new Selector(this);
+                    } else if (selection != null) {
+                        selection.destroy();
+                        selection = null;
+                    }
                 }
             }
         }
