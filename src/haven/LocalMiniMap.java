@@ -347,18 +347,18 @@ public class LocalMiniMap extends Widget {
                         Coord sz = new Coord(18, 18);
                         if (c.isect(gc.sub(sz.div(2)), sz)) {
                             boolean ignore = false;
-                            if (Config.iconssel != null) {
-                                Resource res = gob.getres();
-                                if (res != null && Config.additonalicons.containsKey(res.name)) {
+                            Resource res = gob.getres();
+                            if (res != null && Config.additonalicons.containsKey(res.name)) {
+                                if (Config.iconssel != null) {
                                     for (String name : Config.iconssel) {
                                         if (res.basename().equals(name)) {
                                             ignore = true;
                                             break;
                                         }
                                     }
-                                } else {
-                                    ignore = true;
                                 }
+                            } else {
+                                ignore = true;
                             }
                             if (!ignore)
                                 return (gob);
