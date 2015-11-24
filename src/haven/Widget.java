@@ -504,7 +504,8 @@ public class Widget {
             if (focused == null)
                 setfocus(w);
         } else {
-            parent.newfocusable(w);
+            if (parent != null)
+                parent.newfocusable(w);
         }
     }
 
@@ -514,12 +515,13 @@ public class Widget {
                 findfocus();
             }
         } else {
-            parent.delfocusable(w);
+            if (parent != null)
+                parent.delfocusable(w);
         }
     }
 
     private void findfocus() {
-	/* XXX: Might need to check subwidgets recursively */
+    /* XXX: Might need to check subwidgets recursively */
         focused = null;
         for (Widget w = lchild; w != null; w = w.prev) {
             if (w.visible && w.autofocus) {

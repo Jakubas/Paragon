@@ -182,7 +182,7 @@ public abstract class ItemInfo {
 
             for (ItemInfo info : sub) {
                 if (info instanceof ItemInfo.Name) {
-                    ItemInfo.Name name = (ItemInfo.Name)info;
+                    ItemInfo.Name name = (ItemInfo.Name) info;
                     if (name.str != null) {
                         isseeds = name.str.text.contains(" seed");
                         int amountend = name.str.text.indexOf(' ');
@@ -305,7 +305,16 @@ public abstract class ItemInfo {
         for (Object o : rawinfo) {
             if (o instanceof Object[]) {
                 Object[] a = (Object[]) o;
-                Resource ttres = owner.glob().sess.getres((Integer) a[0]).get();
+                Resource ttres;
+                if (a[0] instanceof Integer) {
+                    ttres = owner.glob().sess.getres((Integer) a[0]).get();
+                } else if (a[0] instanceof Resource) {
+                    ttres = (Resource) a[0];
+                } else if (a[0] instanceof Indir) {
+                    ttres = (Resource) ((Indir) a[0]).get();
+                } else {
+                    throw (new ClassCastException("Unexpected info specification " + a[0].getClass()));
+                }
                 InfoFactory f = ttres.getcode(InfoFactory.class, true);
                 ItemInfo inf = f.build(owner, a);
                 if (inf != null)
