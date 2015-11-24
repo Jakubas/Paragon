@@ -468,7 +468,31 @@ public class OptWnd extends Window {
                 Utils.setprefd("studyalarmvol", vol);
             }
         }, new Coord(0, y));
+        y += 20;
+        audio.add(new CheckBox("Alarm when pony power < 10%") {
+            {
+                a = Config.ponyalarm;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("ponyalarm", val);
+                Config.ponyalarm = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.ponyalarmvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.ponyalarmvol = vol;
+                Utils.setprefd("ponyalarmvol", vol);
+            }
+        }, new Coord(0, y));
         // -------------------------------------------- audio 2nd column
         y = 0;
         audio.add(new Label("'Chip' sound volume"), new Coord(250, y));

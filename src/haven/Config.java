@@ -129,6 +129,8 @@ public class Config {
     public static boolean userazerty = Utils.getprefb("userazerty", false);
     public static boolean hlightcuropp = Utils.getprefb("hlightcuropp", false);
     public static boolean agroclosest = Utils.getprefb("agroclosest", false);
+    public static boolean ponyalarm = Utils.getprefb("ponyalarm", false);
+    public static double ponyalarmvol = Utils.getprefd("ponyalarmvol", 1.0);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;
