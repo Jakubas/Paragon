@@ -1167,6 +1167,30 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Reverse bad camera MMB x-axis") {
+            {
+                a = Config.reversebadcamx;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("reversebadcamx", val);
+                Config.reversebadcamx = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Reverse bad camera MMB y-axis") {
+            {
+                a = Config.reversebadcamy;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("reversebadcamy", val);
+                Config.reversebadcamy = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();

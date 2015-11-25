@@ -257,6 +257,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
         }
 
         public void drag(Coord c) {
+            if (Config.reversebadcamx)
+                c = new Coord(c.x + (dragorig.x - c.x) * 2, c.y);
+            if (Config.reversebadcamy)
+                c = new Coord(c.x, c.y + (dragorig.y - c.y) * 2);
             elev = elevorig - ((float) (c.y - dragorig.y) / 100.0f);
             if (elev < 0.0f) elev = 0.0f;
             if (elev > (Math.PI / 2.0)) elev = (float) Math.PI / 2.0f;
