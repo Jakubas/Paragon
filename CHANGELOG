@@ -1,3 +1,16 @@
+Version 1.21.2
+    New:
+        * Sound alarm when pony power drops below 10%.
+        * Option to reverse bad cam's middle mouse button axes.
+
+    Fixed:
+        * Interaction with minimap if Hide icons menu hasn't been ever used.
+         
+    Misc:
+        * Upstream changes merge.
+        * Auto mining is stable now.
+
+
 Version 1.21.1
     New:
         * [WIP] Automatic mining.
