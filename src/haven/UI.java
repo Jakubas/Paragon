@@ -165,7 +165,7 @@ public class UI {
                         public Void call() {
                             try {
                                 String name = itm.resource().name;
-                                if (!name.endsWith("waterflask") && !name.endsWith("waterskin"))
+                                if (!name.endsWith("waterflask") && !name.endsWith("waterskin") && !name.endsWith("pebble-gold"))
                                     itm.wdgmsg("drop", Coord.z);
                             } catch (Loading e) {
                                 Defer.later(this);
