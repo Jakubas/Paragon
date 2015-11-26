@@ -80,7 +80,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             } else if (e <= s && e <= v) {
                 min = e;
                 colormin = essenceclr;
-            } else if (s <= e && s <=v) {
+            } else if (s <= e && s <= v) {
                 min = s;
                 colormin = substanceclr;
             } else {
@@ -123,11 +123,11 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         public int itemnum();
     }
 
-    public class Amount extends ItemInfo implements NumberInfo {
+    public static class Amount extends ItemInfo implements NumberInfo {
         private final int num;
 
-        public Amount(int num) {
-            super(GItem.this);
+        public Amount(Owner owner, int num) {
+            super(owner);
             this.num = num;
         }
 
