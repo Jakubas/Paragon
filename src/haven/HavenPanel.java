@@ -332,7 +332,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
         }
 
         if (Config.showfps) {
-            FastText.aprintf(g, new Coord(HavenPanel.w - 50, 15), 0, 1, "FPS: %d", fps);
+            FastText.aprint(g, new Coord(HavenPanel.w - 50, 15), 0, 1, "FPS: " + fps);
         }
 
         if (Config.dbtext) {
