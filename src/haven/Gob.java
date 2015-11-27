@@ -41,19 +41,24 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
     public Collection<Overlay> ols = new LinkedList<Overlay>();
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
+    private static final Text.Foundry stagemax = new Text.Foundry(Text.sansb, 20).aa(true);
     private static final Tex[] gobhp = new Tex[] {
             Text.renderstroked("25%", Color.WHITE, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("50%", Color.WHITE, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("75%", Color.WHITE, Color.BLACK, gobhpf).tex()
     };
     private static final Color stagecolor = new Color(235, 235, 235);
+    private static final Color stagemaxcolor = new Color(254, 100, 100);
     private static final Tex[] cropstg = new Tex[] {
             Text.renderstroked("2", stagecolor, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("3", stagecolor, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("4", stagecolor, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex()
     };
+    private static final Tex cropstgmax = Text.renderstroked("\u2022", stagemaxcolor, Color.BLACK, stagemax).tex();
     private PView.Draw2D[] cropstgd = new PView.Draw2D[4];
+    private PView.Draw2D cropstgdmax;
+    private int cropstgmaxval = 0;
     private Overlay gobpath = null;
     private static final Tex[] treestg = new Tex[90];
 
@@ -131,6 +136,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
             };
         }
+
+        cropstgdmax = new PView.Draw2D() {
+            public void draw2d(GOut g) {
+                if (sc != null) {
+                    g.image(cropstgmax, sc);
+                }
+            }
+        };
     }
 
     public Gob(Glob glob, Coord c) {
@@ -306,8 +319,17 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                         if (rd != null) {
                             try {
                                 int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
-                                if (stage > 0 && stage < 5)
-                                    rl.add(cropstgd[stage-1], null);
+                                if (cropstgmaxval == 0) {
+                                    for (FastMesh.MeshRes layer : res.layers(FastMesh.MeshRes.class)) {
+                                        int stg = layer.id / 10;
+                                        if (stg > cropstgmaxval)
+                                            cropstgmaxval = stg;
+                                    }
+                                }
+                                if (stage == cropstgmaxval)
+                                    rl.add(cropstgdmax, null);
+                                else if (stage > 0 && stage < 5)
+                                    rl.add(cropstgd[stage - 1], null);
                             } catch (ArrayIndexOutOfBoundsException e) { // ignored
                             }
                         }
