@@ -159,7 +159,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         statuswindow = new StatusWdg();
         if (!Config.statuswdgvisible)
             statuswindow.hide();
-        add(statuswindow, new Coord(HavenPanel.w / 2, 5));
+        add(statuswindow, new Coord(HavenPanel.w / 2, 20));
     }
 
     /* Ice cream */
@@ -892,7 +892,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (map != null)
             map.resize(sz);
         beltwdg.c = new Coord(blpw + 10, sz.y - beltwdg.sz.y - 5);
-        statuswindow.c = new Coord(HavenPanel.w / 2, 5);
+        statuswindow.c = new Coord(HavenPanel.w / 2, 20);
         super.resize(sz);
     }
 
