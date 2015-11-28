@@ -1086,6 +1086,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        general.add(new CheckBox("Enable tracking on login") {
+            {
+                a = Config.enabletracking;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enabletracking", val);
+                Config.enabletracking = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
