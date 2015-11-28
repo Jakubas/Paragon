@@ -1073,6 +1073,19 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        // -------------------------------------------- general 2nd column
+        y = 0;
+        general.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
+            {
+                a = Config.showtoggles;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showtoggles", val);
+                Config.showtoggles = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();

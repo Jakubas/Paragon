@@ -31,6 +31,9 @@ import java.awt.Color;
 public class Bufflist extends Widget {
     static final int margin = 2;
     static final int num = 5;
+    public final static Resource buffswim = Resource.local().loadwait("gfx/hud/buffs/toggles/swim");
+    public final static Resource bufftrack = Resource.local().loadwait("gfx/hud/buffs/toggles/tracking");
+    public final static Resource buffcrime = Resource.local().loadwait("gfx/hud/buffs/toggles/crime");
 
     private void arrange(Widget imm) {
         int i = 0;
@@ -54,6 +57,17 @@ public class Bufflist extends Widget {
     public void addchild(Widget child, Object... args) {
         add(child);
         arrange(child);
+    }
+
+    public BuffToggle gettoggle(String name) {
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof BuffToggle) {
+                BuffToggle tgl = (BuffToggle) wdg;
+                if (tgl.name.equals(name))
+                    return tgl;
+            }
+        }
+        return null;
     }
 
     public void cdestroy(Widget ch) {

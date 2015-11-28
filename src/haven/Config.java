@@ -134,6 +134,7 @@ public class Config {
     public static boolean reversebadcamx = Utils.getprefb("reversebadcamx", false);
     public static boolean reversebadcamy = Utils.getprefb("reversebadcamy", false);
     public static boolean showservertime = Utils.getprefb("showservertime", false);
+    public static boolean showtoggles = Utils.getprefb("showtoggles", false);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;

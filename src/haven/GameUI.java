@@ -628,10 +628,28 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    private void togglebuff(String err, String name, Resource res) {
+        if (err.endsWith("on.") && buffs.gettoggle(name) == null) {
+            buffs.addchild(new BuffToggle(name, res));
+        } else if (err.endsWith("off.")) {
+            BuffToggle tgl = buffs.gettoggle(name);
+            if (tgl != null)
+                tgl.reqdestroy();
+        }
+    }
+
     public void uimsg(String msg, Object... args) {
         if (msg == "err") {
             String err = (String) args[0];
             error(err);
+            if (Config.showtoggles) {
+                if (err.startsWith("Swimming is now turned"))
+                    togglebuff(err, "swim", Bufflist.buffswim);
+                else if (err.startsWith("Tracking is now turned"))
+                    togglebuff(err, "track", Bufflist.bufftrack);
+                else if (err.startsWith("Criminal acts are now turned"))
+                    togglebuff(err, "crime", Bufflist.buffcrime);
+            }
         } else if (msg == "msg") {
             String text = (String) args[0];
             msg(text);
