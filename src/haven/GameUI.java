@@ -473,6 +473,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             minimapWnd = minimap();
             if (Config.enabletracking && menu != null)
                 menu.wdgmsg("act", new Object[]{"tracking"});
+            if (Config.enablecrime && menu != null)
+                menu.wdgmsg("act", new Object[]{"crime"});
         } else if (place == "fight") {
             fv = urpanel.add((Fightview) child, 0, 0);
         } else if (place == "fsess") {

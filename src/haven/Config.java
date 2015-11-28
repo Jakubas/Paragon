@@ -136,6 +136,7 @@ public class Config {
     public static boolean showservertime = Utils.getprefb("showservertime", false);
     public static boolean showtoggles = Utils.getprefb("showtoggles", false);
     public static boolean enabletracking = Utils.getprefb("enabletracking", false);
+    public static boolean enablecrime = Utils.getprefb("enablecrime", false);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;

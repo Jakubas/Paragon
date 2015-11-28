@@ -1098,6 +1098,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        general.add(new CheckBox("Enable criminal acts on login") {
+            {
+                a = Config.enablecrime;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enablecrime", val);
+                Config.enablecrime = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
