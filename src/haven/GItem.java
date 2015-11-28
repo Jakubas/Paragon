@@ -252,35 +252,42 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }
     }
 
-    public void qualityCalc() {
+    public void qualitycalc(List<ItemInfo> infolist) {
         double e = 0, s = 0, v = 0;
         boolean curio = false;
-        try {
-            for (ItemInfo info : info()) {
-                if (info.getClass().getSimpleName().equals("QBuff")) {
-                    try {
-                        String name = (String) info.getClass().getDeclaredField("name").get(info);
-                        double val = (Double) info.getClass().getDeclaredField("q").get(info);
-                        if ("Essence".equals(name))
-                            e = val;
-                        else if ("Substance".equals(name))
-                            s = val;
-                        else if ("Vitality".equals(name))
-                            v = val;
-                    } catch (Exception ex) {
-                    }
-                } else if (info.getClass() == Curiosity.class) {
-                    curio = true;
+        for (ItemInfo info : infolist) {
+            if (info.getClass().getSimpleName().equals("QBuff")) {
+                try {
+                    String name = (String) info.getClass().getDeclaredField("name").get(info);
+                    double val = (Double) info.getClass().getDeclaredField("q").get(info);
+                    if ("Essence".equals(name))
+                        e = val;
+                    else if ("Substance".equals(name))
+                        s = val;
+                    else if ("Vitality".equals(name))
+                        v = val;
+                } catch (Exception ex) {
                 }
+            } else if (info.getClass() == Curiosity.class) {
+                curio = true;
             }
-            quality = new Quality(e, s, v, curio);
-        } catch (Exception ex) {
         }
+        quality = new Quality(e, s, v, curio);
     }
 
     public Quality quality() {
-        if (quality == null)
-            qualityCalc();
+        if (quality == null) {
+            try {
+                for (ItemInfo info : info()) {
+                    if (info instanceof ItemInfo.Contents) {
+                        qualitycalc(((ItemInfo.Contents) info).sub);
+                        return quality;
+                    }
+                }
+                qualitycalc(info());
+            } catch (Exception ex) { // ignored
+            }
+        }
         return quality;
     }
 
