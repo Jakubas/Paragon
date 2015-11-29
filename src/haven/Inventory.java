@@ -112,7 +112,22 @@ public class Inventory extends Widget implements DTarget {
             Window smelter = gameui().getwnd("Ore Smelter");
             Window kiln = gameui().getwnd("Kiln");
             if (stockpile == null || smelter != null || kiln != null) {
-                for (WItem item : getitems((GItem) args[0]))
+                List<WItem> items = getitems((GItem) args[0]);
+                Collections.sort(items, new Comparator<WItem>() {
+                    public int compare(WItem a, WItem b) {
+                        GItem.Quality aq = a.item.quality();
+                        GItem.Quality bq = b.item.quality();
+                        if (aq == null || bq == null)
+                            return 0;
+                        else if (aq.avg == bq.avg)
+                            return 0;
+                        else if (aq.avg > bq.avg)
+                            return -1;
+                        else
+                            return 1;
+                    }
+                });
+                for (WItem item : items)
                     item.item.wdgmsg("transfer", Coord.z);
             } else {
                 for (Widget w = stockpile.lchild; w != null; w = w.prev) {

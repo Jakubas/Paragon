@@ -51,6 +51,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
         private static final DecimalFormat longfmt = new DecimalFormat("#.###");
         public double max, min;
+        public double avg;
         public Tex etex, stex, vtex;
         public Tex maxtex, mintex, avgtex, avgwholetex, lpgaintex, avgsvtex, avgsvwholetex;
         public boolean curio;
@@ -88,7 +89,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 colormin = vitalityclr;
             }
 
-            double avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
+            avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
             double avgsv = Config.arithavg ? (s + v) / 2.0 : Math.sqrt((s * s + v * v) / 2.0);
             if (curio) {
                 double lpgain = Math.sqrt(Math.sqrt((e * e + s * s + v * v) / 300.0));
