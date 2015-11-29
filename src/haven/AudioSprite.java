@@ -37,8 +37,12 @@ public class AudioSprite {
             if (clip.id == id)
                 cl.add(clip);
         }
-        if (!cl.isEmpty())
-            return (cl.get((int) (Math.random() * cl.size())));
+        if (!cl.isEmpty()) {
+            int rnd = (int) (Math.random() * cl.size());
+            if (Config.nometallicsfx && rnd == 1 && "sfx/items/pickaxe".equals(res.name) )
+                rnd = 0;
+            return cl.get(rnd);
+        }
         return (null);
     }
 

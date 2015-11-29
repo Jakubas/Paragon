@@ -539,7 +539,18 @@ public class OptWnd extends Window {
                 Utils.setprefd("sfxquernvol", vol);
             }
         }, new Coord(250, y));
+        y += 20;
+        audio.add(new CheckBox("Disable metallic mining sound") {
+            {
+                a = Config.nometallicsfx;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("nometallicsfx", val);
+                Config.nometallicsfx = val;
+                a = val;
+            }
+        }, new Coord(250, y));
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
