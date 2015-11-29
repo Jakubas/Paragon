@@ -19,8 +19,8 @@ public class MinimapWnd extends Widget implements DTarget {
     public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22);
     private final Widget mmap;
     private final MapView map;
-    private IButton pclaim, vclaim, center, viewdist, grid;
-    private ToggleButton lock;
+    private IButton center, viewdist, grid;
+    private ToggleButton pclaim, vclaim,lock;
     private boolean minimized;
     private Coord szr;
     private boolean resizing;
@@ -55,7 +55,12 @@ public class MinimapWnd extends Widget implements DTarget {
         this.map = _map;
         this.c = Coord.z;
 
-        pclaim = new IButton("gfx/hud/lbtn-vil", "", "-d", "-h") {
+        if (Utils.getprefb("showpclaim", false))
+            map.enol(0, 1);
+        if (Utils.getprefb("showvclaim", false))
+            map.enol(2, 3);
+
+        pclaim = new ToggleButton("gfx/hud/wndmap/btns/claim", "gfx/hud/wndmap/btns/claim-d", map.visol(0)) {
             {tooltip = Text.render("Display personal claims");}
             public void click() {
                 if((map != null) && !map.visol(0)) {
@@ -67,7 +72,7 @@ public class MinimapWnd extends Widget implements DTarget {
                 }
             }
         };
-        vclaim = new IButton("gfx/hud/lbtn-claim", "", "-d", "-h") {
+        vclaim = new ToggleButton("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", map.visol(2)) {
             {tooltip = Text.render("Display village claims");}
             public void click() {
                 if ((map != null) && !map.visol(2)) {
@@ -79,27 +84,27 @@ public class MinimapWnd extends Widget implements DTarget {
                 }
             }
         };
-        center = new IButton("gfx/hud/center", "", "", "") {
+        center = new IButton("gfx/hud/wndmap/btns/center", "", "", "") {
             {tooltip = Text.render("Center the map on player");}
             public void click() {
                 ((LocalMiniMap)mmap).center();
             }
         };
-        lock = new ToggleButton("gfx/hud/lock", "gfx/hud/lockd", Config.maplocked) {
+        lock = new ToggleButton("gfx/hud/wndmap/btns/lock-d", "gfx/hud/wndmap/btns/lock", Config.maplocked) {
             { tooltip = Text.render("Lock map dragging"); }
             public void click() {
                 Config.maplocked = !Config.maplocked;
                 Utils.setprefb("maplocked", Config.maplocked);
             }
         };
-        viewdist = new IButton("gfx/hud/viewdist", "", "", "") {
+        viewdist = new IButton("gfx/hud/wndmap/btns/viewdist", "", "", "") {
             {tooltip = Text.render("Show view distance box");}
             public void click() {
                 Config.mapshowviewdist = !Config.mapshowviewdist;
                 Utils.setprefb("mapshowviewdist", Config.mapshowviewdist);
             }
         };
-        grid = new IButton("gfx/hud/grid", "", "", "") {
+        grid = new IButton("gfx/hud/wndmap/btns/grid", "", "", "") {
             {tooltip = Text.render("Show map grid");}
             public void click() {
                 Config.mapshowgrid = !Config.mapshowgrid;
@@ -108,18 +113,13 @@ public class MinimapWnd extends Widget implements DTarget {
         };
 
         add(mmap, 1, 27);
-        add(pclaim, 4, -5);
-        add(vclaim, 4, -10);
-        add(center, 50, -10);
-        add(lock, 110, 3);
-        add(viewdist, 99, -10);
-        add(grid, 126, -10);
+        add(pclaim, 5, 3);
+        add(vclaim, 29, 3);
+        add(center, 53, 3);
+        add(lock, 77, 3);
+        add(viewdist, 101, 3);
+        add(grid, 125, 3);
         pack();
-
-        if (Utils.getprefb("showpclaim", false))
-            map.enol(0, 1);
-        if (Utils.getprefb("showvclaim", false))
-            map.enol(2, 3);
     }
 
     protected void added() {
