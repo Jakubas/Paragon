@@ -38,6 +38,7 @@ public class Fightview extends Widget {
     static Coord cgivec = new Coord(cavac.x - 35, cavac.y);
     static Coord cpursc = new Coord(cavac.x - 75, cgivec.y + 35);
     LinkedList<Relation> lsrel = new LinkedList<Relation>();
+    private List<Long> rotationlist = new ArrayList<Long>();
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
     public double atkcs, atkct;
@@ -190,6 +191,37 @@ public class Fightview extends Widget {
         throw (new Notfound(gobid));
     }
 
+    private long lastrot = System.currentTimeMillis();
+    public void rotateopp() {
+        if (lsrel.size() <= 1 || System.currentTimeMillis() - lastrot < 500)
+            return;
+
+        lastrot = System.currentTimeMillis();
+
+        for (int i = 0; i < rotationlist.size(); i++) {
+            try {
+                if (rotationlist.get(i) == current.gobid) {
+                    long nxtid = rotationlist.get(i + 1 == rotationlist.size() ? 0 : i + 1);
+                    OCache oc = ui.sess.glob.oc;
+                    synchronized (oc) {
+                        for (Gob gob : oc) {
+                            if (gob.id == nxtid) {
+                                GameUI gui = gameui();
+                                gui.menu.wdgmsg("act", new Object[]{"aggro"});
+                                gui.map.wdgmsg("click", gob.sc, Coord.z, 1, 0, 0, (int) gob.id, gob.rc, 0, 0);
+                                Gob pl = gui.map.player();
+                                gui.map.wdgmsg("click", pl.sc, pl.rc, 3, 0);
+                                return;
+                            }
+                        }
+                    }
+                    return;
+                }
+            } catch (IndexOutOfBoundsException e) { // ignored
+            }
+        }
+    }
+
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == curava) {
             wdgmsg("click", (int) current.gobid, args[0]);
@@ -229,6 +261,7 @@ public class Fightview extends Widget {
             rel.ip = (Integer) args[2];
             rel.oip = (Integer) args[3];
             lsrel.addFirst(rel);
+            rotationlist.add(rel.gobid);
             ui.sess.glob.oc.isfight = true;
             return;
         } else if (msg == "del") {
@@ -242,6 +275,7 @@ public class Fightview extends Widget {
             }
             rel.remove();
             lsrel.remove(rel);
+            rotationlist.remove(rel.gobid);
             if (lsrel.size() == 0) {
                 oc.removedmgoverlay(MapView.plgob);
                 oc.isfight = false;
