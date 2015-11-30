@@ -532,7 +532,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (place == "chat") {
             ChatUI.Channel prevchannel = chat.sel;
             chat.addchild(child);
-            if (Config.selectsyslogonlogin && prevchannel != null && chat.sel.cb == null) {
+            if (Config.syslogonlogin && prevchannel != null && chat.sel.cb == null) {
                  chat.select(prevchannel);
             }
         } else if (place == "party") {
