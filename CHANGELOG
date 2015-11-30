@@ -1,3 +1,18 @@
+Version 1.22.0
+    New:
+        * Show distance and relative location of party members.
+        * Option to show buff icons when swimming/tracking/crime is toggled on.
+        * Option to activate tracking/criminal acts on login.
+        * Rotate between combat opponents with shift + mouse wheel.
+        * Option to show server time on the screen (removed from status widget).
+        * Option to disable metallic mining sound.
+
+    Misc:
+        * Show last stage for crops as a red dot instead of a number.
+        * Display container (buckets, etc.) content quality instead of the container's quality.
+        * Added frogs to hide icons list.
+
+
 Version 1.21.2
     New:
         * Sound alarm when pony power drops below 10%.
