@@ -1676,7 +1676,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
                 modflags = ui.modflags();
                 xl.mv = true;
                 mgrab = ui.grabmouse(MapView.this);
-                ol = glob.map.new Overlay(sc, sc, 1 << 17);
+                synchronized (glob.map.grids) {
+                    ol = glob.map.new Overlay(sc, sc, 1 << 17);
+                }
                 return (true);
             }
         }

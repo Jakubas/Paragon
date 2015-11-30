@@ -21,9 +21,12 @@ public class AreaMine implements Runnable {
     }
 
     public void run() {
-        MCache map = mv.ui.sess.glob.map;
+        MCache map = mv.glob.map;
 
-        MCache.Overlay ol = mv.glob.map.new Overlay(a, b, 1 << 18);
+        MCache.Overlay ol;
+        synchronized (map.grids) {
+            ol = mv.glob.map.new Overlay(a, b, 1 << 18);
+        }
         mv.enol(18);
 
         Coord pc = mv.player().rc.div(11);
@@ -167,7 +170,9 @@ public class AreaMine implements Runnable {
         }
 
         mv.disol(18);
-        ol.destroy();
+        synchronized (map.grids) {
+            ol.destroy();
+        }
     }
 
     public void terminate() {
