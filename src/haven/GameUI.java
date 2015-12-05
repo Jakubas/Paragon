@@ -71,6 +71,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public QuickSlotsWdg quickslots;
     public StatusWdg statuswindow;
     private boolean updhanddestroyed = false;
+    public static boolean swimon = false;
+    public static boolean crimeon = false;
+    public static boolean trackon = false;
+    private boolean crimeautotgld = false;
+    private boolean trackautotgld = false;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -471,10 +476,27 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (minimapWnd != null)
                 ui.destroy(minimapWnd);
             minimapWnd = minimap();
-            if (Config.enabletracking && menu != null)
+            if (Config.enabletracking && menu != null && !trackon) {
                 menu.wdgmsg("act", new Object[]{"tracking"});
-            if (Config.enablecrime && menu != null)
+                trackautotgld = true;
+            }
+            if (Config.enablecrime && menu != null && !crimeon) {
+                crimeautotgld = true;
                 menu.wdgmsg("act", new Object[]{"crime"});
+            }
+
+            if (trackon) {
+                buffs.addchild(new BuffToggle("track", Bufflist.bufftrack));
+                errornosfx("Tracking is now turned on.");
+            }
+            if (crimeon) {
+                buffs.addchild(new BuffToggle("crime", Bufflist.buffcrime));
+                errornosfx("Criminal acts are now turned on.");
+            }
+            if (swimon) {
+                buffs.addchild(new BuffToggle("swim", Bufflist.buffswim));
+                errornosfx("Swimming is now turned on.");
+            }
         } else if (place == "fight") {
             fv = urpanel.add((Fightview) child, 0, 0);
         } else if (place == "fsess") {
@@ -639,25 +661,48 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private void togglebuff(String err, String name, Resource res) {
         if (err.endsWith("on.") && buffs.gettoggle(name) == null) {
             buffs.addchild(new BuffToggle(name, res));
+            if (name.equals("swim"))
+                swimon = true;
+            else if (name.equals("crime"))
+                crimeon = true;
+            else if (name.equals("track"))
+                trackon = true;
         } else if (err.endsWith("off.")) {
             BuffToggle tgl = buffs.gettoggle(name);
             if (tgl != null)
                 tgl.reqdestroy();
+            if (name.equals("swim"))
+                swimon = true;
+            else if (name.equals("crime"))
+                crimeon = false;
+            else if (name.equals("track"))
+                trackon = false;
         }
     }
 
     public void uimsg(String msg, Object... args) {
         if (msg == "err") {
             String err = (String) args[0];
-            error(err);
             if (Config.showtoggles) {
-                if (err.startsWith("Swimming is now turned"))
+                if (err.startsWith("Swimming is now turned")) {
                     togglebuff(err, "swim", Bufflist.buffswim);
-                else if (err.startsWith("Tracking is now turned"))
+                } else if (err.startsWith("Tracking is now turned")) {
                     togglebuff(err, "track", Bufflist.bufftrack);
-                else if (err.startsWith("Criminal acts are now turned"))
+                    if (trackautotgld) {
+                        errornosfx(err);
+                        trackautotgld = false;
+                        return;
+                    }
+                } else if (err.startsWith("Criminal acts are now turned")) {
                     togglebuff(err, "crime", Bufflist.buffcrime);
+                    if (crimeautotgld) {
+                        errornosfx(err);
+                        crimeautotgld = false;
+                        return;
+                    }
+                }
             }
+            error(err);
         } else if (msg == "msg") {
             String text = (String) args[0];
             msg(text);
@@ -941,6 +986,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void error(String msg) {
         msg(msg, new Color(192, 0, 0), new Color(255, 0, 0));
         Audio.play(errsfx);
+    }
+
+    public void errornosfx(String msg) {
+        msg(msg, new Color(192, 0, 0), new Color(255, 0, 0));
     }
 
     public void msg(String msg) {

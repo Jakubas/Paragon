@@ -55,6 +55,9 @@ public class LoginScreen extends Widget {
         this.add(ll);
         ll.show();
         ll.raise();
+        GameUI.swimon = false;
+        GameUI.trackon = false;
+        GameUI.crimeon = false;
     }
 
     private static abstract class Login extends Widget {
