@@ -1428,7 +1428,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
             if ((placing.lastmc == null) || !placing.lastmc.equals(c)) {
                 delay(placing.new Adjust(c, ui.modflags()));
             }
-        } else if (ui.modshift && !ui.modctrl) {
+        } else if (ui.modshift && !ui.modctrl && Config.resinfo) {
             long now = System.currentTimeMillis();
             if ((now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) && gameui().hand.isEmpty()) {
                 lastmmhittest = now;
@@ -1450,7 +1450,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
                     }
                 });
             }
-        } else if (ui.modshift && ui.modctrl) {
+        } else if (ui.modshift && ui.modctrl && Config.resinfo) {
             long now = System.currentTimeMillis();
             if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
                 lastmmhittest = now;
