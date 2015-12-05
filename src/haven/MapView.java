@@ -1430,7 +1430,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
             }
         } else if (ui.modshift && !ui.modctrl) {
             long now = System.currentTimeMillis();
-            if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
+            if ((now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) && gameui().hand.isEmpty()) {
                 lastmmhittest = now;
                 lasthittestc = c;
                 delay(new Hittest(c) {
