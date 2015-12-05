@@ -1061,6 +1061,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        general.add(new CheckBox("Automatically select 'Split' action") {
+            {
+                a = Config.autosplit;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autosplit", val);
+                Config.autosplit = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         general.add(new CheckBox("Run on login") {
             {
                 a = Config.runonlogin;
