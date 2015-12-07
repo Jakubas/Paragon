@@ -26,16 +26,18 @@
 
 package haven;
 
-import static haven.MCache.tilesz;
-
 import haven.GLProgram.VarID;
 import haven.resutil.BPRadSprite;
 
-import java.awt.Color;
+import javax.media.opengl.GL;
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.lang.reflect.*;
-import javax.media.opengl.*;
+import java.util.List;
+
+import static haven.MCache.tilesz;
 
 public class MapView extends PView implements DTarget, Console.Directory {
     public static long plgob = -1;
@@ -758,11 +760,24 @@ public class MapView extends PView implements DTarget, Console.Directory {
             return (new Coord3f(cc.x, cc.y, glob.map.getcz(cc)));
     }
 
+    private TexGL clickbuf = null;
+    private GLFrameBuffer clickfb = null;
     private final RenderContext clickctx = new RenderContext();
 
     private GLState.Buffer clickbasic(GOut g) {
         GLState.Buffer ret = basic(g);
         clickctx.prep(ret);
+        if ((clickbuf == null) || !clickbuf.sz().equals(sz)) {
+            if (clickbuf != null) {
+                clickfb.dispose();
+                clickfb = null;
+                clickbuf.dispose();
+                clickbuf = null;
+            }
+            clickbuf = new TexE(sz, GL.GL_RGB, GL.GL_RGB, GL.GL_UNSIGNED_BYTE);
+            clickfb = new GLFrameBuffer(clickbuf, null);
+        }
+        clickfb.prep(ret);
         return (ret);
     }
 
@@ -1534,8 +1549,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
                         lastintergobrc = inf.gob.rc;
                         lastintermid = getid(inf.r);
                         wdgmsg("itemact", pc, mc, ui.modflags(), 0, lastintergobid, lastintergobrc, 0, lastintermid);
-                    }
-                    else {
+                    } else {
                         wdgmsg("itemact", pc, mc, ui.modflags(), 1, (int) inf.gob.id, inf.gob.rc, inf.ol.id, getid(inf.r));
                     }
                 }
