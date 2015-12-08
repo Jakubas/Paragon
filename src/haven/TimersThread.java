@@ -25,7 +25,7 @@ public class TimersThread extends Thread {
                     if (!timer.active)
                         continue;
 
-                    timer.elapsed = globtime() / 3 - timer.start;
+                    timer.elapsed = Math.round(globtime() / 3.0d) - timer.start;
                     timer.updateRemaining();
 
                     if (timer.elapsed >= timer.duration) {
