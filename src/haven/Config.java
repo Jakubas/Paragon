@@ -185,7 +185,8 @@ public class Config {
     }};
 
     public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
-            "gfx/kritter/bat/bat", "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx"));
+            "gfx/kritter/bat/bat", "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx",
+            "gfx/kritter/badger/badger"));
     
     static {
         Arrays.sort(Config.boulders);
