@@ -1707,7 +1707,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
                     mgrab.remove();
                     if (mv != null) {
                         areamine = new AreaMine(ol.getc1(), ol.getc2(), mv);
-                        new Thread(areamine, "areamine").start();
+                        new Thread(areamine, "Area miner").start();
                         if (selection != null) {
                             selection.destroy();
                             selection = null;
