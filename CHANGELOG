@@ -1,3 +1,19 @@
+Version 1.23.0
+    New:
+        * Option to show animal radius.
+        * Option to activate System log on login (dev. by b0r3d0m).
+        * Option to auto select 'Split' action.
+    
+    Fixed:
+        * Crime/tracking toggles behavior when switching chars. 
+        * Minimap not updating on tiles change.
+
+    Misc:
+        * Resource/tile info on shift/shift+ctrl functionality can be switched off and on with ctrl+i now. 
+        * Added wagon icon to Hide icons list.
+        * Merged changes from the vanilla client which supposedly fix mouse issues on Mac OS X Java 8.
+
+
 Version 1.22.0
     New:
         * Show distance and relative location of party members.
