@@ -141,6 +141,7 @@ public class Config {
     public static boolean enablecrime = Utils.getprefb("enablecrime", false);
     public static boolean nometallicsfx = Utils.getprefb("nometallicsfx", false);
     public static boolean resinfo = Utils.getprefb("resinfo", false);
+    public static boolean showanimalrad = Utils.getprefb("showanimalrad", false);
     public static boolean hwcursor = false;
     public static String playerposfile;
     public static byte[] authck = null;

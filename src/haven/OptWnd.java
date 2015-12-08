@@ -815,6 +815,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(560, y));
+        y += 35;
+        display.add(new CheckBox("Show animal radius") {
+            {
+                a = Config.showanimalrad;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showanimalrad", val);
+                Config.showanimalrad = val;
+                a = val;
+            }
+        }, new Coord(560, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
