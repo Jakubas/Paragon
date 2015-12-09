@@ -622,14 +622,14 @@ public class MapView extends PView implements DTarget, Console.Directory {
                 }
             }
 
-            if (res != null && dangerousanimalrad.contains(res.name)) {
+            /*if (res != null && dangerousanimalrad.contains(res.name)) {
                 if (Config.showanimalrad) {
                     if (!gob.ols.contains(animalradius))
                         gob.ols.add(animalradius);
                 } else {
                     gob.ols.remove(animalradius);
                 }
-            }
+            }*/
         } catch (Loading le) {
         }
     }
