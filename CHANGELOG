@@ -1,6 +1,5 @@
 Version 1.23.0
     New:
-        * Option to show animal radius.
         * Option to activate System log on login (dev. by b0r3d0m).
         * Option to auto select 'Split' action.
     
