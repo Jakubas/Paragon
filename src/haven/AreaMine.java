@@ -106,10 +106,18 @@ public class AreaMine implements Runnable {
             // drink
             GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
             if (gui.maininv != null) {
-                if (gui.maininv.drink(80)) {
+                if (gui.maininv.drink(70)) {
                     try {
-                        Thread.sleep(1000);
-                        do Thread.sleep(300); while (gui.prog >= 0);
+                        Thread.sleep(500);
+                        do {
+                            IMeter.Meter stam = gui.getmeter("stam", 0);
+                            if (stam.a >= 84)
+                                break;
+                            Thread.sleep(10);
+                            stam = gui.getmeter("stam", 0);
+                            if (stam.a >= 84)
+                                break;
+                        } while (gui.prog >= 0);
                     } catch (InterruptedException e) {
                         break mine;
                     }
