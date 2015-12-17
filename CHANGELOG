@@ -1,3 +1,8 @@
+Version 1.23.2
+    Fixed:
+        * Updated builtin-res.jar
+
+
 Version 1.23.1
     Misc:
         * Auto miner: stop drinking when stamina reaches ~90%. 
