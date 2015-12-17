@@ -1,3 +1,10 @@
+Version 1.23.1
+    Misc:
+        * Auto miner: stop drinking when stamina reaches ~90%. 
+        * Moved option to force hardware cursor from command line switch to settings window.
+        * Merged changes from the vanilla client.
+
+
 Version 1.23.0
     New:
         * Option to activate System log on login (dev. by b0r3d0m).
