@@ -1288,6 +1288,19 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Force hardware cursor (req. restart)") {
+            {
+                a = Config.hwcursor;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hwcursor", val);
+                Config.hwcursor = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
