@@ -1295,6 +1295,8 @@ public class ChatUI extends Widget {
                 doff = c;
             } else {
                 resize(sz.x, savedh = Math.max(111, sz.y + doff.y - c.y));
+                GameUI gui = gameui();
+                gui.questpanel.c = new Coord(10, gui.sz.y - gui.chat.sz.y - gui.beltwdg.sz.y - gui.questpanel.sz.y - 10);
             }
         } else {
             super.mousemove(c);

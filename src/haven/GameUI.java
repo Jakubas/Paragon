@@ -71,6 +71,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
     public StatusWdg statuswindow;
+    public AlignPanel questpanel;
     private boolean updhanddestroyed = false;
     public static boolean swimon = false;
     public static boolean crimeon = false;
@@ -571,18 +572,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    if(qqview != null)
 		qqview.reqdestroy();
 	    final Widget cref = qqview = child;
-	    add(new AlignPanel() {
-		    {add(cref);}
+        questpanel = new AlignPanel() {
+            {add(cref);}
 
-		    protected Coord getc() {
-			return(new Coord(10, GameUI.this.sz.y - this.sz.y - 10));
-		    }
+            protected Coord getc() {
+                return(new Coord(10, GameUI.this.sz.y - chat.sz.y - beltwdg.sz.y - this.sz.y - 10));
+            }
 
-		    public void cdestroy(Widget ch) {
-			qqview = null;
-			destroy();
-		    }
-		});
+            public void cdestroy(Widget ch) {
+                qqview = null;
+                destroy();
+            }
+        };
+	    add(questpanel);
         } else if (place == "misc") {
             add(child, (Coord) args[1]);
         } else {
