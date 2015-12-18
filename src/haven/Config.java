@@ -100,7 +100,8 @@ public class Config {
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
     public static boolean notifykinonline = Utils.getprefb("notifykinonline", false);
-    public static boolean showterobjsrad = Utils.getprefb("showterobjsrad", false);
+    public static boolean showminerad = Utils.getprefb("showminerad", false);
+    public static boolean showfarmrad = Utils.getprefb("showfarmrad", false);
     public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
     public static boolean simpleforage = Utils.getprefb("simpleforage", false);

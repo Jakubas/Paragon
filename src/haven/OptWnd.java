@@ -815,6 +815,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(560, y));
+        y += 35;
+        display.add(new CheckBox("Show troughs/beehives radius") {
+            {
+                a = Config.showfarmrad;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showfarmrad", val);
+                Config.showfarmrad = val;
+                a = val;
+            }
+        }, new Coord(560, y));
         /*y += 35;
         display.add(new CheckBox("Show animal radius") {
             {

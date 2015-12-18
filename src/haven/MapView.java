@@ -59,12 +59,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private boolean showgrid;
     private TileOutline gridol;
     private Coord lasttc = Coord.z;
-    private static final Map<String, Gob.Overlay> radmap = new HashMap<String, Gob.Overlay>(4) {{
-        put("gfx/terobjs/minesupport", new Gob.Overlay(new BPRadSprite(100.0F, 0)));
-        put("gfx/terobjs/column", new Gob.Overlay(new BPRadSprite(125.0F, 0)));
-        put("gfx/terobjs/trough", new Gob.Overlay(new BPRadSprite(200.0F, -10.0F)));
-        put("gfx/terobjs/beehive", new Gob.Overlay(new BPRadSprite(151.0F, -10.0F)));
-    }};
+    private static final Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0));
+    private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0));
+    private static final Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F));
+    private static final Gob.Overlay rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F));
     private static final Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F));
     private long lastmmhittest = System.currentTimeMillis();
     private Coord lasthittestc = Coord.z;
@@ -612,14 +610,30 @@ public class MapView extends PView implements DTarget, Console.Directory {
 
         try {
             Resource res = gob.getres();
-            if (res != null && radmap.containsKey(res.name)) {
-                Gob.Overlay rovl = radmap.get(res.name);
-                if (Config.showterobjsrad) {
-                    if (!gob.ols.contains(rovl))
-                        gob.ols.add(rovl);
-                } else {
-                    gob.ols.remove(rovl);
+            if (res != null) {
+                Gob.Overlay rovl = null;
+                boolean show = false;
+
+                if (res.name.equals("gfx/terobjs/minesupport")) {
+                    rovl = rovlsupport;
+                    show = Config.showminerad;
+                } else if (res.name.equals("gfx/terobjs/column")) {
+                    rovl = rovlcolumn;
+                    show = Config.showminerad;
                 }
+
+                if (res.name.equals("gfx/terobjs/trough")) {
+                    rovl = rovltrough;
+                    show = Config.showfarmrad;
+                } else if (res.name.equals("gfx/terobjs/beehive")) {
+                    rovl = rovlbeehive;
+                    show = Config.showfarmrad;
+                }
+
+                if (show && !gob.ols.contains(rovl))
+                    gob.ols.add(rovl);
+                else if (!show && rovl != null)
+                    gob.ols.remove(rovl);
             }
 
             /*if (res != null && dangerousanimalrad.contains(res.name)) {
@@ -1597,8 +1611,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
             }
             return true;
         } else if (ev.isControlDown() && code == KeyEvent.VK_D) {
-            Config.showterobjsrad = !Config.showterobjsrad;
-            Utils.setprefb("showterobjsrad", Config.showterobjsrad);
+            Config.showminerad = !Config.showminerad;
+            Utils.setprefb("showminerad", Config.showminerad);
             return true;
         }
         return (false);
