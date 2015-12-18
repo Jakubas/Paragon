@@ -25,12 +25,15 @@ public class TimersThread extends Thread {
                     if (!timer.active)
                         continue;
 
-                    timer.elapsed = Math.round(globtime() / 3.0d) - timer.start;
-                    timer.updateRemaining();
+                    long srvtime = globtime();
+                    if (srvtime != 0) {
+                        timer.elapsed = Math.round(srvtime / 3.0) - timer.start;
+                        timer.updateRemaining();
 
-                    if (timer.elapsed >= timer.duration) {
-                        timer.done();
-                        i--;
+                        if (timer.elapsed >= timer.duration) {
+                            timer.done();
+                            i--;
+                        }
                     }
                 }
             }
@@ -94,6 +97,9 @@ public class TimersThread extends Thread {
     private long rgtime = 0;
 
     public long globtime() {
+        if (time == 0 || epoch == 0)
+            return 0;
+
         long now = System.currentTimeMillis();
         long raw = ((now - epoch) * 3) + (time * 1000);
         if (lastrep == 0) {
