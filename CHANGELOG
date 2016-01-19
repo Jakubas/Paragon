@@ -1,3 +1,14 @@
+Version 1.23.5
+    Fixed:
+        * Potential issue with timers when restarting the client.
+
+    Misc:
+        * Remember position for Stone Casket, Chicken Coop, Extraction Press, Oven, Large Chest.
+        * Changed ctrl+d to toggle only mine support radius and moved trough/beehive radius toggle 
+          to settings window.
+        * Vanilla changes merge.
+
+
 Version 1.23.4
     Fixed:
         * NPE when resizing the chat.
