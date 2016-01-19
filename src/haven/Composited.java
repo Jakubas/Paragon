@@ -242,11 +242,18 @@ public class Composited implements Rendered {
 
         private Equ(ED ed) {
             this.desc = ed.clone();
-            Skeleton.BoneOffset bo = ed.res.res.get().layer(Skeleton.BoneOffset.class, ed.at);
             GLState bt = null;
-            if (bo != null) {
-                bt = bo.forpose(pose);
-            } else {
+            if (bt == null) {
+                Skeleton.BoneOffset bo = ed.res.res.get().layer(Skeleton.BoneOffset.class, ed.at);
+                if (bo != null)
+                    bt = bo.forpose(pose);
+            }
+            if ((bt == null) && (skel instanceof Skeleton.ResourceSkeleton)) {
+                Skeleton.BoneOffset bo = ((Skeleton.ResourceSkeleton) skel).res.layer(Skeleton.BoneOffset.class, ed.at);
+                if (bo != null)
+                    bt = bo.forpose(pose);
+            }
+            if (bt == null) {
                 Skeleton.Bone bone = skel.bones.get(ed.at);
                 if (bone != null)
                     bt = pose.bonetrans(bone.idx);
@@ -265,10 +272,10 @@ public class Composited implements Rendered {
 
     public static class MD implements Cloneable {
         public Indir<Resource> mod;
-	public List<ResData> tex;
+        public List<ResData> tex;
         private Model real;
 
-	public MD(Indir<Resource> mod, List<ResData> tex) {
+        public MD(Indir<Resource> mod, List<ResData> tex) {
             this.mod = mod;
             this.tex = tex;
         }
@@ -283,7 +290,7 @@ public class Composited implements Rendered {
         public MD clone() {
             try {
                 MD ret = (MD) super.clone();
-		ret.tex = new ArrayList<ResData>(tex);
+                ret.tex = new ArrayList<ResData>(tex);
                 return (ret);
             } catch (CloneNotSupportedException e) {
         /* This is ridiculous. */
@@ -348,15 +355,15 @@ public class Composited implements Rendered {
                     if (mr == null)
                         throw (new Sprite.ResourceException("Model resource contains no mesh", md.mod.get()));
                     md.real = new Model(mr.m);
-		    /* This is really ugly, but I can't really think of
+            /* This is really ugly, but I can't really think of
 		     * anything less ugly right now. */
                     if (md.mod.get().name.equals("gfx/borka/male") || md.mod.get().name.equals("gfx/borka/female"))
                         md.real.z = -1;
                     this.mod.add(md.real);
                 }
-		for(Iterator<ResData> o = md.tex.iterator(); o.hasNext();) {
-		    ResData res = o.next();
-		    md.real.addlay(Material.fromres((eqowner == null)?null:eqowner.glob(), res.res.get(), new MessageBuf(res.sdt)));
+                for (Iterator<ResData> o = md.tex.iterator(); o.hasNext(); ) {
+                    ResData res = o.next();
+                    md.real.addlay(Material.fromres((eqowner == null) ? null : eqowner.glob(), res.res.get(), new MessageBuf(res.sdt)));
                     o.remove();
                 }
                 i.remove();

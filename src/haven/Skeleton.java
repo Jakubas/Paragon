@@ -556,6 +556,19 @@ public class Skeleton {
         return (f.create(this, owner, res, sdt));
     }
 
+    public static class ResourceSkeleton extends Skeleton {
+	public final Resource res;
+
+	public ResourceSkeleton(Collection<Bone> bones, Res info) {
+	    super(bones);
+	    this.res = info.getres();
+	}
+
+	public String toString() {
+	    return("Skeleton(" + res.name + ")");
+	}
+    }
+
     @Resource.LayerName("skel")
     public static class Res extends Resource.Layer {
         public final transient Skeleton s;
@@ -584,11 +597,7 @@ public class Skeleton {
                         throw (new Resource.LoadException("Parent bone " + bp + " not found for " + b.name, getres()));
                 }
             }
-            s = new Skeleton(bones.values()) {
-                public String toString() {
-                    return ("Skeleton(" + getres().name + ")");
-                }
-            };
+	    s = new ResourceSkeleton(bones.values(), this);
         }
 
         public void init() {
