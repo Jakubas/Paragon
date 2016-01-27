@@ -819,6 +819,8 @@ public class ChatUI extends Widget {
     }
 
     public static class PartyChat extends MultiChat {
+        private long lastmsg = 0;
+
         public PartyChat() {
             super(false, "Party", 2);
         }
@@ -844,6 +846,12 @@ public class ChatUI extends Widget {
                     append(cmsg);
                     if (urgency > 0)
                         notify(cmsg, urgency);
+
+                    long time = System.currentTimeMillis();
+                    if (Config.partychatalarm && (lastmsg == 0 || (time - lastmsg) / 1000 / 60 > 3)) {
+                        Audio.play(alarmsfx, Config.partychatalarmvol);
+                        lastmsg = time;
+                    }
                 }
             } else {
                 super.uimsg(msg, args);

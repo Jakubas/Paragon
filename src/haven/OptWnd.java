@@ -444,6 +444,31 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 20;
+        audio.add(new CheckBox("Alarm on new party chat message") {
+            {
+                a = Config.partychatalarm;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("partychatalarm", val);
+                Config.partychatalarm = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.partychatalarmvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.partychatalarmvol = vol;
+                Utils.setprefd("partychatalarmvol", vol);
+            }
+        }, new Coord(0, y));
+        y += 20;
         audio.add(new CheckBox("Alarm when curio finishes") {
             {
                 a = Config.studyalarm;
