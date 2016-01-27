@@ -229,7 +229,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         if (Config.showplayerpaths || Config.showanimalpaths) {
             try {
                 Resource res = getres();
-                if (res != null && a.getClass() == LinMove.class) {
+                if (res != null && a.getClass() == LinMove.class && !res.name.startsWith("gfx/terobjs")) {
                     boolean isplayer = "body".equals(res.basename());
                     if (isplayer && Config.showplayerpaths || !isplayer && Config.showanimalpaths) {
                         if (gobpath == null) {
