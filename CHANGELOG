@@ -1,3 +1,12 @@
+Version 1.24.0
+    New:
+        * Show bounding boxes with shift+b.
+        * Sound alarm on new party chat message (if no message was received in 3 minutes).
+
+    Misc:
+        * Merged latest changes from the vanilla client.
+
+
 Version 1.23.5
     Fixed:
         * Potential issue with timers when restarting the client.
