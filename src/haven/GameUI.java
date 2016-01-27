@@ -939,6 +939,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Utils.setprefb("resinfo", Config.resinfo);
             info("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
             return true;
+        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_B) {
+            Config.showboundingboxes = !Config.showboundingboxes;
+            Utils.setprefb("showboundingboxes", Config.showboundingboxes);
+            return true;
         }
         return (super.globtype(key, ev));
     }

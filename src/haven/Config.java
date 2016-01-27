@@ -146,6 +146,7 @@ public class Config {
     public static boolean resinfo = Utils.getprefb("resinfo", false);
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", false);
     public static boolean hwcursor = Utils.getprefb("hwcursor", false);
+    public static boolean showboundingboxes = Utils.getprefb("showboundingboxes", false);
     public static String playerposfile;
     public static byte[] authck = null;
     public static String prefspec = "hafen";
