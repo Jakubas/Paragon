@@ -42,8 +42,8 @@ public class WItem extends Widget implements DTarget {
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
     private static final Color qualitybg = new Color(20, 20, 20, 250);
-    public static final Color[] wearclr = new Color[] {
-        new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
+    public static final Color[] wearclr = new Color[]{
+            new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
     };
 
     public WItem(GItem item) {
@@ -161,8 +161,14 @@ public class WItem extends Widget implements DTarget {
 
     public final AttrCache<Color> olcol = new AttrCache<Color>() {
         protected Color find(List<ItemInfo> info) {
-            GItem.ColorInfo cinf = ItemInfo.find(GItem.ColorInfo.class, info);
-            return ((cinf == null) ? null : cinf.olcol());
+            Color ret = null;
+            for (ItemInfo inf : info) {
+                if (inf instanceof GItem.ColorInfo) {
+                    Color c = ((GItem.ColorInfo) inf).olcol();
+                    ret = (ret == null) ? c : Utils.preblend(ret, c);
+                }
+            }
+            return (ret);
         }
     };
 
@@ -211,7 +217,7 @@ public class WItem extends Widget implements DTarget {
                     g.chcolor(220, 60, 60, 255);
                     g.frect(Coord.z, new Coord((int) (sz.x / (100 / (double) item.meter)), 4));
                     g.chcolor();
-                } else if (!Config.itempercentage){
+                } else if (!Config.itempercentage) {
                     double a = ((double) item.meter) / 100.0;
                     g.chcolor(255, 255, 255, 64);
                     Coord half = sz.div(2);
@@ -361,8 +367,7 @@ public class WItem extends Widget implements DTarget {
                 String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
                 String url = String.format("http://ringofbrodgar.com/wiki/%s", name.replace(' ', '_'));
                 openwebpage(url);
-            }
-            else if (ui.modshift)
+            } else if (ui.modshift)
                 item.wdgmsg("transfer", c);
             else if (ui.modctrl)
                 item.wdgmsg("drop", c);
