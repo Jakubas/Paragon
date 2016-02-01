@@ -32,7 +32,7 @@ import java.util.*;
 import java.awt.Color;
 import java.awt.image.*;
 
-public class FoodInfo extends ItemInfo.Tip {
+public class FoodInfo extends ItemInfo.Tip implements GItem.ColorInfo {
     public final double end, glut;
     public final Event[] evs;
     public final Effect[] efs;
@@ -70,7 +70,7 @@ public class FoodInfo extends ItemInfo.Tip {
     }
 
     public BufferedImage longtip() {
-	BufferedImage base = RichText.render(String.format("Energy: $col[128,128,255]{%s%%}, Hunger: $col[255,192,128]{%s%%}", Utils.odformat2(end * 100, 2), Utils.odformat2(glut * 100, 2)), 0).img;
+        BufferedImage base = RichText.render(String.format("Energy: $col[128,128,255]{%s%%}, Hunger: $col[255,192,128]{%s%%}", Utils.odformat2(end * 100, 2), Utils.odformat2(glut * 100, 2)), 0).img;
         Collection<BufferedImage> imgs = new LinkedList<BufferedImage>();
         imgs.add(base);
         for (int i = 0; i < evs.length; i++) {
@@ -84,5 +84,26 @@ public class FoodInfo extends ItemInfo.Tip {
             imgs.add(efi);
         }
         return (catimgs(0, imgs.toArray(new BufferedImage[0])));
+    }
+
+    public Color olcol() {
+        if (owner instanceof Widget) {
+            GameUI gui = ((Widget) owner).getparent(GameUI.class);
+            if ((gui != null) && (gui.chrwdg != null)) {
+                CharWnd.Constipations cons = gui.chrwdg.cons;
+                double mod = 1.0;
+                for (int i = 0; i < cons.els.size(); i++) {
+                    for (int tp : types) {
+                        if (tp == i) {
+                            mod *= cons.els.get(i).a;
+                            break;
+                        }
+                    }
+                }
+                if (mod < 1.0)
+                    return (Utils.clipcol(255, 0, 0, (int) ((1.0 - mod) * 128)));
+            }
+        }
+        return (null);
     }
 }

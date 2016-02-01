@@ -139,16 +139,20 @@ public class WItem extends Widget implements DTarget {
         }
     }
 
+    public volatile static int cacheseq = 0;
+
     public abstract class AttrCache<T> {
         private List<ItemInfo> forinfo = null;
         public T save = null;
+        private int forseq = -1;
 
         public T get() {
             try {
                 List<ItemInfo> info = item.info();
-                if (info != forinfo) {
+                if ((cacheseq != forseq) || (info != forinfo)) {
                     save = find(info);
                     forinfo = info;
+                    forseq = cacheseq;
                 }
             } catch (Loading e) {
                 return (null);
@@ -165,7 +169,8 @@ public class WItem extends Widget implements DTarget {
             for (ItemInfo inf : info) {
                 if (inf instanceof GItem.ColorInfo) {
                     Color c = ((GItem.ColorInfo) inf).olcol();
-                    ret = (ret == null) ? c : Utils.preblend(ret, c);
+                    if (c != null)
+                        ret = (ret == null) ? c : Utils.preblend(ret, c);
                 }
             }
             return (ret);
