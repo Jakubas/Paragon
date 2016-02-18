@@ -95,7 +95,7 @@
         <fileset dir="build" includes="*.jar" excludes="*natives*.jar"/>
         <fileset dir="${basedir}" includes="README, CHANGELOG"/>
         <fileset dir="lib/jogl-natives" includes="*.jar"/>
-        <fileset dir="etc" includes="*.bat"/>
+        <fileset dir="etc" includes="*.bat,run.sh"/>
     </zip>
     <zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
         <fileset dir="build" includes="amber-res.jar, hafen.jar" />
