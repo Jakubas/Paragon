@@ -1,3 +1,12 @@
+Version 1.24.1
+    Fixed:
+        * Movement vectors not showing for vehicles.
+
+    Misc:
+        * Added stalagmite to boulders list.
+        * Merged latest changes from the vanilla client.
+
+
 Version 1.24.0
     New:
         * Show bounding boxes with shift+b.
