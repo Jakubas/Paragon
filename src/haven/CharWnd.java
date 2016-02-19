@@ -1981,7 +1981,6 @@ public class CharWnd extends Window {
                 double m = ((Number) args[a++]).doubleValue();
                 cons.update(t, m);
             }
-            WItem.cacheseq++;
         } else if (nm == "csk") {
         /* One *could* argue that rmessages should have some
          * built-in fragmentation scheme. ^^ */
