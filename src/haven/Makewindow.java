@@ -39,6 +39,9 @@ public class Makewindow extends Widget {
     static Coord boff = new Coord(7, 9);
     final int xoff = 45, qmy = 38, outy = 65;
     public static final Text.Foundry nmf = new Text.Foundry(Text.serif, 20).aa(true);
+    private int qModProduct = -1;
+    private static final Tex softcapl = Text.render("Softcap:").tex();
+    private Tex softcap;
 
     @RName("make")
     public static class $_ implements Factory {
@@ -131,8 +134,10 @@ public class Makewindow extends Widget {
             this.outputs = outputs;
         } else if (msg == "qmod") {
             List<Indir<Resource>> qmod = new ArrayList<Indir<Resource>>();
-            for (Object arg : args)
-                qmod.add(ui.sess.getres((Integer) arg));
+            for (Object arg : args) {
+                Indir<Resource> qm = ui.sess.getres((Integer) arg);
+                qmod.add(qm);
+            }
             this.qmod = qmod;
         } else {
             super.uimsg(msg, args);
@@ -157,6 +162,8 @@ public class Makewindow extends Widget {
             } catch (Exception e) { // fail silently
             }
 
+            List<Integer> qmodValues = new ArrayList<Integer>(3);
+
             for (Indir<Resource> qm : qmod) {
                 try {
                     Tex t = qm.get().layer(Resource.imgc).tex();
@@ -170,6 +177,7 @@ public class Makewindow extends Widget {
                                 Coord sz = attr.attr.comptex.sz();
                                 g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 c = c.add(sz.x + 8, 0);
+                                qmodValues.add(attr.attr.comp);
                                 break;
                             }
                         }
@@ -178,12 +186,30 @@ public class Makewindow extends Widget {
                                 Coord sz = attr.attr.comptex.sz();
                                 g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
                                 c = c.add(sz.x + 8, 0);
+                                qmodValues.add(attr.attr.comp);
                                 break;
                             }
                         }
                     }
                 } catch (Loading l) {
                 }
+            }
+
+            if (Config.showcraftcap && qmodValues.size() > 0) {
+                int product = 1;
+                for (int cap : qmodValues)
+                    product *= cap;
+
+                if (product != qModProduct) {
+                    qModProduct = product;
+                    softcap = Text.renderstroked("" + (int) Math.pow(product, 1.0 / qmodValues.size()),
+                            Color.WHITE, Color.BLACK, Glob.CAttr.capval).tex();
+                }
+
+                Coord sz = softcap.sz();
+                Coord szl = softcapl.sz();
+                g.image(softcapl, this.sz.sub(sz.x + szl.x + 8, this.sz.y / 2 + szl.y / 2));
+                g.image(softcap, this.sz.sub(sz.x, this.sz.y / 2 + sz.y / 2));
             }
         }
         c = new Coord(xoff, outy);
