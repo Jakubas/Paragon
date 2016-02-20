@@ -228,9 +228,9 @@ public class StatusWdg extends Widget {
                         if (Thread.interrupted())
                             return;
 
-                        updateaccountstatus();
+                        /*updateaccountstatus();
                         if (Thread.interrupted())
-                            return;
+                            return;*/
                     }
                     try {
                         Thread.sleep(5000);
@@ -300,10 +300,10 @@ public class StatusWdg extends Widget {
     @Override
     public void draw(GOut g) {
         synchronized (StatusWdg.class) {
-            java.util.List<Tex> texturesToDisplay = new ArrayList<>(3);
+            java.util.List<Tex> texturesToDisplay = new ArrayList<>(2);
             texturesToDisplay.add(this.hearthlingsplaying);
             texturesToDisplay.add(this.pingtime);
-            texturesToDisplay.add(this.accountstatus);
+            //texturesToDisplay.add(this.accountstatus);
 
             int requiredwidth = 0;
             int requiredheight = 0;
