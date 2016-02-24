@@ -1337,7 +1337,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Disable UI hiding with space-bar") {
+            {
+                a = Config.disablespacebar;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("disablespacebar", val);
+                Config.disablespacebar = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
