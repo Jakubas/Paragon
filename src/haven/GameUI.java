@@ -167,6 +167,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (!Config.statuswdgvisible)
             statuswindow.hide();
         add(statuswindow, new Coord(HavenPanel.w / 2, 20));
+
+        if (!chrid.equals("")) {
+            Config.boulderssel = Utils.getprefsa("boulderssel_" + chrid, null);
+            Config.bushessel = Utils.getprefsa("bushessel_" + chrid, null);
+            Config.treessel = Utils.getprefsa("treessel_" + chrid, null);
+            Config.iconssel = Utils.getprefsa("iconssel_" + chrid, null);
+            opts.setMapSettings();
+        }
     }
 
     /* Ice cream */
