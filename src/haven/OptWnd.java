@@ -1269,7 +1269,6 @@ public class OptWnd extends Window {
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
 
-
         chpanel(main);
     }
 
@@ -1364,6 +1363,7 @@ public class OptWnd extends Window {
             iconslist.items.add(new CheckListboxItem(icon, selected));
         }
         map.add(iconslist, new Coord(615, 15));
+        map.pack();
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
