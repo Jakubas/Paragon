@@ -337,7 +337,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 
         if (Config.showservertime) {
             if (ui.sess != null && ui.sess.glob != null && ui.sess.glob.servertime != null)
-                FastText.aprint(g, new Coord(HavenPanel.w/2, 15), 1, 1, ui.sess.glob.servertime);
+                FastText.aprint(g, new Coord(HavenPanel.w / 2, 13), ui.sess.glob.servertime);
         }
 
         if (Config.dbtext) {

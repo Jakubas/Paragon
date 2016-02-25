@@ -126,7 +126,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         beltwdg.raise();
         ulpanel = add(new Hidepanel("gui-ul", null, new Coord(-1, -1)));
-        umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)));
+        umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)) {
+            @Override
+            public Coord base() {
+                if (base != null)
+                    return base.get();
+                return new Coord(parent.sz.x / 2 - this.sz.x / 2, 0);
+            }
+        });
         urpanel = add(new Hidepanel("gui-ur", null, new Coord(1, -1)));
         brpanel = add(new Hidepanel("gui-br", null, new Coord(1, 1)) {
             public void move(double a) {
@@ -150,6 +157,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
         umpanel.add(new Cal(), new Coord(0, 10));
+        umpanel.c = new Coord(sz.x / 2 - umpanel.sz.x / 2, 10);
         syslog = chat.add(new ChatUI.Log("System"));
         opts = add(new OptWnd());
         opts.hide();
