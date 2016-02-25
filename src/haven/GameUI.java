@@ -157,7 +157,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
         umpanel.add(new Cal(), new Coord(0, 10));
-        umpanel.c = new Coord(sz.x / 2 - umpanel.sz.x / 2, 10);
         syslog = chat.add(new ChatUI.Log("System"));
         opts = add(new OptWnd());
         opts.hide();
@@ -176,7 +175,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         statuswindow = new StatusWdg();
         if (!Config.statuswdgvisible)
             statuswindow.hide();
-        add(statuswindow, new Coord(HavenPanel.w / 2, 20));
+        add(statuswindow, new Coord(HavenPanel.w / 2 + 80, 10));
 
         if (!chrid.equals("")) {
             Config.boulderssel = Utils.getprefsa("boulderssel_" + chrid, null);
@@ -1011,7 +1010,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (map != null)
             map.resize(sz);
         beltwdg.c = new Coord(blpw + 10, sz.y - beltwdg.sz.y - 5);
-        statuswindow.c = new Coord(HavenPanel.w / 2, 20);
+        statuswindow.c = new Coord(HavenPanel.w / 2 + 80, 10);
         super.resize(sz);
     }
 
