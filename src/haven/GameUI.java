@@ -39,7 +39,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private static final int blpw = 142, brpw = 142;
     public final String chrid;
     public final long plid;
-    private final Hidepanel ulpanel, urpanel, brpanel, menupanel;
+    private final Hidepanel ulpanel, umpanel, urpanel, brpanel, menupanel;
     public Avaview portrait;
     public MenuGrid menu;
     public MapView map;
@@ -126,6 +126,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         beltwdg.raise();
         ulpanel = add(new Hidepanel("gui-ul", null, new Coord(-1, -1)));
+        umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)));
         urpanel = add(new Hidepanel("gui-ur", null, new Coord(1, -1)));
         brpanel = add(new Hidepanel("gui-br", null, new Coord(1, 1)) {
             public void move(double a) {
@@ -148,6 +149,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             }
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
+        umpanel.add(new Cal(), new Coord(0, 10));
         syslog = chat.add(new ChatUI.Log("System"));
         opts = add(new OptWnd());
         opts.hide();
@@ -307,8 +309,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
         public Coord base() {
             if (base != null) return (base.get());
-            return (new Coord((g.x > 0) ? parent.sz.x : 0,
-                    (g.y > 0) ? parent.sz.y : 0));
+            return (new Coord((g.x > 0) ? parent.sz.x : (g.x < 0) ? 0 : (parent.sz.x / 2),
+                    (g.y > 0) ? parent.sz.y : (g.y < 0) ? 0 : (parent.sz.y / 2)));
         }
 
         public void move(double a) {
@@ -565,7 +567,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             ChatUI.Channel prevchannel = chat.sel;
             chat.addchild(child);
             if (Config.syslogonlogin && prevchannel != null && chat.sel.cb == null) {
-                 chat.select(prevchannel);
+                chat.select(prevchannel);
             }
         } else if (place == "party") {
             add(child, 10, 95);
@@ -576,23 +578,25 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             meters.add(child);
         } else if (place == "buff") {
             buffs.addchild(child);
-	} else if(place == "qq") {
-	    if(qqview != null)
-		qqview.reqdestroy();
-	    final Widget cref = qqview = child;
-        questpanel = new AlignPanel() {
-            {add(cref);}
+        } else if (place == "qq") {
+            if (qqview != null)
+                qqview.reqdestroy();
+            final Widget cref = qqview = child;
+            questpanel = new AlignPanel() {
+                {
+                    add(cref);
+                }
 
-            protected Coord getc() {
-                return(new Coord(10, GameUI.this.sz.y - chat.sz.y - beltwdg.sz.y - this.sz.y - 10));
-            }
+                protected Coord getc() {
+                    return (new Coord(10, GameUI.this.sz.y - chat.sz.y - beltwdg.sz.y - this.sz.y - 10));
+                }
 
-            public void cdestroy(Widget ch) {
-                qqview = null;
-                destroy();
-            }
-        };
-	    add(questpanel);
+                public void cdestroy(Widget ch) {
+                    qqview = null;
+                    destroy();
+                }
+            };
+            add(questpanel);
         } else if (place == "misc") {
             add(child, (Coord) args[1]);
         } else {
@@ -962,7 +966,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private int uimode = 1;
 
     public void toggleui(int mode) {
-        Hidepanel[] panels = {brpanel, ulpanel, urpanel, menupanel};
+        Hidepanel[] panels = {brpanel, ulpanel, umpanel, urpanel, menupanel};
         switch (uimode = mode) {
             case 0:
                 for (Hidepanel p : panels)
@@ -980,7 +984,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void resetui() {
-        Hidepanel[] panels = {brpanel, ulpanel, urpanel, menupanel};
+        Hidepanel[] panels = {brpanel, ulpanel, umpanel, urpanel, menupanel};
         for (Hidepanel p : panels)
             p.cshow(p.tvis);
         uimode = 1;
