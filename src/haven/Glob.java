@@ -267,6 +267,15 @@ public class Glob {
                 epoch = System.currentTimeMillis();
                 if (!inc)
                     lastrep = 0;
+                timersThread.tick(time, epoch);
+                servertimecalc();
+                if (Config.servertimesyslog && gui != null && gui.syslog != null) {
+                    long tm = globtime() / 1000;
+                    if (tm - lasttime > 3 * 60 * 20) {
+                        lasttime = tm;
+                        gui.syslog.append(servertime, timeclr);
+                    }
+                }
             } else if (t == "astro") {
                 double dt = ((Number) a[n++]).doubleValue();
                 double mp = ((Number) a[n++]).doubleValue();
