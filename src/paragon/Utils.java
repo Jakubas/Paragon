@@ -24,7 +24,7 @@ public class Utils {
 	}
 	
 	public Gob player() {
-		return player();
+		return ui.sess.glob.gui.map.player();
 	}
 	
 	public Coord getCenterScreenCoord() {
@@ -35,26 +35,36 @@ public class Utils {
 				- 100));
 		return sc;
 	}
-	
+
+	//returns true if movement was started before timeout
+    public boolean waitForMovement(int timeout) {
+    	while (!isMoving() && timeout > 0) {
+    		sleep(50);
+    		timeout -= 50;
+    	}
+    	return isMoving();
+    }
+    
 	public boolean isMoving() {
 		Gob me = player();
 		if (me == null) return false;
 		Moving m = me.getattr(Moving.class);
-		if (m == null)
-			return false;
-		else
-			return true;
+		return (m != null);
 	}
 
 	public Gob getNearestObject(String... string) {
 		return findMapObject(50, 0, 0, string);
 	}
 	
+    public Gob findMapObjectById(long id) {
+        return ui.sess.glob.oc.getgob(id);
+    }
+    
 	 public Gob findMapObject(int radius, int x, int y, String... names) {
         Coord my = player().rc;
         Coord offset = new Coord(x, y).mul(11);
         my = my.add(offset);
-        double min = radius;
+        double min = radius*11;
         Gob nearest = null;
         synchronized (ui.sess.glob.oc) {
             for (Gob gob : ui.sess.glob.oc) {
@@ -81,7 +91,7 @@ public class Utils {
 		 Coord my = player().rc;
         Coord offset = new Coord(x, y).mul(11);
         my = my.add(offset);
-        double min = radius;
+        double min = radius*11;
         Set<Gob> gobs = new HashSet<Gob>();
         synchronized (ui.sess.glob.oc) {
             for (Gob gob : ui.sess.glob.oc) {
@@ -104,7 +114,7 @@ public class Utils {
 		 Coord my = player().rc;
         Coord offset = new Coord(x, y).mul(11);
         my = my.add(offset);
-        double min = radius;
+        double min = radius*11;
         new TreeSet<Gob>(new Comparator<Gob>(){
 			@Override
 			public int compare(Gob a, Gob b) {
@@ -154,8 +164,8 @@ public class Utils {
 	
 	public void leftClickObj(Gob gob) {
 		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
-		//wait to start movement
-		sleep(200); 
+		//Hack, wait 200ms to account for delay between clicking and starting movement
+		waitForMovement(500);
 		while (isMoving()) {
 			sleep(100);
 		}
@@ -163,7 +173,7 @@ public class Utils {
 	
 	public void leftClickObjOffset(Gob gob, int xOffset, int yOffset) {
 		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, new Coord(gob.rc.x+xOffset, gob.rc.y+yOffset), 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
-		sleep(200);
+		waitForMovement(500);
 		while (isMoving()) {
 			sleep(100);
 		}
@@ -207,11 +217,23 @@ public class Utils {
     		sleep(50);
     		timeout -= 50;
     	}
-		return menu == null;
+		return (menu != null);
     }
     
     public boolean isObject(Gob gob) {
-    	return gob != null && getNearestObject(gob.getres().name) != null;
+    	return gob != null && findMapObjectById(gob.id) != null;
+    }
+    
+    public boolean waitForProgressBar(int timeout) {
+    	while (!isProgressBar() && timeout > 0) {
+    		sleep(50);
+    		timeout -= 50;
+    	}
+    	return isProgressBar();
+    }
+    
+    public boolean isProgressBar() {
+    	return ui.sess.glob.gui.prog >= 0;
     }
     
 	public boolean farm(Gob crop) {
@@ -222,7 +244,8 @@ public class Utils {
             if (opt.name.equals("Harvest")) {
                 menu.choose(opt);
                 menu.destroy();
-                while (isObject(crop)) {
+                waitForProgressBar(500);
+                while (isObject(crop) && isProgressBar()) {
                 	sleep(100);
                 };
                 return true;

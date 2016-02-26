@@ -35,6 +35,8 @@ import haven.Glob.Pagina;
 
 import java.util.*;
 
+import paragon.Farm;
+
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
     public final static Coord bgsz = bg.sz().add(-1, -1);
@@ -114,6 +116,15 @@ public class MenuGrid extends Widget {
         super(bgsz.mul(gsz).add(1, 1));
     }
 
+    @Override
+	protected void attach(UI ui) {
+    	super.attach(ui);
+    	Glob glob = ui.sess.glob;
+    	Set<Pagina> paginae = glob.paginae;
+    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
+    }
+    
+    
     private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
         public int compare(Pagina a, Pagina b) {
             AButton aa = a.act(), ab = b.act();
@@ -303,13 +314,32 @@ public class MenuGrid extends Widget {
                 curoff += 14;
         } else {
             r.newp = 0;
-            wdgmsg("act", (Object[]) r.act().ad);
+            use(r);
             if (reset)
                 this.cur = null;
             curoff = 0;
         }
         updlayout();
     }
+    
+    public boolean use(Pagina r) {
+        String [] ad = r.act().ad;
+        if((ad == null) || (ad.length < 1)){
+            return false;
+        }
+        if(ad[0].equals("@")) {
+            usecustom(ad);
+        } else {
+            wdgmsg("act", (Object[])ad);
+        }
+        return true;
+    }
+    
+    public void usecustom(String[] ad) {
+      if (ad[1].equals("farm")) {
+      	new Thread(new Farm(ui)).start();
+      }
+  }
 
     public void tick(double dt) {
         if (loading || (pagseq != ui.sess.glob.pagseq))

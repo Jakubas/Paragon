@@ -5,16 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import javafx.scene.shape.MoveTo;
-import jdk.nashorn.internal.runtime.FindProperty;
-import haven.FlowerMenu;
 import haven.Gob;
 import haven.UI;
 
-public class Farm {
+public class Farm implements Runnable {
 	
 	Utils utils;
 	private UI ui;
@@ -22,42 +17,37 @@ public class Farm {
 	public Farm(UI ui) {
 		this.ui = ui;
 		utils = new Utils(ui);
-		Gob crop = utils.getNearestObject("terobjs/plants/");
-		String cropName = crop.getres().name;
-		farmer(cropName);
 	}
 	
-	public void farmer(String cropName) {
-		Set<Gob> crops = utils.findMapObjects(50, 0, 0, cropName);
-		//remove all crops west and directly north of the player
-		Iterator<Gob> it = crops.iterator();
-		while (it.hasNext()) {
-			Gob crop= it.next();
-			int cx = crop.coordX();
-			int cy = crop.coordY();
-			int px = utils.player().coordX();
-			int py = utils.player().coordY();
-			if (cx < px || cx == px && cy < py) {
-				crops.remove(crop);
-			}
+	@Override
+	public void run() {
+		try {
+			Gob crop = utils.getNearestObject("terobjs/plants/");
+			String cropName = crop.getres().name;
+			ArrayList<Gob> cropList = getFarmingGobList(cropName);
+			farmer(cropList,  cropName);
+		} catch (Exception e) {
+			//for debugging
+			e.printStackTrace();
 		}
-
-		ArrayList<Gob> cropsList = new ArrayList<Gob>();
-		cropsList.addAll(crops);
+	}
 	
-		Comparator<Gob> cmp = new Comparator<Gob>() {
-			@Override
-			public int compare(Gob a, Gob b) {
-				return (int) (utils.player().coord().dist(a.coord()) - utils.player().coord().dist(b.coord()));
-			}
-        };
+	public void farmer(ArrayList<Gob> cropList, String cropName) {
 		
-		while (!cropsList.isEmpty()) {
-			cropsList.sort(cmp);
-			Gob crop = cropsList.get(0);
+		while (!cropList.isEmpty()) {
+			Collections.sort(cropList);
+			Gob crop = cropList.get(0);
 			utils.moveToObject(crop);
 			utils.farm(crop);
+			cropList.remove(0);
 		}
-		System.out.println("Finished farming :" + cropName.lastIndexOf('/'));
+		System.out.println("Finished farming :");
+	}
+	
+	public ArrayList<Gob> getFarmingGobList(String cropName) {
+		Set<Gob> crops = utils.findMapObjects(50, 0, 0, cropName);
+		ArrayList<Gob> cropList = new ArrayList<Gob>();
+		cropList.addAll(crops);
+		return cropList;
 	}
 }

@@ -1,0 +1,15 @@
+#ABUTTON LAYER FOR RES dout//add.res
+#String pr
+
+#uint16 pver
+0
+#String name
+Xtended
+#String preq
+
+#uint16 hk
+88
+#uint16 ad length
+1
+#String ad[0]
+

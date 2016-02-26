@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 
 <project name="hafen" default="deftgt">
-	<property name="name" value="amber" />
+	<property name="name" value="paragon" />
 	<property name="version" value="" />
 
 	<target name="build-env">
@@ -60,6 +60,7 @@
 		</unjar>
 	</target>
 
+
 	<target name="jar" depends="hafen-client,buildinfo,lib-classes">
 		<jar destfile="build/hafen.jar" update="true">
 			<fileset dir="build/classes" />
@@ -67,7 +68,7 @@
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
 				<attribute name="Class-Path"
-					value="jogl.jar gluegen-rt.jar builtin-res.jar hafen-res.jar amber-res.jar" />
+					value="jogl.jar gluegen-rt.jar builtin-res.jar hafen-res.jar amber-res.jar paragon-res.jar" />
 			</manifest>
 		</jar>
 		<chmod file="build/hafen.jar" perm="a+x" />
@@ -79,8 +80,19 @@
 		<get src="http://game.havenandhearth.com/java/hafen-res.jar" dest="lib/hafen-res.jar"
 			usetimestamp="true" />
 	</target>
+	
+	<target name="custom-encode" depends="build-env">
+	    <java jar="lib/LayerUtil.jar" fork="true">
+	      <arg line="-re custom-res build/custom-res" />
+	    </java>
+	</target>
 
-	<target name="jars" depends="build-env, jar, res-jar">
+	<target name="custom-jar" depends="custom-encode">
+	    <jar basedir="build/custom-res" destfile="build/paragon-res.jar"/>
+	    <delete dir="build/custom-res" />
+	</target>
+
+	<target name="jars" depends="build-env, jar, res-jar, custom-jar">
 		<copy todir="build">
 			<fileset dir="lib">
 				<include name="jogl.jar" />
