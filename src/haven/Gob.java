@@ -29,7 +29,7 @@ package haven;
 import java.awt.*;
 import java.util.*;
 
-public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
+public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparable<Gob> {
     public Coord rc, sc;
     public Coord3f sczu;
     public double a;
@@ -475,4 +475,42 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public int coordY() {
     	return rc.y;
     }
+
+	/*
+	 * Compares gobs by distance from player. If they have the same distance then it 
+	 * orders them by direction in this order: south, west, north, east
+	 */
+	@Override
+	public int compareTo(Gob gob) {
+		Gob player = glob.gui.map.player();
+		double dist = (player.coord().dist(this.coord()) - player.coord().dist(gob.coord()));
+		//Priority 1st-south 2nd-east 3rd-north 4th-west
+		if (dist == 0) {
+			int ax = this.coordX();
+			int ay = this.coordY();
+			int bx = gob.coordX();
+			int by = gob.coordY();
+			int px = player.coordX();
+			int py = player.coordY();
+			//south
+			if (ay > py) {
+				return -1;
+			//west
+			} else if (ax < px) {
+				if (ay <= by)
+					return -1;
+				else
+					return 1;
+			//north
+			} else if (ay < py) {
+				if (ax > bx)
+					return -1;
+				else
+					return 1;
+			//east
+			} else
+				return 1;
+		} else 
+			return (int) dist; 
+	}
 }
