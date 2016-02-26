@@ -37,6 +37,7 @@ import java.util.*;
 
 import paragon.Farm;
 import paragon.Patrol;
+import paragon.PatrolPathGen;
 
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
@@ -124,6 +125,7 @@ public class MenuGrid extends Widget {
     	Set<Pagina> paginae = glob.paginae;
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
+    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrolpathgen")));
     }
     
     
@@ -345,7 +347,10 @@ public class MenuGrid extends Widget {
     	case "patrol":
     		new Thread(new Patrol(ui)).start();
     		break;
-    	}
+		case "patrolpathgen":
+			new Thread(new PatrolPathGen(ui)).start();
+			break;
+		}
   }
 
     public void tick(double dt) {
