@@ -1,3 +1,28 @@
+Version 1.24.4
+    Fixed:
+        * Position of server time, horizon and status widgets.
+        * Hide icons list being partially hidden.
+
+    Misc:
+        * By default leave "Disable UI hiding.." option enabled.
+
+
+Version 1.24.3
+    Fixed:
+        * Broken server time and timers.
+
+
+Version 1.24.2
+    New:
+        * Show total sofcap in craft window.
+        * Option to disable space-bar hiding the UI.
+
+    Misc:
+        * Removed account status info from status widget since accounts are not time bound anymore.
+        * Map settings (trees/boulders/etc) are stored per character now.
+        * Merged vanilla changes.
+
+
 Version 1.24.1
     Fixed:
         * Movement vectors not showing for vehicles.

@@ -66,6 +66,17 @@ public class FastText {
         }
     }
 
+    public static void aprint(GOut g, Coord c, String text) {
+        Coord lc = new Coord(c);
+        lc.x -= textw(text) / 2;
+        lc.y -= fnd.height();
+        for (int i = 0; i < text.length(); i++) {
+            Tex ch = ch(text.charAt(i));
+            g.image(ch, lc);
+            lc.x += ch.sz().x;
+        }
+    }
+
     public static void print(GOut g, Coord c, String text) {
         aprint(g, c, 0.0, 0.0, text);
     }

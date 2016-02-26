@@ -30,13 +30,8 @@ import java.awt.*;
 import java.util.*;
 
 public class Glob {
-    public static final int GMSG_TIME = 0;
-    public static final int GMSG_ASTRO = 1;
-    public static final int GMSG_LIGHT = 2;
-    public static final int GMSG_SKY = 3;
-    public static final int GMSG_WEATHER = 4;
-
     public long time, epoch = System.currentTimeMillis();
+    public Astronomy ast;
     public OCache oc = new OCache(this);
     public MCache map;
     public Session sess;
@@ -60,7 +55,7 @@ public class Glob {
     public static TimersThread timersThread;
     public GameUI gui;
     private long lasttime;
-    private static final long SEC_DAY = 60*60*24;
+    private static final long SEC_DAY = 60 * 60 * 24;
     private static final Color timeclr = new Color(177, 144, 173);
     public String servertime;
 
@@ -85,7 +80,7 @@ public class Glob {
     }
 
     public static class CAttr extends Observable {
-        private static final Text.Foundry capval = new Text.Foundry(Text.sansb, 12).aa(true);
+        public static final Text.Foundry capval = new Text.Foundry(Text.sansb, 12).aa(true);
         String nm;
         int base, comp;
         public Tex comptex;
@@ -249,6 +244,7 @@ public class Glob {
     private static final long secinday = 60 * 60 * 24;
     private static final long dewyladysmantletimemin = 4 * 60 * 60 + 45 * 60;
     private static final long dewyladysmantletimemax = 7 * 60 * 60 + 15 * 60;
+
     private void servertimecalc() {
         long secs = globtime() / 1000;
         long day = secs / secinday;
@@ -263,97 +259,91 @@ public class Glob {
     public void blob(Message msg) {
         boolean inc = msg.uint8() != 0;
         while (!msg.eom()) {
-            int t = msg.uint8();
-            switch (t) {
-                case GMSG_TIME:
-                    time = msg.int32();
-                    epoch = System.currentTimeMillis();
-                    if (!inc)
-                        lastrep = 0;
-                    timersThread.tick(time, epoch);
-                    servertimecalc();
-                    if (Config.servertimesyslog && gui != null && gui.syslog != null) {
-                        long tm = globtime() / 1000;
-                        if (tm - lasttime > 3 * 60 * 20) {
-                            lasttime = tm;
-                            gui.syslog.append(servertime, timeclr);
-                        }
+            String t = msg.string().intern();
+            Object[] a = msg.list();
+            int n = 0;
+            if (t == "tm") {
+                time = ((Number) a[n++]).intValue();
+                epoch = System.currentTimeMillis();
+                if (!inc)
+                    lastrep = 0;
+                timersThread.tick(time, epoch);
+                servertimecalc();
+                if (Config.servertimesyslog && gui != null && gui.syslog != null) {
+                    long tm = globtime() / 1000;
+                    if (tm - lasttime > 3 * 60 * 20) {
+                        lasttime = tm;
+                        gui.syslog.append(servertime, timeclr);
                     }
-                    break;
-                case GMSG_LIGHT:
-                    synchronized (this) {
-                        tlightamb = msg.color();
-                        tlightdif = msg.color();
-                        tlightspc = msg.color();
-                        tlightang = (msg.int32() / 1000000.0) * Math.PI * 2.0;
-                        tlightelev = (msg.int32() / 1000000.0) * Math.PI * 2.0;
-                        if (inc) {
-                            olightamb = lightamb;
-                            olightdif = lightdif;
-                            olightspc = lightspc;
-                            olightang = lightang;
-                            olightelev = lightelev;
-                            lchange = 0;
-                        } else {
-                            lightamb = tlightamb;
-                            lightdif = tlightdif;
-                            lightspc = tlightspc;
-                            lightang = tlightang;
-                            lightelev = tlightelev;
-                            lchange = -1;
-                        }
-                    }
-                    break;
-                case GMSG_SKY:
-                    int id1 = msg.uint16();
-                    if (id1 == 65535) {
-                        synchronized (this) {
-                            sky1 = sky2 = null;
-                            skyblend = 0.0;
-                        }
+                }
+            } else if (t == "astro") {
+                double dt = ((Number) a[n++]).doubleValue();
+                double mp = ((Number) a[n++]).doubleValue();
+                double yt = ((Number) a[n++]).doubleValue();
+                boolean night = (Integer) a[n++] != 0;
+                Color mc = (Color) a[n++];
+                ast = new Astronomy(dt, mp, yt, night, mc);
+            } else if (t == "light") {
+                synchronized (this) {
+                    tlightamb = (Color) a[n++];
+                    tlightdif = (Color) a[n++];
+                    tlightspc = (Color) a[n++];
+                    tlightang = ((Number) a[n++]).doubleValue();
+                    tlightelev = ((Number) a[n++]).doubleValue();
+                    if (inc) {
+                        olightamb = lightamb;
+                        olightdif = lightdif;
+                        olightspc = lightspc;
+                        olightang = lightang;
+                        olightelev = lightelev;
+                        lchange = 0;
                     } else {
-                        int id2 = msg.uint16();
-                        if (id2 == 65535) {
-                            synchronized (this) {
-                                sky1 = sess.getres(id1);
-                                sky2 = null;
-                                skyblend = 0.0;
-                            }
+                        lightamb = tlightamb;
+                        lightdif = tlightdif;
+                        lightspc = tlightspc;
+                        lightang = tlightang;
+                        lightelev = tlightelev;
+                        lchange = -1;
+                    }
+                }
+            } else if (t == "sky") {
+                synchronized (this) {
+                    if (a.length < 1) {
+                        sky1 = sky2 = null;
+                        skyblend = 0.0;
+                    } else {
+                        sky1 = sess.getres(((Number) a[n++]).intValue());
+                        if (a.length < 2) {
+                            sky2 = null;
+                            skyblend = 0.0;
                         } else {
-                            synchronized (this) {
-                                sky1 = sess.getres(id1);
-                                sky2 = sess.getres(id2);
-                                skyblend = msg.int32() / 1000000.0;
-                            }
+                            sky2 = sess.getres(((Number) a[n++]).intValue());
+                            skyblend = ((Number) a[n++]).doubleValue();
                         }
                     }
-                    break;
-                case GMSG_WEATHER:
-                    synchronized (this) {
-                        if (!inc)
-                            wmap.clear();
-                        Collection<Object> old = new LinkedList<Object>(wmap.keySet());
-                        while (true) {
-                            int resid = msg.uint16();
-                            if (resid == 65535)
-                                break;
-                            Indir<Resource> res = sess.getres(resid);
-                            Object[] args = msg.list();
-                            Object curv = wmap.get(res);
-                            if (curv instanceof Weather) {
-                                Weather cur = (Weather) curv;
-                                cur.update(args);
-                            } else {
-                                wmap.put(res, args);
-                            }
-                            old.remove(res);
+                }
+            } else if (t == "wth") {
+                synchronized (this) {
+                    if (!inc)
+                        wmap.clear();
+                    Collection<Object> old = new LinkedList<Object>(wmap.keySet());
+                    while (n < a.length) {
+                        Indir<Resource> res = sess.getres(((Number) a[n++]).intValue());
+                        Object[] args = (Object[]) a[n++];
+                        Object curv = wmap.get(res);
+                        if (curv instanceof Weather) {
+                            Weather cur = (Weather) curv;
+                            cur.update(args);
+                        } else {
+                            wmap.put(res, args);
                         }
-                        for (Object p : old)
-                            wmap.remove(p);
+                        old.remove(res);
                     }
-                    break;
-                default:
-                    throw (new RuntimeException("Unknown globlob type: " + t));
+                    for (Object p : old)
+                        wmap.remove(p);
+                }
+            } else {
+                System.err.println("Unknown globlob type: " + t);
             }
         }
     }
