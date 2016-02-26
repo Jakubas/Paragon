@@ -48,6 +48,7 @@ public class UI {
     public Widget mouseon;
     public Console cons = new WidgetConsole();
     private Collection<AfterDraw> afterdraws = new LinkedList<AfterDraw>();
+    public static UI instance;
     public final ActAudio audio = new ActAudio();
 
     {
@@ -115,6 +116,7 @@ public class UI {
         widgets.put(0, root);
         rwidgets.put(root, 0);
         this.sess = sess;
+        instance = this;
     }
 
     public void setreceiver(Receiver rcvr) {

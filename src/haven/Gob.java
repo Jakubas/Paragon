@@ -463,4 +463,16 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public boolean isplayer() {
         return MapView.plgob == id;
     }
+    
+    public Coord coord() {
+    	return rc;
+    }
+    
+    public int coordX() {
+    	return rc.x;
+    }
+    
+    public int coordY() {
+    	return rc.y;
+    }
 }
