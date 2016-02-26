@@ -36,6 +36,7 @@ import haven.Glob.Pagina;
 import java.util.*;
 
 import paragon.Farm;
+import paragon.Patrol;
 
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
@@ -122,6 +123,7 @@ public class MenuGrid extends Widget {
     	Glob glob = ui.sess.glob;
     	Set<Pagina> paginae = glob.paginae;
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
+    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
     }
     
     
@@ -336,9 +338,14 @@ public class MenuGrid extends Widget {
     }
     
     public void usecustom(String[] ad) {
-      if (ad[1].equals("farm")) {
-      	new Thread(new Farm(ui)).start();
-      }
+    	switch (ad[1]) {
+    	case "farm":
+    		new Thread(new Farm(ui)).start();
+    		break;
+    	case "patrol":
+    		new Thread(new Patrol(ui)).start();
+    		break;
+    	}
   }
 
     public void tick(double dt) {

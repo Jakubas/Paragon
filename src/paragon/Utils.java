@@ -14,10 +14,14 @@ import haven.Loading;
 import haven.Moving;
 import haven.Resource;
 import haven.UI;
+import haven.Widget;
 
 public class Utils {
 	
 	UI ui;
+	//amount of maximum time to wait between certain actions such as
+	//when waiting for player to start moving after clicking on map
+	public static final int PING_TIMEOUT = 500;
 	
 	public Utils(UI ui) {
 		this.ui = ui;
@@ -165,7 +169,7 @@ public class Utils {
 	public void leftClickObj(Gob gob) {
 		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
 		//Hack, wait 200ms to account for delay between clicking and starting movement
-		waitForMovement(500);
+		waitForMovement(PING_TIMEOUT);
 		while (isMoving()) {
 			sleep(100);
 		}
@@ -173,7 +177,7 @@ public class Utils {
 	
 	public void leftClickObjOffset(Gob gob, int xOffset, int yOffset) {
 		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, new Coord(gob.rc.x+xOffset, gob.rc.y+yOffset), 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
-		waitForMovement(500);
+		waitForMovement(PING_TIMEOUT);
 		while (isMoving()) {
 			sleep(100);
 		}
@@ -200,7 +204,7 @@ public class Utils {
     	}
     }
 
-	private boolean sleep(int timeout) {
+	public boolean sleep(int timeout) {
 		try {
 			Thread.sleep(timeout);
 			return true;
@@ -244,7 +248,7 @@ public class Utils {
             if (opt.name.equals("Harvest")) {
                 menu.choose(opt);
                 menu.destroy();
-                waitForProgressBar(500);
+                waitForProgressBar(PING_TIMEOUT);
                 while (isObject(crop) && isProgressBar()) {
                 	sleep(100);
                 };
@@ -252,5 +256,22 @@ public class Utils {
             }
         }
 		return false;
-	}	
+	}
+
+	public void moveToCoord(Coord coord) {
+    	double dist = coord.dist(player().rc);
+    	while (dist > 0) {
+    		clickCoord(coord);
+    		dist = coord.dist(player().rc);
+    		if (dist > 0) {
+    			clickInRandomDirection();
+    		}
+    	}
+    }
+	
+	public void clickCoord(Coord coord) {
+		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, coord, 1, 0, 0);
+		waitForMovement(PING_TIMEOUT);
+		while (isMoving());
+	}
 }
