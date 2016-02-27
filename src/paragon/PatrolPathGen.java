@@ -2,12 +2,10 @@ package paragon;
 
 import haven.Button;
 import haven.Coord;
-import haven.Inventory;
 import haven.UI;
 import haven.Widget;
 import haven.Window;
 
-import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,6 +13,9 @@ import java.io.IOException;
 
 public class PatrolPathGen implements Runnable {
 	
+	private volatile boolean interrupted = false;
+    private Widget closeWindow;
+    private Widget coordWindow;
 	Utils utils;
 	
 	
@@ -25,7 +26,8 @@ public class PatrolPathGen implements Runnable {
 	@Override
 	public void run() {
 		prevCoord = utils.player().rc;
-		utils.ui.sess.glob.gui.add(new StatusWindow(), 450, 300);
+		coordWindow = utils.ui.sess.glob.gui.add(new CoordWindow(), 450, 300);
+		closeWindow = utils.ui.sess.glob.gui.add(new CloseWindow(), 450, 380);
 		
 		File writeFile = new File("patrolpath.txt");
 		try {
@@ -33,7 +35,7 @@ public class PatrolPathGen implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		while (!Thread.currentThread().isInterrupted()) {
+		while (!interrupted) {
 			utils.sleep(50);
 		}
 	}
@@ -45,8 +47,8 @@ public class PatrolPathGen implements Runnable {
 	BufferedWriter writer = null;
 	File writeFile = null;
 
-	private class StatusWindow extends Window {
-        public StatusWindow() {
+	private class CoordWindow extends Window {
+        public CoordWindow() {
             super(Coord.z, "Patrol Path Generator");
             add(new Button(120, "Add Coord", false) {
                 public void click() {
@@ -62,6 +64,20 @@ public class PatrolPathGen implements Runnable {
                 	} catch (Exception e) {
                 		e.printStackTrace();
                 	}
+                }
+            });
+            pack();
+        }
+	}
+	
+	private class CloseWindow extends Window {
+        public CloseWindow() {
+            super(Coord.z, "Patrol Path Generator");
+            add(new Button(120, "Stop", false) {
+				public void click() {
+                	interrupted = true;
+                	closeWindow.destroy();
+                	coordWindow.destroy();
                 }
             });
             pack();

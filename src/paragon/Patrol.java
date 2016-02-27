@@ -1,11 +1,8 @@
 package paragon;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.sound.sampled.AudioInputStream;
@@ -14,6 +11,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import haven.Button;
 import haven.Coord;
 import haven.Gob;
 import haven.KinInfo;
@@ -21,10 +19,13 @@ import haven.Loading;
 import haven.OCache;
 import haven.Resource;
 import haven.UI;
+import haven.Widget;
+import haven.Window;
 
 public class Patrol implements Runnable {
 
 	private volatile boolean interrupted = false;
+    private Widget window;
 	private Utils utils;
 	
 	public Patrol(UI ui) {
@@ -34,6 +35,7 @@ public class Patrol implements Runnable {
 	@Override
 	public void run() {
 		
+		window = utils.ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
 		//read the first line from the file into a string (the coordinates to be patrolled)
 		File file = new File("patrolpath.txt");
 		String line = "";
@@ -136,6 +138,19 @@ public class Patrol implements Runnable {
             return gobcls != null;
         }
     }
+	
+	private class CloseWindow extends Window {
+        public CloseWindow() {
+            super(Coord.z, "Patrol");
+            add(new Button(120, "Stop", false) {
+				public void click() {
+                	interrupted = true;
+                	window.destroy();
+                }
+            });
+            pack();
+        }
+	}
 	
 	public void cancel() {
 	  interrupted = true;   

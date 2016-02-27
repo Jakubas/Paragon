@@ -2,39 +2,41 @@ package paragon;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Set;
 
+import haven.Button;
+import haven.Coord;
 import haven.Gob;
 import haven.UI;
+import haven.Widget;
+import haven.Window;
 
 public class Farm implements Runnable {
 	
+	private volatile boolean interrupted = false;
+    private Widget window;
 	Utils utils;
-	private UI ui;
 	
 	public Farm(UI ui) {
-		this.ui = ui;
 		utils = new Utils(ui);
 	}
 	
 	@Override
 	public void run() {
 		try {
+			window = utils.ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
 			Gob crop = utils.getNearestObject("terobjs/plants/");
 			String cropName = crop.getres().name;
 			ArrayList<Gob> cropList = getFarmingGobList(cropName);
 			farmer(cropList,  cropName);
 		} catch (Exception e) {
-			//for debugging
 			e.printStackTrace();
 		}
 	}
 	
 	public void farmer(ArrayList<Gob> cropList, String cropName) {
 		
-		while (!cropList.isEmpty()) {
+		while (!cropList.isEmpty() && !interrupted) {
 			Collections.sort(cropList);
 			Gob crop = cropList.get(0);
 			utils.moveToObject(crop);
@@ -49,5 +51,18 @@ public class Farm implements Runnable {
 		ArrayList<Gob> cropList = new ArrayList<Gob>();
 		cropList.addAll(crops);
 		return cropList;
+	}
+	
+	private class CloseWindow extends Window {
+        public CloseWindow() {
+            super(Coord.z, "Harvester");
+            add(new Button(120, "Stop", false) {
+				public void click() {
+                	interrupted = true;
+                	window.destroy();
+                }
+            });
+            pack();
+        }
 	}
 }
