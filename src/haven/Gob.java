@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.paragon.utils.UtilsSetup;
+
 import java.awt.*;
 import java.util.*;
 
@@ -484,7 +486,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 	public int compareTo(Gob gob) {
 		Gob player = glob.gui.map.player();
 		double dist = (player.coord().dist(this.coord()) - player.coord().dist(gob.coord()));
-		//Priority 1st-south 2nd-east 3rd-north 4th-west
+		//Priority 1st-south 2nd-west 3rd-north 4th-east
 		if (dist == 0) {
 			int ax = this.coordX();
 			int ay = this.coordY();
@@ -495,9 +497,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 			//south
 			if (ay > py) {
 				return -1;
-			//west
-			} else if (ax < px) {
-				if (ay <= by)
+			//east
+			} else if (ax > px) {
+				if (ay >= by)
 					return -1;
 				else
 					return 1;
@@ -507,10 +509,24 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 					return -1;
 				else
 					return 1;
-			//east
-			} else
+			//west
+			} else {
 				return 1;
-		} else 
+			}
+		} else
 			return (int) dist; 
+	}
+
+	public boolean exists() {
+		return this != null && glob.oc.getgob(id) != null;
+	}
+
+	public boolean isName(String name) {
+	    try {
+	        Resource res = getres();
+	        return (res != null) && res.name.contains(name);
+	    } catch (Loading e) {
+	        return false;
+	    }   
 	}
 }
