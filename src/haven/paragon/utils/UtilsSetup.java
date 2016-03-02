@@ -1,5 +1,8 @@
 package haven.paragon.utils;
 
+import java.awt.Color;
+
+import haven.GameUI;
 import haven.Gob;
 import haven.HavenPanel;
 import haven.UI;
@@ -25,4 +28,8 @@ public class UtilsSetup {
 			return false;
 		}
 	}
+	
+    public static void sysMsg(String msg, Color color ) {
+    	ui.root.findchild(GameUI.class).info(msg,color);
+    }
 }

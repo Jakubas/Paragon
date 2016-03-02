@@ -1,3 +1,9 @@
+## Version 1.1.1
+### Added:
+- A Dragonfly collector that clicks the nearest dragonfly and tries to collect it. It has some logic for getting unstuck, 
+  supports drinking water from hotkeys (waterflask/waterskin/bucket), and it will run until it has a full inventory or is stopped
+  by the user. Set the speed to crawling if you don't want to use energy.
+
 ## Version 1.1
 ### Added:
 - Added a tuber digger, that digs soil and drops it and keeps the Odd Tubers that it digs up. It moves east after it can't dig
