@@ -27,7 +27,7 @@ public class DigTuber implements Runnable {
 			sleep(PING_TIMEOUT);
 			while(!inventory.isFull() && mainScreen.isProgressBar()) {
 				if (interrupted)
-					break;
+					return;
 				sleep(50);
 			}
 
