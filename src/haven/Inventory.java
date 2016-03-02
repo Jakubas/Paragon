@@ -31,8 +31,8 @@ import java.util.*;
 public class Inventory extends Widget implements DTarget {
     public static final Tex invsq = Resource.loadtex("gfx/hud/invsq");
     public static final Coord sqsz = new Coord(33, 33);
-    Coord isz;
-    Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
+    public Coord isz;
+    public Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
 
     @RName("inv")
     public static class $_ implements Factory {
@@ -182,7 +182,7 @@ public class Inventory extends Widget implements DTarget {
         return items;
     }
 
-    private List<WItem> getitems(String... names) {
+    public List<WItem> getitems(String... names) {
         List<WItem> items = new ArrayList<WItem>();
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
@@ -213,30 +213,30 @@ public class Inventory extends Widget implements DTarget {
                 break;
             }
         }
-        if (hotwater == null)
-            return false;
-
-        // find any additional containers and refill the hotkeyed one
-        for (WItem w : containers) {
-            if (w.olcol != null && w.olcol.save == null) {
-                // break if full
-                ItemInfo.Contents hotcnt = hotwater.item.getcontents();
-                if (hotcnt != null) {
-                    String name = hotwater.item.getname();
-                    double fullcont = name.equals("Waterskin") ? 3.0D : 2.0D;
-                    if (hotcnt.content == fullcont)
-                        break;
-                }
-
-                ItemInfo.Contents cnt = w.item.getcontents();
-                if (cnt != null && cnt.content > 0) {
-                    w.item.wdgmsg("take", new Coord(w.item.sz.x / 2, w.item.sz.y / 2));
-                    hotwater.item.wdgmsg("itemact", 0);
-                    wdgmsg("drop", w.c.add(sqsz.div(2)).div(invsq.sz()));
-                }
-            }
+        
+        if (hotwater != null) {
+	        // find any additional containers and refill the hotkeyed one
+	        for (WItem w : containers) {
+	            if (w.olcol != null && w.olcol.save == null) {
+	                // break if full
+	                ItemInfo.Contents hotcnt = hotwater.item.getcontents();
+	                if (hotcnt != null) {
+	                    String name = hotwater.item.getname();
+	                    double fullcont = name.equals("Waterskin") ? 3.0D : 2.0D;
+	                    if (hotcnt.content == fullcont)
+	                        break;
+	                }
+	
+	                ItemInfo.Contents cnt = w.item.getcontents();
+	                if (cnt != null && cnt.content > 0) {
+	                    w.item.wdgmsg("take", new Coord(w.item.sz.x / 2, w.item.sz.y / 2));
+	                    hotwater.item.wdgmsg("itemact", 0);
+	                    wdgmsg("drop", w.c.add(sqsz.div(2)).div(invsq.sz()));
+	                }
+	            }
+	        }
         }
-
+        
         // drink
         GameUI.Belt beltwdg = gameui().beltwdg;
         Indir<Resource>[] belt = gameui().belt;
@@ -245,7 +245,7 @@ public class Inventory extends Widget implements DTarget {
             if (indir != null) {
                 try {
                     Resource res = indir.get();
-                    if (res != null && (res.basename().equals("waterskin") || res.basename().equals("waterflask")))
+                    if (res != null && (res.basename().equals("waterskin") || res.basename().equals("waterflask") || res.basename().equals("bucket-water")))
                         beltwdg.keyact(s);
                 } catch (Loading l) {
                 }
