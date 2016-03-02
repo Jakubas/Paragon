@@ -1,8 +1,8 @@
 ## Version 1.1
 ### Added:
-- Added a tuber digger, that digs soil and drops it and keeps the Odd Tubers that it digs up. It moves east after it can dig
+- Added a tuber digger, that digs soil and drops it and keeps the Odd Tubers that it digs up. It moves east after it can't dig
   anymore in a particular area, so make sure that your path to the east is clear before running for extended periods.
-- Added inventory utlities
+- Added inventory utilities
 
 ### Fixed:
 - The 'X' button on windows that are created by the automations will now close the window and stop the automation prematurely
