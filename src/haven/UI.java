@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.paragon.utils.UtilsSetup;
+
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;

@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
 	<property name="name" value="paragon" />
-	<property name="version" value="" />
+	<property name="version" value="1.0" />
 
 	<target name="build-env">
 		<mkdir dir="build" />
@@ -106,18 +106,14 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="rebuild">
-		<zip destfile="${basedir}/${name}-${version}.zip" update="false">
-			<fileset dir="build" includes="*.jar" excludes="*natives*.jar" />
-			<fileset dir="${basedir}" includes="README, CHANGELOG" />
-			<fileset dir="lib/jogl-natives" includes="*.jar" />
-			<fileset dir="etc" includes="*.bat,run.sh" />
-		</zip>
-		<zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
-			<fileset dir="build" includes="amber-res.jar, hafen.jar" />
-			<fileset dir="${basedir}" includes="CHANGELOG" />
-		</zip>
-	</target>
+	 <target name="dist" depends="rebuild">
+	    <zip destfile="${basedir}/${name}-${version}.zip" update="false">
+	        <fileset dir="${basedir}" includes="README"/>
+	    	<fileset dir="build" includes="hafen.jar"/>
+	    	<fileset dir="build" includes="lib/*.jar"/>
+	        <fileset dir="etc" includes="*.bat"/>
+	    </zip>
+	 </target>
 
 	<target name="deftgt" depends="jars" />
 
@@ -130,9 +126,6 @@
 	</target>
 
 	<target name="rebuild" depends="clean, jars">
-		<copy todir="build/res">
-			<fileset dir="custom_res/" />
-		</copy>
 	</target>
 
 	<target name="profile" depends="jars">

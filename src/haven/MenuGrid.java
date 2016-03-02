@@ -35,9 +35,7 @@ import haven.Glob.Pagina;
 
 import java.util.*;
 
-import paragon.Farm;
-import paragon.Patrol;
-import paragon.PatrolPathGen;
+import haven.paragon.automations.*;
 
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
@@ -342,13 +340,13 @@ public class MenuGrid extends Widget {
     public void usecustom(String[] ad) {
     	switch (ad[1]) {
     	case "farm":
-    		new Thread(new Farm(ui)).start();
+    		new Thread(new Farm()).start();
     		break;
     	case "patrol":
-    		new Thread(new Patrol(ui)).start();
+    		new Thread(new Patrol()).start();
     		break;
 		case "patrolpathgen":
-			new Thread(new PatrolPathGen(ui)).start();
+			new Thread(new PatrolPathGen()).start();
 			break;
 		}
   }
