@@ -18,7 +18,6 @@ import haven.KinInfo;
 import haven.Loading;
 import haven.OCache;
 import haven.Resource;
-import haven.UI;
 import haven.Widget;
 import haven.Window;
 import static haven.paragon.utils.UtilsSetup.*;
@@ -26,12 +25,11 @@ import static haven.paragon.utils.UtilsSetup.*;
 public class Patrol implements Runnable {
 
 	private volatile boolean interrupted = false;
-    private Widget window;
 	
 	@Override
 	public void run() {
 		
-		window = ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
+		ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
 		//read the first line from the file into a string (the coordinates to be patrolled)
 		File file = new File("patrolpath.txt");
 		String line = "";
@@ -141,14 +139,14 @@ public class Patrol implements Runnable {
             add(new Button(120, "Stop", false) {
 				public void click() {
                 	interrupted = true;
-                	window.destroy();
+                	parent.destroy();
                 }
             });
             pack();
         }
-	}
-	
-	public void cancel() {
-	  interrupted = true;   
+        public void wdgmsg(Widget sender, String msg, Object... args) {
+            interrupted = true;
+            destroy();
+        }
 	}
 }

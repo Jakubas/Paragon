@@ -15,13 +15,12 @@ import static haven.paragon.utils.UtilsSetup.*;
 public class Farm implements Runnable {
 	
 	private volatile boolean interrupted = false;
-    private Widget window;
 	
 	
 	@Override
 	public void run() {
 		try {
-			window = ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
+			ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
 			Gob crop = mainScreen.getNearestObject("terobjs/plants/");
 			String cropName = crop.getres().name;
 			ArrayList<Gob> cropList = getFarmingGobList(cropName);
@@ -56,10 +55,14 @@ public class Farm implements Runnable {
             add(new Button(120, "Stop", false) {
 				public void click() {
                 	interrupted = true;
-                	window.destroy();
+                	parent.destroy();
                 }
             });
             pack();
+        }
+        public void wdgmsg(Widget sender, String msg, Object... args) {
+            interrupted = true;
+            destroy();
         }
 	}
 }

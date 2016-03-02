@@ -15,14 +15,13 @@ import static haven.paragon.utils.UtilsSetup.*;
 public class PatrolPathGen implements Runnable {
 	
 	private volatile boolean interrupted = false;
-    private Widget closeWindow;
     private Widget coordWindow;
 	
 	@Override
 	public void run() {
 		prevCoord = player().rc;
 		coordWindow = ui.sess.glob.gui.add(new CoordWindow(), 450, 300);
-		closeWindow = ui.sess.glob.gui.add(new CloseWindow(), 450, 380);
+		ui.sess.glob.gui.add(new CloseWindow(), 450, 380);
 		
 		File writeFile = new File("patrolpath.txt");
 		try {
@@ -63,6 +62,10 @@ public class PatrolPathGen implements Runnable {
             });
             pack();
         }
+        public void wdgmsg(Widget sender, String msg, Object... args) {
+            interrupted = true;
+            destroy();
+        }
 	}
 	
 	private class CloseWindow extends Window {
@@ -71,11 +74,16 @@ public class PatrolPathGen implements Runnable {
             add(new Button(120, "Stop", false) {
 				public void click() {
                 	interrupted = true;
-                	closeWindow.destroy();
+                	parent.destroy();
                 	coordWindow.destroy();
                 }
             });
             pack();
+        }
+        public void wdgmsg(Widget sender, String msg, Object... args) {
+            interrupted = true;
+            destroy();
+            coordWindow.destroy();
         }
 	}
 }
