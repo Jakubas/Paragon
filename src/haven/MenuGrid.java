@@ -122,6 +122,7 @@ public class MenuGrid extends Widget {
     	Glob glob = ui.sess.glob;
     	Set<Pagina> paginae = glob.paginae;
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
+    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/digtubber")));
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
     	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrolpathgen")));
     }
@@ -347,6 +348,9 @@ public class MenuGrid extends Widget {
     		break;
 		case "patrolpathgen":
 			new Thread(new PatrolPathGen()).start();
+			break;
+		case "digtubber":
+			new Thread(new DigTuber()).start();
 			break;
 		}
   }

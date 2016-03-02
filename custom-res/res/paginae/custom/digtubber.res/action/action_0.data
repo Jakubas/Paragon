@@ -3,14 +3,14 @@ paginae/custom/add
 #uint16 pver
 1
 #String name
-Patrol Path Generator
+Tubber Digger
 #String preq
 
 #uint16 hk
-97
+116
 #uint16 ad length
 2
 #String ad[0]
 @
 #String ad[1]
-patrolpathgen
+digtubber
