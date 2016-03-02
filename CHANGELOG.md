@@ -6,7 +6,6 @@
 
 ### Fixed:
 - The 'X' button on windows that are created by the automations will now close the window and stop the automation prematurely
--
 
 ### Changed:
 - Inventory.drink will now drink from buckets as well
