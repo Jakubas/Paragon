@@ -135,7 +135,16 @@ public class AreaMine implements Runnable {
             if (nrj.a < 30)
                 break mine;
 
-            mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 1, 0);
+            // discard mining cursor so we could move
+            mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 3, 0);
+
+            mv.pfLeftClick(tc.mul(11).add(5, 5), "mine");
+
+            try {
+                mv.pfthread.join();
+            } catch (InterruptedException e) {
+                break mine;
+            }
 
             while (true) {
                 try {

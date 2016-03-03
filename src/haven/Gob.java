@@ -303,7 +303,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     if (res != null && res.name.startsWith("gfx/terobjs/trees")
                             && !res.name.endsWith("log") && !res.name.endsWith("oldtrunk")) {
                         hide = true;
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
@@ -313,7 +313,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
 
             if (Config.showboundingboxes && !hide) {
-                GobHitbox.BBox bbox = GobHitbox.getBBox(this);
+                GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                 if (bbox != null)
                     rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, false)), null);
             }

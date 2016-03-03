@@ -90,6 +90,7 @@ public class GobHitbox extends Sprite {
     private static final BBox bboxLog = new BBox(new Coord(-10, -2), new Coord(10, 2));
     private static final BBox bboxCalf = new BBox(new Coord(-9, -3), new Coord(9, 3));
     private static final BBox bboxLamb = new BBox(new Coord(-6, -2), new Coord(6, 2));
+    private static final BBox bboxCattle  = new BBox(new Coord(-12, -4), new Coord(12, 4));
     private static final BBox bboxSmelter = new BBox(new Coord(-12, -12), new Coord(12, 20));
     private static final BBox bboxWallseg = new BBox(new Coord(-5, -6), new Coord(6, 5));
     private static final BBox bboxHwall = new BBox(new Coord(-1, 0), new Coord(0, 11));
@@ -101,7 +102,7 @@ public class GobHitbox extends Sprite {
             new BBox(new Coord(-5, -5), new Coord(5, 5))
     };
 
-    public static BBox getBBox(Gob gob) {
+    public static BBox getBBox(Gob gob, boolean fix) {
         Resource res = null;
         try {
             res = gob.getres();
@@ -112,11 +113,13 @@ public class GobHitbox extends Sprite {
 
         String name = res.name;
 
-        // calves, lambs
+        // calves, lambs, cattle
         if (name.equals("gfx/kritter/cattle/calf"))
             return bboxCalf;
         else if (name.equals("gfx/kritter/sheep/lamb"))
             return bboxLamb;
+        else if (name.equals("gfx/kritter/cattle/cattle"))
+            return bboxCattle;
 
         // rlink-ed gobs.
         // modifying RenderLink is a bad idea
@@ -146,14 +149,18 @@ public class GobHitbox extends Sprite {
                 return null;
         }
 
+
         // either i completely misinterpreted how bounding boxes are defined
         // or some negs simply have wrong Y dimensions. in either case this fixes it
-        if (name.endsWith("/smelter"))
-            return bboxSmelter;
-        else if (name.endsWith("brickwallseg") || name.endsWith("palisadeseg"))
-            return bboxWallseg;
-        else if (name.endsWith("/hwall"))
-            return bboxHwall;
+        if (fix) {
+            if (name.endsWith("/smelter"))
+                return bboxSmelter;
+            else if (name.endsWith("brickwallseg") || name.endsWith("palisadeseg") || name.endsWith("poleseg") ||
+                    name.endsWith("polecp"))
+                return bboxWallseg;
+            if (name.endsWith("/hwall"))
+                return bboxHwall;
+        }
 
         Resource.Neg neg = res.layer(Resource.Neg.class);
         if (neg == null)

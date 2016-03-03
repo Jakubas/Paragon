@@ -962,6 +962,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Config.showboundingboxes = !Config.showboundingboxes;
             Utils.setprefb("showboundingboxes", Config.showboundingboxes);
             return true;
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
+            Config.pf = !Config.pf;
+            info("Pathfinding is now turned " + (Config.pf ? "on" : "off"), Color.WHITE);
+            return true;
         }
         return (super.globtype(key, ev));
     }
