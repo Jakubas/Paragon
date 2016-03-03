@@ -626,6 +626,22 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmbearsvol", vol);
             }
         }, new Coord(250, y));
+        y += 20;
+        audio.add(new Label("Fireplace sound volume (req. restart)"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxfirevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxfirevol = vol;
+                Utils.setprefd("sfxfirevol", vol);
+            }
+        }, new Coord(250, y));
+
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
