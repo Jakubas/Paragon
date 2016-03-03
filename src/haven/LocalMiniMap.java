@@ -47,6 +47,7 @@ public class LocalMiniMap extends Widget {
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
+    private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
     private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>>(7, 0.75f, true) {
@@ -283,45 +284,45 @@ public class LocalMiniMap extends Widget {
             
             for (Gob gob : oc) {
                 try {
-                    if (Config.showplayersmmap || Config.autohearth) {
-                        try {
-                            Resource res = gob.getres();
-                            if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
-                                boolean ispartymember = false;
-                                synchronized (ui.sess.glob.party.memb) {
-                                    ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
+                    Resource res = gob.getres();
+                    if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
+                        boolean ispartymember = false;
+                        synchronized (ui.sess.glob.party.memb) {
+                            ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
+                        }
+
+                        Coord pc = p2c(gob.rc).add(delta);
+                        if (!ispartymember) {
+                            KinInfo kininfo = gob.getattr(KinInfo.class);
+                            if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
+                                g.chcolor(Color.BLACK);
+                                g.fellipse(pc, new Coord(5, 5));
+                                g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                                g.fellipse(pc, new Coord(4, 4));
+                                g.chcolor();
+                            }
+
+                            if ((Config.alarmunknown || Config.autohearth) && kininfo == null) {
+                                if (!sgobs.contains(gob.id)) {
+                                    sgobs.add(gob.id);
+                                    Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                                    if (Config.autohearth)
+                                        gameui().menu.wdgmsg("act", new Object[]{"travel", "hearth"});
                                 }
-
-                                Coord pc = p2c(gob.rc).add(delta);
-                                if (!ispartymember) {
-                                    KinInfo kininfo = gob.getattr(KinInfo.class);
-                                    if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
-                                        g.chcolor(Color.BLACK);
-                                        g.fellipse(pc, new Coord(5, 5));
-                                        g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                                        g.fellipse(pc, new Coord(4, 4));
-                                        g.chcolor();
-                                    }
-
-                                    if ((Config.alarmunknown || Config.autohearth) && kininfo == null) {
-                                        if (!sgobs.contains(gob.id)) {
-                                            sgobs.add(gob.id);
-                                            Audio.play(alarmplayersfx, Config.alarmunknownvol);
-                                            if (Config.autohearth)
-                                                gameui().menu.wdgmsg("act", new Object[]{"travel", "hearth"});
-                                        }
-                                    } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
-                                        if (!sgobs.contains(gob.id)) {
-                                            sgobs.add(gob.id);
-                                            Audio.play(alarmplayersfx, Config.alarmredvol);
-                                        }
-                                    }
+                            } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+                                if (!sgobs.contains(gob.id)) {
+                                    sgobs.add(gob.id);
+                                    Audio.play(alarmplayersfx, Config.alarmredvol);
                                 }
                             }
-                        } catch (Exception e) {
+                        }
+                    } else if (Config.alarmonforagables) {
+                        if (res != null && !sgobs.contains(gob.id) && Config.foragables.contains(res.name)) {
+                            sgobs.add(gob.id);
+                            Audio.play(foragablesfx, Config.alarmonforagablesvol);
                         }
                     }
-                } catch (Loading l) {
+                } catch (Exception e) { // fail silently
                 }
             }
         }

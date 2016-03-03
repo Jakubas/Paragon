@@ -148,6 +148,8 @@ public class Config {
     public static boolean hwcursor = Utils.getprefb("hwcursor", false);
     public static boolean showboundingboxes = Utils.getprefb("showboundingboxes", false);
     public static boolean disablespacebar = Utils.getprefb("disablespacebar", false);
+    public static boolean alarmonforagables = Utils.getprefb("alarmonforagables", false);
+    public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8);
     public static String playerposfile;
     public static byte[] authck = null;
     public static String prefspec = "hafen";
@@ -195,6 +197,9 @@ public class Config {
     public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
             "gfx/kritter/bat/bat", "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx",
             "gfx/kritter/badger/badger"));
+
+    public final static Set<String> foragables = new HashSet<String>(Arrays.asList(
+            "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss"));
     
     static {
         Arrays.sort(Config.boulders);
