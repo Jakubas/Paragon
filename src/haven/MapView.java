@@ -1547,6 +1547,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public boolean drop(final Coord cc, final Coord ul) {
         delay(new Hittest(cc) {
             public void hit(Coord pc, Coord mc, ClickInfo inf) {
+                if (Config.nodropping && !ui.modctrl) {
+                    int t = glob.map.gettile(player().rc.div(tilesz));
+                    Resource res = glob.map.tilesetr(t);
+                    if (res != null && (res.name.equals("gfx/tiles/water") || res.name.equals("gfx/tiles/deep")))
+                        return;
+                }
                 wdgmsg("drop", pc, mc, ui.modflags());
             }
         });
