@@ -150,6 +150,8 @@ public class Config {
     public static boolean disablespacebar = Utils.getprefb("disablespacebar", false);
     public static boolean alarmonforagables = Utils.getprefb("alarmonforagables", false);
     public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8);
+    public static boolean alarmbears = Utils.getprefb("alarmbears", false);
+    public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.8);
     public static String playerposfile;
     public static byte[] authck = null;
     public static String prefspec = "hafen";
@@ -200,7 +202,7 @@ public class Config {
 
     public final static Set<String> foragables = new HashSet<String>(Arrays.asList(
             "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss"));
-    
+
     static {
         Arrays.sort(Config.boulders);
         Arrays.sort(Config.bushes);

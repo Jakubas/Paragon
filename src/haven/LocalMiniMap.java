@@ -48,6 +48,7 @@ public class LocalMiniMap extends Widget {
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
     private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
+    private static final Resource bearsfx = Resource.local().loadwait("sfx/bear");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
     private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>>(7, 0.75f, true) {
@@ -285,7 +286,10 @@ public class LocalMiniMap extends Widget {
             for (Gob gob : oc) {
                 try {
                     Resource res = gob.getres();
-                    if (res != null && "body".equals(res.basename()) && gob.id != mv.player().id) {
+                    if (res == null)
+                        continue;
+
+                    if ("body".equals(res.basename()) && gob.id != mv.player().id) {
                         boolean ispartymember = false;
                         synchronized (ui.sess.glob.party.memb) {
                             ispartymember = ui.sess.glob.party.memb.containsKey(gob.id);
@@ -316,10 +320,15 @@ public class LocalMiniMap extends Widget {
                                 }
                             }
                         }
-                    } else if (Config.alarmonforagables) {
-                        if (res != null && !sgobs.contains(gob.id) && Config.foragables.contains(res.name)) {
+                    } else if (Config.foragables.contains(res.name)) {
+                        if (Config.alarmonforagables && !sgobs.contains(gob.id)) {
                             sgobs.add(gob.id);
                             Audio.play(foragablesfx, Config.alarmonforagablesvol);
+                        }
+                    } else if (res.name.equals("gfx/kritter/lynx/lynx") || res.name.equals("gfx/kritter/bear/bear")) {
+                        if (Config.alarmbears && !sgobs.contains(gob.id)) {
+                            sgobs.add(gob.id);
+                            Audio.play(bearsfx, Config.alarmbearsvol);
                         }
                     }
                 } catch (Exception e) { // fail silently

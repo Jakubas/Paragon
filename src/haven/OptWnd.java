@@ -577,7 +577,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(250, y));
         y += 20;
-        audio.add(new CheckBox("Alarm on Bluebells, Flotsams, Edelweiß") {
+        audio.add(new CheckBox("Alarm on bluebells, flotsams, edelweiß") {
             {
                 a = Config.alarmonforagables;
             }
@@ -601,7 +601,31 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmonforagablesvol", vol);
             }
         }, new Coord(250, y));
+        y += 20;
+        audio.add(new CheckBox("Alarm on bears & lynx") {
+            {
+                a = Config.alarmbears;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("alarmbears", val);
+                Config.alarmbears = val;
+                a = val;
+            }
+        }, new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmbearsvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmbearsvol = vol;
+                Utils.setprefd("alarmbearsvol", vol);
+            }
+        }, new Coord(250, y));
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
