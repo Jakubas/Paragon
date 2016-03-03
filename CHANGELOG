@@ -1,3 +1,11 @@
+Version 1.24.5
+    Fixed:
+        * Fixed NPE in ChatUI.
+
+    Misc:
+        * Merged vanilla changes.
+
+
 Version 1.24.4
     Fixed:
         * Position of server time, horizon and status widgets.
