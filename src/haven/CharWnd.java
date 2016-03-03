@@ -454,7 +454,6 @@ public class CharWnd extends Window {
             this.rnm = attrf.render(tooltip);
             this.attr = glob.cattr.get(attr);
             this.bg = bg;
-            this.attr.addObserver(new ChangeObserver(tooltip));
         }
 
         public void tick(double dt) {
@@ -489,25 +488,6 @@ public class CharWnd extends Window {
 
         public void lvlup() {
             lvlt = 1.0;
-        }
-
-        private class ChangeObserver implements Observer {
-            private String name;
-
-            public ChangeObserver(String name) {
-                this.name = name;
-            }
-
-            @Override
-            public void update(Observable o, Object arg) {
-                if (arg != null) {
-                    int basediff = (Integer) arg;
-                    if (basediff != 0) {
-                        String msg = name + (basediff > 0 ? " +" + basediff : " " + basediff);
-                        gameui().syslog.append(msg, Color.LIGHT_GRAY);
-                    }
-                }
-            }
         }
     }
 
