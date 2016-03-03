@@ -1022,7 +1022,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         msgtime = System.currentTimeMillis();
         lastmsg = msgfoundry.render(msg, color);
         syslog.append(msg, logcol);
-        Audio.play(msgsfx);
+        if (color == Color.WHITE)
+            Audio.play(msgsfx);
     }
 
     public void msg(String msg, Color color) {

@@ -34,7 +34,7 @@ import static haven.Inventory.invsq;
 public class Equipory extends Widget implements DTarget {
     private static final Tex bg = Resource.loadtex("gfx/hud/equip/bg");
     private static final int rx = 34 + bg.sz().x;
-    private static final int acx = 34 + bg.sz().x/2;
+    private static final int acx = 34 + bg.sz().x / 2;
     private static final Text.Foundry acf = new Text.Foundry(Text.sans, 12).aa(true);
     private Tex armorclass = null;
     static Coord ecoords[] = {
@@ -54,6 +54,7 @@ public class Equipory extends Widget implements DTarget {
             new Coord(rx, 198),
             new Coord(0, 231),
             new Coord(rx, 231),
+            new Coord(34, 0),
     };
     static Coord isz;
 
@@ -161,8 +162,8 @@ public class Equipory extends Widget implements DTarget {
     }
 
     public void draw(GOut g) {
-        for (Coord ec : ecoords)
-            g.image(invsq, ec);
+        for (int i = 0; i < 16; i++)
+            g.image(invsq, ecoords[i]);
         super.draw(g);
 
         if (armorclass == null) {
@@ -188,7 +189,7 @@ public class Equipory extends Widget implements DTarget {
             }
         }
         if (armorclass != null)
-            g.image(armorclass, new Coord(acx - armorclass.sz().x/2, bg.sz().y - 15));
+            g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - 15));
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {
