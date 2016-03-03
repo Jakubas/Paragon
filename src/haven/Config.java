@@ -153,6 +153,7 @@ public class Config {
     public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8);
     public static boolean alarmbears = Utils.getprefb("alarmbears", false);
     public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.8);
+    public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static String playerposfile;
     public static byte[] authck = null;
     public static String prefspec = "hafen";
