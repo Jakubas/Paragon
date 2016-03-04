@@ -1,3 +1,18 @@
+Version 1.25.0
+    New:
+        * Alarm on bluebells, flotsams, and edelweiss.
+        * Alarm on bears and lynx.
+        * Slider for adjusting fireplace sound volume.
+        * Option to show cooldown time.
+        * Option to disable dropping items over water (overridable with Ctrl).
+
+    Fixed:
+        * Exception in chat window.
+
+    Misc:
+        * Improved auto-miner.
+
+
 Version 1.24.6
     Misc:
         * Merged vanilla changes.
