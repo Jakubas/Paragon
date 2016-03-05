@@ -111,7 +111,7 @@ public class Pathfinder implements Runnable {
                 mv.wdgmsg("click", Coord.z, mc, 1, 0);
 
             boolean done = false;
-            synchronized (Pathfinder.class) {
+            synchronized (oc) {
                 done = step < count - 1;
             }
 
@@ -133,7 +133,7 @@ public class Pathfinder implements Runnable {
                         break;
                 }
 
-                synchronized (Pathfinder.class) {
+                synchronized (oc) {
                     done = step < count - 1;
                 }
             }

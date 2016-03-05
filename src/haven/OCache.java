@@ -168,11 +168,8 @@ public class OCache implements Iterable<Gob> {
     public synchronized void linbeg(Gob g, Coord s, Coord t, int c) {
         LinMove lm = new LinMove(g, s, t, c);
         g.setattr(lm);
-        if (pf != null && g.isplayer()) {
-            synchronized (Pathfinder.class) {
-                pf.moveCount(c);
-            }
-        }
+        if (pf != null && g.isplayer())
+            pf.moveCount(c);
     }
 
     public synchronized void linstep(Gob g, int l) {
@@ -182,19 +179,13 @@ public class OCache implements Iterable<Gob> {
         LinMove lm = (LinMove) m;
         if ((l < 0) || (l >= lm.c)) {
             g.delattr(Moving.class);
-            if (pf != null && g.isplayer() && l < 0) {
-                synchronized (Pathfinder.class) {
-                    pf.moveStop(l);
-                }
-            }
+            if (pf != null && g.isplayer() && l < 0)
+                pf.moveStop(l);
         }
         else {
             lm.setl(l);
-            if (pf != null && g.isplayer()) {
-                synchronized (Pathfinder.class) {
-                    pf.moveStep(l);
-                }
-            }
+            if (pf != null && g.isplayer())
+                pf.moveStep(l);
         }
     }
 
