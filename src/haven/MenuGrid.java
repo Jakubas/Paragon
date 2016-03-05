@@ -30,10 +30,12 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
+import automation.SmelterFueler;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
 
 import java.util.*;
+import java.util.concurrent.Executors;
 
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
@@ -112,6 +114,16 @@ public class MenuGrid extends Widget {
 
     public MenuGrid() {
         super(bgsz.mul(gsz).add(1, 1));
+    }
+
+    @Override
+    protected void attach(UI ui) {
+        super.attach(ui);
+        Glob glob = ui.sess.glob;
+        synchronized (glob.paginae) {
+            Collection<Pagina> p = glob.paginae;
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal")));
+        }
     }
 
     private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
@@ -285,6 +297,17 @@ public class MenuGrid extends Widget {
         return (ui.sess.glob.paginafor(res));
     }
 
+    private void use(String[] ad) {
+        if (ad[1].equals("coal12")) {
+            GameUI gui = gameui();
+            if (gui != null) {
+                Executors.newSingleThreadExecutor().submit(() -> {
+                    new SmelterFueler(gui).fuel();
+                });
+            }
+        }
+    }
+
     private void use(Pagina r, boolean reset) {
         Collection<Pagina> sub = new LinkedList<Pagina>(),
                 cur = new LinkedList<Pagina>();
@@ -303,7 +326,12 @@ public class MenuGrid extends Widget {
                 curoff += 14;
         } else {
             r.newp = 0;
-            wdgmsg("act", (Object[]) r.act().ad);
+            String[] ad = r.act().ad;
+            if(ad[0].equals("@")) {
+                use(ad);
+            } else {
+                wdgmsg("act", (Object[]) ad);
+            }
             if (reset)
                 this.cur = null;
             curoff = 0;
