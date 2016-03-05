@@ -918,7 +918,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(560, y));
-        /*y += 35;
+        y += 35;
         display.add(new CheckBox("Show animal radius") {
             {
                 a = Config.showanimalrad;
@@ -929,7 +929,7 @@ public class OptWnd extends Window {
                 Config.showanimalrad = val;
                 a = val;
             }
-        }, new Coord(560, y));*/
+        }, new Coord(560, y));
         y += 35;
         display.add(new CheckBox("Show F-key toolbar") {
             {
