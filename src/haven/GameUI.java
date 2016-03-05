@@ -57,7 +57,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public HelpWnd help;
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
-    private WItem vhand;
+    public WItem vhand;
     public ChatUI chat;
     public ChatUI.Channel syslog;
     public double prog = -1;
@@ -78,6 +78,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public static boolean trackon = false;
     private boolean crimeautotgld = false;
     private boolean trackautotgld = false;
+    public FBelt fbelt;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -184,6 +185,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Config.iconssel = Utils.getprefsa("iconssel_" + chrid, null);
             opts.setMapSettings();
         }
+
+        fbelt = new FBelt(chrid, Utils.getprefb("fbelt_vertical", true));
+        fbelt.load();
+        add(fbelt, Utils.getprefc("fbelt_c", new Coord(20, 200)));
+        if (!Config.fbelt)
+            fbelt.hide();
     }
 
     /* Ice cream */

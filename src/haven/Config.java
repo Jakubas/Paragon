@@ -155,6 +155,7 @@ public class Config {
     public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.8);
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
+    public static boolean fbelt = Utils.getprefb("fbelt", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;
