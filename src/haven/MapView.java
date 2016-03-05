@@ -1449,15 +1449,17 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 if (player.getattr(Moving.class) != null) {
                     // cancel movement by clicking slightly along the vector of movement
                     // clicking at player's position leads to jerky movement
-                    double px = player().rc.x;
-                    double py = player().rc.y;
-                    double dx = pf.mc.x;
-                    double dy = pf.mc.y;
-                    double dist = 4.0;
-                    double atan = Math.atan2(dy - py, dx - px);
-                    double x = px + dist * Math.cos(atan);
-                    double y = py + dist * Math.sin(atan);
-                    wdgmsg("click", Coord.z, new Coord((int)x, (int)y), 1, 0);
+                    if (pf.mc != null) {
+                        double px = player().rc.x;
+                        double py = player().rc.y;
+                        double dx = pf.mc.x;
+                        double dy = pf.mc.y;
+                        double dist = 4.0;
+                        double atan = Math.atan2(dy - py, dx - px);
+                        double x = px + dist * Math.cos(atan);
+                        double y = py + dist * Math.sin(atan);
+                        wdgmsg("click", Coord.z, new Coord((int) x, (int) y), 1, 0);
+                    }
                 }
             }
 
