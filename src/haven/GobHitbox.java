@@ -149,16 +149,16 @@ public class GobHitbox extends Sprite {
                 return null;
         }
 
-
         // either i completely misinterpreted how bounding boxes are defined
         // or some negs simply have wrong Y dimensions. in either case this fixes it
         if (fix) {
             if (name.endsWith("/smelter"))
                 return bboxSmelter;
-            else if (name.endsWith("brickwallseg") || name.endsWith("palisadeseg") || name.endsWith("poleseg") ||
-                    name.endsWith("polecp"))
+            else if (name.endsWith("brickwallseg") || name.endsWith("brickwallcp") ||
+                    name.endsWith("palisadeseg") || name.endsWith("palisadecp") ||
+                    name.endsWith("poleseg") || name.endsWith("polecp"))
                 return bboxWallseg;
-            if (name.endsWith("/hwall"))
+            else if (name.endsWith("/hwall"))
                 return bboxHwall;
         }
 
