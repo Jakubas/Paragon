@@ -328,7 +328,9 @@ public class LocalMiniMap extends Widget {
                     } else if (res.name.equals("gfx/kritter/lynx/lynx") || res.name.equals("gfx/kritter/bear/bear")) {
                         if (Config.alarmbears && !sgobs.contains(gob.id)) {
                             sgobs.add(gob.id);
-                            Audio.play(bearsfx, Config.alarmbearsvol);
+                            GAttrib drw = gob.getattr(Drawable.class);
+                            if (drw != null && ((Composite) drw).pseq != 1)
+                                Audio.play(bearsfx, Config.alarmbearsvol);
                         }
                     }
                 } catch (Exception e) { // fail silently
