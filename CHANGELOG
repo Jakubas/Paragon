@@ -1,3 +1,14 @@
+Version 1.26.0
+    New:
+        * F-key toolbar.
+        * Animal radius.
+
+    Fixed:
+        * Auto-miner issues.
+        * Pathfinder issues.
+        * Bear/lynx alarm firing off on dead animals.
+
+
 Version 1.25.0
     New:
         * Alarm on bluebells, flotsams, and edelweiss.
