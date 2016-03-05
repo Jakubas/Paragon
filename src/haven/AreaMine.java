@@ -127,7 +127,7 @@ public class AreaMine implements Runnable {
             Coord tc = path[i];
             int t = map.gettile(tc);
             Resource res = map.tilesetr(t);
-            if (res == null || !res.name.startsWith("gfx/tiles/rocks/"))
+            if (res == null || (!res.name.startsWith("gfx/tiles/rocks/") && !res.name.equals("gfx/tiles/cave")))
                 continue;
 
             // stop if energy < 1500%
