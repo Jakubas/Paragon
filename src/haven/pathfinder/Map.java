@@ -40,7 +40,7 @@ public class Map {
 
     private Dbg dbg;
     private final static boolean DEBUG = false;
-
+    public final static boolean DEBUG_TIMINGS = false;
 
     public Map(Coord plc, Coord endc, MCache mcache) {
         this.plc = plc;
@@ -380,7 +380,8 @@ public class Map {
                 }
             }
         }
-        System.out.println("          Edges: " + visedges + " / " + edges + " (vxs: " + vertices.size() + ")");
+        if (DEBUG_TIMINGS)
+            System.out.println("          Edges: " + visedges + " / " + edges + " (vxs: " + vertices.size() + ")");
     }
 
     private List<Vertex> recalcVertices(Iterable<Edge> path) {
@@ -445,15 +446,18 @@ public class Map {
     public Iterable<Edge> main() {
         long start = System.nanoTime();
         initGeography();
-        System.out.println("            Geography: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("            Geography: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         start = System.nanoTime();
         identTraversableObstacles();
-        System.out.println("Traversable Obstacles: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("Traversable Obstacles: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         start = System.nanoTime();
         sanitizeWaypoints();
-        System.out.println("Vertices Sanitization: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("Vertices Sanitization: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         // clear area around starting position in case char is on the bounding box boundary
         if (map[origin][origin-1] == CELL_BLK)
@@ -478,13 +482,15 @@ public class Map {
         if (Utils.isVisible(map, dbg, origin, origin, endc.x, endc.y, (byte) (CELL_BLK | CELL_TO))) {
             List<Edge> clearpath = new ArrayList<>(1);
             clearpath.add(new Edge(new Vertex(origin, origin), new Vertex(endc.x, endc.y), 0));
-            System.out.println("!!!Clear path found!!!");
+            if (DEBUG_TIMINGS)
+                System.out.println("!!!Clear path found!!!");
             return clearpath;
         }
 
         // test if direct path blocked only by traversable obstacles
         if (Utils.isVisible(map, dbg, origin, origin, endc.x, endc.y, CELL_BLK)) {
-            System.out.println("   !!!Only TO block!!!");
+            if (DEBUG_TIMINGS)
+                System.out.println("   !!!Only TO block!!!");
 
             Set<TraversableObstacle> obs = Utils.getObstructions(pomap, origin, origin, endc.x, endc.y);
             List<Vertex> tovertexes = new ArrayList<>();
@@ -518,11 +524,13 @@ public class Map {
 
             start = System.nanoTime();
             buildVisGraph(tovertexes, CELL_BLK);
-            System.out.println("     Visibility Graph: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+            if (DEBUG_TIMINGS)
+                System.out.println("     Visibility Graph: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
             start = System.nanoTime();
             Iterable<Edge> path = findPath();
-            System.out.println("              Routing: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+            if (DEBUG_TIMINGS)
+                System.out.println("              Routing: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
             Iterator<Edge> it = path.iterator();
             while (it.hasNext()) {
@@ -538,15 +546,18 @@ public class Map {
         //---------------------------------------------------------------------------------
         start = System.nanoTime();
         List<Vertex> vertices = getVertices();
-        System.out.println("   Vertices Retrieval: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("   Vertices Retrieval: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         start = System.nanoTime();
         buildVisGraph(vertices, CELL_BLK);
-        System.out.println("     Visibility Graph: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("     Visibility Graph: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         start = System.nanoTime();
         Iterable<Edge> path = findPath();
-        System.out.println("              Routing: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
+        if (DEBUG_TIMINGS)
+            System.out.println("              Routing: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
         Iterator<Edge> it = path.iterator();
         while (it.hasNext()) {
