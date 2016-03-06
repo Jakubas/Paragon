@@ -30,7 +30,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
-import automation.SmelterFueler;
+import haven.automation.SmelterFueler;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
 
