@@ -774,7 +774,7 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- display 2nd column
         y = 0;
-        display.add(new Label("Chat font size (requires restart): Small"), new Coord(260, y + 1));
+        display.add(new Label("Chat font size (req. restart): Small"), new Coord(260, y + 1));
         display.add(new HSlider(40, 0, 3, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
@@ -784,8 +784,8 @@ public class OptWnd extends Window {
                 Config.chatfontsize = val;
                 Utils.setprefi("chatfontsize", val);
             }
-        }, new Coord(452, y));
-        display.add(new Label("Large"), new Coord(495, y + 1));
+        }, new Coord(432, y));
+        display.add(new Label("Large"), new Coord(475, y + 1));
         y += 35;
         display.add(new CheckBox("Show quick hand slots") {
             {
@@ -905,7 +905,7 @@ public class OptWnd extends Window {
                 Config.showwearbars = val;
                 a = val;
             }
-        }, new Coord(560, y));
+        }, new Coord(540, y));
         y += 35;
         display.add(new CheckBox("Show troughs/beehives radius") {
             {
@@ -917,7 +917,7 @@ public class OptWnd extends Window {
                 Config.showfarmrad = val;
                 a = val;
             }
-        }, new Coord(560, y));
+        }, new Coord(540, y));
         y += 35;
         display.add(new CheckBox("Show animal radius") {
             {
@@ -929,7 +929,7 @@ public class OptWnd extends Window {
                 Config.showanimalrad = val;
                 a = val;
             }
-        }, new Coord(560, y));
+        }, new Coord(540, y));
         y += 35;
         display.add(new CheckBox("Show F-key toolbar") {
             {
@@ -948,7 +948,7 @@ public class OptWnd extends Window {
                         fbelt.hide();
                 }
             }
-        }, new Coord(560, y));
+        }, new Coord(540, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
