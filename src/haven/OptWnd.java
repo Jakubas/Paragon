@@ -1397,6 +1397,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Enable full zoom-out in Ortho cam") {
+            {
+                a = Config.enableorthofullzoom;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enableorthofullzoom", val);
+                Config.enableorthofullzoom = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
