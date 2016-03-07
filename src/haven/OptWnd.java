@@ -949,6 +949,18 @@ public class OptWnd extends Window {
                 }
             }
         }, new Coord(540, y));
+        y += 35;
+        display.add(new CheckBox("Highlight empty/finished drying frames") {
+            {
+                a = Config.showdframestatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdframestatus", val);
+                Config.showdframestatus = val;
+                a = val;
+            }
+        }, new Coord(540, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
