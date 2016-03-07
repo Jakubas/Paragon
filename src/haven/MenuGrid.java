@@ -30,7 +30,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
-import haven.automation.SmelterFueler;
+import haven.automation.AddCoalToSmelter;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
 
@@ -122,7 +122,8 @@ public class MenuGrid extends Widget {
         Glob glob = ui.sess.glob;
         synchronized (glob.paginae) {
             Collection<Pagina> p = glob.paginae;
-            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
         }
     }
 
@@ -298,11 +299,11 @@ public class MenuGrid extends Widget {
     }
 
     private void use(String[] ad) {
-        if (ad[1].equals("coal12")) {
+        if (ad[1].equals("coal")) {
             GameUI gui = gameui();
             if (gui != null) {
                 Executors.newSingleThreadExecutor().submit(() -> {
-                    new SmelterFueler(gui).fuel();
+                    new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
                 });
             }
         }

@@ -3,15 +3,16 @@ package haven.automation;
 
 import haven.*;
 
-public class SmelterFueler {
+public class AddCoalToSmelter {
     private GameUI gui;
     private Gob smelter;
-    private int count = 13;
+    private int count;
     private static final int TIMEOUT = 1500;
     private static final int HAND_DELAY = 8;
 
-    public SmelterFueler(GameUI gui) {
+    public AddCoalToSmelter(GameUI gui, int count) {
         this.gui = gui;
+        this.count = count + 1;
     }
 
     public void fuel() {
