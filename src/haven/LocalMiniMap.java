@@ -329,8 +329,20 @@ public class LocalMiniMap extends Widget {
                         if (Config.alarmbears && !sgobs.contains(gob.id)) {
                             sgobs.add(gob.id);
                             GAttrib drw = gob.getattr(Drawable.class);
-                            if (drw != null && ((Composite) drw).pseq != 1)
-                                Audio.play(bearsfx, Config.alarmbearsvol);
+                            if (drw != null && drw instanceof Composite) {
+                                Composite cpst = (Composite) drw;
+                                if (cpst.nposes != null && cpst.nposes.size() > 0) {
+                                    for (ResData resdata : cpst.nposes) {
+                                        Resource posres = resdata.res.get();
+                                        if (posres == null || !posres.name.endsWith("/knock")) {
+                                            Audio.play(bearsfx, Config.alarmbearsvol);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    Audio.play(bearsfx, Config.alarmbearsvol);
+                                }
+                            }
                         }
                     }
                 } catch (Exception e) { // fail silently
