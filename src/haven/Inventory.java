@@ -210,6 +210,15 @@ public class Inventory extends Widget implements DTarget {
         return null;
     }
 
+    public int getFreeSpace() {
+        int feespace = isz.x * isz.y;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem)
+                feespace -= (wdg.sz.x * wdg.sz.y) / (sqsz.x * sqsz.y);
+        }
+        return feespace;
+    }
+
     public boolean drink(int threshold) {
         IMeter.Meter stam = gameui().getmeter("stam", 0);
         if (stam == null || stam.a > threshold)

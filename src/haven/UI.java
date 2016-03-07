@@ -158,7 +158,7 @@ public class UI {
 
             // drop everything except water containers if in area mining mode
             GameUI gui = pwdg.gameui();
-            if (gui != null && gui.map != null && gui.map.areamine != null && wdg instanceof GItem) {
+            if (Config.dropore && gui != null && gui.map != null && gui.map.areamine != null && wdg instanceof GItem) {
                 if (gui.maininv == pwdg) {
                     final GItem itm = (GItem) wdg;
                     Defer.later(new Defer.Callable<Void>() {

@@ -147,6 +147,15 @@ public class AreaMine implements Runnable {
             }
 
             while (true) {
+                if (!Config.dropore && gui.maininv.getFreeSpace() == 0) {
+                    if (gui.vhand != null)
+                        mv.wdgmsg("drop", Coord.z, gui.map.player().rc, 0);
+
+                    mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 3, 0);
+                    mv.wdgmsg("click", Coord.z, gui.map.player().rc, 1, 0);
+                    break mine;
+                }
+
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
@@ -182,6 +191,15 @@ public class AreaMine implements Runnable {
                 if (stam.a <= 30) {
                     i--;
                     break;
+                }
+
+                if (!Config.dropore && gui.maininv.getFreeSpace() == 0) {
+                    if (gui.vhand != null)
+                        mv.wdgmsg("drop", Coord.z, gui.map.player().rc, 0);
+
+                    mv.wdgmsg("click", Coord.z, tc.mul(11).add(5, 5), 3, 0);
+                    mv.wdgmsg("click", Coord.z, gui.map.player().rc, 1, 0);
+                    break mine;
                 }
             }
         }

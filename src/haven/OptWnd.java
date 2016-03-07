@@ -1195,7 +1195,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        general.add(new CheckBox("Auto-miner: drop mined ore") {
+            {
+                a = Config.dropore;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("dropore", val);
+                Config.dropore = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
