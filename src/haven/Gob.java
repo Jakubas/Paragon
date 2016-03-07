@@ -299,15 +299,18 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             boolean empty = true;
             for (Overlay ol : ols) {
                 empty = false;
-                Indir<Resource> olires = ol.res;
-                if (olires != null) {
-                    Resource olres = olires.get();
-                    if (olres != null) {
-                        if (olres.name.endsWith("-blood")) {
-                            done = false;
-                            break;
+                try {
+                    Indir<Resource> olires = ol.res;
+                    if (olires != null) {
+                        Resource olres = olires.get();
+                        if (olres != null) {
+                            if (olres.name.endsWith("-blood")) {
+                                done = false;
+                                break;
+                            }
                         }
                     }
+                } catch (Loading l) {
                 }
             }
             if (done && !empty)
