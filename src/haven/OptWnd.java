@@ -302,12 +302,18 @@ public class OptWnd extends Window {
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
-                    getparent(GameUI.class).act("lo", "cs");
+                    GameUI gui = gameui();
+                    gui.act("lo", "cs");
+                    if (gui != null & gui.map != null)
+                        gui.map.canceltasks();
                 }
             }, new Coord(270, 300));
             main.add(new Button(200, "Log out") {
                 public void click() {
-                    getparent(GameUI.class).act("lo");
+                    GameUI gui = gameui();
+                    gui.act("lo");
+                    if (gui != null & gui.map != null)
+                        gui.map.canceltasks();
                 }
             }, new Coord(270, 330));
         }

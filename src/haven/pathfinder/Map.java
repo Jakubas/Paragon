@@ -21,6 +21,7 @@ public class Map {
     public static int plbbox = 3;
     private final static int way = plbbox + 2;
     private final static int clr = way + 1;
+    private final static int concaveclr = 2;
     private final static int tomaxside = 33;
     private final static int mapborder = 4;
 
@@ -256,10 +257,10 @@ public class Map {
 
                 // remove concave and blocked vertices
                 // FIXME: slightly misbehaves with rotated rectangles
-                if ((map[i + 1][j] & (CELL_BLK | CELL_TO)) != 0 ||
-                        (map[i - 1][j] & (CELL_BLK | CELL_TO)) != 0 ||
-                        (map[i][j + 1] & (CELL_BLK | CELL_TO)) != 0 ||
-                        (map[i][j - 1] & (CELL_BLK | CELL_TO)) != 0) {
+                if ((map[i + concaveclr][j] & (CELL_BLK | CELL_TO)) != 0 ||
+                        (map[i - concaveclr][j] & (CELL_BLK | CELL_TO)) != 0 ||
+                        (map[i][j + concaveclr] & (CELL_BLK | CELL_TO)) != 0 ||
+                        (map[i][j - concaveclr] & (CELL_BLK | CELL_TO)) != 0) {
                     map[i][j] = CELL_FREE;
                     continue;
                 }

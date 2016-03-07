@@ -21,6 +21,7 @@ public class Pathfinder implements Runnable {
     private int count = -100;
     private int step = -200;
     public Coord mc;
+    private int modflags;
 
     public Pathfinder(MapView mv, Coord dest, String action) {
         this.dest = dest;
@@ -30,11 +31,12 @@ public class Pathfinder implements Runnable {
         this.mv = mv;
     }
 
-    public Pathfinder(MapView mv, Coord dest, Gob gob, int meshid, int clickb, String action) {
+    public Pathfinder(MapView mv, Coord dest, Gob gob, int meshid, int clickb, int modflags, String action) {
         this.dest = dest;
         this.meshid = meshid;
         this.clickb = clickb;
         this.gob = gob;
+        this.modflags = modflags;
         this.action = action;
         this.oc = mv.glob.oc;
         this.map = mv.glob.map;
@@ -108,7 +110,7 @@ public class Pathfinder implements Runnable {
                 mv.gameui().menu.wdgmsg("act", new Object[]{action});
 
             if (gob != null && !it.hasNext())
-                mv.wdgmsg("click", gob.sc, mc, clickb, 0, 0, (int) gob.id, gob.rc, 0, meshid);
+                mv.wdgmsg("click", gob.sc, mc, clickb, modflags, 0, (int) gob.id, gob.rc, 0, meshid);
             else
                 mv.wdgmsg("click", Coord.z, mc, 1, 0);
 

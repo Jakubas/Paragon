@@ -33,6 +33,8 @@ import java.awt.font.TextAttribute;
 import haven.automation.AddCoalToSmelter;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
+import haven.automation.GobSelectCallback;
+import haven.automation.SteelRefueler;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -125,6 +127,7 @@ public class MenuGrid extends Widget {
             if (!Config.hidexmenu) {
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
             }
         }
     }
@@ -301,12 +304,21 @@ public class MenuGrid extends Widget {
     }
 
     private void use(String[] ad) {
+        GameUI gui = gameui();
+        if (gui == null)
+            return;
         if (ad[1].equals("coal")) {
-            GameUI gui = gameui();
-            if (gui != null) {
-                Executors.newSingleThreadExecutor().submit(() -> {
-                    new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
-                });
+            Executors.newSingleThreadExecutor().submit(() -> {
+                new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
+            });
+        } else if (ad[1].equals("steel")) {
+            if (gui.getwnd("Steel Refueler") == null) {
+                SteelRefueler sw = new SteelRefueler();
+                gui.map.steelrefueler = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(sw);
+                }
             }
         }
     }
