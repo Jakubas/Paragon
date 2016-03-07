@@ -29,17 +29,22 @@ public class AddCoalToSmelter {
         }
 
         WItem coal = gui.maininv.getitem("Coal");
-        if (coal == null)
+        if (coal == null) {
             coal = gui.maininv.getitem("Black Coal");
-        if (coal == null)
-            return;
+            if (coal == null) {
+                gui.error("No coal found in the inventory");
+                return;
+            }
+        }
 
         coal.item.wdgmsg("take", new Coord(coal.item.sz.x / 2, coal.item.sz.y / 2));
         int timeout = 0;
         while (gui.hand.isEmpty()) {
             timeout += HAND_DELAY;
-            if (timeout >= TIMEOUT)
+            if (timeout >= TIMEOUT) {
+                gui.error("No coal found in the inventory");
                 return;
+            }
             try {
                 Thread.sleep(HAND_DELAY);
             } catch (InterruptedException e) {
@@ -58,8 +63,10 @@ public class AddCoalToSmelter {
                 }
 
                 timeout += HAND_DELAY;
-                if (timeout >= TIMEOUT)
+                if (timeout >= TIMEOUT) {
+                    gui.error("Not enough coal. Need to add " + count + " more.");
                     return;
+                }
                 try {
                     Thread.sleep(HAND_DELAY);
                 } catch (InterruptedException e) {
