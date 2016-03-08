@@ -326,6 +326,9 @@ public class OCache implements Iterable<Gob> {
 
     private void setdmgoverlay(final Gob g, final Indir<Resource> resid, final MessageBuf sdt) {
         final int dmg = sdt.int32();
+        // ignore dmg of 1 from scents
+        if (dmg == 1)
+            return;
         sdt.uint8();
         final int clr = sdt.uint16();
         if (clr != 61455 /* damage */ && clr != 36751 /* armor damage */)
