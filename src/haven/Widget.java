@@ -1134,4 +1134,12 @@ public class Widget {
         }
         return null;
     }
+
+    public <T extends Widget> T getchild(Class<T> c) {
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (c.isInstance(wdg))
+                return c.cast(wdg);
+        }
+        return null;
+    }
 }
