@@ -1,3 +1,17 @@
+Version 1.27.0
+    New:
+        * Option to highlight empty and finished drying frames.
+        * Tasks for adding 11 and 12 coal into smelters.
+        * Option to allow full zoom-out in Ortho cam.
+
+    Fixed:
+        * Bear alarm.
+
+    Misc:
+        * Auto-miner: allow mining cave walls & option to not drop mined ore.
+        * Don't display damage of 1 (from scents and such) in the damage overlay.
+
+
 Version 1.26.0
     New:
         * F-key toolbar.
