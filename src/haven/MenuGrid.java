@@ -122,8 +122,10 @@ public class MenuGrid extends Widget {
         Glob glob = ui.sess.glob;
         synchronized (glob.paginae) {
             Collection<Pagina> p = glob.paginae;
-            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
-            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+            if (!Config.hidexmenu) {
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+            }
         }
     }
 
