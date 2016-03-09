@@ -199,7 +199,6 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public WItem getitem(String name) {
-        List<WItem> items = new ArrayList<WItem>();
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 String wdgname = ((WItem)wdg).item.getname();
@@ -208,6 +207,41 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         return null;
+    }
+
+    public WItem getItemPartial(String name) {
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.contains(name))
+                    return (WItem) wdg;
+            }
+        }
+        return null;
+    }
+
+    public int getItemCount(String name) {
+        int count = 0;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.equals(name))
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    public int getItemPartialCount(String name) {
+        int count = 0;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.contains(name))
+                    count++;
+            }
+        }
+        return count;
     }
 
     public int getFreeSpace() {
