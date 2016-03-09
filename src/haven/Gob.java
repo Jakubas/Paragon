@@ -304,7 +304,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     if (olires != null) {
                         Resource olres = olires.get();
                         if (olres != null) {
-                            if (olres.name.endsWith("-blood")) {
+                            if (olres.name.endsWith("-blood") || olres.name.endsWith("-windweed")) {
                                 done = false;
                                 break;
                             }
