@@ -968,7 +968,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(540, y));
         y += 35;
-        display.add(new CheckBox("Hide extensions menu") {
+        display.add(new CheckBox("Hide extensions menu (req. restart)") {
             {
                 a = Config.hidexmenu;
             }
