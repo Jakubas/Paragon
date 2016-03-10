@@ -191,6 +191,8 @@ public class Cons {
         return (Function.Builtin.abs.call(x));
     }
 
+    public static Expression sign(Expression x) {return(Function.Builtin.sign.call(x));}
+
     public static Expression floor(Expression x) {
         return (Function.Builtin.floor.call(x));
     }

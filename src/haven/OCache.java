@@ -388,4 +388,11 @@ public class OCache implements Iterable<Gob> {
     public void setPathfinder(Pathfinder pf) {
         this.pf = pf;
     }
+
+    public synchronized void resattr(Gob g, Indir<Resource> resid, Message dat) {
+	if(dat != null)
+	    g.setrattr(resid, dat);
+	else
+	    g.delrattr(resid);
+    }
 }
