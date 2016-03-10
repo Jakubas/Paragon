@@ -184,6 +184,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	}
     }
 
+    static {
+        for (int i = 10; i < 100; i++) {
+            treestg[i - 10] = Text.renderstroked(i + "", stagecolor, Color.BLACK, gobhpf).tex();
+        }
+    }
+
     public Gob(Glob glob, Coord c, long id, int frame) {
         this.glob = glob;
         this.rc = c;
