@@ -1,8 +1,16 @@
+
+## Version 1.2
+### Changed:
+- Autostudy now supports multiple cupboards
+- merged with vanilla changes
+
+## Version 1.1.2
+### Changed:
+- merged with upstream
+
 ## Version 1.1.1
-### Added:
-- A Dragonfly collector that clicks the nearest dragonfly and tries to collect it. It has some logic for getting unstuck, 
-  supports drinking water from hotkeys (waterflask/waterskin/bucket), and it will run until it has a full inventory or is stopped
-  by the user. Set the speed to crawling if you don't want to use energy.
+### Changed:
+- Added a dragonfly catcher automation
 
 ## Version 1.1
 ### Added:
