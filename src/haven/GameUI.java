@@ -1073,6 +1073,18 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         wdgmsg("act", al);
     }
 
+    public ArrayList<Window> getwnds(String cap) {
+    	ArrayList<Window> wnds = new ArrayList<Window>();
+        for (Widget w = lchild; w != null; w = w.prev) {
+            if (w instanceof Window) {
+                Window wnd = (Window) w;
+                if (wnd.cap != null && cap.equals(wnd.cap.text))
+                    wnds.add(wnd);
+            }
+        }
+        return wnds;
+    }
+    
     public Window getwnd(String cap) {
         for (Widget w = lchild; w != null; w = w.prev) {
             if (w instanceof Window) {

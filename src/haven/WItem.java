@@ -410,11 +410,15 @@ public class WItem extends Widget implements DTarget {
 
                 if (Config.autostudy) {
                     Window invwnd = gameui().getwnd("Inventory");
-                    Window cupboard = gameui().getwnd("Cupboard");
+                    ArrayList<Window> cupboards = gameui().getwnds("Cupboard");
                     Resource res = item.resource();
                     if (res != null) {
-                        if (!replacecurio(invwnd, res) && cupboard != null)
-                            replacecurio(cupboard, res);
+                        if (!replacecurio(invwnd, res)) {
+                        	for (int i = 0; i < cupboards.size(); i++) {
+                        		if (replacecurio(cupboards.get(i), res))
+                        			return;
+                        	}
+                        }
                     }
                 }
             }

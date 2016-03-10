@@ -35,7 +35,7 @@ public class DigTuber implements Runnable {
 			inventory.dropIdentical("Earthworm");
 			
 	    	Coord me = player().rc;
-	    	Coord coord = new Coord(me.x+22, me.y);
+	    	Coord coord = new Coord(me.x+11, me.y);
 	    	movement.clickCoord(coord);
 		}
 	}

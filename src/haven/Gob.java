@@ -64,12 +64,15 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     private Overlay gobpath = null;
     private static final Tex[] treestg = new Tex[90];
 
+    private final Collection<ResAttr.Cell<?>> rdata = new LinkedList<ResAttr.Cell<?>>();
+    private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
+
     public static class Overlay implements Rendered {
-        public Indir<Resource> res;
-        public MessageBuf sdt;
-        public Sprite spr;
-        public int id;
-        public boolean delign = false;
+	public Indir<Resource> res;
+	public MessageBuf sdt;
+	public Sprite spr;
+	public int id;
+	public boolean delign = false;
 
         public Overlay(int id, Indir<Resource> res, Message sdt) {
             this.id = id;
@@ -102,7 +105,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 
         public static interface SetupMod {
             public void setupgob(GLState.Buffer buf);
-
             public void setupmain(RenderList rl);
         }
 
@@ -121,6 +123,71 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
             treestg[i - 10] = Text.renderstroked(i + "", stagecolor, Color.BLACK, gobhpf).tex();
         }
     }
+    /* XXX: This whole thing didn't turn out quite as nice as I had
+     * hoped, but hopefully it can at least serve as a source of
+     * inspiration to redo attributes properly in the future. There
+     * have already long been arguments for remaking GAttribs as
+     * well. */
+        
+    public static class ResAttr {
+	public boolean update(Message dat) {
+	    return(false);
+	}
+
+	public void dispose() {
+	}
+
+	public static class Cell<T extends ResAttr> {
+	    final Class<T> clsid;
+	    Indir<Resource> resid = null;
+	    MessageBuf odat;
+	    public T attr = null;
+
+	    public Cell(Class<T> clsid) {
+		this.clsid = clsid;
+	    }
+
+	    void set(ResAttr attr) {
+		if(this.attr != null)
+		    this.attr.dispose();
+		this.attr = clsid.cast(attr);
+	    }
+	}
+
+	private static class Load {
+	    final Indir<Resource> resid;
+	    final MessageBuf dat;
+
+	    Load(Indir<Resource> resid, Message dat) {
+		this.resid = resid;
+		this.dat = new MessageBuf(dat);
+	    }
+	}
+
+	@Resource.PublishedCode(name = "gattr", instancer = FactMaker.class)
+	public static interface Factory {
+	    public ResAttr mkattr(Gob gob, Message dat);
+	}
+
+	public static class FactMaker implements Resource.PublishedCode.Instancer {
+	    public Factory make(Class<?> cl) throws InstantiationException, IllegalAccessException {
+		if(Factory.class.isAssignableFrom(cl))
+		    return(cl.asSubclass(Factory.class).newInstance());
+		if(ResAttr.class.isAssignableFrom(cl)) {
+		    try {
+			final java.lang.reflect.Constructor<? extends ResAttr> cons = cl.asSubclass(ResAttr.class).getConstructor(Gob.class, Message.class);
+			return(new Factory() {
+				public ResAttr mkattr(Gob gob, Message dat) {
+				    return(Utils.construct(cons, gob, dat));
+				}
+			    });
+		    } catch(NoSuchMethodException e) {
+		    }
+		}
+		return(null);
+	    }
+	}
+    }
 
     public Gob(Glob glob, Coord c, long id, int frame) {
         this.glob = glob;
@@ -138,14 +205,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
                 }
             };
         }
-
-        cropstgdmax = new PView.Draw2D() {
-            public void draw2d(GOut g) {
-                if (sc != null) {
-                    g.image(cropstgmax, sc);
-                }
-            }
-        };
     }
 
     public Gob(Glob glob, Coord c) {
@@ -185,13 +244,18 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     }
 
     public void tick() {
-        for (GAttrib a : attr.values())
-            a.tick();
+	for(GAttrib a : attr.values())
+	    a.tick();
+	loadrattr();
     }
 
     public void dispose() {
-        for (GAttrib a : attr.values())
-            a.dispose();
+	for(GAttrib a : attr.values())
+	    a.dispose();
+	for(ResAttr.Cell rd : rdata) {
+	    if(rd.attr != null)
+		rd.attr.dispose();
+	}
     }
 
     public void move(Coord c, double a) {
@@ -266,6 +330,92 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     public void draw(GOut g) {
     }
 
+    private Class<? extends ResAttr> rattrclass(Class<? extends ResAttr> cl) {
+	while(true) {
+	    Class<?> p = cl.getSuperclass();
+	    if(p == ResAttr.class)
+		return(cl);
+	    cl = p.asSubclass(ResAttr.class);
+	}
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ResAttr> ResAttr.Cell<T> getrattr(Class<T> c) {
+	for(ResAttr.Cell<?> rd : rdata) {
+	    if(rd.clsid == c)
+		return((ResAttr.Cell<T>)rd);
+	}
+	ResAttr.Cell<T> rd = new ResAttr.Cell<T>(c);
+	rdata.add(rd);
+	return(rd);
+    }
+
+    public static <T extends ResAttr> ResAttr.Cell<T> getrattr(Object obj, Class<T> c) {
+	if(!(obj instanceof Gob))
+	    return(new ResAttr.Cell<T>(c));
+	return(((Gob)obj).getrattr(c));
+    }
+
+    private void loadrattr() {
+	for(Iterator<ResAttr.Load> i = lrdata.iterator(); i.hasNext();) {
+	    ResAttr.Load rd = i.next();
+	    ResAttr attr;
+	    try {
+		attr = rd.resid.get().getcode(ResAttr.Factory.class, true).mkattr(this, rd.dat.clone());
+	    } catch(Loading l) {
+		continue;
+	    }
+	    ResAttr.Cell<?> rc = getrattr(rattrclass(attr.getClass()));
+	    if(rc.resid == null)
+		rc.resid = rd.resid;
+	    else if(rc.resid != rd.resid)
+		throw(new RuntimeException("Conflicting resattr resource IDs on " + rc.clsid + ": " + rc.resid + " -> " + rd.resid));
+	    rc.odat = rd.dat;
+	    rc.set(attr);
+	    i.remove();
+	}
+    }
+
+    public void setrattr(Indir<Resource> resid, Message dat) {
+	for(Iterator<ResAttr.Cell<?>> i = rdata.iterator(); i.hasNext();) {
+	    ResAttr.Cell<?> rd = i.next();
+	    if(rd.resid == resid) {
+		if(dat.equals(rd.odat))
+		    return;
+		if((rd.attr != null) && rd.attr.update(dat))
+		    return;
+		break;
+	    }
+	}
+	for(Iterator<ResAttr.Load> i = lrdata.iterator(); i.hasNext();) {
+	    ResAttr.Load rd = i.next();
+	    if(rd.resid == resid) {
+		i.remove();
+		break;
+	    }
+	}
+	lrdata.add(new ResAttr.Load(resid, dat));
+	loadrattr();
+    }
+
+    public void delrattr(Indir<Resource> resid) {
+	for(Iterator<ResAttr.Cell<?>> i = rdata.iterator(); i.hasNext();) {
+	    ResAttr.Cell<?> rd = i.next();
+	    if(rd.resid == resid) {
+		i.remove();
+		rd.attr.dispose();
+		break;
+	    }
+	}
+	for(Iterator<ResAttr.Load> i = lrdata.iterator(); i.hasNext();) {
+	    ResAttr.Load rd = i.next();
+	    if(rd.resid == resid) {
+		i.remove();
+		break;
+	    }
+	}
+    }
+
     public boolean setup(RenderList rl) {
         loc.tick();
         for (Overlay ol : ols)
@@ -338,9 +488,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
                                             cropstgmaxval = stg;
                                     }
                                 }
-                                if (stage == cropstgmaxval)
-                                    rl.add(cropstgdmax, null);
-                                else if (stage > 0 && stage < 5)
+                                if (stage > 0 && stage < 5)
                                     rl.add(cropstgd[stage - 1], null);
                             } catch (ArrayIndexOutOfBoundsException e) { // ignored
                             }
@@ -418,20 +566,20 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     };
 
     public class Save extends GLState.Abstract {
-        public Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(),
-                mv = new Matrix4f();
-        public Projection proj = null;
-        boolean debug = false;
+	public Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(),
+	    mv = new Matrix4f();
+	public Projection proj = null;
+	boolean debug = false;
 
-        public void prep(Buffer buf) {
-            mv.load(cam.load(buf.get(PView.cam).fin(Matrix4f.id))).mul1(wxf.load(buf.get(PView.loc).fin(Matrix4f.id)));
-            Projection proj = buf.get(PView.proj);
-            PView.RenderState wnd = buf.get(PView.wnd);
-            Coord3f s = proj.toscreen(mv.mul4(Coord3f.o), wnd.sz());
-            Gob.this.sc = new Coord(s);
-            Gob.this.sczu = proj.toscreen(mv.mul4(Coord3f.zu), wnd.sz()).sub(s);
-            this.proj = proj;
-        }
+	public void prep(Buffer buf) {
+	    mv.load(cam.load(buf.get(PView.cam).fin(Matrix4f.id))).mul1(wxf.load(buf.get(PView.loc).fin(Matrix4f.id)));
+	    Projection proj = buf.get(PView.proj);
+	    PView.RenderState wnd = buf.get(PView.wnd);
+	    Coord3f s = proj.toscreen(mv.mul4(Coord3f.o), wnd.sz());
+	    Gob.this.sc = new Coord(s);
+	    Gob.this.sczu = proj.toscreen(mv.mul4(Coord3f.zu), wnd.sz()).sub(s);
+	    this.proj = proj;
+	}
     }
 
     public final Save save = new Save();
