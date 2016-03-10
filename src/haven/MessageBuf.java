@@ -122,16 +122,16 @@ public class MessageBuf extends Message {
     }
 
     public String toString() {
-	StringBuilder buf = new StringBuilder();
-	buf.append("Message(");
-	for(int i = oh; i < rt; i++) {
-	    if(i > 0)
-		buf.append(' ');
-	    if(i == rh)
-		buf.append('>');
-	    buf.append(String.format("%02x", rbuf[i] & 0xff));
-	}
-	buf.append(")");
-	return(buf.toString());
+        StringBuilder buf = new StringBuilder();
+        buf.append("Message(");
+        for (int i = oh; i < rt; i++) {
+            if (i > 0)
+                buf.append(' ');
+            if (i == rh)
+                buf.append('>');
+            buf.append(String.format("%02x", rbuf[i] & 0xff));
+        }
+        buf.append(")");
+        return (buf.toString());
     }
 }
