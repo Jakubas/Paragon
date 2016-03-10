@@ -940,7 +940,7 @@ public class CharWnd extends Window {
                         try {
                             title = catf.render(res.get().layer(Resource.tooltip).t).tex();
                             img = res.get().layer(Resource.imgc).tex();
-				/*
+                /*
 				resize(new Coord(Math.max(img.sz().x + 25 + title.sz().x, qcmp.sz().x),
 						 Math.max(img.sz().y, title.sz().y) + 25 + qcmp.sz().y));
 				*/
@@ -1111,7 +1111,7 @@ public class CharWnd extends Window {
                 }
 
                 public boolean mousedown(Coord c, int btn) {
-                    if (c.isect(Coord.z, rtitle.sz())) {
+                    if ((rtitle != null) && c.isect(Coord.z, rtitle.sz())) {
                         CharWnd cw = getparent(GameUI.class).chrwdg;
                         cw.show();
                         cw.raise();
