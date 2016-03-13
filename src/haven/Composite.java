@@ -39,7 +39,7 @@ public class Composite extends Drawable {
     public final static float ipollen = 0.2f;
     public final Indir<Resource> base;
     public Composited comp;
-    private Collection<ResData> nposes = null, tposes = null;
+    public Collection<ResData> nposes = null, tposes = null;
     private boolean nposesold, retainequ = false;
     private float tptime;
     private WrapMode tpmode;

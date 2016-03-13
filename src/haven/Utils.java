@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -1241,7 +1241,7 @@ public class Utils {
         try {
             enc = in.getBytes("utf-8");
         } catch (java.io.UnsupportedEncodingException e) {
-        /* Â¦] */
+        /* ¦] */
             throw (new Error(e));
         }
         for (byte c : enc) {
@@ -1291,15 +1291,15 @@ public class Utils {
 
     private final static Map<Character, Character> az2qwmap = new HashMap<Character, Character>(10) {{
         put('&', '1');
-        put('Ã©', '2');
+        put('é', '2');
         put('"', '3');
         put('\'', '4');
         put('(', '5');
         put('-', '6');
-        put('Ã¨', '7');
+        put('è', '7');
         put('_', '8');
-        put('Ã§', '9');
-        put('Ã ', '0');
+        put('ç', '9');
+        put('à', '0');
     }};
 
     public static char azerty2qwerty(char az) {

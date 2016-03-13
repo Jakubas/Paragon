@@ -34,9 +34,9 @@ import haven.MorphedMesh.Morpher;
 
 public class SkelSprite extends Sprite implements Gob.Overlay.CUpd {
     public static final GLState
-	rigid = new Material.Colors(java.awt.Color.GREEN),
-	morphed = new Material.Colors(java.awt.Color.RED),
-	unboned = new Material.Colors(java.awt.Color.YELLOW);
+            rigid = new Material.Colors(java.awt.Color.GREEN),
+            morphed = new Material.Colors(java.awt.Color.RED),
+            unboned = new Material.Colors(java.awt.Color.YELLOW);
     public static boolean bonedb = false;
     public static final float ipollen = 0.3f;
     public final Skeleton skel;

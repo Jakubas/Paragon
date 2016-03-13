@@ -149,10 +149,14 @@ public class AudioSprite {
         public Ambience(Owner owner, Resource res) {
             super(owner, res);
             ClipAmbiance.Desc clamb = res.layer(ClipAmbiance.Desc.class);
-            if (clamb != null)
+            if (clamb != null) {
                 this.amb = new ClipAmbiance(clamb);
-            else
-                this.amb = new ActAudio.Ambience(res);
+            } else {
+                if (Config.sfxfirevol != 1.0 && "sfx/fire".equals(res.name))
+                    this.amb = new ActAudio.Ambience(res, Config.sfxfirevol);
+                else
+                    this.amb = new ActAudio.Ambience(res);
+            }
         }
 
         public boolean setup(RenderList r) {

@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.pathfinder.Pathfinder;
+
 import java.util.*;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class OCache implements Iterable<Gob> {
     private Glob glob;
     private Map<Long, DamageSprite> gobdmgs = new HashMap<Long, DamageSprite>();
     public boolean isfight = false;
+    private Pathfinder pf;
 
     public OCache(Glob glob) {
         this.glob = glob;
@@ -165,6 +168,8 @@ public class OCache implements Iterable<Gob> {
     public synchronized void linbeg(Gob g, Coord s, Coord t, int c) {
         LinMove lm = new LinMove(g, s, t, c);
         g.setattr(lm);
+        if (pf != null && g.isplayer())
+            pf.moveCount(c);
     }
 
     public synchronized void linstep(Gob g, int l) {
@@ -172,10 +177,15 @@ public class OCache implements Iterable<Gob> {
         if ((m == null) || !(m instanceof LinMove))
             return;
         LinMove lm = (LinMove) m;
-        if ((l < 0) || (l >= lm.c))
+        if ((l < 0) || (l >= lm.c)) {
             g.delattr(Moving.class);
-        else
+            if (pf != null && g.isplayer() && l < 0)
+                pf.moveStop(l);
+        } else {
             lm.setl(l);
+            if (pf != null && g.isplayer())
+                pf.moveStep(l);
+        }
     }
 
     public synchronized void speak(Gob g, float zo, String text) {
@@ -315,6 +325,9 @@ public class OCache implements Iterable<Gob> {
 
     private void setdmgoverlay(final Gob g, final Indir<Resource> resid, final MessageBuf sdt) {
         final int dmg = sdt.int32();
+        // ignore dmg of 1 from scents
+        if (dmg == 1)
+            return;
         sdt.uint8();
         final int clr = sdt.uint16();
         if (clr != 61455 /* damage */ && clr != 36751 /* armor damage */)
@@ -371,10 +384,14 @@ public class OCache implements Iterable<Gob> {
             g.setattr(new GobIcon(g, res));
     }
 
+    public void setPathfinder(Pathfinder pf) {
+        this.pf = pf;
+    }
+
     public synchronized void resattr(Gob g, Indir<Resource> resid, Message dat) {
-	if(dat != null)
-	    g.setrattr(resid, dat);
-	else
-	    g.delrattr(resid);
+        if (dat != null)
+            g.setrattr(resid, dat);
+        else
+            g.delrattr(resid);
     }
 }

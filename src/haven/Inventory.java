@@ -167,7 +167,7 @@ public class Inventory extends Widget implements DTarget {
         }
     }
 
-    private List<WItem> getitems(GItem item) {
+    public List<WItem> getitems(GItem item) {
         List<WItem> items = new ArrayList<WItem>();
         String name = item.spr().getname();
         String resname = item.resource().name;
@@ -196,6 +196,61 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         return items;
+    }
+
+    public WItem getitem(String name) {
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.equals(name))
+                    return (WItem) wdg;
+            }
+        }
+        return null;
+    }
+
+    public WItem getItemPartial(String name) {
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.contains(name))
+                    return (WItem) wdg;
+            }
+        }
+        return null;
+    }
+
+    public int getItemCount(String name) {
+        int count = 0;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.equals(name))
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    public int getItemPartialCount(String name) {
+        int count = 0;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                String wdgname = ((WItem)wdg).item.getname();
+                if (wdgname.contains(name))
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    public int getFreeSpace() {
+        int feespace = isz.x * isz.y;
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem)
+                feespace -= (wdg.sz.x * wdg.sz.y) / (sqsz.x * sqsz.y);
+        }
+        return feespace;
     }
 
     public boolean drink(int threshold) {

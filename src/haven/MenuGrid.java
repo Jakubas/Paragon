@@ -30,10 +30,14 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
+import haven.automation.AddCoalToSmelter;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
+import haven.automation.GobSelectCallback;
+import haven.automation.SteelRefueler;
 
 import java.util.*;
+import java.util.concurrent.Executors;
 
 import haven.paragon.automations.*;
 
@@ -120,15 +124,18 @@ public class MenuGrid extends Widget {
 	protected void attach(UI ui) {
     	super.attach(ui);
     	Glob glob = ui.sess.glob;
-    	Set<Pagina> paginae = glob.paginae;
-    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
-    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/digtubber")));
-    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
-    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/patrolpathgen")));
-    	paginae.add(glob.paginafor(Resource.local().load("paginae/custom/catchdragonflies")));
+    	Set<Pagina> p = glob.paginae;
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/digtubber")));
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/patrolpathgen")));
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/catchdragonflies")));
+        if (!Config.hidexmenu) {
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
+        }
     }
-    
-    
     private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
         public int compare(Pagina a, Pagina b) {
             AButton aa = a.act(), ab = b.act();
@@ -340,6 +347,7 @@ public class MenuGrid extends Widget {
     }
     
     public void usecustom(String[] ad) {
+        GameUI gui = gameui();
     	switch (ad[1]) {
     	case "farm":
     		new Thread(new Farm()).start();
@@ -356,7 +364,21 @@ public class MenuGrid extends Widget {
 		case "catchdragonflies":
 			new Thread(new CatchDragonflies()).start();
 			break;
-			
+    	case "steel":
+            if (gui.getwnd("Steel Refueler") == null) {
+                SteelRefueler sw = new SteelRefueler();
+                gui.map.steelrefueler = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(sw);
+                }
+            }
+            break;
+    	case "coal": 
+    		Executors.newSingleThreadExecutor().submit(() -> {
+            new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
+    		});
+    		break;
 		}
   }
 

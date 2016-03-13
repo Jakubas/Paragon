@@ -302,12 +302,18 @@ public class OptWnd extends Window {
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
-                    getparent(GameUI.class).act("lo", "cs");
+                    GameUI gui = gameui();
+                    gui.act("lo", "cs");
+                    if (gui != null & gui.map != null)
+                        gui.map.canceltasks();
                 }
             }, new Coord(270, 300));
             main.add(new Button(200, "Log out") {
                 public void click() {
-                    getparent(GameUI.class).act("lo");
+                    GameUI gui = gameui();
+                    gui.act("lo");
+                    if (gui != null & gui.map != null)
+                        gui.map.canceltasks();
                 }
             }, new Coord(270, 330));
         }
@@ -576,6 +582,72 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(250, y));
+        y += 20;
+        audio.add(new CheckBox("Alarm on bluebells, flotsams, edelweiß") {
+            {
+                a = Config.alarmonforagables;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmonforagables", val);
+                Config.alarmonforagables = val;
+                a = val;
+            }
+        }, new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmonforagablesvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmonforagablesvol = vol;
+                Utils.setprefd("alarmonforagablesvol", vol);
+            }
+        }, new Coord(250, y));
+        y += 20;
+        audio.add(new CheckBox("Alarm on bears & lynx") {
+            {
+                a = Config.alarmbears;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmbears", val);
+                Config.alarmbears = val;
+                a = val;
+            }
+        }, new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmbearsvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmbearsvol = vol;
+                Utils.setprefd("alarmbearsvol", vol);
+            }
+        }, new Coord(250, y));
+        y += 20;
+        audio.add(new Label("Fireplace sound volume (req. restart)"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxfirevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxfirevol = vol;
+                Utils.setprefd("sfxfirevol", vol);
+            }
+        }, new Coord(250, y));
+
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
@@ -708,7 +780,7 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- display 2nd column
         y = 0;
-        display.add(new Label("Chat font size (requires restart): Small"), new Coord(260, y + 1));
+        display.add(new Label("Chat font size (req. restart): Small"), new Coord(260, y + 1));
         display.add(new HSlider(40, 0, 3, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
@@ -718,8 +790,8 @@ public class OptWnd extends Window {
                 Config.chatfontsize = val;
                 Utils.setprefi("chatfontsize", val);
             }
-        }, new Coord(452, y));
-        display.add(new Label("Large"), new Coord(495, y + 1));
+        }, new Coord(432, y));
+        display.add(new Label("Large"), new Coord(475, y + 1));
         y += 35;
         display.add(new CheckBox("Show quick hand slots") {
             {
@@ -839,7 +911,7 @@ public class OptWnd extends Window {
                 Config.showwearbars = val;
                 a = val;
             }
-        }, new Coord(560, y));
+        }, new Coord(540, y));
         y += 35;
         display.add(new CheckBox("Show troughs/beehives radius") {
             {
@@ -851,8 +923,8 @@ public class OptWnd extends Window {
                 Config.showfarmrad = val;
                 a = val;
             }
-        }, new Coord(560, y));
-        /*y += 35;
+        }, new Coord(540, y));
+        y += 35;
         display.add(new CheckBox("Show animal radius") {
             {
                 a = Config.showanimalrad;
@@ -863,7 +935,50 @@ public class OptWnd extends Window {
                 Config.showanimalrad = val;
                 a = val;
             }
-        }, new Coord(560, y));*/
+        }, new Coord(540, y));
+        y += 35;
+        display.add(new CheckBox("Show F-key toolbar") {
+            {
+                a = Config.fbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("fbelt", val);
+                Config.fbelt = val;
+                a = val;
+                FBelt fbelt = gameui().fbelt;
+                if (fbelt != null) {
+                    if (val)
+                        fbelt.show();
+                    else
+                        fbelt.hide();
+                }
+            }
+        }, new Coord(540, y));
+        y += 35;
+        display.add(new CheckBox("Highlight empty/finished drying frames") {
+            {
+                a = Config.showdframestatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdframestatus", val);
+                Config.showdframestatus = val;
+                a = val;
+            }
+        }, new Coord(540, y));
+        y += 35;
+        display.add(new CheckBox("Hide extensions menu (req. restart)") {
+            {
+                a = Config.hidexmenu;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hidexmenu", val);
+                Config.hidexmenu = val;
+                a = val;
+            }
+        }, new Coord(540, y));
 
         display.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
@@ -1110,7 +1225,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+        y += 35;
+        general.add(new CheckBox("Auto-miner: drop mined ore") {
+            {
+                a = Config.dropore;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("dropore", val);
+                Config.dropore = val;
+                a = val;
+            }
+        }, new Coord(260, y));
 
         general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         general.pack();
@@ -1161,6 +1287,18 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("agroclosest", val);
                 Config.agroclosest = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Display cooldown time") {
+            {
+                a = Config.showcooldown;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcooldown", val);
+                Config.showcooldown = val;
                 a = val;
             }
         }, new Coord(0, y));
@@ -1262,6 +1400,30 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("disablespacebar", val);
                 Config.disablespacebar = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
+            {
+                a = Config.nodropping;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("nodropping", val);
+                Config.nodropping = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        control.add(new CheckBox("Enable full zoom-out in Ortho cam") {
+            {
+                a = Config.enableorthofullzoom;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enableorthofullzoom", val);
+                Config.enableorthofullzoom = val;
                 a = val;
             }
         }, new Coord(0, y));

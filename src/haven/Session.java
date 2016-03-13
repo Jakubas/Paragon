@@ -339,17 +339,17 @@ public class Session {
                                 if (modid == 65535)
                                     break;
                                 Indir<Resource> modr = getres(modid);
-				List<ResData> tex = new LinkedList<ResData>();
+                                List<ResData> tex = new LinkedList<ResData>();
                                 while (true) {
                                     int resid = msg.uint16();
                                     if (resid == 65535)
                                         break;
-				    Message sdt = Message.nil;
-				    if((resid & 0x8000) != 0) {
-					resid &= ~0x8000;
-					sdt = new MessageBuf(msg.bytes(msg.uint8()));
-				    }
-				    tex.add(new ResData(getres(resid), sdt));
+                                    Message sdt = Message.nil;
+                                    if ((resid & 0x8000) != 0) {
+                                        resid &= ~0x8000;
+                                        sdt = new MessageBuf(msg.bytes(msg.uint8()));
+                                    }
+                                    tex.add(new ResData(getres(resid), sdt));
                                 }
                                 mod.add(new Composited.MD(modr, tex));
                             }
@@ -466,194 +466,194 @@ public class Session {
                             int resid = msg.uint16();
                             Indir<Resource> res;
                             if (resid == 65535) {
-				if(gob != null)
-				    oc.icon(gob, null);
+                                if (gob != null)
+                                    oc.icon(gob, null);
                             } else {
                                 int ifl = msg.uint8();
-				if(gob != null)
-				    oc.icon(gob, getres(resid));
-			    }
-			} else if(type == OD_RESATTR) {
-			    Indir<Resource> resid = getres(msg.uint16());
-			    int len = msg.uint8();
-			    Message dat = (len > 0)?new MessageBuf(msg.bytes(len)):null;
-			    if(gob != null)
-				oc.resattr(gob, resid, dat);
-			} else if(type == OD_END) {
-			    break;
-			} else {
-			    throw(new MessageException("Unknown objdelta type: " + type, msg));
-			}
-		    }
-		}
-		synchronized(objacks) {
-		    if(objacks.containsKey(id)) {
-			ObjAck a = objacks.get(id);
-			a.frame = frame;
-			a.recv = System.currentTimeMillis();
-		    } else {
-			objacks.put(id, new ObjAck(id, frame, System.currentTimeMillis()));
-		    }
-		}
-	    }
-	    synchronized(sworker) {
-		sworker.notifyAll();
-	    }
-	}
-		
-	private void handlerel(PMessage msg) {
-	    if(msg.type == RMessage.RMSG_NEWWDG) {
-		synchronized(uimsgs) {
-		    uimsgs.add(msg);
-		}
-	    } else if(msg.type == RMessage.RMSG_WDGMSG) {
-		synchronized(uimsgs) {
-		    uimsgs.add(msg);
-		}
-	    } else if(msg.type == RMessage.RMSG_DSTWDG) {
-		synchronized(uimsgs) {
-		    uimsgs.add(msg);
-		}
-	    } else if(msg.type == RMessage.RMSG_MAPIV) {
-		glob.map.invalblob(msg);
-	    } else if(msg.type == RMessage.RMSG_GLOBLOB) {
-		glob.blob(msg);
-	    } else if(msg.type == RMessage.RMSG_PAGINAE) {
-		glob.paginae(msg);
-	    } else if(msg.type == RMessage.RMSG_RESID) {
-		int resid = msg.uint16();
-		String resname = msg.string();
-		int resver = msg.uint16();
-		cachedres(resid).set(resname, resver);
-	    } else if(msg.type == RMessage.RMSG_PARTY) {
-		glob.party.msg(msg);
-	    } else if(msg.type == RMessage.RMSG_SFX) {
-		Indir<Resource> res = getres(msg.uint16());
-		double vol = ((double)msg.uint16()) / 256.0;
-		double spd = ((double)msg.uint16()) / 256.0;
-		Audio.play(res);
-	    } else if(msg.type == RMessage.RMSG_CATTR) {
-		glob.cattr(msg);
-	    } else if(msg.type == RMessage.RMSG_MUSIC) {
-		String resnm = msg.string();
-		int resver = msg.uint16();
-		boolean loop = !msg.eom() && (msg.uint8() != 0);
-		if(Music.enabled) {
-		    if(resnm.equals(""))
-			Music.play(null, false);
-		    else
-			Music.play(Resource.remote().load(resnm, resver), loop);
-		}
-	    } else if(msg.type == RMessage.RMSG_SESSKEY) {
-		sesskey = msg.bytes();
-	    } else {
-		throw(new MessageException("Unknown rmsg type: " + msg.type, msg));
-	    }
-	}
-		
-	private void getrel(int seq, PMessage msg) {
-	    if(seq == rseq) {
-		int lastack;
-		synchronized(uimsgs) {
-		    handlerel(msg);
-		    while(true) {
-			rseq = ((lastack = rseq) + 1) % 65536;
-			if(!waiting.containsKey(rseq))
-			    break;
-			handlerel(waiting.get(rseq));
-			waiting.remove(rseq);
-		    }
-		}
-		sendack(lastack);
-		synchronized(Session.this) {
-		    Session.this.notifyAll();
-		}
-	    } else if(Utils.floormod(seq - rseq, 65536) < 32768) {
-		waiting.put(seq, msg);
-	    }
-	}
-		
-	public void run() {
-	    try {
-		alive = true;
-		try {
-		    sk.setSoTimeout(1000);
-		} catch(SocketException e) {
-		    throw(new RuntimeException(e));
-		}
-		while(alive) {
-		    DatagramPacket p = new DatagramPacket(new byte[65536], 65536);
-		    try {
-			sk.receive(p);
-		    } catch(java.nio.channels.ClosedByInterruptException e) {
-			/* Except apparently Sun's J2SE doesn't throw this when interrupted :P*/
-			break;
-		    } catch(SocketTimeoutException e) {
-			continue;
-		    } catch(IOException e) {
-			throw(new RuntimeException(e));
-		    }
-		    if(!p.getSocketAddress().equals(server))
-			continue;
-		    PMessage msg = new PMessage(p.getData()[0], p.getData(), 1, p.getLength() - 1);
-		    if(msg.type == MSG_SESS) {
-			if(state == "conn") {
-			    int error = msg.uint8();
-			    synchronized(Session.this) {
-				if(error == 0) {
-				    state = "";
-				} else {
-				    connfailed = error;
-				    Session.this.close();
-				}
-				Session.this.notifyAll();
-			    }
-			}
-		    }
-		    if(state != "conn") {
-			if(msg.type == MSG_SESS) {
-			} else if(msg.type == MSG_REL) {
-			    int seq = msg.uint16();
-			    while(!msg.eom()) {
-				int type = msg.uint8();
-				if((type & 0x80) != 0) {
-				    type &= 0x7f;
-				    int len = msg.uint16();
-				    getrel(seq, new PMessage(type, msg.bytes(len)));
-				} else {
-				    getrel(seq, new PMessage(type, msg.bytes()));
-				}
-				seq++;
-			    }
-			} else if(msg.type == MSG_ACK) {
-			    gotack(msg.uint16());
-			} else if(msg.type == MSG_MAPDATA) {
-			    glob.map.mapdata(msg);
-			} else if(msg.type == MSG_OBJDATA) {
-			    getobjdata(msg);
-			} else if(msg.type == MSG_CLOSE) {
-			    synchronized(Session.this) {
-				state = "fin";
-				Session.this.notifyAll();
-			    }
-			    Session.this.close();
-			} else {
-			    throw(new MessageException("Unknown message type: " + msg.type, msg));
-			}
-		    }
-		}
-	    } finally {
-		synchronized(Session.this) {
-		    state = "dead";
-		    Session.this.notifyAll();
-		}
-	    }
-	}
-		
-	public void interrupt() {
-	    alive = false;
-	    super.interrupt();
-	}
+                                if (gob != null)
+                                    oc.icon(gob, getres(resid));
+                            }
+                        } else if (type == OD_RESATTR) {
+                            Indir<Resource> resid = getres(msg.uint16());
+                            int len = msg.uint8();
+                            Message dat = (len > 0) ? new MessageBuf(msg.bytes(len)) : null;
+                            if (gob != null)
+                                oc.resattr(gob, resid, dat);
+                        } else if (type == OD_END) {
+                            break;
+                        } else {
+                            throw (new MessageException("Unknown objdelta type: " + type, msg));
+                        }
+                    }
+                }
+                synchronized (objacks) {
+                    if (objacks.containsKey(id)) {
+                        ObjAck a = objacks.get(id);
+                        a.frame = frame;
+                        a.recv = System.currentTimeMillis();
+                    } else {
+                        objacks.put(id, new ObjAck(id, frame, System.currentTimeMillis()));
+                    }
+                }
+            }
+            synchronized (sworker) {
+                sworker.notifyAll();
+            }
+        }
+
+        private void handlerel(PMessage msg) {
+            if (msg.type == RMessage.RMSG_NEWWDG) {
+                synchronized (uimsgs) {
+                    uimsgs.add(msg);
+                }
+            } else if (msg.type == RMessage.RMSG_WDGMSG) {
+                synchronized (uimsgs) {
+                    uimsgs.add(msg);
+                }
+            } else if (msg.type == RMessage.RMSG_DSTWDG) {
+                synchronized (uimsgs) {
+                    uimsgs.add(msg);
+                }
+            } else if (msg.type == RMessage.RMSG_MAPIV) {
+                glob.map.invalblob(msg);
+            } else if (msg.type == RMessage.RMSG_GLOBLOB) {
+                glob.blob(msg);
+            } else if (msg.type == RMessage.RMSG_PAGINAE) {
+                glob.paginae(msg);
+            } else if (msg.type == RMessage.RMSG_RESID) {
+                int resid = msg.uint16();
+                String resname = msg.string();
+                int resver = msg.uint16();
+                cachedres(resid).set(resname, resver);
+            } else if (msg.type == RMessage.RMSG_PARTY) {
+                glob.party.msg(msg);
+            } else if (msg.type == RMessage.RMSG_SFX) {
+                Indir<Resource> res = getres(msg.uint16());
+                double vol = ((double) msg.uint16()) / 256.0;
+                double spd = ((double) msg.uint16()) / 256.0;
+                Audio.play(res);
+            } else if (msg.type == RMessage.RMSG_CATTR) {
+                glob.cattr(msg);
+            } else if (msg.type == RMessage.RMSG_MUSIC) {
+                String resnm = msg.string();
+                int resver = msg.uint16();
+                boolean loop = !msg.eom() && (msg.uint8() != 0);
+                if (Music.enabled) {
+                    if (resnm.equals(""))
+                        Music.play(null, false);
+                    else
+                        Music.play(Resource.remote().load(resnm, resver), loop);
+                }
+            } else if (msg.type == RMessage.RMSG_SESSKEY) {
+                sesskey = msg.bytes();
+            } else {
+                throw (new MessageException("Unknown rmsg type: " + msg.type, msg));
+            }
+        }
+
+        private void getrel(int seq, PMessage msg) {
+            if (seq == rseq) {
+                int lastack;
+                synchronized (uimsgs) {
+                    handlerel(msg);
+                    while (true) {
+                        rseq = ((lastack = rseq) + 1) % 65536;
+                        if (!waiting.containsKey(rseq))
+                            break;
+                        handlerel(waiting.get(rseq));
+                        waiting.remove(rseq);
+                    }
+                }
+                sendack(lastack);
+                synchronized (Session.this) {
+                    Session.this.notifyAll();
+                }
+            } else if (Utils.floormod(seq - rseq, 65536) < 32768) {
+                waiting.put(seq, msg);
+            }
+        }
+
+        public void run() {
+            try {
+                alive = true;
+                try {
+                    sk.setSoTimeout(1000);
+                } catch (SocketException e) {
+                    throw (new RuntimeException(e));
+                }
+                while (alive) {
+                    DatagramPacket p = new DatagramPacket(new byte[65536], 65536);
+                    try {
+                        sk.receive(p);
+                    } catch (java.nio.channels.ClosedByInterruptException e) {
+            /* Except apparently Sun's J2SE doesn't throw this when interrupted :P*/
+                        break;
+                    } catch (SocketTimeoutException e) {
+                        continue;
+                    } catch (IOException e) {
+                        throw (new RuntimeException(e));
+                    }
+                    if (!p.getSocketAddress().equals(server))
+                        continue;
+                    PMessage msg = new PMessage(p.getData()[0], p.getData(), 1, p.getLength() - 1);
+                    if (msg.type == MSG_SESS) {
+                        if (state == "conn") {
+                            int error = msg.uint8();
+                            synchronized (Session.this) {
+                                if (error == 0) {
+                                    state = "";
+                                } else {
+                                    connfailed = error;
+                                    Session.this.close();
+                                }
+                                Session.this.notifyAll();
+                            }
+                        }
+                    }
+                    if (state != "conn") {
+                        if (msg.type == MSG_SESS) {
+                        } else if (msg.type == MSG_REL) {
+                            int seq = msg.uint16();
+                            while (!msg.eom()) {
+                                int type = msg.uint8();
+                                if ((type & 0x80) != 0) {
+                                    type &= 0x7f;
+                                    int len = msg.uint16();
+                                    getrel(seq, new PMessage(type, msg.bytes(len)));
+                                } else {
+                                    getrel(seq, new PMessage(type, msg.bytes()));
+                                }
+                                seq++;
+                            }
+                        } else if (msg.type == MSG_ACK) {
+                            gotack(msg.uint16());
+                        } else if (msg.type == MSG_MAPDATA) {
+                            glob.map.mapdata(msg);
+                        } else if (msg.type == MSG_OBJDATA) {
+                            getobjdata(msg);
+                        } else if (msg.type == MSG_CLOSE) {
+                            synchronized (Session.this) {
+                                state = "fin";
+                                Session.this.notifyAll();
+                            }
+                            Session.this.close();
+                        } else {
+                            throw (new MessageException("Unknown message type: " + msg.type, msg));
+                        }
+                    }
+                }
+            } finally {
+                synchronized (Session.this) {
+                    state = "dead";
+                    Session.this.notifyAll();
+                }
+            }
+        }
+
+        public void interrupt() {
+            alive = false;
+            super.interrupt();
+        }
     }
 
     private class SWorker extends HackThread {
@@ -709,7 +709,7 @@ public class Session {
                         now = System.currentTimeMillis();
                         boolean beat = true;
             /*
-			  if((closing != -1) && (now - closing > 500)) {
+              if((closing != -1) && (now - closing > 500)) {
 			  Message cm = new Message(MSG_CLOSE);
 			  sendmsg(cm);
 			  closing = now;
