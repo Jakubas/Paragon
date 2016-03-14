@@ -31,19 +31,42 @@ import java.awt.image.BufferedImage;
 
 public class Curiosity extends ItemInfo.Tip {
     public final int exp, mw, enc;
-
+    private GItem item;
+    private CuriosityInfo customInfo;
+    
     public Curiosity(Owner owner, int exp, int mw, int enc) {
         super(owner);
         this.exp = exp;
         this.mw = mw;
         this.enc = enc;
+        if (owner instanceof GItem) {
+        	item = (GItem)owner;
+        }
     }
 
     public BufferedImage tipimg() {
         StringBuilder buf = new StringBuilder();
-        buf.append(String.format("Learning points: $col[192,192,255]{%s}\nMental weight: $col[255,192,255]{%d}\n", Utils.thformat(exp), mw));
+        buf.append(String.format("Learning points: $col[192,192,255]{%s}\nMental weight: $col[255,192,255]{%d}\nLP/H/S: $col[192,192,255]{%.1f}\nLP/H/S/W: $col[255,192,255]{%.1f}\n", 
+        		Utils.thformat(exp), mw, LPH(exp)/customInfo.slots, LPH(exp)/customInfo.slots/mw));
         if (enc > 0)
             buf.append(String.format("Experience cost: $col[255,255,192]{%d}\n", enc));
         return (RichText.render(buf.toString(), 0).img);
     }
+    
+    public float LPH(int exp){
+        if (item != null && customInfo == null) {
+            try { 
+                String resName = item.resource().name;
+                customInfo = CuriosityInfo.get(resName);
+                if (customInfo == null)
+                    customInfo = CuriosityInfo.empty;
+            } catch (Loading e) {
+            }
+        }
+        if (customInfo.time < 0)
+        return 0;
+        else 
+            	return exp / (customInfo.time / 3600.0f);
+         }
+    
 }

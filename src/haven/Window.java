@@ -354,15 +354,15 @@ public class Window extends Widget implements DTarget {
     public boolean ismousegrab() {
         return dm != null;
     }
-    
+	
 	public void sortWindowInv() {
-		Inventory i = null;
+		Inventory inv = null;
         for (Widget w = child; w != null; w = w.next) {
             if (w instanceof Inventory) {
-                i = (Inventory) w;
+                inv = (Inventory) w;
             }
         }
-        System.out.println(i == null);
-        new Thread(new SortCupboard(i)).start();
+        new Thread(new SortCupboard(inv)).start();
 	}
+	
 }
