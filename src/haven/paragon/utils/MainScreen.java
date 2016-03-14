@@ -128,7 +128,7 @@ public class MainScreen {
 	}
 	
     public boolean isItemInHand() {
-        for (DraggedItem item : ui.sess.glob.gui.hand)
+        if(ui.sess.glob.gui.hand.size() > 0)
         	return true;
         return false;
     }

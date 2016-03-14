@@ -23,7 +23,6 @@ public class SortCupboard implements Runnable {
 
 	public List<WItem> getInvItems() {
 		List<WItem> invItems = inv.getAllItems();
-		System.out.println(invItems.size());
 		Collections.sort(invItems, new Comparator<WItem>() {
 			@Override
 			public int compare(WItem o1, WItem o2) {
@@ -48,45 +47,36 @@ public class SortCupboard implements Runnable {
 	
 	public void selectionSort() {
 		List<WItem> invItems = getInvItems();
-		
 		for(int i = 0; i < invItems.size()-1; i++) {
-			int min = i;
+			int iMax = i;
 			for (int j = i+1; j < invItems.size(); j++) {
-				if (invItems.get(j).item.quality().avg > invItems.get(min).item.quality().avg) {
-					min = j;
+				if (invItems.get(j).item.quality().avg > invItems.get(iMax).item.quality().avg) {
+					iMax = j;
 				}
 			}
-			if (min != i) {
+			if (iMax != i) {
 				WItem wItem = invItems.get(i);
-				WItem wItem2 = invItems.get(min);
+				WItem wItem2 = invItems.get(iMax);
 				Coord wItemPrev = wItem.c.add(Inventory.sqsz.div(2)).div(Inventory.invsq.sz()); 
-				System.out.println(wItem.item.getname());
+				int invItemsSize = invItems.size();
 				try {
 					wItem.item.wdgmsg("take", new Coord(0, 0));
+					while(inv.getAllItems().size() == invItemsSize) {
+					}
 				} catch(UIException e) {
 					System.out.println("restarting");
-					UtilsSetup.sleep(25);
+					UtilsSetup.sleep(5);
 					Window window = HavenPanel.lui.sess.glob.gui.getwnd("Cupboard");
+					if (window == null)
+						return;
 					window.sortWindowInv();
 					return;
 				}
 				inv.wdgmsg("drop", wItem2.c.add(Inventory.sqsz.div(2)).div(Inventory.invsq.sz()));
 				inv.wdgmsg("drop", wItemPrev);
-				Collections.swap(invItems, min, i);
+				Collections.swap(invItems, iMax, i);
 			}
 		}
-		System.out.println("\n\n\n\1");
-		for (WItem item : getInvItems()) {
-			System.out.println(item.c);
-		}
-		System.out.println("2");
-		for (WItem item : invItems) {
-			System.out.println(item.c);
-		}
-//		System.out.println(getInvItems());
-//		if (!getInvItems().equals(invItems)){
-//			selectionSort();
-//		}
     }
 
 	@Override

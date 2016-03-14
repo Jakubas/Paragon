@@ -36,6 +36,7 @@ public class Farm implements Runnable {
 			Collections.sort(cropList);
 			Gob crop = cropList.get(0);
 			movement.moveToObject(crop);
+			inventory.drink(80);
 			mainScreen.farm(crop);
 			cropList.remove(0);
 		}

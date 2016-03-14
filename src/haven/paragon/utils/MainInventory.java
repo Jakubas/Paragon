@@ -5,7 +5,7 @@ import haven.WItem;
 
 import java.util.List;
 
-public class InventoryUtils {
+public class MainInventory {
 	
 	
     public void drink(int threshold) {
