@@ -2,6 +2,8 @@ package haven.paragon.utils;
 
 import haven.Coord;
 import haven.FlowerMenu;
+import haven.GItem;
+import haven.GameUI.DraggedItem;
 import haven.Gob;
 
 import java.util.Comparator;
@@ -9,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import static haven.paragon.utils.UtilsSetup.*;
 
 public class MainScreen {
@@ -123,5 +126,16 @@ public class MainScreen {
         }
 		return false;
 	}
-	    
+	
+    public boolean isItemInHand() {
+        for (DraggedItem item : ui.sess.glob.gui.hand)
+        	return true;
+        return false;
+    }
+    
+    public GItem getItemInHand() {
+        for (DraggedItem item : ui.sess.glob.gui.hand)
+        	return item.item;
+        return null;
+    }
 }

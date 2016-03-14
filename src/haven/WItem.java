@@ -34,7 +34,7 @@ import java.util.*;
 
 import static haven.Inventory.sqsz;
 
-public class WItem extends Widget implements DTarget {
+public class WItem extends Widget implements DTarget, Comparable<WItem> {
     public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
     private static final Resource studyalarmsfx = Resource.local().loadwait("sfx/study");
     public final GItem item;
@@ -449,4 +449,9 @@ public class WItem extends Widget implements DTarget {
         }
         return false;
     }
+
+	@Override
+	public int compareTo(WItem wItem) {
+		return (int) (this.item.quality().avg - wItem.item.quality().avg);
+	}
 }

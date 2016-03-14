@@ -209,6 +209,16 @@ public class Inventory extends Widget implements DTarget {
         return null;
     }
 
+    public List<WItem> getAllItems() {
+        List<WItem> items = new ArrayList<WItem>();
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                items.add((WItem) wdg);
+            }
+        }
+        return items;
+    }
+    
     public WItem getItemPartial(String name) {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {

@@ -32,7 +32,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
+import haven.paragon.automations.SortCupboard;
 import static haven.PUtils.*;
 
 public class Window extends Widget implements DTarget {
@@ -85,6 +85,7 @@ public class Window extends Widget implements DTarget {
             Resource.loadimg("gfx/hud/wnd/lg/cbtnh")};
     public final Coord tlo, rbo, mrgn;
     public final IButton cbtn;
+    private Button sortbtn = null;
     public boolean dt = false;
     public Text cap;
     public Coord wsz, ctl, csz, atl, asz, cptl, cpsz;
@@ -111,6 +112,13 @@ public class Window extends Widget implements DTarget {
         this.rbo = rbo;
         this.mrgn = lg ? dlmrgn : dsmrgn;
         cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
+        if (cap.equals("Cupboard")) {
+        	sortbtn = add(new Button(40, "Sort", false) {
+				public void click() {
+					sortWindowInv();
+                }
+            });
+        }
         chcap(cap);
         resize(sz);
         setfocustab(true);
@@ -206,7 +214,7 @@ public class Window extends Widget implements DTarget {
     public Coord contentsz() {
         Coord max = new Coord(0, 0);
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if (wdg == cbtn)
+            if (wdg == cbtn || wdg == sortbtn)
                 continue;
             if (!wdg.visible)
                 continue;
@@ -224,6 +232,9 @@ public class Window extends Widget implements DTarget {
     }
 
     public void resize(Coord sz) {
+    	if (sortbtn != null) {
+    		sz = sz.add(0, sortbtn.sz.y-5);
+    	}
         asz = sz;
         csz = asz.add(mrgn.mul(2));
         wsz = csz.add(tlm).add(brm);
@@ -231,11 +242,14 @@ public class Window extends Widget implements DTarget {
         ctl = tlo.add(tlm);
         atl = ctl.add(mrgn);
         cmw = (cap == null) ? 0 : (cap.sz().x);
-        cmw = Math.max(cmw, wsz.x / 4);
+        //cmw = Math.max(cmw, wsz.x / 4);
         cptl = new Coord(ctl.x, tlo.y);
         cpsz = tlo.add(cpo.x + cmw, cm.sz().y).sub(cptl);
         cmw = cmw - (cl.sz().x - cpo.x) - 5;
         cbtn.c = xlate(tlo.add(wsz.x - cbtn.sz.x, 0), false);
+        if (sortbtn != null) {
+        	sortbtn.c = xlate(new Coord(292 - sortbtn.sz.x, 330 - sortbtn.sz.y), false);
+        }
         for (Widget ch = child; ch != null; ch = ch.next)
             ch.presize();
     }
@@ -340,4 +354,15 @@ public class Window extends Widget implements DTarget {
     public boolean ismousegrab() {
         return dm != null;
     }
+    
+	public void sortWindowInv() {
+		Inventory i = null;
+        for (Widget w = child; w != null; w = w.next) {
+            if (w instanceof Inventory) {
+                i = (Inventory) w;
+            }
+        }
+        System.out.println(i == null);
+        new Thread(new SortCupboard(i)).start();
+	}
 }
