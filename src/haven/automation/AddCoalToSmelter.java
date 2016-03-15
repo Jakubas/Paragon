@@ -7,7 +7,7 @@ public class AddCoalToSmelter {
     private GameUI gui;
     private Gob smelter;
     private int count;
-    private static final int TIMEOUT = 1500;
+    private static final int TIMEOUT = 2000;
     private static final int HAND_DELAY = 8;
 
     public AddCoalToSmelter(GameUI gui, int count) {
