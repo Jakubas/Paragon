@@ -210,7 +210,8 @@ public class Config {
             "gfx/kritter/badger/badger"));
 
     public final static Set<String> foragables = new HashSet<String>(Arrays.asList(
-            "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss"));
+            "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss",
+            "gfx/terobjs/herbs/bloatedbolete", "gfx/terobjs/herbs/glimmermoss"));
 
     static {
         Arrays.sort(Config.boulders);
