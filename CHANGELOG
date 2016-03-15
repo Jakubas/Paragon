@@ -1,3 +1,9 @@
+Version 1.28.2
+    Misc:
+        * Merged vanilla changes.
+        * Added glimmermoss and bloated bolete to curios alarm.
+
+
 Version 1.28.1
     Fixed:
         * Tree stages not showing.
