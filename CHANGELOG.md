@@ -1,3 +1,10 @@
+## Version 1.2.1
+### Added:
+- LP/H/S (learning points/hour/size) and LP/H/S/W (learning points/hour/size/weight) info to curiosities
+- total LP/H to study information
+- [WIP] Sort button for cupboards
+
+
 
 ## Version 1.2
 ### Changed:
