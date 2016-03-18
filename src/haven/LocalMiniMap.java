@@ -346,6 +346,8 @@ public class LocalMiniMap extends Widget {
                             }
                         }
                     } else if (res.name.equals("gfx/kritter/troll/troll")) {
+                        if (mv.areamine != null)
+                            mv.areamine.terminate();
                         if (Config.alarmtroll && !sgobs.contains(gob.id)) {
                             sgobs.add(gob.id);
                             Audio.play(trollsfx, Config.alarmtrollvol);
