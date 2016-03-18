@@ -1841,7 +1841,7 @@ public class Resource implements Serializable {
             BufferedWriter out = null;
             try {
                 key = key.replace(" ", "\\ ");
-                val = val.replace("\\", "\\\\").replace("\n", "\\\\n").replace("\u0000", "");
+                val = val.replace("\\", "\\\\").replace("\n", "\\n").replace("\u0000", "");
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../l10n/" + bundle + "_new.properties", true), encoder));
                 out.write(key + " = " + val);
                 out.newLine();
