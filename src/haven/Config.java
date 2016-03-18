@@ -162,6 +162,7 @@ public class Config {
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", false);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean hidexmenu = Utils.getprefb("hidexmenu", true);
+    public static boolean sortascending = Utils.getprefb("sortascending", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;
