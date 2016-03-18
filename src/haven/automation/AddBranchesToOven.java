@@ -3,14 +3,14 @@ package haven.automation;
 
 import haven.*;
 
-public class AddCoalToSmelter implements Runnable {
+public class AddBranchesToOven implements Runnable {
     private GameUI gui;
-    private Gob smelter;
+    private Gob oven;
     private int count;
     private static final int TIMEOUT = 2000;
     private static final int HAND_DELAY = 8;
 
-    public AddCoalToSmelter(GameUI gui, int count) {
+    public AddBranchesToOven(GameUI gui, int count) {
         this.gui = gui;
         this.count = count + 1;
     }
@@ -20,27 +20,24 @@ public class AddCoalToSmelter implements Runnable {
         synchronized (gui.map.glob.oc) {
             for (Gob gob : gui.map.glob.oc) {
                 Resource res = gob.getres();
-                if (res != null && res.name.contains("smelter")) {
-                    if (smelter == null)
-                        smelter = gob;
-                    else if (gob.rc.dist(gui.map.player().rc) < smelter.rc.dist(gui.map.player().rc))
-                        smelter = gob;
+                if (res != null && res.name.contains("oven")) {
+                    if (oven == null)
+                        oven = gob;
+                    else if (gob.rc.dist(gui.map.player().rc) < oven.rc.dist(gui.map.player().rc))
+                        oven = gob;
                 }
             }
         }
 
-        if (smelter == null) {
-            gui.error("No smelters found");
+        if (oven == null) {
+            gui.error("No ovens found");
             return;
         }
 
-        WItem coal = gui.maininv.getitem("Coal");
+        WItem coal = gui.maininv.getitem("Branch");
         if (coal == null) {
-            coal = gui.maininv.getitem("Black Coal");
-            if (coal == null) {
-                gui.error("No coal found in the inventory");
-                return;
-            }
+            gui.error("No branches found in the inventory");
+            return;
         }
 
         coal.item.wdgmsg("take", new Coord(coal.item.sz.x / 2, coal.item.sz.y / 2));
@@ -48,7 +45,7 @@ public class AddCoalToSmelter implements Runnable {
         while (gui.hand.isEmpty()) {
             timeout += HAND_DELAY;
             if (timeout >= TIMEOUT) {
-                gui.error("No coal found in the inventory");
+                gui.error("No branches found in the inventory");
                 return;
             }
             try {
@@ -59,7 +56,7 @@ public class AddCoalToSmelter implements Runnable {
         }
 
         for (; count > 0; count--) {
-            gui.map.wdgmsg("itemact", Coord.z, smelter.rc, count == 1 ? 0 : 1, 0, (int) smelter.id, smelter.rc, 0, -1);
+            gui.map.wdgmsg("itemact", Coord.z, oven.rc, count == 1 ? 0 : 1, 0, (int) oven.id, oven.rc, 0, -1);
             timeout = 0;
             while (true) {
                 WItem newcoal = gui.vhand;
@@ -70,7 +67,7 @@ public class AddCoalToSmelter implements Runnable {
 
                 timeout += HAND_DELAY;
                 if (timeout >= TIMEOUT) {
-                    gui.error("Not enough coal. Need to add " + count + " more.");
+                    gui.error("Not enough branches. Need to add " + count + " more.");
                     return;
                 }
                 try {

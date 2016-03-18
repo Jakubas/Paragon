@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
+import haven.automation.AddBranchesToOven;
 import haven.automation.AddCoalToSmelter;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
@@ -37,7 +38,6 @@ import haven.automation.GobSelectCallback;
 import haven.automation.SteelRefueler;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
@@ -127,6 +127,7 @@ public class MenuGrid extends Widget {
             if (!Config.hidexmenu) {
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/branchoven")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
             }
         }
@@ -308,9 +309,11 @@ public class MenuGrid extends Widget {
         if (gui == null)
             return;
         if (ad[1].equals("coal")) {
-            Executors.newSingleThreadExecutor().submit(() -> {
-                new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
-            });
+            Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
+            t.start();
+        } else if (ad[1].equals("branchoven")) {
+            Thread t = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
+            t.start();
         } else if (ad[1].equals("steel")) {
             if (gui.getwnd("Steel Refueler") == null) {
                 SteelRefueler sw = new SteelRefueler();
