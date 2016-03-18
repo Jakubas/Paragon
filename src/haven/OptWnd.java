@@ -1444,8 +1444,8 @@ public class OptWnd extends Window {
         // -------------------------------------------- uis
 
         y = 0;
-        uis.add(new Label("Language: "), new Coord(0, y));
-        uis.add(langDropdown(), new Coord(70, y));
+        uis.add(new Label("Language (req. restart): "), new Coord(0, y));
+        uis.add(langDropdown(), new Coord(120, y));
 
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
