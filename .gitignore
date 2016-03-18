@@ -6,3 +6,4 @@
 *.iml
 *.zip
 amber-*.zip
+/l10n/*_new.properties
