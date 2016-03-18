@@ -1030,6 +1030,8 @@ public class OptWnd extends Window {
                 Utils.delpref("gui-ul-visible");
                 Utils.delpref("gui-ur-visible");
                 Utils.delpref("menu-visible");
+                Utils.delpref("fbelt_c");
+                Utils.delpref("fbelt_vertical");
             }
         }, new Coord(260, 320));
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
