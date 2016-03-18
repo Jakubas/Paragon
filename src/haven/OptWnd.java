@@ -26,8 +26,16 @@
 
 package haven;
 
+
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display, map, general, combat, control;
+    public final Panel main, video, audio, display, map, general, combat, control, uis;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -289,6 +297,7 @@ public class OptWnd extends Window {
         general = add(new Panel());
         combat = add(new Panel());
         control = add(new Panel());
+        uis = add(new Panel());
         int y;
 
         main.add(new PButton(200, "Video settings", 'v', video), new Coord(0, 0));
@@ -298,6 +307,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "General settings", 'g', general), new Coord(210, 0));
         main.add(new PButton(200, "Combat settings", 'c', combat), new Coord(210, 30));
         main.add(new PButton(200, "Control settings", 'k', control), new Coord(210, 60));
+        main.add(new PButton(200, "UI settings", 'u', uis), new Coord(210, 90));
 
         if (gopts) {
             main.add(new Button(200, "Switch character") {
@@ -1431,7 +1441,73 @@ public class OptWnd extends Window {
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
 
+        // -------------------------------------------- uis
+
+        y = 0;
+        uis.add(new Label("Language: "), new Coord(0, y));
+        uis.add(langDropdown(), new Coord(70, y));
+
+        uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        uis.pack();
+
         chpanel(main);
+    }
+
+    private Dropbox<Locale> langDropdown() {
+        List<Locale> languages = enumerateLanguages();
+        Dropbox<Locale> lang = new Dropbox<Locale>(120, 5, 16) {
+            @Override
+            protected Locale listitem(int i) {
+                return languages.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return languages.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Locale item, int i) {
+                g.text(item.getDisplayName(), Coord.z);
+            }
+
+            @Override
+            public void change(Locale item) {
+                super.change(item);
+                Resource.language = item.toString();
+                Utils.setpref("language", item.toString());
+            }
+        };
+        lang.change(new Locale(Resource.language));
+        return lang;
+    }
+
+    private List<Locale> enumerateLanguages() {
+        Set<Locale> languages = new HashSet<>();
+        languages.add(new Locale("en"));
+
+        Enumeration<URL> en;
+        try {
+            en = this.getClass().getClassLoader().getResources("l10n");
+            if (en.hasMoreElements()) {
+                URL url = en.nextElement();
+                JarURLConnection urlcon = (JarURLConnection) (url.openConnection());
+                try (JarFile jar = urlcon.getJarFile()) {
+                    Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements()) {
+                        String name = entries.nextElement().getName();
+                        // we assume that if tooltip localization exists then the rest exist as well
+                        // up to dev to make sure that it's true
+                        if (name.startsWith("l10n/" + Resource.BUNDLE_TOOLTIP))
+                            languages.add(new Locale(name.substring(13, 15)));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<Locale>(languages);
     }
 
     public OptWnd() {

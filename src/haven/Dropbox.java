@@ -37,7 +37,7 @@ public abstract class Dropbox<T> extends ListWidget<T> {
     public Dropbox(int w, int listh, int itemh) {
         super(new Coord(w, itemh), itemh);
         this.listh = listh;
-        dropc = new Coord(sz.x - drop.sz().x, 0);
+        dropc = new Coord(sz.x - drop.sz().x - 1, 1);
     }
 
     private class Droplist extends Listbox<T> {

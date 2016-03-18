@@ -27,7 +27,6 @@
 package haven;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -111,6 +110,14 @@ public class Window extends Widget implements DTarget {
         this.rbo = rbo;
         this.mrgn = lg ? dlmrgn : dsmrgn;
         cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
+
+        if (Resource.L10N_DEBUG)
+            Resource.l10nWindow = Resource.saveStrings(Resource.BUNDLE_WINDOW, Resource.l10nWindow, cap, cap);
+
+        if (!Resource.language.equals("en") && !Resource.L10N_DEBUG) {
+            if (Resource.l10nWindow != null && Resource.l10nWindow.containsKey(cap))
+                cap = Resource.l10nWindow.get(cap);
+        }
         chcap(cap);
         resize(sz);
         setfocustab(true);

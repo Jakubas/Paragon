@@ -29,6 +29,9 @@ package haven;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.annotation.*;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -50,6 +53,16 @@ public class Resource implements Serializable {
     public static Class<AButton> action = AButton.class;
     public static Class<Audio> audio = Audio.class;
     public static Class<Tooltip> tooltip = Tooltip.class;
+
+    public static String language = Utils.getpref("language", "en");
+    public static Map<String, String> l10nTooltip, l10nPagina, l10nWindow, l10nButton, l10nFlower;
+    public static final String BUNDLE_TOOLTIP = "tooltip";
+    public static final String BUNDLE_PAGINA = "pagina";
+    public static final String BUNDLE_WINDOW = "window";
+    public static final String BUNDLE_BUTTON = "button";
+    public static final String BUNDLE_FLOWER = "flower";
+
+    public static final boolean L10N_DEBUG = true;
 
     private Collection<Layer> layers = new LinkedList<Layer>();
     public final String name;
@@ -234,7 +247,7 @@ public class Resource implements Serializable {
                         c = ssl.connect(resurl);
                     else
                         c = resurl.openConnection();
-		    /* Apparently, some versions of Java Web Start has
+            /* Apparently, some versions of Java Web Start has
 		     * a bug in its internal cache where it refuses to
 		     * reload a URL even when it has changed. */
                     c.setUseCaches(false);
@@ -468,9 +481,9 @@ public class Resource implements Serializable {
             return (load(name, -1));
         }
 
-	public Indir<Resource> dynres(long id) {
-	    return(load(String.format("dyn/%x", id), 1));
-	}
+        public Indir<Resource> dynres(long id) {
+            return (load(String.format("dyn/%x", id), 1));
+        }
 
         private void ckld() {
             int qsz;
@@ -764,6 +777,14 @@ public class Resource implements Serializable {
     }
 
     static {
+        if (!language.equals("en") || Resource.L10N_DEBUG) {
+            l10nTooltip = l10n(BUNDLE_TOOLTIP, language);
+            l10nPagina = l10n(BUNDLE_PAGINA, language);
+            l10nWindow = l10n(BUNDLE_WINDOW, language);
+            l10nButton = l10n(BUNDLE_BUTTON, language);
+            l10nFlower = l10n(BUNDLE_FLOWER, language);
+        }
+
         for (Class<?> cl : dolda.jglob.Loader.get(LayerName.class).classes()) {
             String nm = cl.getAnnotation(LayerName.class).value();
             if (LayerFactory.class.isAssignableFrom(cl)) {
@@ -780,6 +801,34 @@ public class Resource implements Serializable {
                 throw (new Error("Illegal resource layer class: " + cl));
             }
         }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Map<String, String> l10n(String bundle, String langcode) {
+        Properties props = new Properties();
+
+        InputStream is = Config.class.getClassLoader().getResourceAsStream("l10n/" + bundle + "_" + langcode + ".properties");
+        if (is == null)
+            return null;
+
+        InputStreamReader isr = null;
+        try {
+            isr = new InputStreamReader(is, "UTF-8");
+            props.load(isr);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException e) { // ignored
+                }
+            }
+        }
+
+        return props.size() > 0 ? new HashMap<>((Map) props) : null;
     }
 
     public interface IDLayer<T> {
@@ -859,7 +908,27 @@ public class Resource implements Serializable {
         public final String t;
 
         public Tooltip(Message buf) {
-            t = new String(buf.bytes(), Utils.utf8);
+            String text = new String(buf.bytes(), Utils.utf8);
+            if (language.equals("en") && !L10N_DEBUG) {
+                this.t = text;
+                return;
+            }
+
+            if (L10N_DEBUG) {
+                Resource res = super.getres();
+                Resource.l10nTooltip = Resource.saveStrings(Resource.BUNDLE_TOOLTIP, Resource.l10nTooltip, res.name, text);
+            }
+
+            String locText = null;
+            try {
+                Resource res = super.getres();
+                if (res != null && l10nTooltip != null)
+                    locText = l10nTooltip.get(res.name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            this.t = locText != null ? locText : text;
         }
 
         public void init() {
@@ -1045,7 +1114,7 @@ public class Resource implements Serializable {
                     centroid = true;
                 }
 
-		    public BufferedImage fill() {
+                public BufferedImage fill() {
                     BufferedImage buf = TexI.mkbuf(dim);
                     Graphics g = buf.createGraphics();
                     for (int i = 0; i < nt; i++)
@@ -1145,7 +1214,27 @@ public class Resource implements Serializable {
         public final String text;
 
         public Pagina(Message buf) {
-            text = new String(buf.bytes(), Utils.utf8);
+            String text = new String(buf.bytes(), Utils.utf8);
+            if (language.equals("en") && !L10N_DEBUG) {
+                this.text = text;
+                return;
+            }
+
+            if (Resource.L10N_DEBUG) {
+                Resource res = super.getres();
+                Resource.l10nPagina = Resource.saveStrings(Resource.BUNDLE_PAGINA, Resource.l10nPagina, res.name, text);
+            }
+
+            String locText = null;
+            try {
+                Resource res = super.getres();
+                if (res != null && l10nPagina != null)
+                    locText = l10nPagina.get(res.name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            this.text = locText != null ? locText : text;
         }
 
         public void init() {
@@ -1732,6 +1821,48 @@ public class Resource implements Serializable {
             dumplist(cur, w);
         } finally {
             w.close();
+        }
+    }
+
+    public static Map<String, String> saveStrings(String bundle, Map<String, String> map, String key, String val) {
+        synchronized (Resource.class) {
+            if (key == null)
+                return map;
+
+            if (map != null && map.containsKey(key))
+                return map;
+
+            if (val == null)
+                val = key;
+
+            CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+            encoder.onMalformedInput(CodingErrorAction.REPORT);
+            encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+            BufferedWriter out = null;
+            try {
+                key = key.replace(" ", "\\ ");
+                val = val.replace("\\", "\\\\").replace("\n", "\\\\n").replace("\u0000", "");
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../l10n/" + bundle + "_new.properties", true), encoder));
+                out.write(key + " = " + val);
+                out.newLine();
+                if (map == null)
+                    map = new HashMap<>();
+                map.put(key, val);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return map;
         }
     }
 
