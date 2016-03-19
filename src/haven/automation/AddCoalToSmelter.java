@@ -34,16 +34,17 @@ public class AddCoalToSmelter implements Runnable {
             return;
         }
 
-        WItem coal = gui.maininv.getitem("Coal");
-        if (coal == null) {
-            coal = gui.maininv.getitem("Black Coal");
-            if (coal == null) {
+        WItem coalw = gui.maininv.getitem("Coal");
+        if (coalw == null) {
+            coalw = gui.maininv.getitem("Black Coal");
+            if (coalw == null) {
                 gui.error("No coal found in the inventory");
                 return;
             }
         }
+        GItem coal = coalw.item;
 
-        coal.item.wdgmsg("take", new Coord(coal.item.sz.x / 2, coal.item.sz.y / 2));
+        coal.wdgmsg("take", new Coord(coal.sz.x / 2, coal.sz.y / 2));
         int timeout = 0;
         while (gui.hand.isEmpty()) {
             timeout += HAND_DELAY;
@@ -63,9 +64,11 @@ public class AddCoalToSmelter implements Runnable {
             timeout = 0;
             while (true) {
                 WItem newcoal = gui.vhand;
-                if (newcoal != coal) {
-                    coal = newcoal;
+                if (newcoal != null && newcoal.item != coal) {
+                    coal = newcoal.item;
                     break;
+                } else if (newcoal == null && count == 1) {
+                    return;
                 }
 
                 timeout += HAND_DELAY;
