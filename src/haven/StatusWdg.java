@@ -102,11 +102,12 @@ public class StatusWdg extends Widget {
         command.add("1");
         command.add("game.havenandhearth.com");
 
+        BufferedReader standardOutput = null;
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();
 
-            BufferedReader standardOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            standardOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             String output = "";
             String line;
@@ -128,6 +129,12 @@ public class StatusWdg extends Widget {
             }
         } catch (IOException ex) {
             // NOP
+        } finally {
+            if (standardOutput != null)
+                try {
+                    standardOutput.close();
+                } catch (IOException e) { // ignored
+                }
         }
 
         if (ping.isEmpty()) {
@@ -259,15 +266,14 @@ public class StatusWdg extends Widget {
         if (sslfactory == null)
             return "";
         URL url_;
-        InputStream is = null;
-        BufferedReader br;
+        BufferedReader br = null;
         String urlcontent = "";
 
         try {
             url_ = new URL(url);
             HttpsURLConnection conn = (HttpsURLConnection)url_.openConnection();
             conn.setSSLSocketFactory(sslfactory);
-            is = conn.getInputStream();
+            InputStream is = conn.getInputStream();
             br = new BufferedReader(new InputStreamReader(is));
 
             String line;
@@ -287,8 +293,8 @@ public class StatusWdg extends Widget {
             return "";
         } finally {
             try {
-                if (is != null)
-                    is.close();
+                if (br != null)
+                    br.close();
             } catch (IOException ioe) {
                 // NOP
             }
