@@ -920,13 +920,9 @@ public class Resource implements Serializable {
             }
 
             String locText = null;
-            try {
-                Resource res = super.getres();
-                if (res != null && l10nTooltip != null)
-                    locText = l10nTooltip.get(res.name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Resource res = super.getres();
+            if (res != null && l10nTooltip != null)
+                locText = l10nTooltip.get(res.name);
 
             this.t = locText != null ? locText : text;
         }
@@ -1226,13 +1222,9 @@ public class Resource implements Serializable {
             }
 
             String locText = null;
-            try {
-                Resource res = super.getres();
-                if (res != null && l10nPagina != null)
-                    locText = l10nPagina.get(res.name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Resource res = super.getres();
+            if (res != null && l10nPagina != null)
+                locText = l10nPagina.get(res.name);
 
             this.text = locText != null ? locText : text;
         }
