@@ -62,7 +62,7 @@ public class LocalMiniMap extends Widget {
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
 
-    private class MapTile {
+    private static class MapTile {
         public MCache.Grid grid;
         public int seq;
 
