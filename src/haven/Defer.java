@@ -33,7 +33,7 @@ public class Defer extends ThreadGroup {
     private static final Map<ThreadGroup, Defer> groups = new WeakHashMap<ThreadGroup, Defer>();
     private final Queue<Future<?>> queue = new PrioQueue<Future<?>>();
     private final Collection<Thread> pool = new LinkedList<Thread>();
-    private final int maxthreads = 2;
+    private static final int maxthreads = 2;
 
     public interface Callable<T> {
         public T call() throws InterruptedException;
