@@ -1112,7 +1112,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public IMeter.Meter getmeter(String name, int midx) {
         List<IMeter.Meter> meters = getmeters(name);
-        if (meters != null || midx < meters.size())
+        if (meters != null && midx < meters.size())
             return meters.get(midx);
         return null;
     }
