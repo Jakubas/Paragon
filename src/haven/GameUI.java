@@ -833,7 +833,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (Config.agroclosest && key == 9)
                 return super.globtype(key, ev);
 
-            if ((gkey != -1) && (key == gkey)) {
+            if (key == gkey) {
                 click();
                 return (true);
             }
