@@ -54,7 +54,7 @@ public class AStar {
         return null;
     }
 
-    private class Path {
+    private static class Path {
         private final Vertex start;
         private final Vertex end;
         private final Map<Vertex, Node> nodes;
