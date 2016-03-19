@@ -81,7 +81,7 @@ public class AStar {
         }
     }
 
-    private class Node implements Comparable<Node> {
+    private static class Node implements Comparable<Node> {
         private final Vertex vertex;
         private final double h;
         private Node prev;
