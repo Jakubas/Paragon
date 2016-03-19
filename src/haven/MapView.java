@@ -1095,7 +1095,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             if (mc == null)
                 continue;
             double a = screenangle(mc, true);
-            if (a == Double.NaN)
+            if (Double.isNaN(a))
                 continue;
             g.chcolor(m.col);
             drawarrow(g, a);
