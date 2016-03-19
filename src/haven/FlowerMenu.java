@@ -215,7 +215,7 @@ public class FlowerMenu extends Widget {
                 Resource.l10nFlower = Resource.saveStrings(Resource.BUNDLE_FLOWER, Resource.l10nFlower, name, name);
 
             String locName = null;
-            if (!Resource.language.equals("en") && !Resource.L10N_DEBUG) {
+            if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
                 if (Resource.l10nFlower != null && Resource.l10nFlower.containsKey(name))
                     locName = Resource.l10nFlower.get(name);
             }

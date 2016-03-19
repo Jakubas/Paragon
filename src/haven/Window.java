@@ -86,6 +86,7 @@ public class Window extends Widget implements DTarget {
     public final IButton cbtn;
     public boolean dt = false;
     public Text cap;
+    public final String origcap;
     public Coord wsz, ctl, csz, atl, asz, cptl, cpsz;
     public int cmw;
     private UI.Grab dm = null;
@@ -109,12 +110,13 @@ public class Window extends Widget implements DTarget {
         this.tlo = tlo;
         this.rbo = rbo;
         this.mrgn = lg ? dlmrgn : dsmrgn;
+        origcap = cap;
         cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
 
         if (Resource.L10N_DEBUG)
             Resource.l10nWindow = Resource.saveStrings(Resource.BUNDLE_WINDOW, Resource.l10nWindow, cap, cap);
 
-        if (!Resource.language.equals("en") && !Resource.L10N_DEBUG) {
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
             if (Resource.l10nWindow != null && Resource.l10nWindow.containsKey(cap))
                 cap = Resource.l10nWindow.get(cap);
         }
@@ -290,7 +292,7 @@ public class Window extends Widget implements DTarget {
         if (dm != null) {
             dm.remove();
             dm = null;
-            if (persistentwnds.contains(cap.text))
+            if (persistentwnds.contains(origcap))
                 Utils.setprefc(cap.text + "_c", this.c);
         } else {
             super.mouseup(c, button);
