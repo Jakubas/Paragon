@@ -419,51 +419,62 @@ public class FastMesh implements FRendered, Rendered.Instanced, Disposable {
 
     @Resource.LayerName("mesh")
     public static class MeshRes extends Resource.Layer implements Resource.IDLayer<Integer> {
-        public transient FastMesh m;
-        public transient Material.Res mat;
-        private transient short[] tmp;
-        public final int id, ref;
-        private int matid;
-
-        public MeshRes(Resource res, Message buf) {
-            res.super();
-            int fl = buf.uint8();
-            int num = buf.uint16();
-            matid = buf.int16();
-            if ((fl & 2) != 0) {
-                id = buf.int16();
-            } else {
-                id = -1;
-            }
-            if ((fl & 4) != 0) {
-                ref = buf.int16();
-            } else {
-                ref = -1;
-            }
-            if ((fl & ~7) != 0)
-                throw (new Resource.LoadException("Unsupported flags in fastmesh: " + fl, getres()));
-            short[] ind = new short[num * 3];
-            for (int i = 0; i < num * 3; i++)
-                ind[i] = (short) buf.uint16();
-            this.tmp = ind;
-        }
-
-        public void init() {
-            VertexBuf v = getres().layer(VertexBuf.VertexRes.class).b;
-            this.m = new ResourceMesh(v, this.tmp, this);
-            this.tmp = null;
-            if (matid >= 0) {
-                for (Material.Res mr : getres().layers(Material.Res.class)) {
-                    if (mr.id == matid)
-                        this.mat = mr;
-                }
-                if (this.mat == null)
-                    throw (new Resource.LoadException("Could not find specified material: " + matid, getres()));
-            }
-        }
-
-        public Integer layerid() {
-            return (id);
-        }
+	public transient FastMesh m;
+	public transient Material.Res mat;
+	public final Map<String, String> rdat;
+	private transient short[] tmp;
+	public final int id, ref;
+	private int matid;
+	
+	public MeshRes(Resource res, Message buf) {
+	    res.super();
+	    int fl = buf.uint8();
+	    int num = buf.uint16();
+	    matid = buf.int16();
+	    if((fl & 2) != 0) {
+		id = buf.int16();
+	    } else {
+		id = -1;
+	    }
+	    if((fl & 4) != 0) {
+		ref = buf.int16();
+	    } else {
+		ref = -1;
+	    }
+	    Map<String, String> rdat = new HashMap<String, String>();
+	    if((fl & 8) != 0) {
+		while(true) {
+		    String k = buf.string();
+		    if(k.equals(""))
+			break;
+		    rdat.put(k, buf.string());
+		}
+	    }
+	    this.rdat = Collections.unmodifiableMap(rdat);
+	    if((fl & ~15) != 0)
+		throw(new Resource.LoadException("Unsupported flags in fastmesh: " + fl, getres()));
+	    short[] ind = new short[num * 3];
+	    for(int i = 0; i < num * 3; i++)
+		ind[i] = (short)buf.uint16();
+	    this.tmp = ind;
+	}
+	
+	public void init() {
+	    VertexBuf v = getres().layer(VertexBuf.VertexRes.class).b;
+	    this.m = new ResourceMesh(v, this.tmp, this);
+	    this.tmp = null;
+	    if(matid >= 0) {
+		for(Material.Res mr : getres().layers(Material.Res.class)) {
+		    if(mr.id == matid)
+			this.mat = mr;
+		}
+		if(this.mat == null)
+		    throw(new Resource.LoadException("Could not find specified material: " + matid, getres()));
+	    }
+	}
+	
+	public Integer layerid() {
+	    return(id);
+	}
     }
 }
