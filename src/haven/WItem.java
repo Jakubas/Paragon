@@ -401,28 +401,31 @@ public class WItem extends Widget implements DTarget {
     public void destroy() {
         super.destroy();
         Curiosity ci = null;
-        try {
-            ci = ItemInfo.find(Curiosity.class, item.info());
-            if (ci != null && item.meter >= 99) {
-                Resource.Tooltip tt = item.resource().layer(Resource.Tooltip.class);
-                if (tt != null)
-                    gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
 
-                if (Config.autostudy) {
-                    Window invwnd = gameui().getwnd("Inventory");
-                    Window cupboard = gameui().getwnd("Cupboard");
-                    Resource res = item.resource();
-                    if (res != null) {
-                        if (!replacecurio(invwnd, res) && cupboard != null)
-                            replacecurio(cupboard, res);
+        if (parent instanceof Inventory && parent.parent instanceof Tabs.Tab) {
+            try {
+                ci = ItemInfo.find(Curiosity.class, item.info());
+                if (ci != null && item.meter >= 99) {
+                    Resource.Tooltip tt = item.resource().layer(Resource.Tooltip.class);
+                    if (tt != null)
+                        gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
+
+                    if (Config.autostudy) {
+                        Window invwnd = gameui().getwnd("Inventory");
+                        Window cupboard = gameui().getwnd("Cupboard");
+                        Resource res = item.resource();
+                        if (res != null) {
+                            if (!replacecurio(invwnd, res) && cupboard != null)
+                                replacecurio(cupboard, res);
+                        }
                     }
                 }
+            } catch (Loading l) {
             }
-        } catch (Loading l) {
-        }
 
-        if (Config.studyalarm && ci != null && item.meter >= 99)
-            Audio.play(studyalarmsfx, Config.studyalarmvol);
+            if (Config.studyalarm && ci != null && item.meter >= 99)
+                Audio.play(studyalarmsfx, Config.studyalarmvol);
+        }
     }
 
     private boolean replacecurio(Window wnd, Resource res) {
