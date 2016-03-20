@@ -113,13 +113,13 @@ public class Window extends Widget implements DTarget {
         this.mrgn = lg ? dlmrgn : dsmrgn;
         origcap = cap;
         cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
-        if (cap.equals("Cupboard")) {
-        	sortbtn = add(new Button(40, "Sort", false) {
-				public void click() {
-					sortWindowInv();
-                }
-            });
-        }
+//        if (cap.equals("Cupboard")) {
+//        	sortbtn = add(new Button(40, "Sort", false) {
+//				public void click() {
+//					sortWindowInv();
+//                }
+//            });
+//        }
 
         if (Resource.L10N_DEBUG)
             Resource.l10nWindow = Resource.saveStrings(Resource.BUNDLE_WINDOW, Resource.l10nWindow, cap, cap);
