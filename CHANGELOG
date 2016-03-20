@@ -1,3 +1,21 @@
+Version 1.29.0
+    New:
+        * Localization support.
+        * Troll alarm.
+        * Task for filling oven with 4 branches.
+        * Option to sort items in ascending order instead of the default descending when transferring.
+
+    Fixed:
+        * Rare crash when teleporting.
+        * Fixed 11/12 coal task occasionally using wrong amount of fuel.
+        * Curio alarm triggered by bat wings drying on a herbalist table.
+        * Assortment of other small issues.
+
+    Misc:
+        * Terminate autominer on troll spawn.
+        * Changed Ctrl+I to Shift+I.
+
+
 Version 1.28.3
     Misc:
         * Updated resources.
