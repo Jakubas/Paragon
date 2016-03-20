@@ -1,8 +1,17 @@
-## Version 1.2.1
+## Version 1.3.1
+### Changed:
+- Merged with latest vanilla and amber changes
+- Removed sort button from cupboards until I get it working properly
+
+## Version 1.3
 ### Added:
 - LP/H/S (learning points/hour/size) and LP/H/S/W (learning points/hour/size/weight) info to curiosities
-- total LP/H to study information
+- Total LP/H to study information
 - [WIP] Sort button for cupboards
+
+### Changed:
+- Merged with newest Ambe
+- Drinking water in farmer automation
 
 ## Version 1.2
 ### Changed:
