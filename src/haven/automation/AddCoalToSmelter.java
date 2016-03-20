@@ -12,7 +12,7 @@ public class AddCoalToSmelter implements Runnable {
 
     public AddCoalToSmelter(GameUI gui, int count) {
         this.gui = gui;
-        this.count = count + 1;
+        this.count = count;
     }
 
     @Override
@@ -58,6 +58,7 @@ public class AddCoalToSmelter implements Runnable {
                 return;
             }
         }
+        coal = gui.vhand.item;
 
         for (; count > 0; count--) {
             gui.map.wdgmsg("itemact", Coord.z, smelter.rc, count == 1 ? 0 : 1, 0, (int) smelter.id, smelter.rc, 0, -1);
@@ -73,7 +74,7 @@ public class AddCoalToSmelter implements Runnable {
 
                 timeout += HAND_DELAY;
                 if (timeout >= TIMEOUT) {
-                    gui.error("Not enough coal. Need to add " + count + " more.");
+                    gui.error("Not enough coal. Need to add " + (count - 1) + " more.");
                     return;
                 }
                 try {
