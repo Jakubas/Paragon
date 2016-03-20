@@ -401,6 +401,7 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
     public void destroy() {
         super.destroy();
         Curiosity ci = null;
+        if (parent instanceof Inventory && parent.parent instanceof Tabs.Tab) {
         try {
             ci = ItemInfo.find(Curiosity.class, item.info());
             if (ci != null && item.meter >= 99) {
@@ -425,8 +426,9 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
         } catch (Loading l) {
         }
 
-        if (Config.studyalarm && ci != null && item.meter >= 99)
-            Audio.play(studyalarmsfx, Config.studyalarmvol);
+            if (Config.studyalarm && ci != null && item.meter >= 99)
+                Audio.play(studyalarmsfx, Config.studyalarmvol);
+        }
     }
 
     private boolean replacecurio(Window wnd, Resource res) {

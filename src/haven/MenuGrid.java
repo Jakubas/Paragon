@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
+import haven.automation.AddBranchesToOven;
 import haven.automation.AddCoalToSmelter;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
@@ -37,7 +38,6 @@ import haven.automation.GobSelectCallback;
 import haven.automation.SteelRefueler;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 
 import haven.paragon.automations.*;
 
@@ -133,9 +133,11 @@ public class MenuGrid extends Widget {
         if (!Config.hidexmenu) {
             p.add(glob.paginafor(Resource.local().load("paginae/amber/coal11")));
             p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/branchoven")));
             p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
         }
     }
+    
     private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
         public int compare(Pagina a, Pagina b) {
             AButton aa = a.act(), ab = b.act();
@@ -306,7 +308,7 @@ public class MenuGrid extends Widget {
     private Pagina paginafor(Resource.Named res) {
         return (ui.sess.glob.paginafor(res));
     }
-
+    
     private void use(Pagina r, boolean reset) {
         Collection<Pagina> sub = new LinkedList<Pagina>(),
                 cur = new LinkedList<Pagina>();
@@ -375,11 +377,14 @@ public class MenuGrid extends Widget {
             }
             break;
     	case "coal": 
-    		Executors.newSingleThreadExecutor().submit(() -> {
-            new AddCoalToSmelter(gui, Integer.parseInt(ad[2])).fuel();
-    		});
+            Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
+            t.start();
     		break;
-		}
+    	case "branchoven":
+            Thread t1 = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
+            t1.start();
+            break;
+    	}
   }
 
     public void tick(double dt) {

@@ -523,18 +523,23 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             for (o.y = -view; o.y <= view; o.y++) {
                 for (o.x = -view; o.x <= view; o.x++) {
                     Coord pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
-                    MapMesh cut = glob.map.getcut(cc.add(o));
-                    rl.add(cut, Location.xlate(new Coord3f(pc.x, -pc.y, 0)));
+                    try {
+                        MapMesh cut = glob.map.getcut(cc.add(o));
+                        rl.add(cut, Location.xlate(new Coord3f(pc.x, -pc.y, 0)));
 
-                    if (!Config.hideflocomplete) {
-                        Collection<Gob> fol;
-                        try {
-                            fol = glob.map.getfo(cc.add(o));
-                        } catch (Loading e) {
-                            fol = Collections.emptyList();
+                        if (!Config.hideflocomplete) {
+                            Collection<Gob> fol;
+                            try {
+                                fol = glob.map.getfo(cc.add(o));
+                            } catch (Loading e) {
+                                fol = Collections.emptyList();
+                            }
+                            for (Gob fo : fol)
+                                addgob(rl, fo);
                         }
-                        for (Gob fo : fol)
-                            addgob(rl, fo);
+                    } catch (Defer.DeferredException e) {
+                        // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
+                        // we ignore Defer.DeferredException to prevent the client for crashing
                     }
                 }
             }
@@ -1090,7 +1095,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             if (mc == null)
                 continue;
             double a = screenangle(mc, true);
-            if (a == Double.NaN)
+            if (Double.isNaN(a))
                 continue;
             g.chcolor(m.col);
             drawarrow(g, a);

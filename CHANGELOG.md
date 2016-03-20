@@ -4,8 +4,6 @@
 - total LP/H to study information
 - [WIP] Sort button for cupboards
 
-
-
 ## Version 1.2
 ### Changed:
 - Autostudy now supports multiple cupboards

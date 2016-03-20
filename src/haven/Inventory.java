@@ -122,9 +122,9 @@ public class Inventory extends Widget implements DTarget {
                         else if (aq.avg == bq.avg)
                             return 0;
                         else if (aq.avg > bq.avg)
-                            return -1;
+                            return Config.sortascending ? 1 : -1;
                         else
-                            return 1;
+                            return Config.sortascending ? -1 : 1;
                     }
                 });
                 for (WItem item : items)

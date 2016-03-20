@@ -153,6 +153,8 @@ public class Config {
     public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8);
     public static boolean alarmbears = Utils.getprefb("alarmbears", false);
     public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.8);
+    public static boolean alarmtroll = Utils.getprefb("alarmtroll", false);
+    public static double alarmtrollvol = Utils.getprefd("alarmtrollvol", 0.8);
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
     public static boolean fbelt = Utils.getprefb("fbelt", false);
@@ -160,6 +162,7 @@ public class Config {
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", false);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean hidexmenu = Utils.getprefb("hidexmenu", true);
+    public static boolean sortascending = Utils.getprefb("sortascending", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;
@@ -210,7 +213,8 @@ public class Config {
             "gfx/kritter/badger/badger"));
 
     public final static Set<String> foragables = new HashSet<String>(Arrays.asList(
-            "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss"));
+            "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss",
+            "gfx/terobjs/herbs/bloatedbolete", "gfx/terobjs/herbs/glimmermoss"));
 
     static {
         Arrays.sort(Config.boulders);

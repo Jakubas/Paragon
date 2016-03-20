@@ -27,7 +27,6 @@
 package haven;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import static java.lang.Math.PI;
 
@@ -209,7 +208,18 @@ public class FlowerMenu extends Widget {
         super(Coord.z);
         opts = new Petal[options.length];
         for (int i = 0; i < options.length; i++) {
-            add(opts[i] = new Petal(options[i]));
+            String name = options[i];
+            if (Resource.L10N_DEBUG &&
+                    !name.startsWith("Follow ") && !name.startsWith("Travel along") &&
+                    !name.startsWith("Extend ") && !name.startsWith("Connect "))
+                Resource.l10nFlower = Resource.saveStrings(Resource.BUNDLE_FLOWER, Resource.l10nFlower, name, name);
+
+            String locName = null;
+            if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+                if (Resource.l10nFlower != null && Resource.l10nFlower.containsKey(name))
+                    locName = Resource.l10nFlower.get(name);
+            }
+            add(opts[i] = new Petal(locName != null ? locName : name));
             opts[i].num = i;
         }
     }

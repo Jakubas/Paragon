@@ -6,4 +6,8 @@
 *.iml
 *.zip
 amber-*.zip
+<<<<<<< HEAD
 /bin/
+=======
+/l10n/*_new.properties
+>>>>>>> amber/master

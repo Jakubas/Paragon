@@ -54,7 +54,7 @@ public class AStar {
         return null;
     }
 
-    private class Path {
+    private static class Path {
         private final Vertex start;
         private final Vertex end;
         private final Map<Vertex, Node> nodes;
@@ -81,7 +81,7 @@ public class AStar {
         }
     }
 
-    private class Node implements Comparable<Node> {
+    private static class Node implements Comparable<Node> {
         private final Vertex vertex;
         private final double h;
         private Node prev;

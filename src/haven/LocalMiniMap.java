@@ -49,6 +49,7 @@ public class LocalMiniMap extends Widget {
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
     private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
     private static final Resource bearsfx = Resource.local().loadwait("sfx/bear");
+    private static final Resource trollsfx = Resource.local().loadwait("sfx/troll");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
     private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>>(7, 0.75f, true) {
@@ -61,7 +62,7 @@ public class LocalMiniMap extends Widget {
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
 
-    private class MapTile {
+    private static class MapTile {
         public MCache.Grid grid;
         public int seq;
 
@@ -343,6 +344,13 @@ public class LocalMiniMap extends Widget {
                                     Audio.play(bearsfx, Config.alarmbearsvol);
                                 }
                             }
+                        }
+                    } else if (res.name.equals("gfx/kritter/troll/troll")) {
+                        if (mv.areamine != null)
+                            mv.areamine.terminate();
+                        if (Config.alarmtroll && !sgobs.contains(gob.id)) {
+                            sgobs.add(gob.id);
+                            Audio.play(trollsfx, Config.alarmtrollvol);
                         }
                     }
                 } catch (Exception e) { // fail silently

@@ -66,6 +66,12 @@ public class Button extends SIWidget {
     }
 
     public static Button wrapped(int w, String text) {
+        if (Resource.L10N_DEBUG)
+            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
+                text = Resource.l10nButton.get(text);
+        }
         Button ret = new Button(w, tf.renderwrap(text, w - 10));
         return (ret);
     }
@@ -81,12 +87,24 @@ public class Button extends SIWidget {
 
     public Button(int w, String text, boolean lg) {
         this(w, lg);
+        if (Resource.L10N_DEBUG)
+            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
+                text = Resource.l10nButton.get(text);
+        }
         this.text = nf.render(text);
         this.cont = this.text.img;
     }
 
     public Button(int w, String text) {
         this(w);
+        if (Resource.L10N_DEBUG)
+            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
+                text = Resource.l10nButton.get(text);
+        }
         this.text = nf.render(text);
         this.cont = this.text.img;
     }
@@ -123,6 +141,12 @@ public class Button extends SIWidget {
     }
 
     public void change(String text, Color col) {
+        if (Resource.L10N_DEBUG)
+            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
+                text = Resource.l10nButton.get(text);
+        }
         this.text = tf.render(text, col);
         this.cont = this.text.img;
         redraw();
