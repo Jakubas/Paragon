@@ -963,7 +963,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_I) {
             Config.resinfo = !Config.resinfo;
             Utils.setprefb("resinfo", Config.resinfo);
-            info("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
+            msg("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
             return true;
         } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_B) {
             Config.showboundingboxes = !Config.showboundingboxes;
@@ -971,7 +971,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return true;
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             Config.pf = !Config.pf;
-            info("Pathfinding is now turned " + (Config.pf ? "on" : "off"), Color.WHITE);
+            msg("Pathfinding is now turned " + (Config.pf ? "on" : "off"), Color.WHITE);
             return true;
         }
         return (super.globtype(key, ev));
@@ -1055,12 +1055,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void msg(String msg) {
         msg(msg, Color.WHITE, Color.WHITE);
-    }
-
-    public void info(String msg, Color color) {
-        msgtime = System.currentTimeMillis();
-        lastmsg = msgfoundry.render(msg, color);
-        syslog.append(msg, color);
     }
 
     public void act(String... args) {

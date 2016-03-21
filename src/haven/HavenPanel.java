@@ -104,7 +104,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
                     File outputfile = new File(String.format("screenshots/%s.jpg", curtimestamp));
                     outputfile.getParentFile().mkdirs();
                     Screenshot.writeToFile(outputfile, width, height);
-                    ui.root.findchild(GameUI.class).info(String.format("Screenshot has been saved as \"%s\"", outputfile.getName()), Color.WHITE);
+                    ui.root.findchild(GameUI.class).msg(String.format("Screenshot has been saved as \"%s\"", outputfile.getName()), Color.WHITE);
                 } catch (Exception ex) {
                     System.out.println("Unable to take screenshot: " + ex.getMessage());
                 }
