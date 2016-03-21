@@ -64,7 +64,7 @@ public class RootWidget extends ConsoleHost {
                 Config.tilecenter = !Config.tilecenter;
                 Utils.setprefb("tilecenter", Config.tilecenter);
                 GameUI gi = findchild(GameUI.class);
-                gi.msg("Tile centering is " + (Config.tilecenter ? "ON" : "OFF"), Color.WHITE);
+                gi.msg("Tile centering is now turned " + (Config.tilecenter ? "on." : "off."), Color.WHITE);
             } else if (key == ':') {
                 entercmd();
             } else if (key != 0) {
