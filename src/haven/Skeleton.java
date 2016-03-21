@@ -171,7 +171,7 @@ public class Skeleton {
         }
         float d0, d1;
         if (cos > 0.9999f) {
-	    /* Reasonable threshold? Is this function even critical
+        /* Reasonable threshold? Is this function even critical
 	     * for performance? */
             d0 = 1.0f - t;
             d1 = t;
@@ -388,6 +388,16 @@ public class Skeleton {
                 return (true);
             }
         };
+    }
+
+    public interface HasPose {
+        public Pose getpose();
+    }
+
+    public static Pose getpose(Object owner) {
+        if (owner instanceof HasPose)
+            return (((HasPose) owner).getpose());
+        return (null);
     }
 
     public interface ModOwner {

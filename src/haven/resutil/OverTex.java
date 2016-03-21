@@ -28,9 +28,11 @@ package haven.resutil;
 
 import haven.*;
 import haven.glsl.*;
+
 import java.util.*;
 import java.nio.*;
 import javax.media.opengl.*;
+
 import static haven.glsl.Cons.*;
 import static haven.glsl.Type.*;
 
@@ -38,88 +40,126 @@ public class OverTex extends GLState {
     public static final Slot<OverTex> slot = new Slot<OverTex>(Slot.Type.DRAW, OverTex.class);
     public static final Attribute otexc = new Attribute(VEC2);
     private static final Uniform ctex = new Uniform(SAMPLER2D);
+    private static final Map<Function, ShaderMacro[]> shcache = new HashMap<Function, ShaderMacro[]>();
+    private final ShaderMacro[] shaders;
     public final TexGL tex;
     private TexUnit sampler;
 
-    public OverTex(TexGL tex) {
-	this.tex = tex;
+    private static ShaderMacro[] shfor(final Function blend) {
+        return (new ShaderMacro[]{
+                new ShaderMacro() {
+                    final AutoVarying otexcv = new AutoVarying(VEC2, "otexc") {
+                        protected Expression root(VertexContext vctx) {
+                            return (otexc.ref());
+                        }
+                    };
+
+                    public void modify(final ProgramContext prog) {
+                        final ValBlock.Value color = prog.fctx.uniform.new Value(VEC4) {
+                            public Expression root() {
+                                return (texture2D(ctex.ref(), otexcv.ref()));
+                            }
+                        };
+                        color.force();
+                        prog.fctx.fragcol.mod(new Macro1<Expression>() {
+                            public Expression expand(Expression in) {
+                                return (blend.call(in, color.ref()));
+                            }
+                        }, 10);
+                    }
+                }
+        });
     }
 
-    private static final ShaderMacro[] shaders = {
-	new ShaderMacro() {
-	    final AutoVarying otexcv = new AutoVarying(VEC2, "otexc") {
-		    protected Expression root(VertexContext vctx) {
-			return(otexc.ref());
-		    }
-		};
-	    public void modify(final ProgramContext prog) {
-		final ValBlock.Value color = prog.fctx.uniform.new Value(VEC4) {
-			public Expression root() {
-			    return(texture2D(ctex.ref(), otexcv.ref()));
-			}
-		    };
-		color.force();
-		prog.fctx.fragcol.mod(new Macro1<Expression>() {
-			public Expression expand(Expression in) {
-			    return(MiscLib.olblend.call(in, color.ref()));
-			}
-		    }, 10);
-	    }
-	}
-    };
+    public OverTex(TexGL tex, Function blend) {
+        this.tex = tex;
+        ShaderMacro[] sh;
+        synchronized (shcache) {
+            sh = shcache.get(blend);
+            if (sh == null)
+                shcache.put(blend, sh = shfor(blend));
+        }
+        shaders = sh;
+    }
 
-    public ShaderMacro[] shaders() {return(shaders);}
+    public OverTex(TexGL tex) {
+        this(tex, MiscLib.cpblend);
+    }
+
+    public ShaderMacro[] shaders() {
+        return (shaders);
+    }
 
     public void reapply(GOut g) {
-	g.gl.glUniform1i(g.st.prog.uniform(ctex), sampler.id);
+        g.gl.glUniform1i(g.st.prog.uniform(ctex), sampler.id);
     }
 
     public void apply(GOut g) {
-	sampler = TexGL.lbind(g, tex);
-	reapply(g);
+        sampler = TexGL.lbind(g, tex);
+        reapply(g);
     }
 
     public void unapply(GOut g) {
-	BGL gl = g.gl;
-	sampler.act(g);
-	gl.glBindTexture(GL.GL_TEXTURE_2D, null);
-	sampler.free(); sampler = null;
+        BGL gl = g.gl;
+        sampler.act(g);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, null);
+        sampler.free();
+        sampler = null;
     }
 
     public void prep(Buffer buf) {
-	buf.put(slot, this);
+        buf.put(slot, this);
     }
 
     @Material.ResName("otex")
     public static class $ctex implements Material.ResCons2 {
-	public Material.Res.Resolver cons(final Resource res, Object... args) {
-	    final Indir<Resource> tres;
-	    final int tid;
-	    int a = 0;
-	    if(args[a] instanceof String) {
-		tres = res.pool.load((String)args[a], (Integer)args[a + 1]);
-		tid = (Integer)args[a + 2];
-		a += 3;
-	    } else {
-		tres = res.indir();
-		tid = (Integer)args[a];
-		a += 1;
-	    }
-	    return(new Material.Res.Resolver() {
-		    public void resolve(Collection<GLState> buf) {
-			TexR rt = tres.get().layer(TexR.class, tid);
-			if(rt == null)
-			    throw(new RuntimeException(String.format("Specified texture %d for %s not found in %s", tid, res, tres)));
-			/* XXX: It is somewhat doubtful that this cast is really quite reasonable. */
-			buf.add(new OverTex((TexGL)rt.tex()));
-		    }
-		});
-	}
+        public Material.Res.Resolver cons(final Resource res, Object... args) {
+            final Indir<Resource> tres;
+            final int tid;
+            int a = 0;
+            if (args[a] instanceof String) {
+                tres = res.pool.load((String) args[a], (Integer) args[a + 1]);
+                tid = (Integer) args[a + 2];
+                a += 3;
+            } else {
+                tres = res.indir();
+                tid = (Integer) args[a];
+                a += 1;
+            }
+            final Function blend;
+            if (args.length > a) {
+                String nm = (String) args[a++];
+                if (nm.equals("cp")) {
+                    blend = MiscLib.cpblend;
+                } else if (nm.equals("ol")) {
+                    blend = MiscLib.olblend;
+                } else if (nm.equals("a")) {
+                    blend = MiscLib.colblend;
+                } else {
+                    throw (new Resource.LoadException("Unknown overtex blend mode: " + nm, res));
+                }
+            } else {
+                blend = MiscLib.cpblend;
+            }
+            return (new Material.Res.Resolver() {
+                public void resolve(Collection<GLState> buf) {
+                    TexR rt = tres.get().layer(TexR.class, tid);
+                    if (rt == null)
+                        throw (new RuntimeException(String.format("Specified texture %d for %s not found in %s", tid, res, tres)));
+                    buf.add(new OverTex(rt.tex(), blend));
+                }
+            });
+        }
     }
 
     @VertexBuf.ResName("otex")
     public static class OTexC extends VertexBuf.Vec2Array {
-	public OTexC(FloatBuffer data) {super(data, otexc);}
-	public OTexC(Resource res, Message buf, int nv) {this(VertexBuf.loadbuf(Utils.wfbuf(nv * 2), buf));}
+        public OTexC(FloatBuffer data) {
+            super(data, otexc);
+        }
+
+        public OTexC(Resource res, Message buf, int nv) {
+            this(VertexBuf.loadbuf(Utils.wfbuf(nv * 2), buf));
+        }
     }
 }
