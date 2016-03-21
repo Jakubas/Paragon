@@ -200,7 +200,7 @@ public class OptWnd extends Window {
                     }
                 }, new Coord(0, y));
                 y += 35;
-                add(new CheckBox("Hide flavor objects (requires logout)") {
+                add(new CheckBox("Hide flavor objects but keep sounds (requires logout)") {
                     {
                         a = Config.hideflovisual;
                     }
@@ -814,43 +814,7 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- display 2nd column
         y = 0;
-        display.add(new Label("Chat font size (req. restart): Small"), new Coord(260, y + 1));
-        display.add(new HSlider(40, 0, 3, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.chatfontsize;
-            }
-            public void changed() {
-                Config.chatfontsize = val;
-                Utils.setprefi("chatfontsize", val);
-            }
-        }, new Coord(432, y));
-        display.add(new Label("Large"), new Coord(475, y + 1));
-        y += 35;
-        display.add(new CheckBox("Show quick hand slots") {
-            {
-                a = Config.quickslots;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("quickslots", val);
-                Config.quickslots = val;
-                a = val;
-
-                try {
-                    Widget qs = ((GameUI) parent.parent.parent).quickslots;
-                    if (qs != null) {
-                        if (val)
-                            qs.show();
-                        else
-                            qs.hide();
-                    }
-                } catch (ClassCastException e) { // in case we are at the login screen
-                }
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show Attribute/Ability values in craft window") {
+        display.add(new CheckBox("Show attributes & softcap values in craft window") {
             {
                 a = Config.showcraftcap;
             }
@@ -910,18 +874,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(260, y));
         y += 35;
-        display.add(new CheckBox("Show inventory on login") {
-            {
-                a = Config.showinvonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showinvonlogin", val);
-                Config.showinvonlogin = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
         display.add(new CheckBox("Show contents bars for buckets/flasks") {
             {
                 a = Config.showcontentsbars;
@@ -971,25 +923,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(540, y));
         y += 35;
-        display.add(new CheckBox("Show F-key toolbar") {
-            {
-                a = Config.fbelt;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("fbelt", val);
-                Config.fbelt = val;
-                a = val;
-                FBelt fbelt = gameui().fbelt;
-                if (fbelt != null) {
-                    if (val)
-                        fbelt.show();
-                    else
-                        fbelt.hide();
-                }
-            }
-        }, new Coord(540, y));
-        y += 35;
         display.add(new CheckBox("Highlight empty/finished drying frames") {
             {
                 a = Config.showdframestatus;
@@ -1001,39 +934,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Hide extensions menu (req. restart)") {
-            {
-                a = Config.hidexmenu;
-            }
 
-            public void set(boolean val) {
-                Utils.setprefb("hidexmenu", val);
-                Config.hidexmenu = val;
-                a = val;
-            }
-        }, new Coord(540, y));
-
-        display.add(new Button(220, "Reset Windows (req. logout)") {
-            @Override
-            public void click() {
-                for (String wndcap : Window.persistentwnds)
-                    Utils.delpref(wndcap + "_c");
-                Utils.delpref("mmapc");
-                Utils.delpref("mmapwndsz");
-                Utils.delpref("mmapsz");
-                Utils.delpref("quickslotsc");
-                Utils.delpref("chatsz");
-                Utils.delpref("chatvis");
-                Utils.delpref("gui-bl-visible");
-                Utils.delpref("gui-br-visible");
-                Utils.delpref("gui-ul-visible");
-                Utils.delpref("gui-ur-visible");
-                Utils.delpref("menu-visible");
-                Utils.delpref("fbelt_c");
-                Utils.delpref("fbelt_vertical");
-            }
-        }, new Coord(260, 320));
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         display.pack();
 
@@ -1484,6 +1385,107 @@ public class OptWnd extends Window {
         y = 0;
         uis.add(new Label("Language (req. restart): "), new Coord(0, y));
         uis.add(langDropdown(), new Coord(120, y));
+
+        y += 35;
+        uis.add(new CheckBox("Show quick hand slots") {
+            {
+                a = Config.quickslots;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("quickslots", val);
+                Config.quickslots = val;
+                a = val;
+
+                try {
+                    Widget qs = ((GameUI) parent.parent.parent).quickslots;
+                    if (qs != null) {
+                        if (val)
+                            qs.show();
+                        else
+                            qs.hide();
+                    }
+                } catch (ClassCastException e) { // in case we are at the login screen
+                }
+            }
+        }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Show F-key toolbar") {
+            {
+                a = Config.fbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("fbelt", val);
+                Config.fbelt = val;
+                a = val;
+                FBelt fbelt = gameui().fbelt;
+                if (fbelt != null) {
+                    if (val)
+                        fbelt.show();
+                    else
+                        fbelt.hide();
+                }
+            }
+        }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Hide extensions menu (req. restart)") {
+            {
+                a = Config.hidexmenu;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hidexmenu", val);
+                Config.hidexmenu = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Show inventory on login") {
+            {
+                a = Config.showinvonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showinvonlogin", val);
+                Config.showinvonlogin = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        uis.add(new Label("Chat font size (req. restart): Small"), new Coord(0, y + 1));
+        uis.add(new HSlider(40, 0, 3, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.chatfontsize;
+            }
+            public void changed() {
+                Config.chatfontsize = val;
+                Utils.setprefi("chatfontsize", val);
+            }
+        }, new Coord(172, y));
+        uis.add(new Label("Large"), new Coord(215, y + 1));
+
+        uis.add(new Button(220, "Reset Windows (req. logout)") {
+            @Override
+            public void click() {
+                for (String wndcap : Window.persistentwnds)
+                    Utils.delpref(wndcap + "_c");
+                Utils.delpref("mmapc");
+                Utils.delpref("mmapwndsz");
+                Utils.delpref("mmapsz");
+                Utils.delpref("quickslotsc");
+                Utils.delpref("chatsz");
+                Utils.delpref("chatvis");
+                Utils.delpref("gui-bl-visible");
+                Utils.delpref("gui-br-visible");
+                Utils.delpref("gui-ul-visible");
+                Utils.delpref("gui-ur-visible");
+                Utils.delpref("menu-visible");
+                Utils.delpref("fbelt_c");
+                Utils.delpref("fbelt_vertical");
+            }
+        }, new Coord(260, 320));
 
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
