@@ -1269,18 +1269,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(160, y));
         y += 35;
-        control.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
-            {
-                a = Config.alternmapctrls;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("alternmapctrls", val);
-                Config.alternmapctrls = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         control.add(new CheckBox("Use French (AZERTY) keyboard layout") {
             {
                 a = Config.userazerty;
