@@ -1843,7 +1843,8 @@ public class Resource implements Serializable {
             }
 
             if (key.startsWith("Village shield:") || key.startsWith("Essence:") ||  // inspect tool
-                    key.endsWith("is ONLINE") || key.endsWith("is offline"))        // kin online/offline
+                    key.endsWith("is ONLINE") || key.endsWith("is offline") ||      // kin online/offline
+                    key.startsWith("Experience points gained:"))
                 return map;
 
             CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
