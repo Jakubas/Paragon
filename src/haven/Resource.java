@@ -55,12 +55,13 @@ public class Resource implements Serializable {
     public static Class<Tooltip> tooltip = Tooltip.class;
 
     public static String language = Utils.getpref("language", "en");
-    public static Map<String, String> l10nTooltip, l10nPagina, l10nWindow, l10nButton, l10nFlower;
+    public static Map<String, String> l10nTooltip, l10nPagina, l10nWindow, l10nButton, l10nFlower, l10nMsg;;
     public static final String BUNDLE_TOOLTIP = "tooltip";
     public static final String BUNDLE_PAGINA = "pagina";
     public static final String BUNDLE_WINDOW = "window";
     public static final String BUNDLE_BUTTON = "button";
     public static final String BUNDLE_FLOWER = "flower";
+    public static final String BUNDLE_MSG = "msg";
 
     public static final boolean L10N_DEBUG = false;
 
@@ -783,6 +784,7 @@ public class Resource implements Serializable {
             l10nWindow = l10n(BUNDLE_WINDOW, language);
             l10nButton = l10n(BUNDLE_BUTTON, language);
             l10nFlower = l10n(BUNDLE_FLOWER, language);
+            l10nMsg = l10n(BUNDLE_MSG, language);
         }
 
         for (Class<?> cl : dolda.jglob.Loader.get(LayerName.class).classes()) {
@@ -1826,6 +1828,10 @@ public class Resource implements Serializable {
 
             if (val == null)
                 val = key;
+
+            if (key.startsWith("Village shield:") || key.startsWith("Essence:") ||  // inspect tool
+                    key.endsWith("is ONLINE") || key.endsWith("is offline"))        // kin online/offline
+                return map;
 
             CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
             encoder.onMalformedInput(CodingErrorAction.REPORT);

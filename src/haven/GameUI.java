@@ -1031,6 +1031,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void msg(String msg, Color color, Color logcol) {
         msgtime = System.currentTimeMillis();
+
+        if (Resource.L10N_DEBUG)
+            Resource.l10nMsg = Resource.saveStrings(Resource.BUNDLE_MSG, Resource.l10nMsg, msg, msg);
+
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nMsg != null && Resource.l10nMsg.containsKey(msg))
+                msg = Resource.l10nMsg.get(msg);
+        }
+
         lastmsg = msgfoundry.render(msg, color);
         syslog.append(msg, logcol);
         if (color == Color.WHITE)
