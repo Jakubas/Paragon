@@ -1831,6 +1831,17 @@ public class Resource implements Serializable {
             if (val == null)
                 val = key;
 
+            try {
+                Integer.parseInt(key);
+                return map;
+            } catch (NumberFormatException nfe) {
+            }
+            try {
+                Integer.parseInt(val);
+                return map;
+            } catch (NumberFormatException nfe) {
+            }
+
             if (key.startsWith("Village shield:") || key.startsWith("Essence:") ||  // inspect tool
                     key.endsWith("is ONLINE") || key.endsWith("is offline"))        // kin online/offline
                 return map;
