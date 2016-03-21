@@ -19,9 +19,9 @@ public class TimerWdg extends Widget {
         this.duration = duration;
 
         sz = new Coord(420, height);
-        lblname = new Label(name, foundry);
+        lblname = new Label(name, foundry, true);
         add(lblname, new Coord(3, txty));
-        lbltime = new Label(timeFormat(duration), foundry);
+        lbltime = new Label(timeFormat(duration), foundry, true);
 
         add(lbltime, new Coord(190, txty));
 

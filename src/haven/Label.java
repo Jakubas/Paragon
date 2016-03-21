@@ -51,11 +51,30 @@ public class Label extends Widget {
     public Label(String text, int w, Text.Foundry f) {
         super(Coord.z);
         this.f = f;
+        if (Resource.L10N_DEBUG)
+            Resource.l10nLabel = Resource.saveStrings(Resource.BUNDLE_LABEL, Resource.l10nLabel, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nLabel != null && Resource.l10nLabel.containsKey(text))
+                text = Resource.l10nLabel.get(text);
+        }
         this.text = f.renderwrap(texts = text, this.col, w);
         sz = this.text.sz();
     }
 
     public Label(String text, Text.Foundry f) {
+        super(Coord.z);
+        this.f = f;
+        if (Resource.L10N_DEBUG)
+            Resource.l10nLabel = Resource.saveStrings(Resource.BUNDLE_LABEL, Resource.l10nLabel, text, text);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nLabel != null && Resource.l10nLabel.containsKey(text))
+                text = Resource.l10nLabel.get(text);
+        }
+        this.text = f.render(texts = text, this.col);
+        sz = this.text.sz();
+    }
+
+    public Label(String text, Text.Foundry f, boolean noL10n) {
         super(Coord.z);
         this.f = f;
         this.text = f.render(texts = text, this.col);

@@ -44,6 +44,12 @@ public class CheckBox extends Widget {
     }
 
     public CheckBox(String lbl, boolean lg) {
+        if (Resource.L10N_DEBUG)
+            Resource.l10nLabel = Resource.saveStrings(Resource.BUNDLE_LABEL, Resource.l10nLabel, lbl, lbl);
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            if (Resource.l10nLabel != null && Resource.l10nLabel.containsKey(lbl))
+                lbl = Resource.l10nLabel.get(lbl);
+        }
         this.lbl = Text.std.render(lbl, java.awt.Color.WHITE);
         if (lg) {
             box = lbox;
