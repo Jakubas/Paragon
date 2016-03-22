@@ -1,3 +1,8 @@
+Version 1.29.2
+    Misc:
+        * Restored alternative minimap controls.
+
+
 Version 1.29.1
     Misc:
         * Updated English localization files and added support for labels and system messages 
