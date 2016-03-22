@@ -934,6 +934,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(540, y));
+        y += 35;
+        display.add(new CheckBox("Draw circles around party members") {
+            {
+                a = Config.partycircles;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("partycircles", val);
+                Config.partycircles = val;
+                a = val;
+            }
+        }, new Coord(540, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         display.pack();

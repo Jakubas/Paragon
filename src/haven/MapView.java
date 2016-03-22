@@ -75,6 +75,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private Pathfinder pf;
     public Thread pfthread;
     public SteelRefueler steelrefueler;
+    private final PartyHighlight partyHighlight;
 
     private static final  Set<String> dangerousanimalrad = new HashSet<String>(Arrays.asList(
             "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx", "gfx/kritter/badger/badger"));
@@ -496,6 +497,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         this.cc = cc;
         this.plgob = plgob;
         this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
+        this.partyHighlight = new PartyHighlight(glob.party, plgob);
         setcanfocus(true);
     }
 
@@ -1159,6 +1161,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
         if (placing != null)
             placing.ctick((int) (dt * 1000));
+        partyHighlight.update();
     }
 
     public void resize(Coord sz) {
