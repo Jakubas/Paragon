@@ -923,12 +923,16 @@ public class Resource implements Serializable {
                 Resource.l10nTooltip = Resource.saveStrings(Resource.BUNDLE_TOOLTIP, Resource.l10nTooltip, res.name, text);
             }
 
-            String locText = null;
             Resource res = super.getres();
-            if (res != null && l10nTooltip != null)
-                locText = l10nTooltip.get(res.name);
+            if (res != null && l10nTooltip != null) {
+                String locText = l10nTooltip.get(res.name);
+                if (locText != null) {
+                    this.t = locText.equals(text) ? locText : locText + " (" + text + ")";
+                    return;
+                }
+            }
 
-            this.t = locText != null ? locText : text;
+            this.t = text;
         }
 
         public void init() {
