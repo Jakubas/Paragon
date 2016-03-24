@@ -64,7 +64,6 @@ public class Resource implements Serializable {
     public static final String BUNDLE_MSG = "msg";
     public static final String BUNDLE_LABEL = "label";
     public static final String BUNDLE_ACTION = "action";
-
     public static final boolean L10N_DEBUG = false;
 
     private Collection<Layer> layers = new LinkedList<Layer>();
@@ -927,7 +926,7 @@ public class Resource implements Serializable {
                 if (res.name.startsWith("paginae/act") || res.name.startsWith("paginae/bld")
                         || res.name.startsWith("paginae/craft") || res.name.startsWith("paginae/gov")
                         || res.name.startsWith("paginae/pose") || res.name.startsWith("paginae/amber")
-                        || res.name.startsWith("paginae/atk")) {
+                        || res.name.startsWith("paginae/atk/ashoot")) {
                     Resource.l10nAction = Resource.saveStrings(Resource.BUNDLE_ACTION, Resource.l10nAction, res.name, text);
                 } else {
                     Resource.l10nTooltip = Resource.saveStrings(Resource.BUNDLE_TOOLTIP, Resource.l10nTooltip, res.name, text);
@@ -938,8 +937,14 @@ public class Resource implements Serializable {
             if (res != null && l10nTooltip != null) {
                 String locText = l10nTooltip.get(res.name);
                 if (locText != null) {
-                    this.t = locText.equals(text) || !res.name.startsWith("gfx/invobjs") ?
-                            locText : locText + " (" + text + ")";
+                    if (locText.equals(text) || !res.name.startsWith("gfx/invobjs") ||
+                            // exclude meat "conditions" since the tooltip is dynamically generated and it won't be in right order
+                            text.contains("Raw ") || text.contains("Filet of ") || text.contains("Sizzling") ||
+                            text.contains("Roast") || text.contains("Meat") || text.contains("Spitroast")) {
+                        this.t = locText;
+                    } else {
+                        this.t = locText + " (" + text + ")";
+                    }
                     return;
                 }
             }
