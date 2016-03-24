@@ -1,16 +1,9 @@
 package haven;
 
-import static haven.paragon.utils.UtilsSetup.ui;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 
 public class CuriosityInfo {
     public static final CuriosityInfo empty = new CuriosityInfo(-1, -1);
@@ -21,9 +14,6 @@ public class CuriosityInfo {
 
     static {
         infos = new HashMap<String, CuriosityInfo>();
-//		File file = new File("patrolpath.txt");
-//		String line = "";
-		
 		try {
         	InputStream is = Resource.class.getResourceAsStream("curio.config");
         	BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));

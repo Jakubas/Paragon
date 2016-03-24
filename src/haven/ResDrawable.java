@@ -82,10 +82,7 @@ public class ResDrawable extends Drawable {
     }
 
     public Skeleton.Pose getpose() {
-        init();
-        if (spr instanceof SkelSprite) {
-            return (((SkelSprite) spr).pose);
-        }
-        return (null);
+	init();
+	return(Skeleton.getpose(spr));
     }
 }
