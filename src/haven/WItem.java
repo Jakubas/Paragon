@@ -333,11 +333,11 @@ public class WItem extends Widget implements DTarget {
     private void drawamountbar(GOut g, double content, boolean isseeds) {
         double capacity;
         String name = item.getname();
-        if (name.equals("Waterskin"))
+        if (name.contains("Waterskin"))
             capacity = 3.0D;
-        else if (name.equals("Bucket"))
+        else if (name.contains("Bucket"))
             capacity = isseeds ? 1000D : 10.0D;
-        else if (name.equals("Waterflask"))
+        else if (name.contains("Waterflask"))
             capacity = 2.0D;
         else
             return;

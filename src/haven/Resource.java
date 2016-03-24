@@ -926,7 +926,8 @@ public class Resource implements Serializable {
                 Resource res = super.getres();
                 if (res.name.startsWith("paginae/act") || res.name.startsWith("paginae/bld")
                         || res.name.startsWith("paginae/craft") || res.name.startsWith("paginae/gov")
-                        || res.name.startsWith("paginae/pose") || res.name.startsWith("paginae/amber")) {
+                        || res.name.startsWith("paginae/pose") || res.name.startsWith("paginae/amber")
+                        || res.name.startsWith("paginae/atk")) {
                     Resource.l10nAction = Resource.saveStrings(Resource.BUNDLE_ACTION, Resource.l10nAction, res.name, text);
                 } else {
                     Resource.l10nTooltip = Resource.saveStrings(Resource.BUNDLE_TOOLTIP, Resource.l10nTooltip, res.name, text);

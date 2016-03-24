@@ -34,7 +34,7 @@ public class AddBranchesToOven implements Runnable {
             return;
         }
 
-        WItem coalw = gui.maininv.getitem("Branch");
+        WItem coalw = gui.maininv.getItemPartial("Branch");
         if (coalw == null) {
             gui.error("No branches found in the inventory");
             return;

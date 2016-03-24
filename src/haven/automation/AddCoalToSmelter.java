@@ -34,13 +34,10 @@ public class AddCoalToSmelter implements Runnable {
             return;
         }
 
-        WItem coalw = gui.maininv.getitem("Coal");
+        WItem coalw = gui.maininv.getItemPartial("Coal");
         if (coalw == null) {
-            coalw = gui.maininv.getitem("Black Coal");
-            if (coalw == null) {
-                gui.error("No coal found in the inventory");
-                return;
-            }
+            gui.error("No coal found in the inventory");
+            return;
         }
         GItem coal = coalw.item;
 

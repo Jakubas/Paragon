@@ -52,7 +52,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
                         ItemInfo.Contents imtcnt = (ItemInfo.Contents) info;
                         if (imtcnt.content > 0) {
                             double capacity;
-                            if (item.getname().equals("Bucket"))
+                            if (item.getname().contains("Bucket"))
                                 capacity = imtcnt.isseeds ? 1000D : 10.0D;
                             else
                                 return;

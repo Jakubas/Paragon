@@ -105,14 +105,14 @@ public class Inventory extends Widget implements DTarget {
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if(msg.equals("drop-identical")) {
-            for (WItem item : getitems((GItem) args[0]))
+            for (WItem item : getIdenticalItems((GItem) args[0]))
                 item.item.wdgmsg("drop", Coord.z);
         } else if(msg.equals("transfer-identical")) {
             Window stockpile = gameui().getwnd("Stockpile");
             Window smelter = gameui().getwnd("Ore Smelter");
             Window kiln = gameui().getwnd("Kiln");
             if (stockpile == null || smelter != null || kiln != null) {
-                List<WItem> items = getitems((GItem) args[0]);
+                List<WItem> items = getIdenticalItems((GItem) args[0]);
                 Collections.sort(items, new Comparator<WItem>() {
                     public int compare(WItem a, WItem b) {
                         GItem.Quality aq = a.item.quality();
@@ -134,7 +134,7 @@ public class Inventory extends Widget implements DTarget {
                     if (w instanceof ISBox) {
                         ISBox isb = (ISBox) w;
                         int freespace = isb.getfreespace();
-                        for (WItem item : getitems((GItem) args[0])) {
+                        for (WItem item : getIdenticalItems((GItem) args[0])) {
                             if (freespace-- <= 0)
                                 break;
                             item.item.wdgmsg("take", new Coord(item.sz.x / 2, item.sz.y / 2));
@@ -167,7 +167,7 @@ public class Inventory extends Widget implements DTarget {
         }
     }
 
-    public List<WItem> getitems(GItem item) {
+    public List<WItem> getIdenticalItems(GItem item) {
         List<WItem> items = new ArrayList<WItem>();
         String name = item.spr().getname();
         String resname = item.resource().name;
@@ -182,13 +182,17 @@ public class Inventory extends Widget implements DTarget {
         return items;
     }
 
-    public List<WItem> getitems(String... names) {
+    /* Following getItem* methods do partial matching of the name *on purpose*.
+       Because when localization is turned on, original English name will be in the brackets
+       next to the translation
+    */
+    public List<WItem> getItemsPartial(String... names) {
         List<WItem> items = new ArrayList<WItem>();
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 String wdgname = ((WItem)wdg).item.getname();
                 for (String name : names) {
-                    if (wdgname.equals(name)) {
+                    if (wdgname.contains(name)) {
                         items.add((WItem) wdg);
                         break;
                     }
@@ -196,17 +200,6 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         return items;
-    }
-
-    public WItem getitem(String name) {
-        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
-                if (wdgname.equals(name))
-                    return (WItem) wdg;
-            }
-        }
-        return null;
     }
 
     public WItem getItemPartial(String name) {
@@ -218,18 +211,6 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         return null;
-    }
-
-    public int getItemCount(String name) {
-        int count = 0;
-        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
-                if (wdgname.equals(name))
-                    count++;
-            }
-        }
-        return count;
     }
 
     public int getItemPartialCount(String name) {
@@ -258,7 +239,7 @@ public class Inventory extends Widget implements DTarget {
         if (stam == null || stam.a > threshold)
             return false;
 
-        List<WItem> containers = getitems("Waterskin", "Waterflask");
+        List<WItem> containers = getItemsPartial("Waterskin", "Waterflask");
 
         // find hotkeyed water container
         WItem hotwater = null;
@@ -278,7 +259,7 @@ public class Inventory extends Widget implements DTarget {
                 ItemInfo.Contents hotcnt = hotwater.item.getcontents();
                 if (hotcnt != null) {
                     String name = hotwater.item.getname();
-                    double fullcont = name.equals("Waterskin") ? 3.0D : 2.0D;
+                    double fullcont = name.contains("Waterskin") ? 3.0D : 2.0D;
                     if (hotcnt.content == fullcont)
                         break;
                 }
