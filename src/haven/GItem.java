@@ -159,28 +159,24 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     public boolean updatetimelefttex() {
-        synchronized (this) {
-            Resource res = null;
-            try {
-                res = resource();
-            } catch (Loading l) {
-                return false;
-            }
-
-            if (studytime == 0.0) {
-                if ((studytime = CurioStudyTimes.curios.get(res.basename())) == 0.0) {
-                    return false;
-                }
-            }
-
-            double timeneeded = studytime * 60;
-            int timeleft = (int) timeneeded * (100 - meter) / 100;
-            int hoursleft = timeleft / 60;
-            int minutesleft = timeleft - hoursleft * 60;
-
-            timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
+        Resource res = null;
+        try {
+            res = resource();
+        } catch (Loading l) {
+            return false;
         }
 
+        if (studytime == 0.0) {
+            if ((studytime = CurioStudyTimes.curios.get(res.basename())) == 0.0)
+                return false;
+        }
+
+        double timeneeded = studytime * 60;
+        int timeleft = (int) timeneeded * (100 - meter) / 100;
+        int hoursleft = timeleft / 60;
+        int minutesleft = timeleft - hoursleft * 60;
+
+        timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
         return true;
     }
 
