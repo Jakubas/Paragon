@@ -429,24 +429,25 @@ public class WItem extends Widget implements DTarget {
     }
 
     private boolean replacecurio(Window wnd, Resource res) {
-        if (wnd == null)
-            return false;
-        for (Widget invwdg = wnd.lchild; invwdg != null; invwdg = invwdg.prev) {
-            if (invwdg instanceof Inventory) {
-                Inventory inv = (Inventory) invwdg;
-                for (Widget witm = inv.lchild; witm != null; witm = witm.prev) {
-                    if (witm instanceof WItem) {
-                        GItem ngitm = ((WItem) witm).item;
-                        Resource nres = ngitm.resource();
-                        if (nres != null && nres.name.equals(res.name)) {
-                            ngitm.wdgmsg("take", witm.c);
-                            ((Inventory) parent).drop(Coord.z, c);
-                            return true;
+        try {
+            for (Widget invwdg = wnd.lchild; invwdg != null; invwdg = invwdg.prev) {
+                if (invwdg instanceof Inventory) {
+                    Inventory inv = (Inventory) invwdg;
+                    for (Widget witm = inv.lchild; witm != null; witm = witm.prev) {
+                        if (witm instanceof WItem) {
+                            GItem ngitm = ((WItem) witm).item;
+                            Resource nres = ngitm.resource();
+                            if (nres != null && nres.name.equals(res.name)) {
+                                ngitm.wdgmsg("take", witm.c);
+                                ((Inventory) parent).drop(Coord.z, c);
+                                return true;
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
             }
+        } catch (Exception e) { // ignored
         }
         return false;
     }
