@@ -216,7 +216,6 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                 }
             }
         } while (true);
-        haven.error.ErrorHandler.setprop("usr", sess.username);
 
         if (creds != null) {
             LoginData ld = new LoginData(creds.name(), ((AuthClient.NativeCred)creds).pass);
