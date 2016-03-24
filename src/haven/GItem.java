@@ -160,14 +160,15 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     public boolean updatetimelefttex() {
         synchronized (this) {
-            if (name.isEmpty()) {
-                if ((name = getname()).isEmpty()) {
-                    return false;
-                }
+            Resource res = null;
+            try {
+                res = resource();
+            } catch (Loading l) {
+                return false;
             }
 
             if (studytime == 0.0) {
-                if ((studytime = StudyTimes.getstudytime(getname())) == 0.0) {
+                if ((studytime = CurioStudyTimes.curios.get(res.basename())) == 0.0) {
                     return false;
                 }
             }

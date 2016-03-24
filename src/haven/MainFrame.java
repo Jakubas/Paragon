@@ -378,13 +378,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     }
 
     private static void main2(String[] args) {
-        if (Config.showstudylefttime)
-            new Thread(new Runnable() {
-                public void run() {
-                    StudyTimes.updatestudytimes();
-                }
-            }, "Curio times fetcher").start();
-
         Config.cmdline(args);
 
         if (Config.playerposfile != null)

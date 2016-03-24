@@ -862,7 +862,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(260, y));
         y += 35;
-        display.add(new CheckBox("Show study remaining time (req. restart)") {
+        display.add(new CheckBox("Show study remaining time") {
             {
                 a = Config.showstudylefttime;
             }
