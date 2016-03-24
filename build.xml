@@ -29,7 +29,6 @@
 	<pathelement path="lib/jogl.jar" />
 	<pathelement path="lib/gluegen-rt.jar" />
 	<pathelement path="lib/jnlp.jar" />
-    <pathelement path="lib/jsoup-1.8.3.jar" />
 	<pathelement path="lib/jglob.jar" />
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
@@ -50,9 +49,6 @@
   <target name="lib-classes" depends="build-env" unless="unpacked-lib">
     <mkdir dir="build/classes-lib" />
     <unjar src="lib/jglob.jar" dest="build/classes-lib">
-      <patternset excludes="META-INF/**" />
-    </unjar>
-    <unjar src="lib/jsoup-1.8.3.jar" dest="build/classes-lib">
       <patternset excludes="META-INF/**" />
     </unjar>
   </target>
