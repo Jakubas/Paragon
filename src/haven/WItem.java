@@ -429,6 +429,8 @@ public class WItem extends Widget implements DTarget {
     }
 
     private boolean replacecurio(Window wnd, Resource res) {
+        if (wnd == null)
+            return false;
         for (Widget invwdg = wnd.lchild; invwdg != null; invwdg = invwdg.prev) {
             if (invwdg instanceof Inventory) {
                 Inventory inv = (Inventory) invwdg;
