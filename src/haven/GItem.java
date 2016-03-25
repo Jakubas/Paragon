@@ -159,7 +159,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     public boolean updatetimelefttex() {
-        Resource res = null;
+        Resource res;
         try {
             res = resource();
         } catch (Loading l) {
@@ -167,8 +167,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }
 
         if (studytime == 0.0) {
-            if ((studytime = CurioStudyTimes.curios.get(res.basename())) == 0.0)
+            Double st = CurioStudyTimes.curios.get(res.basename());
+            if (st == null)
                 return false;
+            studytime = st;
         }
 
         double timeneeded = studytime * 60;
