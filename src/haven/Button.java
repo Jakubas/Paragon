@@ -95,6 +95,8 @@ public class Button extends SIWidget {
         }
         this.text = nf.render(text);
         this.cont = this.text.img;
+        if (!Resource.language.equals("en") && this.text != null)
+            this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
     public Button(int w, String text) {
@@ -107,12 +109,16 @@ public class Button extends SIWidget {
         }
         this.text = nf.render(text);
         this.cont = this.text.img;
+        if (!Resource.language.equals("en") && this.text != null)
+            this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
     public Button(int w, Text text) {
         this(w);
         this.text = text;
         this.cont = text.img;
+        if (!Resource.language.equals("en") && this.text != null)
+            this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
     public Button(int w, BufferedImage cont) {
