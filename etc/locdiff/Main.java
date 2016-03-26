@@ -19,6 +19,9 @@ public class Main {
     private static final String BUNDLE_LABEL = "label";
     private static final String BUNDLE_ACTION = "action";
 
+    private static final String missing = "missing";
+    private static final String extra = "extra";
+
     public static void main(String[] args) {
         if (args.length == 0 || args[0].length() != 2) {
             System.out.println("Usage: java -cp \".;l10n.jar\" Main LANGUAGE_CODE\n");
@@ -54,19 +57,28 @@ public class Main {
         diff(baseLabel, l10nLabel);
         diff(baseAction, l10nAction);
 
-        dump(baseTooltip, BUNDLE_TOOLTIP);
-        dump(basePagina, BUNDLE_PAGINA);
-        dump(baseWindow, BUNDLE_WINDOW);
-        dump(baseButton, BUNDLE_BUTTON);
-        dump(baseFlower, BUNDLE_FLOWER);
-        dump(baseMsg, BUNDLE_MSG);
-        dump(baseLabel, BUNDLE_LABEL);
-        dump(baseAction, BUNDLE_ACTION);
+        dump(baseTooltip, BUNDLE_TOOLTIP, missing);
+        dump(basePagina, BUNDLE_PAGINA, missing);
+        dump(baseWindow, BUNDLE_WINDOW, missing);
+        dump(baseButton, BUNDLE_BUTTON, missing);
+        dump(baseFlower, BUNDLE_FLOWER, missing);
+        dump(baseMsg, BUNDLE_MSG, missing);
+        dump(baseLabel, BUNDLE_LABEL, missing);
+        dump(baseAction, BUNDLE_ACTION, missing);
+
+        dump(l10nTooltip, BUNDLE_TOOLTIP, extra);
+        dump(l10nPagina, BUNDLE_PAGINA, extra);
+        dump(l10nWindow, BUNDLE_WINDOW, extra);
+        dump(l10nButton, BUNDLE_BUTTON, extra);
+        dump(l10nFlower, BUNDLE_FLOWER, extra);
+        dump(l10nMsg, BUNDLE_MSG, extra);
+        dump(l10nLabel, BUNDLE_LABEL, extra);
+        dump(l10nAction, BUNDLE_ACTION, extra);
 
         System.out.println("Done");
     }
 
-    private static void dump(Map<String, String> base, String bundle) {
+    private static void dump(Map<String, String> base, String bundle, String file) {
         if (base == null || base.size() == 0)
             return;
 
@@ -75,7 +87,7 @@ public class Main {
             CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
             encoder.onMalformedInput(CodingErrorAction.REPORT);
             encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(bundle + "_diff.properties", true), encoder));
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(bundle + "_" + file + ".properties", true), encoder));
             for (String key : base.keySet()) {
                 String val = base.get(key);
                 key = key.replace(" ", "\\ ");
@@ -103,8 +115,10 @@ public class Main {
             return;
         for (Iterator<Map.Entry<String, String>> it = base.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<String, String> entry = it.next();
-            if (loc.containsKey(entry.getKey()))
+            if (loc.containsKey(entry.getKey())) {
                 it.remove();
+                loc.remove(entry.getKey());
+            }
         }
     }
 
