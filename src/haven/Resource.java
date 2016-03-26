@@ -64,7 +64,7 @@ public class Resource implements Serializable {
     public static final String BUNDLE_MSG = "msg";
     public static final String BUNDLE_LABEL = "label";
     public static final String BUNDLE_ACTION = "action";
-    public static final boolean L10N_DEBUG = false;
+    public static boolean L10N_DEBUG = false;
 
     private Collection<Layer> layers = new LinkedList<Layer>();
     public final String name;
