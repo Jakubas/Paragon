@@ -33,6 +33,7 @@ public abstract class Dropbox<T> extends ListWidget<T> {
     public final int listh;
     private final Coord dropc;
     private Droplist dl;
+    private int selhighlight;
 
     public Dropbox(int w, int listh, int itemh) {
         super(new Coord(w, itemh), itemh);
@@ -45,6 +46,7 @@ public abstract class Dropbox<T> extends ListWidget<T> {
 
         private Droplist() {
             super(Dropbox.this.sz.x, Math.min(listh, Dropbox.this.listitems()), Dropbox.this.itemh);
+            selhighlight = -1;
             sel = Dropbox.this.sel;
             Dropbox.this.ui.root.add(this, Dropbox.this.rootpos().add(0, Dropbox.this.sz.y));
             grab = ui.grabmouse(this);
@@ -79,6 +81,22 @@ public abstract class Dropbox<T> extends ListWidget<T> {
         public void change(T item) {
             Dropbox.this.change(item);
             reqdestroy();
+        }
+
+        @Override
+        public void draw(GOut g) {
+            super.draw(g);
+            if (selhighlight >= 0) {
+                g.chcolor(115, 210, 22, 128);
+                g.frect(new Coord(0, selhighlight * itemh), new Coord(g.sz.x, itemh));
+                g.chcolor();
+            }
+        }
+
+        @Override
+        public void mousemove(Coord c) {
+            super.mousemove(c);
+            selhighlight = c.y < 0 || c.y > listh * itemh ? -1 : c.y / itemh;
         }
     }
 
