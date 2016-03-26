@@ -1264,6 +1264,7 @@ public class Resource implements Serializable {
         public final Named parent;
         public final char hk;
         public final String[] ad;
+        public final String origName;
 
         public AButton(Message buf) {
             String pr = buf.string();
@@ -1278,16 +1279,16 @@ public class Resource implements Serializable {
                 }
             }
 
-            String text = buf.string();
+            origName = buf.string();
             if (language.equals("en")) {
-                name = text;
+                name = origName;
             } else {
                 String locText = null;
                 Resource res = super.getres();
                 if (res != null && l10nAction != null)
                     locText = l10nAction.get(res.name);
 
-                name = locText != null ? locText : text;
+                name = locText != null ? locText : origName;
             }
 
             buf.string(); /* Prerequisite skill */

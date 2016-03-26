@@ -140,7 +140,7 @@ public class MenuGrid extends Widget {
                 return (-1);
             if ((aa.ad.length > 0) && (ab.ad.length == 0))
                 return (1);
-            return (aa.name.compareTo(ab.name));
+            return (aa.origName.compareTo(ab.origName));
         }
     };
 
