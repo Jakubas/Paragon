@@ -96,7 +96,7 @@ public abstract class Dropbox<T> extends ListWidget<T> {
         @Override
         public void mousemove(Coord c) {
             super.mousemove(c);
-            selhighlight = c.y < 0 || c.y > listh * itemh ? -1 : c.y / itemh;
+            selhighlight = c.y < 0 || c.y > listh * itemh || c.x < 0 || c.x > sz.x ? -1 : c.y / itemh;
         }
     }
 
