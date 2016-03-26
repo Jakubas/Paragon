@@ -46,6 +46,7 @@ public abstract class GLShader implements java.io.Serializable {
         public ShaderOb(GOut g, int type) {
             super(g);
             this.type = type;
+            g.gl.bglCreate(this);
         }
 
         public void create(GL2 gl) {
@@ -79,7 +80,7 @@ public abstract class GLShader implements java.io.Serializable {
                         if (buf[0] > 0) {
                             byte[] logbuf = new byte[buf[0]];
                             rgl.glGetInfoLogARB(id, logbuf.length, buf, 0, logbuf, 0);
-				/* The "platform's default charset" is probably a reasonable choice. */
+                /* The "platform's default charset" is probably a reasonable choice. */
                             info = new String(logbuf, 0, buf[0]);
                         }
                         throw (new ShaderException("Failed to compile shader", sh, info));

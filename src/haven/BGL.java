@@ -32,8 +32,8 @@ import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
 
-public class BGL {
-    private static abstract class Command {
+public abstract class BGL {
+    protected static abstract class Command {
         public abstract void run(GL2 gl);
     }
 
@@ -71,35 +71,11 @@ public class BGL {
         public void run(GL2 gl);
     }
 
-    private Command[] list;
-    private int n = 0;
+    protected abstract void add(Command cmd);
 
-    public BGL(int c) {
-        list = new Command[c];
-    }
+    protected abstract Iterable<Command> dump();
 
-    public BGL() {
-        this(128);
-    }
-
-    public void run(GL2 gl) {
-        for (int i = 0; i < n; i++) {
-            try {
-                if (i < list.length) // FIMXE: dirty fix for ArrayIndexOutOfBoundsException
-                    list[i].run(gl);
-            } catch (Exception exc) {
-                exc.printStackTrace();
-                //throw (new BGLException(this, list[i], exc));
-            }
-        }
-    }
-
-    private void add(Command cmd) {
-        if (n >= list.length)
-            list = Utils.extend(list, list.length * 2);
-        list[n++] = cmd;
-    }
-
+    //throw (new BGLException(this, list[i], exc));
     public static class BGLException extends RuntimeException {
         public final Dump dump;
 
@@ -1262,13 +1238,12 @@ public class BGL {
         }
 
         public Dump(BGL buf, Command mark) {
-            int n = buf.n;
-            this.list = new ArrayList<DCmd>(n);
+            this.list = new ArrayList<DCmd>();
             DCmd marked = null;
-            for (int i = 0; i < n; i++) {
-                DCmd cmd = new DCmd(this, buf.list[i]);
+            for (Command ocmd : buf.dump()) {
+                DCmd cmd = new DCmd(this, ocmd);
                 list.add(cmd);
-                if (buf.list[i] == mark)
+                if (ocmd == mark)
                     marked = cmd;
             }
             this.mark = marked;

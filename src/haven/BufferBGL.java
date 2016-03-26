@@ -29,56 +29,55 @@ package haven;
 import java.util.*;
 import javax.media.opengl.*;
 
-import static haven.GOut.checkerr;
+public class BufferBGL extends BGL {
+    private Command[] list;
+    private int n = 0;
 
-public abstract class GLObject {
-    private static final Map<CurrentGL, Collection<GLObject>> disposed = new HashMap<CurrentGL, Collection<GLObject>>();
-    private boolean del;
-    public final CurrentGL cur;
-
-    public GLObject(GOut g) {
-        this.cur = g.curgl;
+    public BufferBGL(int c) {
+        list = new Command[c];
     }
 
-    public void dispose() {
-        Collection<GLObject> can;
-        synchronized (disposed) {
-            if (del)
-                return;
-            del = true;
-            can = disposed.get(cur);
-            if (can == null) {
-                can = new LinkedList<GLObject>();
-                disposed.put(cur, can);
+    public BufferBGL() {
+        this(128);
+    }
+
+    public void run(GL2 gl) {
+        for (int i = 0; i < n; i++) {
+            try {
+                list[i].run(gl);
+            } catch (Exception exc) {
+                throw (new BGLException(this, list[i], exc));
             }
         }
-        synchronized (can) {
-            can.add(this);
-        }
     }
 
-    protected void finalize() {
-        dispose();
+    protected void add(Command cmd) {
+        if (n >= list.length)
+            list = Utils.extend(list, list.length * 2);
+        list[n++] = cmd;
     }
 
-    public abstract void create(GL2 gl);
+    protected Iterable<Command> dump() {
+        return (new Iterable<Command>() {
+            public Iterator<Command> iterator() {
+                return (new Iterator<Command>() {
+                    int i = 0;
 
-    protected abstract void delete(BGL gl);
+                    public boolean hasNext() {
+                        return (i < n);
+                    }
 
-    public static void disposeall(CurrentGL cur, BGL gl) {
-        Collection<GLObject> can;
-        synchronized (disposed) {
-            can = disposed.get(cur);
-            if (can == null)
-                return;
-        }
-        Collection<GLObject> copy;
-        synchronized (can) {
-            copy = new ArrayList<GLObject>(can);
-            can.clear();
-        }
-        for (GLObject obj : copy)
-            obj.delete(gl);
-        checkerr(gl);
+                    public Command next() {
+                        if (i < n)
+                            return (list[i++]);
+                        throw (new NoSuchElementException());
+                    }
+
+                    public void remove() {
+                        throw (new UnsupportedOperationException());
+                    }
+                });
+            }
+        });
     }
 }

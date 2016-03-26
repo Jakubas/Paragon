@@ -33,6 +33,7 @@ public class GLVertexArray extends GLObject implements BGL.ID {
 
     public GLVertexArray(GOut g) {
         super(g);
+        g.gl.bglCreate(this);
     }
 
     public void create(GL2 gl) {

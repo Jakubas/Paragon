@@ -266,9 +266,9 @@ public abstract class Message {
                 case T_NIL:
                     ret.add(null);
                     break;
-	    case T_UID:
-		ret.add(int64());
-		break;
+                case T_UID:
+                    ret.add(int64());
+                    break;
                 case T_BYTES:
                     int len = uint8();
                     if ((len & 128) != 0)
@@ -335,11 +335,12 @@ public abstract class Message {
     public Message adduint32(long num) {
         int off = wget(4);
         Utils.uint32e(num, wbuf, off);
-	return(this);
+        return (this);
     }
+
     public Message addint64(long num) {
-	int off = wget(8);
-	Utils.int64e(num, wbuf, off);
+        int off = wget(8);
+        Utils.int64e(num, wbuf, off);
         return (this);
     }
 
