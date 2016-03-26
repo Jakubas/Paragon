@@ -371,8 +371,6 @@ public class Utils {
             String ret;
             if ((ret = System.getProperty(propname)) != null)
                 return (ret);
-            if ((ret = System.getProperty("jnlp." + propname)) != null)
-                return (ret);
             return (def);
         } catch (SecurityException e) {
             return (def);
