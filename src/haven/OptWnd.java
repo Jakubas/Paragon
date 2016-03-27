@@ -1467,6 +1467,25 @@ public class OptWnd extends Window {
         y += 35;
         uis.add(new Label("Chat font size (req. restart):"), new Coord(0, y + 1));
         uis.add(chatFntSzDropdown(), new Coord(155, y));
+        y += 35;
+        uis.add(new CheckBox("Hide quests panel") {
+            {
+                a = Config.noquests;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("noquests", val);
+                Config.noquests = val;
+                try {
+                    if (val)
+                        gameui().questpanel.hide();
+                    else
+                        gameui().questpanel.show();
+                } catch (NullPointerException npe) { // ignored
+                }
+                a = val;
+            }
+        }, new Coord(0, y));
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
