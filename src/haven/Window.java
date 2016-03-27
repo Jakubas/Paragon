@@ -293,7 +293,7 @@ public class Window extends Widget implements DTarget {
             dm.remove();
             dm = null;
             if (persistentwnds.contains(origcap))
-                Utils.setprefc(cap.text + "_c", this.c);
+                Utils.setprefc(origcap + "_c", this.c);
         } else {
             super.mouseup(c, button);
         }
