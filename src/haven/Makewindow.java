@@ -35,9 +35,9 @@ public class Makewindow extends Widget {
     List<Spec> inputs = Collections.emptyList();
     List<Spec> outputs = Collections.emptyList();
     List<Indir<Resource>> qmod = null;
-    static final Text qmodl = Text.render("Quality:");
-    static Coord boff = new Coord(7, 9);
-    final int xoff = 45, qmy = 38, outy = 65;
+    static final Text qmodl;
+    int xoff = 45;
+    final int qmy = 38, outy = 65;
     public static final Text.Foundry nmf = new Text.Foundry(Text.serif, 20).aa(true);
     private int qModProduct = -1;
     private static final Tex softcapl = Text.render("Softcap:").tex();
@@ -48,6 +48,14 @@ public class Makewindow extends Widget {
         public Widget create(Widget parent, Object[] args) {
             return (new Makewindow((String) args[0]));
         }
+    }
+
+    static {
+        String q = "Quality:";
+        if (!Resource.language.equals("en"))
+            if (Resource.l10nLabel.containsKey(q))
+                q = Resource.l10nLabel.get(q);
+        qmodl = Text.render(q);
     }
 
     public class Spec implements GSprite.Owner {
@@ -105,8 +113,20 @@ public class Makewindow extends Widget {
     }
 
     public Makewindow(String rcpnm) {
-        add(new Label("Input:"), new Coord(0, 8));
-        add(new Label("Result:"), new Coord(0, outy + 8));
+        Label lblIn = new Label("Input:");
+        Label lblOut = new Label("Result:");
+
+        if (!Resource.language.equals("en")) {
+            xoff = qmodl.sz().x;
+            if (lblIn.sz.x > xoff)
+                xoff = lblIn.sz.x;
+            if (lblOut.sz.x > xoff)
+                xoff = lblOut.sz.x;
+            xoff += 8;
+        }
+
+        add(lblIn, new Coord(0, 8));
+        add(lblOut, new Coord(0, outy + 8));
         obtn = add(new Button(85, "Craft"), new Coord(265, 75));
         cbtn = add(new Button(85, "Craft All"), new Coord(360, 75));
         pack();
