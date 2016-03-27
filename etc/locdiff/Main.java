@@ -90,7 +90,7 @@ public class Main {
             out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(bundle + "_" + file + ".properties", true), encoder));
             for (String key : base.keySet()) {
                 String val = base.get(key);
-                key = key.replace(" ", "\\ ");
+                key = key.replace(" ", "\\ ").replace(":", "\\:").replace("=", "\\=");
                 val = val.replace("\\", "\\\\").replace("\n", "\\n").replace("\u0000", "");
                 out.write(key + " = " + val);
                 out.newLine();
