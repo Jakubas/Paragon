@@ -174,7 +174,7 @@ public class AutoLeveler extends Window implements GobSelectCallback, ErrorSysMs
                         return;
 
                     // invoke "make level" button
-                    Window survwnd = gui.waitfForWnd("Land survey", 2 * 60 * 1000);
+                    Window survwnd = gui.waitfForWnd("Land survey", 60 * 1000);
                     if (survwnd == null)
                         continue;
 
@@ -298,15 +298,17 @@ public class AutoLeveler extends Window implements GobSelectCallback, ErrorSysMs
             if (spwnd == null)
                 continue;
 
-            boolean nospace = false;
+            boolean nospace = true;
             for (Widget w = spwnd.lchild; w != null; w = w.prev) {
                 if (w instanceof ISBox) {
                     ISBox isb = (ISBox) w;
                     int freespace = isb.getfreespace();
-                    if (freespace == 0) {
-                        fullstockpiles.add(s);
+                    if (freespace > 0) {
                         // we use boolean instead incase the ISBox didn't load yet
-                        nospace = true;
+                        nospace = false;
+                        break;
+                    } else {
+                        fullstockpiles.add(s);
                         break;
                     }
                 }
