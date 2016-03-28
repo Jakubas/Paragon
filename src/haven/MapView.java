@@ -1500,7 +1500,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             pf = new Pathfinder(this, new Coord(gcx, gcy), action);
             glob.oc.setPathfinder(pf);
             pf.addListener(this);
-            pfthread = new Thread(pf);
+            pfthread = new Thread(pf, "Pathfinder");
             pfthread.start();
         }
     }
