@@ -234,6 +234,26 @@ public class Inventory extends Widget implements DTarget {
         return feespace;
     }
 
+    public void drinkTillFull(int threshold) {
+        GameUI gui = gameui();
+        if (gameui().maininv.drink(threshold)) {
+            try {
+                Thread.sleep(500);
+                do {
+                    IMeter.Meter stam = gui.getmeter("stam", 0);
+                    if (stam.a >= 90)
+                        break;
+                    Thread.sleep(10);
+                    stam = gui.getmeter("stam", 0);
+                    if (stam.a >= 90)
+                        break;
+                } while (gui.prog >= 0);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    }
+
     public boolean drink(int threshold) {
         IMeter.Meter stam = gameui().getmeter("stam", 0);
         if (stam == null || stam.a > threshold)
