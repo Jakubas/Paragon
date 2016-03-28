@@ -27,6 +27,7 @@
 package haven;
 
 import haven.GLProgram.VarID;
+import haven.automation.AutoLeveler;
 import haven.automation.GobSelectCallback;
 import haven.automation.SteelRefueler;
 import haven.pathfinder.*;
@@ -75,6 +76,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private Pathfinder pf;
     public Thread pfthread;
     public SteelRefueler steelrefueler;
+    public AutoLeveler autoleveler;
     private final PartyHighlight partyHighlight;
 
     private static final Set<String> dangerousanimalrad = new HashSet<String>(Arrays.asList(
@@ -1555,6 +1557,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     areamine.terminate();
                     areamine = null;
                 }
+                if (autoleveler != null && autoleveler.running) {
+                    autoleveler.terminate();
+                    autoleveler = null;
+                }
                 Resource curs = ui.root.getcurs(c);
                 if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
                     if (ui.modshift && selection == null) {
@@ -2019,5 +2025,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             areamine.terminate();
         if (steelrefueler != null)
             steelrefueler.terminate();
+        if (autoleveler != null)
+            autoleveler.terminate();
     }
 }

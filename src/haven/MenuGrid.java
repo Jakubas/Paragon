@@ -30,12 +30,9 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
-import haven.automation.AddBranchesToOven;
-import haven.automation.AddCoalToSmelter;
+import haven.automation.*;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
-import haven.automation.GobSelectCallback;
-import haven.automation.SteelRefueler;
 
 import java.util.*;
 
@@ -129,6 +126,7 @@ public class MenuGrid extends Widget {
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/branchoven")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/autosurvey")));
             }
         }
     }
@@ -321,6 +319,18 @@ public class MenuGrid extends Widget {
                 gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
                 synchronized (GobSelectCallback.class) {
                     gui.map.registerGobSelect(sw);
+                }
+            }
+        } else if (ad[1].equals("level")) {
+            if (gui.getwnd("Auto Leveler") == null) {
+                AutoLeveler lw = new AutoLeveler();
+                gui.map.autoleveler = lw;
+                gui.add(lw, new Coord(gui.sz.x / 2 - lw.sz.x / 2, gui.sz.y / 2 - lw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(lw);
+                }
+                synchronized (ErrorSysMsgCallback.class) {
+                    gui.registerErrMsg(lw);
                 }
             }
         }

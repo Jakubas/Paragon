@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.automation.ErrorSysMsgCallback;
+
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -79,6 +81,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean crimeautotgld = false;
     private boolean trackautotgld = false;
     public FBelt fbelt;
+    private ErrorSysMsgCallback errmsgcb;
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -1059,6 +1062,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void error(String msg) {
         msg(msg, new Color(192, 0, 0), new Color(255, 0, 0));
         Audio.play(errsfx);
+        if (errmsgcb != null)
+            errmsgcb.notifyErrMsg(msg);
     }
 
     public void errornosfx(String msg) {
@@ -1100,6 +1105,26 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         return null;
     }
+
+
+    private static final int WND_WAIT_SLEEP = 8;
+    public Window waitfForWnd(String cap, int timeout) {
+        int t  = 0;
+        while (t < WND_WAIT_SLEEP) {
+            Window wnd = getwnd(cap);
+            if (wnd != null)
+                return wnd;
+            timeout += WND_WAIT_SLEEP;
+            try {
+                Thread.sleep(WND_WAIT_SLEEP);
+            } catch (InterruptedException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+
 
     public List<IMeter.Meter> getmeters(String name) {
         for (Widget meter : meters) {
@@ -1406,5 +1431,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public Map<String, Console.Command> findcmds() {
         return (cmdmap);
+    }
+
+    public void registerErrMsg(ErrorSysMsgCallback callback) {
+        this.errmsgcb = callback;
     }
 }
