@@ -1,3 +1,10 @@
+Version 1.30.1
+    Fixed:
+        * Temporary BufferBGL fix.
+        * Pathfinder issues.
+        * Auto-leveler issues.
+
+
 Version 1.30.0
     New:
         * Russian localization.
