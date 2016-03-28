@@ -98,6 +98,7 @@ public class Pathfinder implements Runnable {
         m.dbgdump();
 
         Iterator<Edge> it = path.iterator();
+        lastmsg = System.currentTimeMillis();
         while (it.hasNext() && !moveinterupted && !terminate) {
             count = -100;
             step = -200;
@@ -131,7 +132,7 @@ public class Pathfinder implements Runnable {
                 // no step/count notification will be send by the server for last segment
                 // and player's position won't match mc either
                 // therefore we just wait for a bit
-                if (gob != null && !it.hasNext() && System.currentTimeMillis() - lastmsg > 400) {
+                if (gob != null && !it.hasNext() && System.currentTimeMillis() - lastmsg > 500) {
                     break;
                 } else if (System.currentTimeMillis() - lastmsg > 2000) { // just in case...
                     break;
