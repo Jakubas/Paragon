@@ -569,6 +569,25 @@ public class Map {
         return path;
     }
 
+    public boolean isOriginBlocked() {
+        return map[origin][origin] == CELL_BLK || map[origin][origin] == CELL_BLK;
+    }
+
+    // 3 pixels away from origin
+    public Pair<Integer, Integer> getFreeLocation() {
+        if (map[origin + 3][origin] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin + 3, origin);
+        else if (map[origin - 3][origin] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin - 3, origin);
+        else if (map[origin][origin + 3] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin, origin + 3);
+        else if (map[origin][origin - 3] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin, origin - 3);
+
+        return null;
+    }
+
+
     public void dbgdump() {
         dbg.save();
         Dbg dbg = new Dbg(DEBUG);
