@@ -1,3 +1,18 @@
+Version 1.30.0
+    New:
+        * Russian localization.
+        * Automatic ground leveler.
+        * Party members highlight (from shubla's client) .
+
+    Fixed:
+        * Possible crash when switching characters. 
+        * Pathfinder issues.
+
+    Misc:
+        * Merged vanilla changes.
+        * Misc. code cleanups and improvements to localization support.
+
+
 Version 1.29.2
     Misc:
         * Restored alternative minimap controls.
