@@ -46,7 +46,10 @@ public class BufferBGL extends BGL {
             try {
                 list[i].run(gl);
             } catch (Exception exc) {
-                throw (new BGLException(this, list[i], exc));
+                // FIXME
+                // haven't investigated yet why this fails with assortment of exceptions
+                // so for now at least don't crash the clinet
+                // throw (new BGLException(this, list[i], exc));
             }
         }
     }
