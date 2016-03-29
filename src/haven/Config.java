@@ -155,6 +155,8 @@ public class Config {
     public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.8);
     public static boolean alarmtroll = Utils.getprefb("alarmtroll", false);
     public static double alarmtrollvol = Utils.getprefd("alarmtrollvol", 0.8);
+    public static boolean alarmmammoth = Utils.getprefb("alarmmammoth", false);
+    public static double alarmmammothvol = Utils.getprefd("alarmmammothvol", 0.8);
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
     public static boolean fbelt = Utils.getprefb("fbelt", false);
@@ -197,7 +199,7 @@ public class Config {
             "wagon"};
     public static String[] iconssel = null;
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(10) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(11) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
@@ -208,6 +210,7 @@ public class Config {
         put("gfx/terobjs/items/boarspear", Resource.loadtex("gfx/icons/arrow"));
         put("gfx/kritter/frog/frog", Resource.loadtex("gfx/icons/frog"));
         put("gfx/terobjs/vehicle/wagon", Resource.loadtex("gfx/icons/wagon"));
+        put("gfx/terobjs/vehicle/wheelbarrow", Resource.loadtex("gfx/icons/wheelbarrow"));
     }};
 
     public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
