@@ -35,7 +35,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display, map, general, combat, control, uis;
+    public final Panel main, video, audio, display, map, general, combat, control, uis, quality;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -298,6 +298,7 @@ public class OptWnd extends Window {
         combat = add(new Panel());
         control = add(new Panel());
         uis = add(new Panel());
+        quality = add(new Panel());
         int y;
 
         main.add(new PButton(200, "Video settings", 'v', video), new Coord(0, 0));
@@ -308,7 +309,9 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Combat settings", 'c', combat), new Coord(210, 30));
         main.add(new PButton(200, "Control settings", 'k', control), new Coord(210, 60));
         main.add(new PButton(200, "UI settings", 'u', uis), new Coord(210, 90));
-
+        main.add(new PButton(200, "Quality settings", 'q', quality), new Coord(420, 0));
+        
+        String s = Resource.l10nLabel.get("UI settings");
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
@@ -720,83 +723,6 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showkinnames", val);
                 Config.showkinnames = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show item quality") {
-            {
-                a = Config.showquality;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showquality", val);
-                Config.showquality = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 20;
-        display.add(new Label("High"), new Coord(0, y));
-        display.add(new Label("Avg E/S/V"), new Coord(35, y));
-        display.add(new Label("All"), new Coord(100, y));
-        display.add(new Label("Avg S/V"), new Coord(135, y));
-        display.add(new Label("Low"), new Coord(190, y));
-        y += 10;
-        display.add(new HSlider(210, 0, 4, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.showqualitymode;
-            }
-            public void changed() {
-                Config.showqualitymode = val;
-                Utils.setprefi("showqualitymode", val);
-            }
-        }, new Coord(0, y));
-        y += 25;
-        display.add(new CheckBox("Show LP gain multiplier for curios") {
-            {
-                a = Config.showlpgainmult;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showlpgainmult", val);
-                Config.showlpgainmult = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Use arithmetic average") {
-            {
-                a = Config.arithavg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("arithavg", val);
-                Config.arithavg = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Round item quality to a whole number") {
-            {
-                a = Config.qualitywhole;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("qualitywhole", val);
-                Config.qualitywhole = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Draw background for quality values") {
-            {
-                a = Config.qualitybg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("qualitybg", val);
-                Config.qualitybg = val;
                 a = val;
             }
         }, new Coord(0, y));
@@ -1304,7 +1230,7 @@ public class OptWnd extends Window {
                 Config.badcamsensitivity = val;
                 Utils.setprefi("badcamsensitivity", val);
             }
-        }, new Coord(160, y));
+        }, new Coord(180, y));
         y += 35;
         control.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
             {
@@ -1535,6 +1461,89 @@ public class OptWnd extends Window {
 
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
+
+        // -------------------------------------------- quality
+
+        y = 0;
+        quality.add(new CheckBox("Show item quality") {
+            {
+                a = Config.showquality;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showquality", val);
+                Config.showquality = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 20;
+        quality.add(new Label("Highest"), new Coord(0, y));
+        quality.add(new Label("Avg E/S/V"), new Coord(65, y));
+        quality.add(new Label("All"), new Coord(150, y));
+        quality.add(new Label("Avg S/V"), new Coord(205, y));
+        quality.add(new Label("Lowest"), new Coord(275, y));
+        y += 10;
+        quality.add(new HSlider(310, 0, 4, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.showqualitymode;
+            }
+            public void changed() {
+                Config.showqualitymode = val;
+                Utils.setprefi("showqualitymode", val);
+            }
+        }, new Coord(0, y));
+        y += 25;
+        quality.add(new CheckBox("Show LP gain multiplier for curios") {
+            {
+                a = Config.showlpgainmult;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showlpgainmult", val);
+                Config.showlpgainmult = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        quality.add(new CheckBox("Use arithmetic average") {
+            {
+                a = Config.arithavg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("arithavg", val);
+                Config.arithavg = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        quality.add(new CheckBox("Round item quality to a whole number") {
+            {
+                a = Config.qualitywhole;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitywhole", val);
+                Config.qualitywhole = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        quality.add(new CheckBox("Draw background for quality values") {
+            {
+                a = Config.qualitybg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitybg", val);
+                Config.qualitybg = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+
+        quality.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        quality.pack();
 
         chpanel(main);
     }
