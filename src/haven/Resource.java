@@ -64,7 +64,7 @@ public class Resource implements Serializable {
     public static final String BUNDLE_MSG = "msg";
     public static final String BUNDLE_LABEL = "label";
     public static final String BUNDLE_ACTION = "action";
-    public static boolean L10N_DEBUG = false;
+    public static final boolean L10N_DEBUG = false;
 
     private Collection<Layer> layers = new LinkedList<Layer>();
     public final String name;
@@ -788,8 +788,6 @@ public class Resource implements Serializable {
             l10nMsg = l10n(BUNDLE_MSG, language);
             l10nLabel = l10n(BUNDLE_LABEL, language);
             l10nAction = l10n(BUNDLE_ACTION, language);
-            if (!language.equals("en"))
-                L10N_DEBUG = false;
         }
 
         for (Class<?> cl : dolda.jglob.Loader.get(LayerName.class).classes()) {
@@ -1881,6 +1879,8 @@ public class Resource implements Serializable {
                     key.startsWith("Experience points gained:"))
                 return map;
 
+            new File("l10n").mkdirs();
+
             CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
             encoder.onMalformedInput(CodingErrorAction.REPORT);
             encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
@@ -1888,7 +1888,7 @@ public class Resource implements Serializable {
             try {
                 key = key.replace(" ", "\\ ").replace(":", "\\:").replace("=", "\\=");
                 val = val.replace("\\", "\\\\").replace("\n", "\\n").replace("\u0000", "");
-                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../l10n/" + bundle + "_new.properties", true), encoder));
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("l10n/" + bundle + "_new.properties", true), encoder));
                 out.write(key + " = " + val);
                 out.newLine();
                 if (map == null)
