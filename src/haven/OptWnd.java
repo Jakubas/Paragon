@@ -311,7 +311,6 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "UI settings", 'u', uis), new Coord(210, 90));
         main.add(new PButton(200, "Quality settings", 'q', quality), new Coord(420, 0));
         
-        String s = Resource.l10nLabel.get("UI settings");
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
