@@ -196,7 +196,7 @@ public class Config {
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
             "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram", "rowboat", "arrow", "boarspear", "frog",
-            "wagon"};
+            "wagon", "wheelbarrow"};
     public static String[] iconssel = null;
 
     public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(11) {{
