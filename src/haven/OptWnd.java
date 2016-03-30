@@ -761,9 +761,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-
-        // -------------------------------------------- display 2nd column
-        y = 0;
+        y += 35;
         display.add(new CheckBox("Show attributes & softcap values in craft window") {
             {
                 a = Config.showcraftcap;
@@ -774,7 +772,7 @@ public class OptWnd extends Window {
                 Config.showcraftcap = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        }, new Coord(0, y));
         y += 35;
         display.add(new CheckBox("Show objects health") {
             {
@@ -786,7 +784,7 @@ public class OptWnd extends Window {
                 Config.showgobhp = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        }, new Coord(0, y));
         y += 35;
         display.add(new CheckBox("Show player paths") {
             {
@@ -798,7 +796,7 @@ public class OptWnd extends Window {
                 Config.showplayerpaths = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        }, new Coord(0, y));
         y += 35;
         display.add(new CheckBox("Show animal paths") {
             {
@@ -810,7 +808,7 @@ public class OptWnd extends Window {
                 Config.showanimalpaths = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        }, new Coord(0, y));
         y += 35;
         display.add(new CheckBox("Show study remaining time") {
             {
@@ -822,7 +820,7 @@ public class OptWnd extends Window {
                 Config.showstudylefttime = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        }, new Coord(0, y));
         y += 35;
         display.add(new CheckBox("Show contents bars for buckets/flasks") {
             {
@@ -834,8 +832,8 @@ public class OptWnd extends Window {
                 Config.showcontentsbars = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        // -------------------------------------------- display 3rd column
+        }, new Coord(0, y));
+        // -------------------------------------------- display 2nd column
         y = 0;
         display.add(new CheckBox("Show wear bars") {
             {
@@ -847,7 +845,7 @@ public class OptWnd extends Window {
                 Config.showwearbars = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        }, new Coord(400, y));
         y += 35;
         display.add(new CheckBox("Show troughs/beehives radius") {
             {
@@ -859,7 +857,7 @@ public class OptWnd extends Window {
                 Config.showfarmrad = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        }, new Coord(400, y));
         y += 35;
         display.add(new CheckBox("Show animal radius") {
             {
@@ -871,7 +869,7 @@ public class OptWnd extends Window {
                 Config.showanimalrad = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        }, new Coord(400, y));
         y += 35;
         display.add(new CheckBox("Highlight empty/finished drying frames") {
             {
@@ -883,7 +881,7 @@ public class OptWnd extends Window {
                 Config.showdframestatus = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        }, new Coord(400, y));
         y += 35;
         display.add(new CheckBox("Draw circles around party members") {
             {
@@ -895,7 +893,7 @@ public class OptWnd extends Window {
                 Config.partycircles = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        }, new Coord(400, y));
 
         display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         display.pack();
@@ -1416,7 +1414,7 @@ public class OptWnd extends Window {
         }, new Coord(0, y));
         y += 35;
         uis.add(new Label("Chat font size (req. restart):"), new Coord(0, y + 1));
-        uis.add(chatFntSzDropdown(), new Coord(155, y));
+        uis.add(chatFntSzDropdown(), new Coord(180, y));
         y += 35;
         uis.add(new CheckBox("Hide quests panel") {
             {
@@ -1585,7 +1583,7 @@ public class OptWnd extends Window {
 
     @SuppressWarnings("unchecked")
     private Dropbox<Pair<String, Integer>> chatFntSzDropdown() {
-        Dropbox<Pair<String, Integer>> sizes = new Dropbox<Pair<String, Integer>>(80, 4, 16) {
+        Dropbox<Pair<String, Integer>> sizes = new Dropbox<Pair<String, Integer>>(55, 4, 16) {
             @Override
             protected Pair<String, Integer> listitem(int i) {
                 return chatFntSz[i];
