@@ -6,7 +6,7 @@ import haven.Coord;
 import haven.Widget;
 import haven.Window;
 
-public class DigTuber implements Runnable {
+public class Dig implements Runnable {
 	
 	private volatile boolean interrupted = false;
     
@@ -43,7 +43,7 @@ public class DigTuber implements Runnable {
 	
 	private class CloseWindow extends Window {
         public CloseWindow() {
-            super(Coord.z, "Digger");
+            super(Coord.z, "Digs Tubers and Clay");
             add(new Button(120, "Stop", false) {
 				public void click() {
                 	interrupted = true;

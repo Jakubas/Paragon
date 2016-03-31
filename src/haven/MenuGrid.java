@@ -361,7 +361,7 @@ public class MenuGrid extends Widget {
 			new Thread(new PatrolPathGen()).start();
 			break;
 		case "digtubber":
-			new Thread(new DigTuber()).start();
+			new Thread(new Dig()).start();
 			break;
 		case "catchdragonflies":
 			new Thread(new CatchDragonflies()).start();
