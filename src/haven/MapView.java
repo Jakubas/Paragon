@@ -1124,8 +1124,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             undelay(delayed2, g);
             poldraw(g);
             partydraw(g);
-            glob.map.reqarea(cc.div(tilesz).sub(MCache.cutsz.mul(view + 1)),
-                    cc.div(tilesz).add(MCache.cutsz.mul(view + 1)));
+            try {
+                glob.map.reqarea(cc.div(tilesz).sub(MCache.cutsz.mul(view + 1)),
+                        cc.div(tilesz).add(MCache.cutsz.mul(view + 1)));
+            } catch (Defer.DeferredException e) {
+                // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
+                // we ignore Defer.DeferredException to prevent the client for crashing
+            }
             // change grid overlay position when player moves by 20 tiles
             if (showgrid) {
                 Coord tc = cc.div(MCache.tilesz);
