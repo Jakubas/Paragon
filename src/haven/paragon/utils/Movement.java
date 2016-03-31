@@ -92,6 +92,16 @@ public class Movement {
 		Gob me = player();
 		if (me == null) return false;
 		Moving m = me.getattr(Moving.class);
+		if (m != null)
+			return true;
+		else
+			return isHorseMoving();
+	}
+
+	public boolean isHorseMoving() {
+		Gob me = mainScreen.getNearestObject(2, "horse");
+		if (me == null) return false;
+		Moving m = me.getattr(Moving.class);
 		return (m != null);
 	}
 }
