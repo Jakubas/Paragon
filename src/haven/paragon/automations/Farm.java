@@ -33,15 +33,15 @@ public class Farm implements Runnable {
 	public void farmer(ArrayList<Gob> cropList, String cropName) {
 		
 		while (!cropList.isEmpty() && !interrupted) {
+
 			Collections.sort(cropList);
 			Gob crop = cropList.get(0);
-			movement.moveToObject(crop);
-			mainInventory.drink(80);
+			//movement.moveToObject(crop);
+			mainInventory.drink(41);
 			mainScreen.farm(crop);
-			mainInventory.dropIdenticalPartial("seed", "carrot", "beetroot");
+			mainInventory.dropIdenticalPartial("Seed", "seed", "Carrot", "Beetroot");
 			cropList.remove(0);
 		}
-		System.out.println("Finished farming :");
 	}
 	
 	public ArrayList<Gob> getFarmingGobList(String cropName) {
