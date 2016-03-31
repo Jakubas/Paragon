@@ -21,7 +21,7 @@ public class PatrolPathGen implements Runnable {
 	@Override
 	public void run() {
 		prevCoord = player().rc;
-		coordWindow = ui().sess.glob.gui.add(new CoordWindow(), 450, 300);
+		ui().sess.glob.gui.add(new CoordWindow(), 450, 300);
 		
 		File writeFile = new File("patrolpath.txt");
 		try {
@@ -50,7 +50,6 @@ public class PatrolPathGen implements Runnable {
                 	int y = player().rc.y - prevCoord.y;
                 	totalX += x;
                 	totalY += y;
-                	System.out.println("new Coord(" + totalX + ", " + totalY + "), ");
                 	prevCoord = player().rc;
                 	try {          
                 		writer.write("(" + x + "," + y + ")");
@@ -64,7 +63,6 @@ public class PatrolPathGen implements Runnable {
 				public void click() {
                 	interrupted = true;
                 	parent.destroy();
-                	coordWindow.destroy();
                 }
             }, new Coord (10, 45));
         }

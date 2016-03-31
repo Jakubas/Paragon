@@ -16,7 +16,11 @@ import static haven.paragon.utils.UtilsSetup.*;
 
 public class MainScreen {
 	public Gob getNearestObject(String... string) {
-		return findMapObject(50, 0, 0, string);
+		return findMapObject(60, 0, 0, string);
+	}
+
+	public Gob getNearestObject(int radius, String... string) {
+		return findMapObject(radius, 0, 0, string);
 	}
     
 	 public Gob findMapObject(int radius, int x, int y, String... names) {
@@ -99,8 +103,8 @@ public class MainScreen {
 	 
     public boolean waitForProgressBar(int timeout) {
     	while (!isProgressBar() && timeout > 0) {
-    		sleep(50);
-    		timeout -= 50;
+    		sleep(10);
+    		timeout -= 10;
     	}
     	return isProgressBar();
     }
@@ -111,15 +115,15 @@ public class MainScreen {
     
 	public boolean farm(Gob crop) {
 		movement.doClickObj(crop, 3, 0);
-		if (!flowerMenu.waitForFlowerMenu(750)) return false;
+		if (!flowerMenu.waitForFlowerMenu(1000)) return false;
 		FlowerMenu menu =ui().root.findchild(FlowerMenu.class);
         for (FlowerMenu.Petal opt : menu.opts) {
             if (opt.name.equals("Harvest")) {
                 menu.choose(opt);
                 menu.destroy();
-                waitForProgressBar(PING_TIMEOUT);
+                waitForProgressBar(PING_TIMEOUT*3);
                 while (crop.exists() && isProgressBar()) {
-                	sleep(100);
+                	sleep(10);
                 };
                 return true;
             }

@@ -1,7 +1,5 @@
 package haven.paragon.utils;
 
-import static haven.paragon.utils.UtilsSetup.ui;
-
 import java.awt.Color;
 
 import haven.GameUI;

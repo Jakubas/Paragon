@@ -8,12 +8,15 @@ import java.util.List;
 public class MainInventory {
 	
 	
-    public void drink(int threshold) {
-    	ui().sess.glob.gui.maininv.drink(threshold);
-    	mainScreen.waitForProgressBar(PING_TIMEOUT);
-    	while(mainScreen.isProgressBar()) {
-    		sleep(100);
+    public boolean drink(int threshold) {
+    	boolean isDrinking = ui().sess.glob.gui.maininv.drink(threshold);
+    	if (isDrinking) {
+			mainScreen.waitForProgressBar(PING_TIMEOUT);
+			while(mainScreen.isProgressBar()) {
+				sleep(50);
+			}
     	}
+    	return isDrinking;
     }
     
     public int size() {

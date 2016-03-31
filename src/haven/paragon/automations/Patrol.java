@@ -62,8 +62,6 @@ public class Patrol implements Runnable {
 	    	Coord coord = patrolPath[i];
 	    	Gob pl = player();
 			moveToCoordAndPatrol(new Coord(pl.coordX()+coord.x, pl.coordY()+coord.y));
-			System.out.println(patrolPath.length);
-			System.out.println(i+1 + "\n");
 			if (patrolPath.length == i+1) {
 				moveToCoordAndPatrol(startCoord);
 				i = -1;
