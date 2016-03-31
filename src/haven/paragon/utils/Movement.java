@@ -3,7 +3,9 @@ package haven.paragon.utils;
 import haven.Coord;
 import haven.Gob;
 import haven.Moving;
+
 import java.util.Random;
+
 import static haven.paragon.utils.UtilsSetup.*;
 
 
@@ -29,7 +31,7 @@ public class Movement {
     }
 	
 	public void clickCoord(Coord coord) {
-		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, coord, 1, 0, 0);
+		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, coord, 1, 0, 0);
 		waitForMovement(PING_TIMEOUT);
 		while (isMoving());
 	}
@@ -37,11 +39,11 @@ public class Movement {
 	//@button 1 - left mouse button, 2 - middle mouse button, 3 - right mouse button
 	//@mod don't remember mod values... need to doc
 	public void doClickObj(Gob gob, int button, int mod) {
-		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, button, 0, mod, (int)gob.id, gob.rc, 0, -1);
+		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, button, 0, mod, (int)gob.id, gob.rc, 0, -1);
 	}
 	
 	public void leftClickObjOffset(Gob gob, int xOffset, int yOffset) {
-		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, new Coord(gob.rc.x+xOffset, gob.rc.y+yOffset), 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
+		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, new Coord(gob.rc.x+xOffset, gob.rc.y+yOffset), 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
 		waitForMovement(PING_TIMEOUT);
 		while (isMoving()) {
 			sleep(100);
@@ -49,8 +51,7 @@ public class Movement {
 	}
 	
 	public void leftClickObj(Gob gob) {
-		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
-		//Hack, wait 200ms to account for delay between clicking and starting movement
+		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
 		waitForMovement(PING_TIMEOUT);
 		while (isMoving()) {
 			sleep(100);

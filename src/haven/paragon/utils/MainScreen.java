@@ -25,8 +25,8 @@ public class MainScreen {
         my = my.add(offset);
         double min = radius*11;
         Gob nearest = null;
-        synchronized (ui.sess.glob.oc) {
-            for (Gob gob : ui.sess.glob.oc) {
+        synchronized (ui().sess.glob.oc) {
+            for (Gob gob :ui().sess.glob.oc) {
                 double dist = gob.rc.dist(my);
                 if (dist < min) {
                     boolean matches = false;
@@ -52,8 +52,8 @@ public class MainScreen {
         my = my.add(offset);
         double min = radius*11;
         Set<Gob> gobs = new HashSet<Gob>();
-        synchronized (ui.sess.glob.oc) {
-            for (Gob gob : ui.sess.glob.oc) {
+        synchronized (ui().sess.glob.oc) {
+            for (Gob gob :ui().sess.glob.oc) {
             	double dist = gob.rc.dist(my);
             	if (dist < min) {
             		for (String name : names) {
@@ -81,8 +81,8 @@ public class MainScreen {
 			}
         }); 
         SortedSet<Gob> gobs = new TreeSet<Gob>();
-        synchronized (ui.sess.glob.oc) {
-            for (Gob gob : ui.sess.glob.oc) {
+        synchronized (ui().sess.glob.oc) {
+            for (Gob gob :ui().sess.glob.oc) {
             	double dist = gob.rc.dist(my);
             	if (dist < min) {
             		for (String name : names) {
@@ -106,13 +106,13 @@ public class MainScreen {
     }
     
     public boolean isProgressBar() {
-    	return ui.sess.glob.gui.prog >= 0;
+    	return ui().sess.glob.gui.prog >= 0;
     }
     
 	public boolean farm(Gob crop) {
 		movement.doClickObj(crop, 3, 0);
 		if (!flowerMenu.waitForFlowerMenu(750)) return false;
-		FlowerMenu menu = ui.root.findchild(FlowerMenu.class);
+		FlowerMenu menu =ui().root.findchild(FlowerMenu.class);
         for (FlowerMenu.Petal opt : menu.opts) {
             if (opt.name.equals("Harvest")) {
                 menu.choose(opt);
@@ -128,13 +128,13 @@ public class MainScreen {
 	}
 	
     public boolean isItemInHand() {
-        if(ui.sess.glob.gui.hand.size() > 0)
+        if(ui().sess.glob.gui.hand.size() > 0)
         	return true;
         return false;
     }
     
     public GItem getItemInHand() {
-        for (DraggedItem item : ui.sess.glob.gui.hand)
+        for (DraggedItem item :ui().sess.glob.gui.hand)
         	return item.item;
         return null;
     }

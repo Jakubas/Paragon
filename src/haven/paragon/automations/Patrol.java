@@ -29,7 +29,7 @@ public class Patrol implements Runnable {
 	@Override
 	public void run() {
 		
-		ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
+		ui().sess.glob.gui.add(new CloseWindow(), 600, 300);
 		//read the first line from the file into a string (the coordinates to be patrolled)
 		File file = new File("patrolpath.txt");
 		String line = "";
@@ -83,7 +83,7 @@ public class Patrol implements Runnable {
     }
 	
 	public void clickCoordAndPatrol(Coord coord) {
-		ui.sess.glob.gui.map.wdgmsg("click", Coord.z, coord, 1, 0, 0);
+		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, coord, 1, 0, 0);
 		movement.waitForMovement(PING_TIMEOUT);
 		while (movement.isMoving()) {
 			if (isUnknownPlayer()) {
@@ -109,7 +109,7 @@ public class Patrol implements Runnable {
 	}
 	
 	public boolean isUnknownPlayer() {
-        OCache oc = ui.sess.glob.oc;
+        OCache oc = ui().sess.glob.oc;
         synchronized (oc) {
             Gob gobcls = null;
             double gobclsdist = Double.MAX_VALUE;

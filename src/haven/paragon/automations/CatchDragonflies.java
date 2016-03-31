@@ -16,30 +16,30 @@ public class CatchDragonflies implements Runnable {
     
 	@Override
 	public void run() {
-		ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
+		ui().sess.glob.gui.add(new CloseWindow(), 600, 300);
 		while(!interrupted) {
-			if (inventory.isFull()) {
+			if (mainInventory.isFull()) {
 				sysMsg("inventory is full", Color.WHITE);
 				return;
 			}
 			
 			
-			while(!inventory.isFull()) {
+			while(!mainInventory.isFull()) {
 				if (interrupted) {
 					return;
 				}
 				sleep(100);
-				inventory.drink(80);
+				mainInventory.drink(80);
 				Gob dragonfly = mainScreen.getNearestObject("gfx/kritter/dragonfly/dragonfly");
 				if (dragonfly == null)
 					continue;
-				int prevSize = inventory.size();
+				int prevSize = mainInventory.size();
 				movement.doClickObj(dragonfly, 3, 0);
 				movement.waitForMovement(PING_TIMEOUT);
 				while (movement.isMoving()) {
 					sleep(100);
 				}
-				if (prevSize == inventory.size())
+				if (prevSize == mainInventory.size())
 					movement.clickInRandomDirection();
 			}
 		}

@@ -9,7 +9,7 @@ public class MainInventory {
 	
 	
     public void drink(int threshold) {
-    	ui.sess.glob.gui.maininv.drink(threshold);
+    	ui().sess.glob.gui.maininv.drink(threshold);
     	mainScreen.waitForProgressBar(PING_TIMEOUT);
     	while(mainScreen.isProgressBar()) {
     		sleep(100);
@@ -17,15 +17,22 @@ public class MainInventory {
     }
     
     public int size() {
-    	return ui.sess.glob.gui.maininv.isz.x * ui.sess.glob.gui.maininv.isz.y;
+    	return ui().sess.glob.gui.maininv.isz.x * ui().sess.glob.gui.maininv.isz.y;
     }
     
     public boolean isFull() {
-    	return (ui.sess.glob.gui.maininv.wmap.size() >= size());
+    	return (ui().sess.glob.gui.maininv.wmap.size() >= size());
     }
     
-    public void dropIdentical(String objName) {
-    	List<WItem> items = ui.sess.glob.gui.maininv.getitems(objName);
+    public void dropIdentical(String... objNames) {
+    	List<WItem> items = ui().sess.glob.gui.maininv.getitems(objNames);
+    	if (items.isEmpty()) return;
+    	WItem item = items.get(0);
+    	item.item.wdgmsg("drop-identical", item.item);
+    }
+    
+    public void dropIdenticalPartial(String... objNames) {
+    	List<WItem> items = ui().sess.glob.gui.maininv.getitemsPartial(objNames);
     	if (items.isEmpty()) return;
     	WItem item = items.get(0);
     	item.item.wdgmsg("drop-identical", item.item);

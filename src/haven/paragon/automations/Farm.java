@@ -20,7 +20,7 @@ public class Farm implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ui.sess.glob.gui.add(new CloseWindow(), 600, 300);
+			ui().sess.glob.gui.add(new CloseWindow(), 600, 300);
 			Gob crop = mainScreen.getNearestObject("terobjs/plants/");
 			String cropName = crop.getres().name;
 			ArrayList<Gob> cropList = getFarmingGobList(cropName);
@@ -36,8 +36,9 @@ public class Farm implements Runnable {
 			Collections.sort(cropList);
 			Gob crop = cropList.get(0);
 			movement.moveToObject(crop);
-			inventory.drink(80);
+			mainInventory.drink(80);
 			mainScreen.farm(crop);
+			mainInventory.dropIdenticalPartial("seed", "carrot", "beetroot");
 			cropList.remove(0);
 		}
 		System.out.println("Finished farming :");

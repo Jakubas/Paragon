@@ -11,7 +11,7 @@ public class FlowerMenuUtils {
     public boolean waitForFlowerMenu(int timeout) {
     	FlowerMenu menu = null;
     	while (menu == null && timeout > 0) {
-    		menu = ui.root.findchild(FlowerMenu.class);
+    		menu = ui().root.findchild(FlowerMenu.class);
     		sleep(50);
     		timeout -= 50;
     	}
