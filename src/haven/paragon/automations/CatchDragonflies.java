@@ -37,7 +37,10 @@ public class CatchDragonflies implements Runnable {
 				movement.doClickObj(dragonfly, 3, 0);
 				movement.waitForMovement(PING_TIMEOUT);
 				while (movement.isMoving()) {
-					sleep(100);
+					sleep(50);
+					if (interrupted) {
+						return;
+					}
 				}
 				if (prevSize == mainInventory.size())
 					movement.clickInRandomDirection();
