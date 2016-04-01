@@ -1,6 +1,6 @@
 ## Version 1.3.3
 ### Changed:
-- Improved speed of harvester bot, it is now officialy released
+- Improved speed and functionality of harvester bot, it is now officialy released
 - Dragonfly catcher (and other automations) now work with horses
 - Tuber digger can now also be used to dig clay
 
