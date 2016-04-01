@@ -126,7 +126,7 @@ public class MenuGrid extends Widget {
     	Glob glob = ui.sess.glob;
     	Set<Pagina> p = glob.paginae;
     	p.add(glob.paginafor(Resource.local().load("paginae/custom/farm")));
-    	p.add(glob.paginafor(Resource.local().load("paginae/custom/digtubber")));
+    	p.add(glob.paginafor(Resource.local().load("paginae/custom/dig")));
     	p.add(glob.paginafor(Resource.local().load("paginae/custom/patrol")));
     	p.add(glob.paginafor(Resource.local().load("paginae/custom/patrolpathgen")));
     	p.add(glob.paginafor(Resource.local().load("paginae/custom/catchdragonflies")));
@@ -360,7 +360,7 @@ public class MenuGrid extends Widget {
 		case "patrolpathgen":
 			new Thread(new PatrolPathGen()).start();
 			break;
-		case "digtubber":
+		case "dig":
 			new Thread(new Dig()).start();
 			break;
 		case "catchdragonflies":
