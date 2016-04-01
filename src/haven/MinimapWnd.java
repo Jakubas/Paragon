@@ -49,7 +49,7 @@ public class MinimapWnd extends Widget {
 
         pclaim = new ToggleButton("gfx/hud/wndmap/btns/claim", "gfx/hud/wndmap/btns/claim-d", map.visol(0)) {
             {
-                tooltip = Text.render("Display personal claims");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Display personal claims"));
             }
 
             public void click() {
@@ -64,7 +64,7 @@ public class MinimapWnd extends Widget {
         };
         vclaim = new ToggleButton("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", map.visol(2)) {
             {
-                tooltip = Text.render("Display village claims");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Display village claims"));
             }
 
             public void click() {
@@ -79,7 +79,7 @@ public class MinimapWnd extends Widget {
         };
         center = new IButton("gfx/hud/wndmap/btns/center", "", "", "") {
             {
-                tooltip = Text.render("Center the map on player");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Center the map on player"));
             }
 
             public void click() {
@@ -98,7 +98,7 @@ public class MinimapWnd extends Widget {
         };
         viewdist = new IButton("gfx/hud/wndmap/btns/viewdist", "", "", "") {
             {
-                tooltip = Text.render("Show view distance box");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Show view distance box"));
             }
 
             public void click() {
@@ -108,7 +108,7 @@ public class MinimapWnd extends Widget {
         };
         grid = new IButton("gfx/hud/wndmap/btns/grid", "", "", "") {
             {
-                tooltip = Text.render("Show map grid");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Show map grid"));
             }
 
             public void click() {

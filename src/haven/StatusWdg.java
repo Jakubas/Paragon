@@ -89,7 +89,7 @@ public class StatusWdg extends Widget {
             hearthlingscount = "?";
 
         synchronized (StatusWdg.class) {
-            hearthlingsplaying = Text.render(String.format("Players: %s", hearthlingscount), Color.WHITE).tex();
+            hearthlingsplaying = Text.render(String.format(Resource.getLocString(Resource.l10nLabel, "Players: %s"), hearthlingscount), Color.WHITE).tex();
         }
     }
 
@@ -142,7 +142,7 @@ public class StatusWdg extends Widget {
         }
 
         synchronized (this) {
-            pingtime = Text.render(String.format("Ping: %s ms", ping), Color.WHITE).tex();
+            pingtime = Text.render(String.format(Resource.getLocString(Resource.l10nLabel, "Ping: %s ms"), ping), Color.WHITE).tex();
         }
     }
 

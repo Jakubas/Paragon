@@ -38,9 +38,9 @@ public class AutoLeveler extends Window implements GobSelectCallback, ErrorSysMs
         }, new Coord(10, 10).add(wbox.btloff()));
         Frame.around(this, Collections.singletonList(inf));
         inf.add(new RichTextBox(new Coord(245, 55),
-                "Alt + Click to select soil stockpiles for storing or taking the soil from, or leave empty to use all stockpiles in the area.\n\n" +
+                Resource.getLocString(Resource.l10nLabel, "Alt + Click to select soil stockpiles for storing or taking the soil from, or leave empty to use all stockpiles in the area.\n\n" +
                         "Nearest survey flag will be used for leveling.\n\n" +
-                        "Put flasks/waterskins in inventory and hotkey one of them for auto-drinking\n", CharWnd.ifnd));
+                        "Put flasks/waterskins in inventory and hotkey one of them for auto-drinking\n"), CharWnd.ifnd));
 
         Label lblstxt = new Label("Stockpiles Selected:", infof);
         add(lblstxt, new Coord(15, 90));
