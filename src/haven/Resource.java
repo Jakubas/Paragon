@@ -1852,6 +1852,15 @@ public class Resource implements Serializable {
         }
     }
 
+    public static String getLocString(Map<String, String> l10nMap, String label) {
+        if (!language.equals("en") && l10nMap != null) {
+            String ll = l10nMap.get(label);
+            if (ll != null)
+                label = ll;
+        }
+        return label;
+    }
+
     public static Map<String, String> saveStrings(String bundle, Map<String, String> map, String key, String val) {
         synchronized (Resource.class) {
             if (key == null || key.equals(""))
