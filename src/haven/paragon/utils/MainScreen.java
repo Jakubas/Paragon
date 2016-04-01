@@ -115,7 +115,7 @@ public class MainScreen {
     
 	public boolean farm(Gob crop) {
 		movement.doClickObj(crop, 3, 0);
-		if (!flowerMenu.waitForFlowerMenu(1000)) return false;
+		if (!flowerMenu.waitForFlowerMenu(300)) return false;
 		FlowerMenu menu =ui().root.findchild(FlowerMenu.class);
         for (FlowerMenu.Petal opt : menu.opts) {
             if (opt.name.equals("Harvest")) {

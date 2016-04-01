@@ -31,9 +31,7 @@ public class Farm implements Runnable {
 	}
 	
 	public void farmer(ArrayList<Gob> cropList, String cropName) {
-		
 		while (!cropList.isEmpty() && !interrupted) {
-
 			Collections.sort(cropList);
 			Gob crop = cropList.get(0);
 			//movement.moveToObject(crop);
