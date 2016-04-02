@@ -84,7 +84,7 @@ public class CharWnd extends Window {
                 int ver = buf.uint8();
                 if (ver == 1) {
                     col = new Color(buf.uint8(), buf.uint8(), buf.uint8(), buf.uint8());
-                    nm = buf.string();
+                    nm = Resource.getLocString(Resource.l10nTooltip, res.name, buf.string());
                     sort = buf.int16();
                 } else {
                     throw (new Resource.LoadException("unknown foodev version: " + ver, res));
