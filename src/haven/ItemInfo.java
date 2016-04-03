@@ -172,7 +172,7 @@ public abstract class ItemInfo {
 
     public static class Contents extends Tip {
         public final List<ItemInfo> sub;
-        private static final Text.Line ch = Text.render("Contents:");
+        private static final Text.Line ch = Text.render(Resource.getLocString(Resource.l10nLabel, "Contents:"));
         public double content = 0;
         public boolean isseeds;
 
