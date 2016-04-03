@@ -1,3 +1,11 @@
+Version 1.30.3
+    Fixed:
+        * Crash when using catapult.
+
+    Misc:
+        * Localization support for food items, curios, etc, tooltips.
+
+
 Version 1.30.2
     New:
         * Mammoths alarm.
