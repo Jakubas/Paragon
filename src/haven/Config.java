@@ -44,7 +44,6 @@ public class Config {
     public static URL resurl = geturl("haven.resurl", "");
     public static URL mapurl = geturl("haven.mapurl", "");
     public static boolean dbtext = getprop("haven.dbtext", "off").equals("on");
-    public static boolean bounddb = getprop("haven.bounddb", "off").equals("on");
     public static boolean profile = getprop("haven.profile", "off").equals("on");
     public static boolean profilegpu = getprop("haven.profilegpu", "off").equals("on");
     public static boolean fscache = getprop("haven.fscache", "on").equals("on");
@@ -54,7 +53,7 @@ public class Config {
     public static String allused = getprop("haven.allused", null);
     public static int mainport = getint("haven.mainport", 1870);
     public static int authport = getint("haven.authport", 1871);
-    public static boolean softres = getprop("haven.softres", "on").equals("on");
+
     public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
@@ -77,7 +76,6 @@ public class Config {
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
     public static boolean maplocked = Utils.getprefb("maplocked", false);
-    public static boolean mapwndlocked = Utils.getprefb("mapwndlocked", false);
     public static boolean mapshowgrid = Utils.getprefb("mapshowgrid", false);
     public static boolean mapshowviewdist = Utils.getprefb("mapshowviewdist", false);
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
