@@ -21,8 +21,8 @@ public class StatusWdg extends Widget {
     private static ThreadGroup tg = new ThreadGroup("StatusUpdaterThreadGroup");
     private static final String statusupdaterthreadname = "StatusUpdater";
 
-    private static final Tex hearthlingsplayingdef = Text.render("Players: ?", Color.WHITE).tex();
-    private static final Tex pingtimedef = Text.render("Ping: ?", Color.WHITE).tex();
+    private static final Tex hearthlingsplayingdef = Text.render(String.format(Resource.getLocString(Resource.l10nLabel, "Players: %s"), "?"), Color.WHITE).tex();
+    private static final Tex pingtimedef = Text.render(String.format(Resource.getLocString(Resource.l10nLabel, "Ping: %s ms"), "?"), Color.WHITE).tex();
     private static final Tex accountstatusdef = Text.render("Account: ?", Color.WHITE).tex();
 
     private Tex hearthlingsplaying = hearthlingsplayingdef;

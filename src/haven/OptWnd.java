@@ -1343,7 +1343,7 @@ public class OptWnd extends Window {
         // -------------------------------------------- uis
 
         y = 0;
-        uis.add(new Label("Language (req. restart): "), new Coord(0, y));
+        uis.add(new Label("Language (req. restart):"), new Coord(0, y));
         uis.add(langDropdown(), new Coord(120, y));
 
         y += 35;
