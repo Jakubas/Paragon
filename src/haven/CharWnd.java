@@ -268,7 +268,7 @@ public class CharWnd extends Window {
             this.glut = ((Number) args[a++]).doubleValue();
             this.lglut = ((Number) args[a++]).doubleValue();
             this.gmod = ((Number) args[a++]).doubleValue();
-            this.lbl = (String) args[a++];
+            this.lbl = Resource.getLocString(Resource.l10nLabel, (String) args[a++]);
             this.bg = (Color) args[a++];
             this.fg = (Color) args[a++];
             rtip = null;

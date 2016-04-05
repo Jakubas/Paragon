@@ -938,7 +938,9 @@ public class Resource implements Serializable {
                     if (locText.equals(text) || !res.name.startsWith("gfx/invobjs") ||
                             // exclude meat "conditions" since the tooltip is dynamically generated and it won't be in right order
                             text.contains("Raw ") || text.contains("Filet of ") || text.contains("Sizzling") ||
-                            text.contains("Roast") || text.contains("Meat") || text.contains("Spitroast")) {
+                            text.contains("Roast") || text.contains("Meat") || text.contains("Spitroast") ||
+                            // exclude food conditions
+                            res.name.startsWith("gfx/invobjs/food/")) {
                         this.t = locText;
                     } else {
                         this.t = locText + " (" + text + ")";
@@ -1859,6 +1861,15 @@ public class Resource implements Serializable {
                 label = ll;
         }
         return label;
+    }
+
+    public static String getLocStringOrNull(Map<String, String> l10nMap, String label) {
+        if (!language.equals("en") && l10nMap != null) {
+            String ll = l10nMap.get(label);
+            if (ll != null)
+                return ll;
+        }
+        return null;
     }
 
     public static String getLocString(Map<String, String> l10nMap, String key, String def) {
