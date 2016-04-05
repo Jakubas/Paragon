@@ -302,7 +302,7 @@ public class MenuGrid extends Widget {
         return (ui.sess.glob.paginafor(res));
     }
 
-    private void use(String[] ad) {
+    public void use(String[] ad) {
         GameUI gui = gameui();
         if (gui == null)
             return;
