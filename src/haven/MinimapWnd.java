@@ -88,7 +88,7 @@ public class MinimapWnd extends Widget {
         };
         lock = new ToggleButton("gfx/hud/wndmap/btns/lock-d", "gfx/hud/wndmap/btns/lock", Config.maplocked) {
             {
-                tooltip = Text.render("Lock map dragging");
+                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Lock map dragging"));
             }
 
             public void click() {

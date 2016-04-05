@@ -1673,7 +1673,7 @@ public class CharWnd extends Window {
 
             x = 260;
             y = 0;
-            skills.add(new Img(catf.render("Entries").tex()), new Coord(x - 2, y));
+            skills.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Entries")).tex()), new Coord(x - 2, y));
             y += 35;
             Tabs lists = new Tabs(new Coord(x, y), new Coord(attrw + wbox.bisz().x, 0), skills);
             Tabs.Tab nsk = lists.add();

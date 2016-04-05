@@ -1266,7 +1266,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 Tex glow;
 
                 {
-                    this.tooltip = RichText.render("Chat ($col[255,255,0]{Ctrl+C})", 0);
+                    this.tooltip = RichText.render(Resource.getLocString(Resource.l10nLabel, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
                     glow = new TexI(PUtils.rasterimg(PUtils.blurmask(up.getRaster(), 2, 2, Color.WHITE)));
                 }
 
