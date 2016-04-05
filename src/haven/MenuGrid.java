@@ -127,6 +127,7 @@ public class MenuGrid extends Widget {
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/branchoven")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
                 p.add(glob.paginafor(Resource.local().load("paginae/amber/autosurvey")));
+                p.add(glob.paginafor(Resource.local().load("paginae/amber/torch")));
             }
         }
     }
@@ -333,6 +334,9 @@ public class MenuGrid extends Widget {
                     gui.registerErrMsg(lw);
                 }
             }
+        } else if (ad[1].equals("torch")) {
+            Thread t = new Thread(new LightWithTorch(gui), "LightWithTorch");
+            t.start();
         }
     }
 
