@@ -779,7 +779,7 @@ public class Resource implements Serializable {
     }
 
     static {
-        if (!language.equals("en") || (Resource.L10N_DEBUG && language.equals("en"))) {
+        if (!language.equals("en") || Resource.L10N_DEBUG) {
             l10nTooltip = l10n(BUNDLE_TOOLTIP, language);
             l10nPagina = l10n(BUNDLE_PAGINA, language);
             l10nWindow = l10n(BUNDLE_WINDOW, language);
