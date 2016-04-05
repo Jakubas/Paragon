@@ -656,8 +656,23 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
             if (res != null && dangerousanimalrad.contains(res.name)) {
                 if (Config.showanimalrad) {
-                    if (!gob.ols.contains(animalradius))
-                        gob.ols.add(animalradius);
+                    if (!gob.ols.contains(animalradius)) {
+                        GAttrib drw = gob.getattr(Drawable.class);
+                        if (drw != null && drw instanceof Composite) {
+                            Composite cpst = (Composite) drw;
+                            if (cpst.nposes != null && cpst.nposes.size() > 0) {
+                                for (ResData resdata : cpst.nposes) {
+                                    Resource posres = resdata.res.get();
+                                    if (posres != null && !posres.name.endsWith("/knock") || posres == null) {
+                                        gob.ols.add(animalradius);
+                                        break;
+                                    }
+                                }
+                            } else if (!cpst.nposesold){
+                                gob.ols.add(animalradius);
+                            }
+                        }
+                    }
                 } else {
                     gob.ols.remove(animalradius);
                 }
