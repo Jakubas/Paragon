@@ -577,7 +577,7 @@ public class Map {
     }
 
     public boolean isOriginBlocked() {
-        return map[origin][origin] == CELL_BLK || map[origin][origin] == CELL_BLK;
+        return map[origin][origin] == CELL_BLK || map[origin][origin] == CELL_TO;
     }
 
     // 3 pixels away from origin
