@@ -20,26 +20,38 @@ public class Farm implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ui().sess.glob.gui.add(new CloseWindow(), 600, 300);
+			Widget w = ui().sess.glob.gui.add(new CloseWindow(), 600, 300);
 			Gob crop = mainScreen.getNearestObject("terobjs/plants/");
 			String cropName = crop.getres().name;
 			ArrayList<Gob> cropList = getFarmingGobList(cropName);
 			farmer(cropList,  cropName);
+			w.destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void farmer(ArrayList<Gob> cropList, String cropName) {
-		while (!cropList.isEmpty() && !interrupted) {
-			Collections.sort(cropList);
-			Gob crop = cropList.get(0);
-			//movement.moveToObject(crop);
+		while (!interrupted) {
+			Gob crop = findCrop(cropName);
+			if (crop == null)
+				return;
 			mainInventory.drink(41);
 			mainScreen.farm(crop);
 			mainInventory.dropIdenticalPartial("Seed", "seed", "Carrot", "Beetroot");
-			cropList.remove(0);
 		}
+	}
+	
+	public Gob findCrop(String cropName) {
+		Gob crop = null;
+		if ((crop = mainScreen.getObjectAt(player().rc.add(0, 11), cropName)) != null) {
+		} else if ((crop = mainScreen.getObjectAt(player().rc.add(11, 0), cropName)) != null) {
+		} else if ((crop = mainScreen.getObjectAt(player().rc.add(0, -11), cropName)) != null) {
+		} else if ((crop = mainScreen.getObjectAt(player().rc.add(-11, 0), cropName)) != null) {
+		} else {
+			crop = mainScreen.getNearestObject(10, cropName);
+		}
+		return crop;
 	}
 	
 	public ArrayList<Gob> getFarmingGobList(String cropName) {

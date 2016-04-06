@@ -54,7 +54,7 @@ public class Movement {
 		ui().sess.glob.gui.map.wdgmsg("click", Coord.z, gob.rc, 1, 0, 0, (int)gob.id, gob.rc, 0, -1);
 		waitForMovement(PING_TIMEOUT);
 		while (isMoving()) {
-			sleep(100);
+			sleep(50);
 		}
 	}
 	

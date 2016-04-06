@@ -1,3 +1,8 @@
+## Version 1.3.4
+### Changed:
+- Fixed a bug in harvester that was causing some players to stop after 10-20 tiles by changing the way
+  the next crop to harvest is calculated
+
 ## Version 1.3.3
 ### Changed:
 - Improved speed and functionality of harvester bot, it is now officialy released

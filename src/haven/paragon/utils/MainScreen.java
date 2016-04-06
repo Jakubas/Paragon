@@ -22,7 +22,7 @@ public class MainScreen {
 	public Gob getNearestObject(int radius, String... string) {
 		return findMapObject(radius, 0, 0, string);
 	}
-    
+   
 	 public Gob findMapObject(int radius, int x, int y, String... names) {
         Coord my = player().rc;
         Coord offset = new Coord(x, y).mul(11);
@@ -101,6 +101,21 @@ public class MainScreen {
         return gobs;
 	 }
 	 
+	public Gob getObjectAt(Coord coord, String... names) {
+        synchronized (ui().sess.glob.oc) {
+            for (Gob gob : ui().sess.glob.oc) {
+                if (gob.coord().dist(coord) < 5.5) {
+                    for (String name : names) {
+                        if (gob.isName(name)) {
+                            return gob;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+	}
+	 
     public boolean waitForProgressBar(int timeout) {
     	while (!isProgressBar() && timeout > 0) {
     		sleep(10);
@@ -121,7 +136,7 @@ public class MainScreen {
             if (opt.name.equals("Harvest")) {
                 menu.choose(opt);
                 menu.destroy();
-                waitForProgressBar(PING_TIMEOUT*3);
+                waitForProgressBar((int)(PING_TIMEOUT*2.5));
                 while (crop.exists() && isProgressBar()) {
                 	sleep(10);
                 };

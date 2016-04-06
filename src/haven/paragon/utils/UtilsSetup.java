@@ -13,7 +13,7 @@ public class UtilsSetup {
 	public static Movement	movement = new Movement();
 	public static MainInventory mainInventory = new MainInventory();		
 	
-	public static final int PING_TIMEOUT = 1000;
+	public static final int PING_TIMEOUT = 1500;
 
 	public static UI ui() {
 		return HavenPanel.lui;
