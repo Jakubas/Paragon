@@ -903,9 +903,17 @@ public class CharWnd extends Window {
             public String status;
 
             public Condition(String desc, boolean done, String status) {
-                this.desc = desc;
+                if (!Resource.language.equals("en"))
+                    this.desc = Resource.getLocString(Resource.l10nLabel, desc);
+                else
+                    this.desc = desc;
+
                 this.done = done;
-                this.status = status;
+
+                if (!Resource.language.equals("en") && status != null)
+                    this.status = Resource.getLocString(Resource.l10nLabel, status);
+                else
+                    this.status = status;
             }
         }
 
