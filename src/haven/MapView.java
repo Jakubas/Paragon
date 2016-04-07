@@ -272,6 +272,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public void drag(Coord c) {
+            if (c == null || dragorig == null)
+                return;
             if (Config.reversebadcamx)
                 c = new Coord(c.x + (dragorig.x - c.x) * 2, c.y);
             if (Config.reversebadcamy)
@@ -418,6 +420,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public void drag(Coord c) {
+            if (c == null || dragorig == null)
+                return;
             tangl = anglorig + ((float) (c.x - dragorig.x) / 100.0f);
         }
 
