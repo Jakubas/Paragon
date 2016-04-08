@@ -1379,12 +1379,15 @@ public class OptWnd extends Window {
                 Utils.setprefb("fbelt", val);
                 Config.fbelt = val;
                 a = val;
-                FBelt fbelt = gameui().fbelt;
-                if (fbelt != null) {
-                    if (val)
-                        fbelt.show();
-                    else
-                        fbelt.hide();
+                GameUI gui = gameui();
+                if (gui != null) {
+                    FBelt fbelt = gui.fbelt;
+                    if (fbelt != null) {
+                        if (val)
+                            fbelt.show();
+                        else
+                            fbelt.hide();
+                    }
                 }
             }
         }, new Coord(0, y));
