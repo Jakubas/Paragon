@@ -50,23 +50,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     };
     private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 12).aa(true);
-    private static final Text.Foundry stagemax = new Text.Foundry(Text.sansb, 20).aa(true);
     private final Collection<ResAttr.Cell<?>> rdata = new LinkedList<ResAttr.Cell<?>>();
     private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
-    private static final Color stagecolor = new Color(255, 227, 168);
-    private static final Color stagemaxcolor = new Color(254, 100, 100);
-    private static final Tex[] cropstg = new Tex[]{
-            Text.renderstroked("2", stagecolor, Color.BLACK, gobhpf).tex(),
-            Text.renderstroked("3", stagecolor, Color.BLACK, gobhpf).tex(),
-            Text.renderstroked("4", stagecolor, Color.BLACK, gobhpf).tex(),
-            Text.renderstroked("5", stagecolor, Color.BLACK, gobhpf).tex()
-    };
-    private static final Tex cropstgmax = Text.renderstroked("\u2022", stagemaxcolor, Color.BLACK, stagemax).tex();
-    private PView.Draw2D[] cropstgd = new PView.Draw2D[4];
-    private PView.Draw2D cropstgdmax;
     private int cropstgmaxval = 0;
     private Overlay gobpath = null;
-    private static final Tex[] treestg = new Tex[90];
     private static final Material.Colors dframeEmpty = new Material.Colors(new Color(0, 255, 0, 255));
     private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 255));
     private static final Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F));
@@ -194,12 +181,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     }
 
-    static {
-        for (int i = 10; i < 100; i++) {
-            treestg[i - 10] = Text.renderstroked(i + "", stagecolor, Color.BLACK, gobhpf).tex();
-        }
-    }
-
     public static class Static {}
 
     public Gob(Glob glob, Coord c, long id, int frame) {
@@ -208,24 +189,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         this.id = id;
         this.frame = frame;
         loc.tick();
-        for (int i = 0; i < 4; i++) {
-            final int fini = i;
-            cropstgd[i] = new PView.Draw2D() {
-                public void draw2d(GOut g) {
-                    if (sc != null) {
-                        g.image(cropstg[fini], sc);
-                    }
-                }
-            };
-        }
-
-        cropstgdmax = new PView.Draw2D() {
-            public void draw2d(GOut g) {
-                if (sc != null) {
-                    g.image(cropstgmax, sc);
-                }
-            }
-        };
     }
 
     public Gob(Glob glob, Coord c) {
@@ -544,10 +507,15 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                                         cropstgmaxval = stg;
                                 }
                             }
-                            if (stage == cropstgmaxval)
-                                rl.add(cropstgdmax, null);
-                            else if (stage > 0 && stage < 5)
-                                rl.add(cropstgd[stage - 1], null);
+                            Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
+                            if (ol == null && (stage == cropstgmaxval || stage > 0 && stage < 5)) {
+                                ols.add(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
+
+                            } else if (stage <= 0 || stage >= 5) {
+                                ols.remove(ol);
+                            } else if (((PlantStageSprite)ol.spr).stg != stage) {
+                                ((PlantStageSprite)ol.spr).update(stage, cropstgmaxval);
+                            }
                         } catch (ArrayIndexOutOfBoundsException e) { // ignored
                         }
                     }
@@ -559,13 +527,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                         try {
                             final int stage = rd.sdt.peekrbuf(0);
                             if (stage < 100) {
-                                PView.Draw2D treestgdrw = new PView.Draw2D() {
-                                    public void draw2d(GOut g) {
-                                        if (sc != null)
-                                            g.image(treestg[stage - 10], sc.sub(10, 5));
-                                    }
-                                };
-                                rl.add(treestgdrw, null);
+                                Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
+                                if (ol == null) {
+                                    ols.add(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
+                                } else if (((TreeStageSprite)ol.spr).val != stage) {
+                                    ((TreeStageSprite)ol.spr).update(stage);
+                                }
                             }
                         } catch (ArrayIndexOutOfBoundsException e) { // ignored
                         }
