@@ -32,6 +32,7 @@ import java.util.*;
 import java.lang.reflect.Constructor;
 
 public abstract class Sprite implements Rendered {
+    public static final int GOB_HEALTH_ID = -1001;
     public final Resource res;
     public final Owner owner;
     public static List<Factory> factories = new LinkedList<Factory>();

@@ -2264,4 +2264,15 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         if (autoleveler != null)
             autoleveler.terminate();
     }
+
+    public void removeCustomSprites(int id) {
+        OCache oc = ui.sess.glob.oc;
+        synchronized (oc) {
+            for (Gob gob : oc) {
+                Gob.Overlay ol = gob.findol(id);
+                if (ol != null)
+                    gob.ols.remove(ol);
+            }
+        }
+    }
 }
