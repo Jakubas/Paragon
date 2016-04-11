@@ -68,7 +68,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0));
     private static final Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F));
     private static final Gob.Overlay rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F));
-    private static final Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F));
     private long lastmmhittest = System.currentTimeMillis();
     private Coord lasthittestc = Coord.z;
     public AreaMine areamine;
@@ -78,9 +77,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public SteelRefueler steelrefueler;
     public AutoLeveler autoleveler;
     private final PartyHighlight partyHighlight;
-
-    private static final Set<String> dangerousanimalrad = new HashSet<String>(Arrays.asList(
-            "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx", "gfx/kritter/badger/badger"));
 
     public interface Delayed {
         public void run(GOut g);
@@ -656,30 +652,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     gob.ols.add(rovl);
                 else if (!show && rovl != null)
                     gob.ols.remove(rovl);
-            }
-
-            if (res != null && dangerousanimalrad.contains(res.name)) {
-                if (Config.showanimalrad) {
-                    if (!gob.ols.contains(animalradius)) {
-                        GAttrib drw = gob.getattr(Drawable.class);
-                        if (drw != null && drw instanceof Composite) {
-                            Composite cpst = (Composite) drw;
-                            if (cpst.nposes != null && cpst.nposes.size() > 0) {
-                                for (ResData resdata : cpst.nposes) {
-                                    Resource posres = resdata.res.get();
-                                    if (posres != null && !posres.name.endsWith("/knock") || posres == null) {
-                                        gob.ols.add(animalradius);
-                                        break;
-                                    }
-                                }
-                            } else if (!cpst.nposesold){
-                                gob.ols.add(animalradius);
-                            }
-                        }
-                    }
-                } else {
-                    gob.ols.remove(animalradius);
-                }
             }
         } catch (Loading le) {
         }
