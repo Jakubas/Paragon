@@ -1110,11 +1110,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private static final int WND_WAIT_SLEEP = 8;
     public Window waitfForWnd(String cap, int timeout) {
         int t  = 0;
-        while (t < WND_WAIT_SLEEP) {
+        while (t < timeout) {
             Window wnd = getwnd(cap);
             if (wnd != null)
                 return wnd;
-            timeout += WND_WAIT_SLEEP;
+            t += WND_WAIT_SLEEP;
             try {
                 Thread.sleep(WND_WAIT_SLEEP);
             } catch (InterruptedException e) {
@@ -1123,8 +1123,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         return null;
     }
-
-
 
     public List<IMeter.Meter> getmeters(String name) {
         for (Widget meter : meters) {
