@@ -48,10 +48,8 @@ public class Utils {
         int t = 0;
         while (gui.prog == -1) {
             t += PROG_ACT_DELAY;
-            if (t >= timeout) {
-                gui.error(error);
-                return false;
-            }
+            if (t >= timeout)
+                break;
             try {
                 Thread.sleep(PROG_ACT_DELAY);
             } catch (InterruptedException ie) {
