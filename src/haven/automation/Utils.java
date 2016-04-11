@@ -30,7 +30,6 @@ public class Utils {
     public static boolean waitForOccupiedHand(GameUI gui, int timeout, String error) throws InterruptedException {
         int t = 0;
         while (gui.vhand == null) {
-            System.out.println("occ");
             t += HAND_DELAY;
             if (t >= timeout) {
                 gui.error(error);
