@@ -156,9 +156,8 @@ public class OverTex extends GLState {
 
     @VertexBuf.ResName("otex")
     public static class OTexC extends VertexBuf.Vec2Array {
-        public OTexC(FloatBuffer data) {
-            super(data, otexc);
-        }
+        public OTexC(FloatBuffer data) {super(data, otexc);}
+        public OTexC(Resource res, Message buf, int nv) {this(VertexBuf.loadbuf(Utils.wfbuf(nv * 2), buf));}
     }
 
     static {
