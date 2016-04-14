@@ -1439,7 +1439,7 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        uis.add(new CheckBox("Show Craft/Build history belt") {
+        uis.add(new CheckBox("Show Craft/Build history toolbar") {
             {
                 a = Config.histbelt;
             }
