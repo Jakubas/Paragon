@@ -81,6 +81,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean crimeautotgld = false;
     private boolean trackautotgld = false;
     public FBelt fbelt;
+    public CraftHistoryBelt histbelt;
     private ErrorSysMsgCallback errmsgcb;
 
     public abstract class Belt extends Widget {
@@ -194,6 +195,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         add(fbelt, Utils.getprefc("fbelt_c", new Coord(20, 200)));
         if (!Config.fbelt)
             fbelt.hide();
+
+        histbelt = new CraftHistoryBelt(Utils.getprefb("histbelt_vertical", true));
+        add(histbelt, Utils.getprefc("histbelt_c", new Coord(70, 200)));
+        if (!Config.histbelt)
+            histbelt.hide();
     }
 
     /* Ice cream */

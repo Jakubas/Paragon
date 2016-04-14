@@ -158,6 +158,7 @@ public class Config {
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
     public static boolean fbelt = Utils.getprefb("fbelt", false);
+    public static boolean histbelt = Utils.getprefb("histbelt", false);
     public static boolean dropore = Utils.getprefb("dropore", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", false);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);

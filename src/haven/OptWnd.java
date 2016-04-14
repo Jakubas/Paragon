@@ -1438,6 +1438,28 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Show Craft/Build history belt") {
+            {
+                a = Config.histbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("histbelt", val);
+                Config.histbelt = val;
+                a = val;
+                GameUI gui = gameui();
+                if (gui != null) {
+                    CraftHistoryBelt histbelt = gui.histbelt;
+                    if (histbelt != null) {
+                        if (val)
+                            histbelt.show();
+                        else
+                            histbelt.hide();
+                    }
+                }
+            }
+        }, new Coord(0, y));
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
