@@ -1337,18 +1337,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        y = 0;
-        control.add(new CheckBox("Transfer items in ascending order instead of descending") {
-            {
-                a = Config.sortascending;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("sortascending", val);
-                Config.sortascending = val;
-                a = val;
-            }
-        }, new Coord(320, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
