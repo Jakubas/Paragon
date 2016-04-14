@@ -989,7 +989,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Config.tilecenter = !Config.tilecenter;
             Utils.setprefb("tilecenter", Config.tilecenter);
             msg("Tile centering is now turned " + (Config.tilecenter ? "on." : "off."), Color.WHITE);
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_D) {
+            Config.showminerad = !Config.showminerad;
+            Utils.setprefb("showminerad", Config.showminerad);
+            return true;
+        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_D) {
+            Config.showfarmrad = !Config.showfarmrad;
+            Utils.setprefb("showfarmrad", Config.showfarmrad);
+            return true;
         }
+
         return (super.globtype(key, ev));
     }
 
