@@ -546,8 +546,12 @@ public class Skeleton {
                 int mask = Sprite.decnum(sdt);
                 Collection<PoseMod> poses = new ArrayList<PoseMod>(16);
                 for (ResPose p : res.layers(ResPose.class)) {
-                    if ((p.id < 0) || ((mask & (1 << p.id)) != 0))
+                    if ((p.id < 0) || ((mask & (1 << p.id)) != 0)) {
+                        if (Config.disableanimSet.contains("/idle") && res.name.endsWith("/idle") &&
+                                !res.name.startsWith("gfx/borka"))
+                            continue;
                         poses.add(p.forskel(owner, skel, p.defmode));
+                    }
                 }
                 if (poses.size() == 0)
                     return (skel.nilmod());
@@ -560,6 +564,9 @@ public class Skeleton {
     }
 
     public PoseMod mkposemod(ModOwner owner, Resource res, Message sdt) {
+
+        System.out.println("mkposemod: " + res.name);
+
         ModFactory f = res.getcode(ModFactory.class, false);
         if (f == null)
             f = ModFactory.def;

@@ -221,11 +221,34 @@ public class Config {
             "gfx/terobjs/herbs/flotsam", "gfx/terobjs/herbs/chimingbluebell", "gfx/terobjs/herbs/edelweiss",
             "gfx/terobjs/herbs/bloatedbolete", "gfx/terobjs/herbs/glimmermoss"));
 
+    public final static ArrayList<Pair<String, String>> disableanim = new ArrayList<Pair<String, String>>() {{
+        add(new Pair<String, String>("Beehives", "gfx/terobjs/beehive"));
+        add(new Pair<String, String>("Fires", "gfx/terobjs/pow"));
+        add(new Pair<String, String>("Full trash stockpiles", "gfx/terobjs/stockpile-trash"));
+        add(new Pair<String, String>("Idle animals", "/idle"));
+        add(new Pair<String, String>("Dream catchers", "gfx/terobjs/dreca"));
+    }};
+    public final static Set<String> disableanimSet = new HashSet<String>(disableanim.size());
+
+
     static {
         Arrays.sort(Config.boulders);
         Arrays.sort(Config.bushes);
         Arrays.sort(Config.trees);
         Arrays.sort(Config.icons);
+        Collections.sort(disableanim, (o1, o2) -> o1.a.compareTo(o2.a));
+
+        String[] disableanimsel = Utils.getprefsa("disableanim", null);
+        if (disableanimsel != null) {
+            for (String selname : disableanimsel) {
+                for (Pair<String, String> selpair : Config.disableanim) {
+                    if (selpair.a.equals(selname)) {
+                        Config.disableanimSet.add(selpair.b);
+                        break;
+                    }
+                }
+            }
+        }
 
         String p;
         if ((p = getprop("haven.authck", null)) != null)
