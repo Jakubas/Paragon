@@ -376,7 +376,7 @@ public class WItem extends Widget implements DTarget {
                 }
                 String url = String.format("http://ringofbrodgar.com/wiki/%s", name);
                 openwebpage(url);
-            } else if (ui.modshift)
+            } else if (ui.modshift && !ui.modmeta)
                 item.wdgmsg("transfer", c);
             else if (ui.modctrl)
                 item.wdgmsg("drop", c);
