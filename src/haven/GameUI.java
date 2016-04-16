@@ -955,11 +955,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             quickslots.drop(QuickSlotsWdg.lc, Coord.z);
-            quickslots.mousedown(QuickSlotsWdg.lc, 1);
+            quickslots.simulateclick(QuickSlotsWdg.lc);
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_X) {
             quickslots.drop(QuickSlotsWdg.rc, Coord.z);
-            quickslots.mousedown(QuickSlotsWdg.rc, 1);
+            quickslots.simulateclick(QuickSlotsWdg.rc);
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_S) {
             HavenPanel.needtotakescreenshot = true;
