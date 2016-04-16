@@ -700,7 +700,7 @@ public class CharWnd extends Window {
                             if (res != null) {
                                 Double t = CurioStudyTimes.curios.get(res.basename());
                                 if (t != null) {
-                                    tlph += ci.exp / Math.round(t);
+                                    tlph += Math.round(ci.exp / t);
                                 }
                             }
                         } catch (Loading l) {
