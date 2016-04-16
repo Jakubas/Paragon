@@ -167,6 +167,7 @@ public class Config {
     public static boolean noquests =  Utils.getprefb("noquests", false);
     public static boolean alarmbram =  Utils.getprefb("alarmbram", false);
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0);
+    public static boolean instantflowermenu =  Utils.getprefb("instantflowermenu", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

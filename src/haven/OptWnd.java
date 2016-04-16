@@ -1489,6 +1489,18 @@ public class OptWnd extends Window {
                 }
             }
         }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Instant flower menus") {
+            {
+                a = Config.instantflowermenu;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("instantflowermenu", val);
+                Config.instantflowermenu = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
