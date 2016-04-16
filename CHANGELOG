@@ -1,3 +1,10 @@
+Version 1.32.1
+    Fixed:
+        * Crash when studying curios with less than 1 hour study time.
+        * alt+z/x not working.
+        * Re-enabled shift+alt+lmb.
+
+
 Version 1.32.0
     New:
         * Craft/build history hotbelt.
