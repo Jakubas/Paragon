@@ -199,7 +199,12 @@ public class FBelt extends Widget implements DTarget, DropTarget {
     }
 
     private void use(int slot) {
-        Resource res = belt[slot].get();
+        Resource res;
+        try {
+            res = belt[slot].get();
+        } catch (Loading l) {
+            return;
+        }
         if (res.name.equals("gfx/invobjs/small/waterskin") || res.name.equals("gfx/invobjs/waterflask")) {
             gameui().wdgmsg("belt", getServerSlot(slot), 1, ui.modflags());
         } else {
