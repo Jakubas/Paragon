@@ -23,7 +23,7 @@ public class CraftHistoryBelt extends Widget {
     }
 
     private int beltslot(Coord c) {
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < SIZE; i++) {
             if (c.isect(beltc(i), invsq.sz()))
                 return i;
         }
@@ -32,7 +32,7 @@ public class CraftHistoryBelt extends Widget {
 
     @Override
     public void draw(GOut g) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < SIZE; i++) {
             int slot = i;
             Coord c = beltc(i);
             g.image(invsq, c);
