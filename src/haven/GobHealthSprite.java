@@ -33,7 +33,7 @@ public class GobHealthSprite extends Sprite {
 
     public void update(int val) {
         this.val = val;
-        switch (val) {
+        switch (val - 1) {
             case 0:
                 tex = hlt0;
                 break;

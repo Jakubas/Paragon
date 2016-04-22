@@ -44,12 +44,15 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Collection<Overlay> ols = new LinkedList<Overlay>() {
         public boolean add(Overlay item) {
 	        /* XXX: Remove me once local code is changed to use addol(). */
-            if(glob.oc.getgob(id) != null)
-                glob.oc.changed(Gob.this);
+            if(glob.oc.getgob(id) != null) {
+                // FIXME: extend ols with a method for adding sprites without triggering changed.
+                if (item.id != Sprite.GROWTH_STAGE_ID && item.id != Sprite.GOB_HEALTH_ID && item != animalradius)
+                    glob.oc.changed(Gob.this);
+            }
             return(super.add(item));
         }
     };
-    private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 12).aa(true);
+
     private final Collection<ResAttr.Cell<?>> rdata = new LinkedList<ResAttr.Cell<?>>();
     private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
     private int cropstgmaxval = 0;
@@ -422,7 +425,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (Config.showgobhp && hlt.hp < 4) {
                 Overlay ol = findol(Sprite.GOB_HEALTH_ID);
                 if (ol == null) {
-                    ols.add(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hlt.hp)));
+                    System.out.println("-adding dmg ol");
+                    addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hlt.hp)));
                 } else if (((GobHealthSprite)ol.spr).val != hlt.hp) {
                     ((GobHealthSprite)ol.spr).update(hlt.hp);
                 }
@@ -509,8 +513,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             }
                             Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                             if (ol == null && (stage == cropstgmaxval || stage > 0 && stage < 5)) {
-                                ols.add(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
-
+                                System.out.println("===== crop");
+                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
                             } else if (stage <= 0 || stage >= 5) {
                                 ols.remove(ol);
                             } else if (((PlantStageSprite)ol.spr).stg != stage) {
@@ -529,7 +533,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             if (stage < 100) {
                                 Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                                 if (ol == null) {
-                                    ols.add(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
+                                    addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
                                 } else if (((TreeStageSprite)ol.spr).val != stage) {
                                     ((TreeStageSprite)ol.spr).update(stage);
                                 }
