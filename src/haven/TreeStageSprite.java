@@ -26,7 +26,7 @@ public class TreeStageSprite extends Sprite {
         Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(), mv = new Matrix4f();
         mv.load(cam.load(buf.get(PView.cam).fin(Matrix4f.id))).mul1(wxf.load(buf.get(PView.loc).fin(Matrix4f.id)));
         Coord3f s = buf.get(PView.proj).toscreen(mv.mul4(Coord3f.o), buf.get(PView.wnd).sz());
-        g.image(tex, new Coord((int) s.x - 15, (int) s.y - 30));
+        g.image(tex, new Coord((int) s.x - 8, (int) s.y - 20));
     }
 
     public boolean setup(RenderList rl) {
