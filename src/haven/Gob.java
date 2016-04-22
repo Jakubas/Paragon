@@ -513,7 +513,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             }
                             Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                             if (ol == null && (stage == cropstgmaxval || stage > 0 && stage < 5)) {
-                                System.out.println("===== crop");
                                 addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
                             } else if (stage <= 0 || stage >= 5) {
                                 ols.remove(ol);
