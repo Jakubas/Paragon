@@ -1980,6 +1980,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 camera = makecam(camtypes.get(cam), args);
                 Utils.setpref("defcam", cam);
                 Utils.setprefb("camargs", Utils.serialize(args));
+                refreshGobsAll();
             }
             return true;
         }
