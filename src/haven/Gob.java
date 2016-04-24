@@ -425,7 +425,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (Config.showgobhp && hlt.hp < 4) {
                 Overlay ol = findol(Sprite.GOB_HEALTH_ID);
                 if (ol == null) {
-                    System.out.println("-adding dmg ol");
                     addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hlt.hp)));
                 } else if (((GobHealthSprite)ol.spr).val != hlt.hp) {
                     ((GobHealthSprite)ol.spr).update(hlt.hp);
