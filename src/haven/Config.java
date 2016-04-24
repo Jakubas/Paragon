@@ -173,6 +173,7 @@ public class Config {
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;
+    public static String gitrev;
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
@@ -256,11 +257,13 @@ public class Config {
             authck = Utils.hex2byte(p);
 
         try {
-            InputStream in = ErrorHandler.class.getResourceAsStream("/version");
+            InputStream in = ErrorHandler.class.getResourceAsStream("/buildinfo");
             try {
                 if (in != null) {
                     java.util.Scanner s = new java.util.Scanner(in);
-                    version = s.next();
+                    String[] binfo = s.next().split(",");
+                    version = binfo[0];
+                    gitrev = binfo[1];
                 }
             } finally {
                 in.close();
