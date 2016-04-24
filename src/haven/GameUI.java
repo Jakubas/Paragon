@@ -967,6 +967,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
             Config.hidegobs = !Config.hidegobs;
             Utils.setprefb("hidegobs", Config.hidegobs);
+            if (map != null)
+                map.refreshGobsHidable();
             return true;
         } else if (ev.getKeyCode() == KeyEvent.VK_TAB && Config.agroclosest) {
             if (map != null)
@@ -980,6 +982,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_B) {
             Config.showboundingboxes = !Config.showboundingboxes;
             Utils.setprefb("showboundingboxes", Config.showboundingboxes);
+            if (map != null)
+                map.refreshGobsAll();
             return true;
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             Config.pf = !Config.pf;

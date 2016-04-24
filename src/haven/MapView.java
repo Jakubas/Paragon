@@ -2292,4 +2292,28 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
         }
     }
+
+    public void refreshGobsAll() {
+        OCache oc = glob.oc;
+        synchronized (oc) {
+            for (Gob gob : oc)
+                oc.changed(gob);
+        }
+    }
+
+    public void refreshGobsHidable() {
+        OCache oc = glob.oc;
+        synchronized (oc) {
+            for (Gob gob : oc) {
+                try {
+                    Resource res = gob.getres();
+                    if (res != null && res.name.startsWith("gfx/terobjs/trees")
+                            && !res.name.endsWith("log") && !res.name.endsWith("oldtrunk"))
+                        oc.changed(gob);
+                } catch (Loading l) {
+                }
+
+            }
+        }
+    }
 }
