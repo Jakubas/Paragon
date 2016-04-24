@@ -2275,4 +2275,21 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
         }
     }
+
+    public void addHealthSprites() {
+        OCache oc = glob.oc;
+        synchronized (oc) {
+            for (Gob gob : oc) {
+                final GobHealth hlt = gob.getattr(GobHealth.class);
+                if (hlt != null && hlt.hp < 4) {
+                    Gob.Overlay ol = gob.findol(Sprite.GOB_HEALTH_ID);
+                    if (ol == null)
+                        gob.addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hlt.hp)));
+                    else if (((GobHealthSprite)ol.spr).val != hlt.hp)
+                        ((GobHealthSprite)ol.spr).update(hlt.hp);
+                    oc.changed(gob);
+                }
+            }
+        }
+    }
 }
