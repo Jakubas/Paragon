@@ -612,6 +612,21 @@ public class OptWnd extends Window {
             }
         }, new Coord(250, y));
         y += 20;
+        audio.add(new Label("'Whip' sound volume"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxwhipvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxwhipvol = vol;
+                Utils.setprefd("sfxwhipvol", vol);
+            }
+        }, new Coord(250, y));
+        y += 20;
         audio.add(new CheckBox("Disable metallic mining sound") {
             {
                 a = Config.nometallicsfx;
@@ -738,7 +753,8 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmmammothvol", vol);
             }
         }, new Coord(250, y));
-        y += 20;
+        // -------------------------------------------- audio 3rd column
+        y = 0;
         audio.add(new CheckBox("Alarm on battering rams and catapults") {
             {
                 a = Config.alarmbram;
@@ -749,7 +765,7 @@ public class OptWnd extends Window {
                 Config.alarmbram = val;
                 a = val;
             }
-        }, new Coord(250, y));
+        }, new Coord(500, y));
         y += 15;
         audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
@@ -762,7 +778,8 @@ public class OptWnd extends Window {
                 Config.alarmbramvol = vol;
                 Utils.setprefd("alarmbramvol", vol);
             }
-        }, new Coord(250, y));
+        }, new Coord(500, y));
+
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
