@@ -216,7 +216,7 @@ public class MinimapWnd extends Widget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-        if (!minimized && c.x > sz.x - 40 && c.y > sz.y - 30) {
+        if (!minimized && c.x > sz.x - 20 && c.y > sz.y - 15) {
             doff = c;
             dm = ui.grabmouse(this);
             resizing = true;
