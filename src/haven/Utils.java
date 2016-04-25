@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.*;
 import java.net.URL;
@@ -1305,6 +1306,17 @@ public class Utils {
         return az2qwmap.containsKey(az) ? az2qwmap.get(az) : az;
     }
 
+    // Windows only
+    public static Long getScancode(final KeyEvent keyEvent) {
+        try {
+            Field field = KeyEvent.class.getDeclaredField("scancode");
+            field.setAccessible(true);
+            return field.getLong(keyEvent);
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+            return null;
+        }
+    }
+    
     public static final Comparator<Object> idcmd = new Comparator<Object>() {
         int eid = 0;
         final Map<Ref, Long> emerg = new HashMap<Ref, Long>();
