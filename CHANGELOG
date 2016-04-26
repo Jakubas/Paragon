@@ -1,3 +1,15 @@
+Version 1.32.7
+    New:
+        * Cart icon.
+        * Volume slider for wagon whip sound.
+
+    Fixed:
+        * Floating hearth fire names when fire animation are disabled.
+
+    Misc:
+        * Merged upstream changes.
+
+
 Version 1.32.6
     Fixed:
         * Custom gfx/hud/drop resource conflict with other clients.
