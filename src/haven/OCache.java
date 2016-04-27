@@ -241,7 +241,7 @@ public class OCache implements Iterable<Gob> {
 
     public synchronized void cmppose(Gob g, int pseq, List<ResData> poses, List<ResData> tposes, boolean interp, float ttime) {
         Composite cmp = (Composite) g.getattr(Drawable.class);
-        if (cmp.pseq != pseq) {
+        if (cmp != null && cmp.pseq != pseq) {
             cmp.pseq = pseq;
             if (poses != null)
                 cmp.chposes(poses, interp);
