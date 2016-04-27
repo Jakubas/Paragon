@@ -1,3 +1,9 @@
+Version 1.32.8
+    Fixed:
+        * change was erroneously called for linstep event.
+        * NPE in OCache.cmppose
+
+
 Version 1.32.7
     New:
         * Cart icon.
