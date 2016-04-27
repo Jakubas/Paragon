@@ -212,7 +212,6 @@ public class OCache implements Iterable<Gob> {
             if (pf != null && g.isplayer())
                 pf.moveStep(l);
         }
-        changed(g);
     }
 
     public synchronized void speak(Gob g, float zo, String text) {
