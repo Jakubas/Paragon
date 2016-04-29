@@ -32,6 +32,9 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 public class Fightsess extends Widget {
+    private static final Text.Foundry cdfndr = new Text.Foundry(Text.serif, 18).aa(true);
+    private static final Color cdclrpos = new Color(128, 128, 255);
+    private static final Color cdclrneg = new Color(239, 41, 41);
     public static final Tex lframe = Resource.loadtex("gfx/hud/combat/lframe");
     public static final int actpitch = 50;
     public final Indir<Resource>[] actions;
@@ -41,6 +44,19 @@ public class Fightsess extends Widget {
     public int pho;
     private final Fightview fv;
     private static final DecimalFormat cdfmt = new DecimalFormat("#.#");
+    private Tex cddeltatex = null;
+
+    private static final Map<String, Integer> atkcds = new HashMap<String, Integer>(9){{
+        put("Chop", 50);
+        put("Cleave", 80);
+        put("Haymaker", 60);
+        put("Kick", 45);
+        put("Knock Its Teeth Out", 35);
+        put("Left Hook", 40);
+        put("Low Blow", 30);
+        put("Punch", 30);
+        put("Sting", 35);
+    }};
 
     @RName("fsess")
     public static class $_ implements Factory {
@@ -132,8 +148,11 @@ public class Fightsess extends Widget {
             g.aimage(ip.get().tex(), pcc.add(-75, 0), 1, 0.5);
             g.aimage(oip.get().tex(), pcc.add(75, 0), 0, 0.5);
 
-	    if(fv.lsrel.size() > 1)
-		fxon(fv.current.gobid, tgtfx);
+	        if(fv.lsrel.size() > 1)
+		        fxon(fv.current.gobid, tgtfx);
+
+            if (cddeltatex != null && Config.showcddelta)
+                g.aimage(cddeltatex, pcc.add(0, 110), 0.5, 1);
         }
 
         if (now < fv.atkct) {
@@ -222,6 +241,21 @@ public class Fightsess extends Widget {
         } else if (msg == "use") {
             this.use = (Integer) args[0];
         } else if (msg == "used") {
+            Indir<Resource> act = actions[(Integer) args[0]];
+            try {
+                if (act != null) {
+                    Resource.Tooltip tt = act.get().layer(Resource.Tooltip.class);
+                    if (tt != null) {
+                        Integer cd = atkcds.get(tt.t);
+                        if (cd != null) {
+                            double inc = fv.atkcd - cd;
+                            int cddelta = -(int) (inc / (double) cd * 100);
+                            cddeltatex = Text.renderstroked(cddelta + " %", cddelta < 0 ? cdclrneg : cdclrpos, Color.BLACK, cdfndr).tex();
+                        }
+                    }
+                }
+            } catch (Loading l) {
+            }
         } else if (msg == "dropped") {
         } else {
             super.uimsg(msg, args);
