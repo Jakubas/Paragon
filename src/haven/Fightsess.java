@@ -155,8 +155,7 @@ public class Fightsess extends Widget {
                     g.image(dyn[i] ? lframe : Buff.frame, ca.sub(Buff.imgoff));
                     if (i == use) {
                         g.chcolor(255, 0, 128, 255);
-                        Coord cc = ca.add(img.sz().x / 2, img.sz().y + 5);
-                        g.frect(cc.sub(2, 2), new Coord(5, 5));
+                        g.frect(ca.add(0, img.sz().y + 3), new Coord(img.sz().x, 5));
                         g.chcolor();
                     }
                 }
