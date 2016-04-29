@@ -44,7 +44,7 @@ public class Fightsess extends Widget {
     public int pho;
     private final Fightview fv;
     private static final DecimalFormat cdfmt = new DecimalFormat("#.#");
-    private Tex cddeltatex = null;
+    private static final Map<Long, Tex> cdvalues = new HashMap<Long, Tex>(7);
 
     private static final Map<String, Integer> atkcds = new HashMap<String, Integer>(9){{
         put("Chop", 50);
@@ -151,8 +151,11 @@ public class Fightsess extends Widget {
 	        if(fv.lsrel.size() > 1)
 		        fxon(fv.current.gobid, tgtfx);
 
-            if (cddeltatex != null && Config.showcddelta)
-                g.aimage(cddeltatex, pcc.add(0, 110), 0.5, 1);
+            if (Config.showcddelta && fv.current != null) {
+                Tex cdtex = cdvalues.get(fv.current.gobid);
+                if (cdtex != null)
+                    g.aimage(cdtex, pcc.add(0, 110), 0.5, 1);
+            }
         }
 
         if (now < fv.atkct) {
@@ -247,10 +250,10 @@ public class Fightsess extends Widget {
                     Resource.Tooltip tt = act.get().layer(Resource.Tooltip.class);
                     if (tt != null) {
                         Integer cd = atkcds.get(tt.t);
-                        if (cd != null) {
+                        if (cd != null && fv.current != null) {
                             double inc = fv.atkcd - cd;
                             int cddelta = -(int) (inc / (double) cd * 100);
-                            cddeltatex = Text.renderstroked(cddelta + " %", cddelta < 0 ? cdclrneg : cdclrpos, Color.BLACK, cdfndr).tex();
+                            cdvalues.put(fv.current.gobid, Text.renderstroked(cddelta + " %", cddelta < 0 ? cdclrneg : cdclrpos, Color.BLACK, cdfndr).tex());
                         }
                     }
                 }
