@@ -169,6 +169,7 @@ public class Config {
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0);
     public static boolean instantflowermenu =  Utils.getprefb("instantflowermenu", false);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 1.0);
+    public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

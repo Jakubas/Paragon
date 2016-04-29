@@ -1266,6 +1266,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Show arrow vectors") {
+            {
+                a = Config.showarchvector;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showarchvector", val);
+                Config.showarchvector = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();

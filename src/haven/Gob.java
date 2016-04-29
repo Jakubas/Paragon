@@ -57,6 +57,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
     private int cropstgmaxval = 0;
     private Overlay gobpath = null;
+    private Overlay bowvector = null;
     private static final Material.Colors dframeEmpty = new Material.Colors(new Color(0, 255, 0, 255));
     private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 255));
     private static final Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F));
@@ -554,6 +555,29 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     }
                 } else {
                     ols.remove(animalradius);
+                }
+            }
+
+            if (Config.showarchvector && res != null && res.name.equals("gfx/borka/body") && d instanceof Composite) {
+                boolean targetting = false;
+                for (Composited.ED ed : ((Composite) d).comp.cequ) {
+                    try {
+                        res = ed.res.res.get();
+                        if (res != null && res.name.endsWith("huntersbow") && ed.res.sdt.peekrbuf(0) == 5) {
+                            targetting = true;
+                            if (bowvector == null) {
+                                bowvector = new Overlay(new GobArcheryVector(this));
+                                ols.add(bowvector);
+                            }
+                            break;
+                        }
+                    } catch (Loading l) {
+                    }
+                }
+
+                if (!targetting && bowvector != null) {
+                    ols.remove(bowvector);
+                    bowvector = null;
                 }
             }
         }
