@@ -201,10 +201,10 @@ public class Config {
 
     public final static String[] icons = new String[]{"dandelion", "chantrelle", "blueberry", "rat", "chicken", "chick",
             "spindlytaproot", "stingingnettle", "dragonfly", "toad", "bram", "rowboat", "arrow", "boarspear", "frog",
-            "wagon", "wheelbarrow", "cart"};
+            "wagon", "wheelbarrow", "cart", "wball"};
     public static String[] iconssel = null;
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(12) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(13) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
@@ -217,6 +217,7 @@ public class Config {
         put("gfx/terobjs/vehicle/wagon", Resource.loadtex("gfx/icons/wagon"));
         put("gfx/terobjs/vehicle/wheelbarrow", Resource.loadtex("gfx/icons/wheelbarrow"));
         put("gfx/terobjs/vehicle/cart", Resource.loadtex("gfx/icons/cart"));
+        put("gfx/terobjs/vehicle/wreckingball", Resource.loadtex("gfx/icons/wball"));
     }};
 
     public final static Set<String> dangerousgobres = new HashSet<String>(Arrays.asList(
