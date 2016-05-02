@@ -10,8 +10,13 @@ public class GobHealthSprite extends Sprite {
     private static final Tex hlt2 = Text.renderstroked("75%", new Color(255, 227, 168), Color.BLACK, gobhpf).tex();
     public int val;
     private Tex tex;
-
-    GLState.Buffer buf;
+    private static Matrix4f cam = new Matrix4f();
+    private static Matrix4f wxf = new Matrix4f();
+    private static Matrix4f mv = new Matrix4f();
+    private Projection proj;
+    private Coord wndsz;
+    private Location.Chain loc;
+    private Camera camp;
 
     public GobHealthSprite(int val) {
         super(null, null);
@@ -19,15 +24,18 @@ public class GobHealthSprite extends Sprite {
     }
 
     public void draw(GOut g) {
-        Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(), mv = new Matrix4f();
-        mv.load(cam.load(buf.get(PView.cam).fin(Matrix4f.id))).mul1(wxf.load(buf.get(PView.loc).fin(Matrix4f.id)));
-        Coord3f s = buf.get(PView.proj).toscreen(mv.mul4(Coord3f.o), buf.get(PView.wnd).sz());
+        mv.load(cam.load(camp.fin(Matrix4f.id))).mul1(wxf.load(loc.fin(Matrix4f.id)));
+        Coord3f s = proj.toscreen(mv.mul4(Coord3f.o), wndsz);
         g.image(tex, new Coord((int) s.x - 15, (int) s.y - 20));
     }
 
     public boolean setup(RenderList rl) {
         rl.prepo(last);
-        buf = rl.state().copy();
+        GLState.Buffer buf = rl.state();
+        proj = buf.get(PView.proj);
+        wndsz = buf.get(PView.wnd).sz();
+        loc = buf.get(PView.loc);
+        camp = buf.get(PView.cam);
         return true;
     }
 
