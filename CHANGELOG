@@ -1,3 +1,16 @@
+Version 1.33.1
+    New:
+        * Wrecking ball icon.
+        * Option to disable the hotkey for drinking.
+
+    Fixed:
+        * Arrow vectors when ridding horses.
+        * Misc. crashes.
+
+    Misc:
+        * Update Russian localization (on behalf of InGodWeTrust)
+
+
 Version 1.33.0
     New:
         * Arrow vectors.
