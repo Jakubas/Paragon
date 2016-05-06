@@ -174,13 +174,15 @@ public class Equipory extends Widget implements DTarget {
                     if (itm != null) {
                         for (ItemInfo info : itm.item.info()) {
                             if (info.getClass().getSimpleName().equals("Wear")) {
+                                // This will always generate exception since we will get "incorrect" Wear class before
+                                // the correct one. See comment in WItem showwearbars handling for explanation.
+                                // But since it only happens when items are added/removed it's not a big deal.
                                 try {
                                     h += (int) info.getClass().getDeclaredField("hard").get(info);
                                     s += (int) info.getClass().getDeclaredField("soft").get(info);
                                 } catch (Exception ex) { // ignore everything
                                 }
                             }
-
                         }
                     }
                 }
