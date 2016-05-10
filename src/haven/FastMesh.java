@@ -103,15 +103,17 @@ public class FastMesh implements FRendered, Rendered.Instanced, Disposable {
             g.apply();
             GLProgram prog = g.st.prog;
             int i;
-            for(i = 0; i < kcache.length; i++) {
+            // NOTE: There seem to be a race condition related to cache disposal (?)
+            // Hotfixed by making sure we don't access beyond vcache size
+            for(i = 0; i < kcache.length && i < vcache.length; i++) {
                 if(kcache[i] == prog)
-                    return(last = vcache[i]);
+                    return (last = vcache[i]);
             }
             Object[] id = getid(g);
             Compiled ret;
             create: {
                 int o;
-                for(o = 0; o < kcache.length; o++) {
+                for(o = 0; o < kcache.length && o < vcache.length; o++) {
                     if(ids[o] == id) {
                         ret = vcache[o];
                         break create;
