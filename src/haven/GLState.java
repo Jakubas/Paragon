@@ -217,11 +217,11 @@ public abstract class GLState {
 
         public void copy(Buffer dest, Slot.Type type) {
             dest.adjust();
-            for(int i = 0; i < states.length; i++) {
+            for(int i = 0; i < states.length && i < idlist.length; i++) {
                 if(idlist[i].type == type)
                     dest.states[i] = states[i];
             }
-            for(int i = states.length; i < dest.states.length; i++) {
+            for(int i = states.length; i < dest.states.length && i < idlist.length; i++) {
                 if(idlist[i].type == type)
                     dest.states[i] = null;
             }
