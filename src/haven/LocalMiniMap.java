@@ -64,6 +64,7 @@ public class LocalMiniMap extends Widget {
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
+    public final static double partymembersize = 14;
 
     private static class MapTile {
         public MCache.Grid grid;
@@ -539,33 +540,43 @@ public class LocalMiniMap extends Widget {
                 if (player != null)
                     g.image(gridblue, p2c(player.rc).add(delta).sub(44, 44));
             }
-
-            try {
-                synchronized (ui.sess.glob.party.memb) {
-                    Collection<Party.Member> members = ui.sess.glob.party.memb.values();
-                    for (Party.Member m : members) {
-                        Coord ptc;
-                        try {
-                            ptc = m.getc();
-                        } catch (MCache.LoadingMap e) {
-                            continue;
-                        }
-                        try {
-                            ptc = p2c(ptc);
-                            Tex tex = xmap.get(m.col);
-                            if (tex == null) {
-                                tex = Text.renderstroked("\u2716",  m.col, Color.BLACK, partyf).tex();
-                                xmap.put(m.col, tex);
-                            }
-                            g.image(tex, ptc.add(delta).sub(6, 6));
-                        } catch (NullPointerException npe) { // in case chars are in different words
-                        }
-                    }
-                }
-            } catch (Loading l) {
-            }
         }
         drawicons(g);
+
+        try {
+            synchronized (ui.sess.glob.party.memb) {
+                Collection<Party.Member> members = ui.sess.glob.party.memb.values();
+                for (Party.Member m : members) {
+                    Coord ptc;
+                    double angle;
+                    try {
+                        Gob gob = m.getgob();
+                        if (gob == null) {
+                            continue;
+                        }
+                        ptc = new Coord(gob.getc());
+                        angle = gob.geta();
+                    } catch (Loading e) {
+                        continue;
+                    }
+                    try {
+                        ptc = p2c(ptc).add(delta);
+                        final Coord front = ptc.add(Coord.sc(0, partymembersize / 2).rotate(angle));
+                        final Coord right = ptc.add(Coord.sc(Math.PI / 4, -partymembersize / 2).rotate(angle));
+                        final Coord left = ptc.add(Coord.sc(-Math.PI / 4, -partymembersize / 2).rotate(angle));
+                        g.chcolor(m.col);
+                        g.poly(front, right, left);
+                        g.chcolor(Color.BLACK);
+                        g.line(front, right, 1);
+                        g.line(right, left, 1);
+                        g.line(left, front, 1);
+                        g.chcolor();
+                    } catch (NullPointerException npe) { // in case chars are in different words
+                    }
+                }
+            }
+        } catch (Loading l) {
+        }
     }
 
     public void center() {
