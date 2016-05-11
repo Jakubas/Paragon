@@ -543,39 +543,45 @@ public class LocalMiniMap extends Widget {
         }
         drawicons(g);
 
-        try {
-            synchronized (ui.sess.glob.party.memb) {
-                Collection<Party.Member> members = ui.sess.glob.party.memb.values();
-                for (Party.Member m : members) {
-                    Coord ptc;
-                    double angle;
-                    try {
-                        Gob gob = m.getgob();
-                        if (gob == null) {
-                            continue;
+        synchronized (ui.sess.glob.party.memb) {
+            Collection<Party.Member> members = ui.sess.glob.party.memb.values();
+            for (Party.Member m : members) {
+                Coord ptc;
+                double angle;
+                try {
+                    ptc = m.getc();
+                    if (ptc == null) // chars are located in different worlds
+                        continue;
+
+                    ptc = p2c(ptc).add(delta);
+                    Gob gob = m.getgob();
+                    // draw 'x' if gob is outside of view range
+                    if (gob == null) {
+                        Tex tex = xmap.get(m.col);
+                        if (tex == null) {
+                            tex = Text.renderstroked("\u2716",  m.col, Color.BLACK, partyf).tex();
+                            xmap.put(m.col, tex);
                         }
-                        ptc = new Coord(gob.getc());
-                        angle = gob.geta();
-                    } catch (Loading e) {
+                        g.image(tex, ptc.sub(6, 6));
                         continue;
                     }
-                    try {
-                        ptc = p2c(ptc).add(delta);
-                        final Coord front = ptc.add(Coord.sc(0, partymembersize / 2).rotate(angle));
-                        final Coord right = ptc.add(Coord.sc(Math.PI / 4, -partymembersize / 2).rotate(angle));
-                        final Coord left = ptc.add(Coord.sc(-Math.PI / 4, -partymembersize / 2).rotate(angle));
-                        g.chcolor(m.col);
-                        g.poly(front, right, left);
-                        g.chcolor(Color.BLACK);
-                        g.line(front, right, 1);
-                        g.line(right, left, 1);
-                        g.line(left, front, 1);
-                        g.chcolor();
-                    } catch (NullPointerException npe) { // in case chars are in different words
-                    }
+
+                    angle = gob.geta();
+                } catch (Loading e) {
+                    continue;
                 }
+
+                final Coord front = ptc.add(Coord.sc(0, partymembersize / 2).rotate(angle));
+                final Coord right = ptc.add(Coord.sc(Math.PI / 4, -partymembersize / 2).rotate(angle));
+                final Coord left = ptc.add(Coord.sc(-Math.PI / 4, -partymembersize / 2).rotate(angle));
+                g.chcolor(m.col);
+                g.poly(front, right, left);
+                g.chcolor(Color.BLACK);
+                g.line(front, right, 1);
+                g.line(right, left, 1);
+                g.line(left, front, 1);
+                g.chcolor();
             }
-        } catch (Loading l) {
         }
     }
 
