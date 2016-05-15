@@ -322,6 +322,7 @@ public class OptWnd extends Window {
 
     public OptWnd(boolean gopts) {
         super(new Coord(740, 400), "Options", true);
+
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -332,8 +333,21 @@ public class OptWnd extends Window {
         control = add(new Panel());
         uis = add(new Panel());
         quality = add(new Panel());
-        int y;
 
+        initMain(gopts);
+        initAudio();
+        initDisplay();
+        initMap();
+        initGeneral();
+        initCombat();
+        initControl();
+        initUis();
+        initQuality();
+
+        chpanel(main);
+    }
+
+    private void initMain(boolean gopts) {
         main.add(new PButton(200, "Video settings", 'v', video), new Coord(0, 0));
         main.add(new PButton(200, "Audio settings", 'a', audio), new Coord(0, 30));
         main.add(new PButton(200, "Display settings", 'd', display), new Coord(0, 60));
@@ -343,7 +357,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Control settings", 'k', control), new Coord(210, 60));
         main.add(new PButton(200, "UI settings", 'u', uis), new Coord(210, 90));
         main.add(new PButton(200, "Quality settings", 'q', quality), new Coord(420, 0));
-        
+
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
@@ -368,9 +382,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(270, 360));
         main.pack();
+    }
 
-        // -------------------------------------------- audio
-        y = 0;
+    private void initAudio() {
+        initAudioFirstColumn();
+        initAudioSecondColumn();
+        initAudioThirdColumn();
+        audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        audio.pack();
+    }
+
+    private void initAudioFirstColumn() {
+        int y = 0;
         audio.add(new Label("Master audio volume"), new Coord(0, y));
         y += 15;
         audio.add(new HSlider(200, 0, 1000, (int) (Audio.volume * 1000)) {
@@ -569,8 +592,10 @@ public class OptWnd extends Window {
                 Utils.setprefd("ponyalarmvol", vol);
             }
         }, new Coord(0, y));
-        // -------------------------------------------- audio 2nd column
-        y = 0;
+    }
+
+    private void initAudioSecondColumn() {
+        int y = 0;
         audio.add(new Label("'Chip' sound volume"), new Coord(250, y));
         y += 15;
         audio.add(new HSlider(200, 0, 1000, 0) {
@@ -757,8 +782,10 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmmammothvol", vol);
             }
         }, new Coord(250, y));
-        // -------------------------------------------- audio 3rd column
-        y = 0;
+    }
+
+    private void initAudioThirdColumn() {
+        int y = 0;
         audio.add(new CheckBox("Alarm on battering rams and catapults") {
             {
                 a = Config.alarmbram;
@@ -783,12 +810,17 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmbramvol", vol);
             }
         }, new Coord(500, y));
+    }
 
-        audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        audio.pack();
+    private void initDisplay() {
+        initDisplayFirstColumn();
+        initDisplaySecondColumn();
+        display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        display.pack();
+    }
 
-        // -------------------------------------------- display
-        y = 0;
+    private void initDisplayFirstColumn() {
+        int y = 0;
         display.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;
@@ -916,8 +948,10 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        // -------------------------------------------- display 2nd column
-        y = 0;
+    }
+
+    private void initDisplaySecondColumn() {
+        int y = 0;
         display.add(new CheckBox("Show wear bars") {
             {
                 a = Config.showwearbars;
@@ -965,12 +999,11 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(400, y));
+    }
 
-        display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        display.pack();
+    private void initMap() {
+        int y = 0;
 
-        // -------------------------------------------- map
-        y = 0;
         map.add(new CheckBox("Save map tiles to disk") {
             {
                 a = Config.savemmap;
@@ -991,9 +1024,17 @@ public class OptWnd extends Window {
 
         map.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         map.pack();
+    }
 
-        // -------------------------------------------- general
-        y = 0;
+    private void initGeneral() {
+        initGeneralFirstColumn();
+        initGeneralSecondColumn();
+        general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        general.pack();
+    }
+
+    private void initGeneralFirstColumn() {
+        int y = 0;
         general.add(new CheckBox("Save chat logs to disk") {
             {
                 a = Config.chatsave;
@@ -1132,8 +1173,10 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        // -------------------------------------------- general 2nd column
-        y = 0;
+    }
+
+    private void initGeneralSecondColumn() {
+        int y = 0;
         general.add(new CheckBox("Show server time") {
             {
                 a = Config.showservertime;
@@ -1205,12 +1248,10 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(260, y));
+    }
 
-        general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        general.pack();
-
-        // -------------------------------------------- combat
-        y = 0;
+    private void initCombat() {
+        int y = 0;
         combat.add(new CheckBox("Display damage received by opponents") {
             {
                 a = Config.showdmgop;
@@ -1309,9 +1350,10 @@ public class OptWnd extends Window {
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();
+    }
 
-        // -------------------------------------------- control
-        y = 0;
+    private void initControl() {
+        int y = 0;
         control.add(new CheckBox("Free camera rotation") {
             {
                 a = Config.camfree;
@@ -1434,10 +1476,10 @@ public class OptWnd extends Window {
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
+    }
 
-        // -------------------------------------------- uis
-
-        y = 0;
+    private void initUis() {
+        int y = 0;
         Label langlbl = new Label("Language (req. restart):");
         uis.add(langlbl, new Coord(0, y));
         uis.add(langDropdown(), new Coord(langlbl.sz.x + 10, y));
@@ -1593,10 +1635,10 @@ public class OptWnd extends Window {
 
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
+    }
 
-        // -------------------------------------------- quality
-
-        y = 0;
+    private void initQuality() {
+        int y = 0;
         quality.add(new CheckBox("Show item quality") {
             {
                 a = Config.showquality;
@@ -1668,8 +1710,6 @@ public class OptWnd extends Window {
 
         quality.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         quality.pack();
-
-        chpanel(main);
     }
 
     private Dropbox<Locale> langDropdown() {
