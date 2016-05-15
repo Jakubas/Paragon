@@ -1689,7 +1689,11 @@ public class OptWnd extends Window {
 
     private Dropbox<Locale> langDropdown() {
         List<Locale> languages = enumerateLanguages();
-        Dropbox<Locale> lang = new Dropbox<Locale>(120, 5, 16) {
+        return new Dropbox<Locale>(120, 5, 16) {
+            {
+                super.change(new Locale(Resource.language));
+            }
+
             @Override
             protected Locale listitem(int i) {
                 return languages.get(i);
@@ -1712,8 +1716,6 @@ public class OptWnd extends Window {
                 Utils.setpref("language", item.toString());
             }
         };
-        lang.change(new Locale(Resource.language));
-        return lang;
     }
 
     private static final Pair[] chatFntSz = new Pair[]{
@@ -1725,7 +1727,11 @@ public class OptWnd extends Window {
 
     @SuppressWarnings("unchecked")
     private Dropbox<Pair<String, Integer>> chatFntSzDropdown() {
-        Dropbox<Pair<String, Integer>> sizes = new Dropbox<Pair<String, Integer>>(55, 4, 16) {
+        return new Dropbox<Pair<String, Integer>>(55, 4, 16) {
+            {
+                super.change(new Pair<String, Integer>(Config.chatfontsize + "", Config.chatfontsize));
+            }
+
             @Override
             protected Pair<String, Integer> listitem(int i) {
                 return chatFntSz[i];
@@ -1748,8 +1754,6 @@ public class OptWnd extends Window {
                 Utils.setprefi("chatfontsize", item.b);
             }
         };
-        sizes.change(new Pair<String, Integer>(Config.chatfontsize + "", Config.chatfontsize));
-        return sizes;
     }
 
     private List<Locale> enumerateLanguages() {
