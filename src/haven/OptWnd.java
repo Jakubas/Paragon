@@ -1057,6 +1057,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        general.add(new CheckBox("Auto logout on unknown/red players") {
+            {
+                a = Config.autologout;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autologout", val);
+                Config.autologout = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         general.add(new CheckBox("Print server time to System log") {
             {
                 a = Config.servertimesyslog;
@@ -1128,7 +1140,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        y += 35;
+        // -------------------------------------------- general 2nd column
+        y = 0;
         general.add(new CheckBox("Show server time") {
             {
                 a = Config.showservertime;
@@ -1139,9 +1152,8 @@ public class OptWnd extends Window {
                 Config.showservertime = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        // -------------------------------------------- general 2nd column
-        y = 0;
+        }, new Coord(260, y));
+        y += 35;
         general.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
             {
                 a = Config.showtoggles;

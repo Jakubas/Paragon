@@ -171,6 +171,7 @@ public class Config {
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
+    public static boolean autologout =  Utils.getprefb("autologout", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;
