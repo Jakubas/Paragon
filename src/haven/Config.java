@@ -146,7 +146,6 @@ public class Config {
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", false);
     public static boolean hwcursor = Utils.getprefb("hwcursor", false);
     public static boolean showboundingboxes = Utils.getprefb("showboundingboxes", false);
-    public static boolean disablespacebar = Utils.getprefb("disablespacebar", false);
     public static boolean alarmonforagables = Utils.getprefb("alarmonforagables", false);
     public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8);
     public static boolean alarmbears = Utils.getprefb("alarmbears", false);

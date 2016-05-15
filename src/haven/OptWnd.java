@@ -1380,18 +1380,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        control.add(new CheckBox("Disable UI hiding with space-bar") {
-            {
-                a = Config.disablespacebar;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("disablespacebar", val);
-                Config.disablespacebar = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         control.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
             {
                 a = Config.nodropping;
