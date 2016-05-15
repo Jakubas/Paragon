@@ -1578,6 +1578,7 @@ public class OptWnd extends Window {
                 Utils.delpref("gui-br-visible");
                 Utils.delpref("gui-ul-visible");
                 Utils.delpref("gui-ur-visible");
+                Utils.delpref("gui-um-visible");
                 Utils.delpref("menu-visible");
                 Utils.delpref("fbelt_c");
                 Utils.delpref("fbelt_vertical");
