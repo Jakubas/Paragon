@@ -39,6 +39,9 @@ import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
 import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 
 public class OptWnd extends Window {
+    public static final int VERTICAL_MARGIN = 10;
+    public static final int HORIZONTAL_MARGIN = 5;
+    public static final int VERTICAL_AUDIO_MARGIN = 5;
     public final Panel main, video, audio, display, map, general, combat, control, uis, quality;
     public Panel current;
 
@@ -90,8 +93,10 @@ public class OptWnd extends Window {
 
             public CPanel(GLSettings gcf) {
                 this.cf = gcf;
-                int y = 0;
-                add(new CheckBox("Per-fragment lighting") {
+                final WidgetVerticalAppender appender = new WidgetVerticalAppender(this);
+                appender.setVerticalMargin(VERTICAL_MARGIN);
+                appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+                appender.add(new CheckBox("Per-fragment lighting") {
                     {
                         a = cf.flight.val;
                     }
@@ -110,9 +115,8 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new CheckBox("Render shadows") {
+                });
+                appender.add(new CheckBox("Render shadows") {
                     {
                         a = cf.lshadow.val;
                     }
@@ -131,9 +135,8 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new CheckBox("Antialiasing") {
+                });
+                appender.add(new CheckBox("Antialiasing") {
                     {
                         a = cf.fsaa.val;
                     }
@@ -148,40 +151,39 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new Label("Anisotropic filtering"), new Coord(0, y));
+                });
+                appender.add(new Label("Anisotropic filtering"));
                 if (cf.anisotex.max() <= 1) {
-                    add(new Label("(Not supported)"), new Coord(15, y + 15));
+                    appender.add(new Label("(Not supported)"));
                 } else {
-                    final Label dpy = add(new Label(""), new Coord(165, y + 15));
-                    add(new HSlider(160, (int) (cf.anisotex.min() * 2), (int) (cf.anisotex.max() * 2), (int) (cf.anisotex.val * 2)) {
-                        protected void added() {
-                            dpy();
-                            this.c.y = dpy.c.y + ((dpy.sz.y - this.sz.y) / 2);
-                        }
+                    final Label dpy = new Label("");
+                    appender.addRow(
+                            new HSlider(160, (int) (cf.anisotex.min() * 2), (int) (cf.anisotex.max() * 2), (int) (cf.anisotex.val * 2)) {
+                                protected void added() {
+                                    dpy();
+                                }
 
-                        void dpy() {
-                            if (val < 2)
-                                dpy.settext("Off");
-                            else
-                                dpy.settext(String.format("%.1f\u00d7", (val / 2.0)));
-                        }
+                                void dpy() {
+                                    if (val < 2)
+                                        dpy.settext("Off");
+                                    else
+                                        dpy.settext(String.format("%.1f\u00d7", (val / 2.0)));
+                                }
 
-                        public void changed() {
-                            try {
-                                cf.anisotex.set(val / 2.0f);
-                            } catch (GLSettings.SettingException e) {
-                                getparent(GameUI.class).error(e.getMessage());
-                                return;
-                            }
-                            dpy();
-                            cf.dirty = true;
-                        }
-                    }, new Coord(0, y + 15));
+                                public void changed() {
+                                    try {
+                                        cf.anisotex.set(val / 2.0f);
+                                    } catch (GLSettings.SettingException e) {
+                                        getparent(GameUI.class).error(e.getMessage());
+                                        return;
+                                    }
+                                    dpy();
+                                    cf.dirty = true;
+                                }
+                            },
+                            dpy);
                 }
-                y += 35;
-                add(new CheckBox("Disable biome tile transitions (requires logout)") {
+                appender.add(new CheckBox("Disable biome tile transitions (requires logout)") {
                     {
                         a = Config.disabletiletrans;
                     }
@@ -190,9 +192,8 @@ public class OptWnd extends Window {
                         Utils.setprefb("disabletiletrans", val);
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Disable flavor objects including ambient sounds") {
+                });
+                appender.add(new CheckBox("Disable flavor objects including ambient sounds") {
                     {
                         a = Config.hideflocomplete;
                     }
@@ -202,9 +203,8 @@ public class OptWnd extends Window {
                         Config.hideflocomplete = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Hide flavor objects but keep sounds (requires logout)") {
+                });
+                appender.add(new CheckBox("Hide flavor objects but keep sounds (requires logout)") {
                     {
                         a = Config.hideflovisual;
                     }
@@ -214,9 +214,8 @@ public class OptWnd extends Window {
                         Config.hideflovisual = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Show weather") {
+                });
+                appender.add(new CheckBox("Show weather") {
                     {
                         a = Config.showweather;
                     }
@@ -226,9 +225,8 @@ public class OptWnd extends Window {
                         Config.showweather = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Simple crops (req. logout)") {
+                });
+                appender.add(new CheckBox("Simple crops (req. logout)") {
                     {
                         a = Config.simplecrops;
                     }
@@ -238,9 +236,8 @@ public class OptWnd extends Window {
                         Config.simplecrops = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Simple foragables (req. logout)") {
+                });
+                appender.add(new CheckBox("Simple foragables (req. logout)") {
                     {
                         a = Config.simpleforage;
                     }
@@ -250,9 +247,8 @@ public class OptWnd extends Window {
                         Config.simpleforage = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Hide crops") {
+                });
+                appender.add(new CheckBox("Hide crops") {
                     {
                         a = Config.hidecrops;
                     }
@@ -262,9 +258,8 @@ public class OptWnd extends Window {
                         Config.hidecrops = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Show FPS") {
+                });
+                appender.add(new CheckBox("Show FPS") {
                     {
                         a = Config.showfps;
                     }
@@ -274,7 +269,7 @@ public class OptWnd extends Window {
                         Config.showfps = val;
                         a = val;
                     }
-                }, new Coord(0, y));
+                });
 
                 add(new Label("Disable animations (req. restart):"), new Coord(550, 0));
                 CheckListbox animlist = new CheckListbox(180, 18) {
@@ -393,18 +388,19 @@ public class OptWnd extends Window {
     }
 
     private void initAudioFirstColumn() {
-        int y = 0;
-        audio.add(new Label("Master audio volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, (int) (Audio.volume * 1000)) {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Master audio volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, (int) (Audio.volume * 1000)) {
             public void changed() {
                 Audio.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 30;
-        audio.add(new Label("In-game event volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("In-game event volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (ui.audio.pos.volume * 1000);
@@ -413,11 +409,11 @@ public class OptWnd extends Window {
             public void changed() {
                 ui.audio.pos.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new Label("Ambient volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Ambient volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (ui.audio.amb.volume * 1000);
@@ -426,9 +422,9 @@ public class OptWnd extends Window {
             public void changed() {
                 ui.audio.amb.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on unknown players") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on unknown players") {
             {
                 a = Config.alarmunknown;
             }
@@ -438,9 +434,9 @@ public class OptWnd extends Window {
                 Config.alarmunknown = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int)(Config.alarmunknownvol * 1000);
@@ -451,9 +447,9 @@ public class OptWnd extends Window {
                 Config.alarmunknownvol = vol;
                 Utils.setprefd("alarmunknownvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on red players") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on red players") {
             {
                 a = Config.alarmred;
             }
@@ -463,9 +459,9 @@ public class OptWnd extends Window {
                 Config.alarmred = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmredvol * 1000);
@@ -476,11 +472,11 @@ public class OptWnd extends Window {
                 Config.alarmredvol = vol;
                 Utils.setprefd("alarmredvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new Label("Timers alarm volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Timers alarm volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.timersalarmvol * 1000);
@@ -491,9 +487,9 @@ public class OptWnd extends Window {
                 Config.timersalarmvol = vol;
                 Utils.setprefd("timersalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on new private chat") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on new private chat") {
             {
                 a = Config.chatalarm;
             }
@@ -503,9 +499,9 @@ public class OptWnd extends Window {
                 Config.chatalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.chatalarmvol * 1000);
@@ -516,9 +512,9 @@ public class OptWnd extends Window {
                 Config.chatalarmvol = vol;
                 Utils.setprefd("chatalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on new party chat message") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on new party chat message") {
             {
                 a = Config.partychatalarm;
             }
@@ -528,9 +524,9 @@ public class OptWnd extends Window {
                 Config.partychatalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.partychatalarmvol * 1000);
@@ -541,9 +537,9 @@ public class OptWnd extends Window {
                 Config.partychatalarmvol = vol;
                 Utils.setprefd("partychatalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm when curio finishes") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm when curio finishes") {
             {
                 a = Config.studyalarm;
             }
@@ -553,9 +549,9 @@ public class OptWnd extends Window {
                 Config.studyalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.studyalarmvol * 1000);
@@ -566,9 +562,9 @@ public class OptWnd extends Window {
                 Config.studyalarmvol = vol;
                 Utils.setprefd("studyalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm when pony power < 10%") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm when pony power < 10%") {
             {
                 a = Config.ponyalarm;
             }
@@ -578,9 +574,9 @@ public class OptWnd extends Window {
                 Config.ponyalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.ponyalarmvol * 1000);
@@ -591,14 +587,16 @@ public class OptWnd extends Window {
                 Config.ponyalarmvol = vol;
                 Utils.setprefd("ponyalarmvol", vol);
             }
-        }, new Coord(0, y));
+        });
     }
 
     private void initAudioSecondColumn() {
-        int y = 0;
-        audio.add(new Label("'Chip' sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
+        appender.setX(250);
+        appender.setVerticalMargin(0);
+        appender.add(new Label("'Chip' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxchipvol * 1000);
@@ -609,11 +607,11 @@ public class OptWnd extends Window {
                 Config.sfxchipvol = vol;
                 Utils.setprefd("sfxchipvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("'Squeak' sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("'Squeak' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxsqueakvol * 1000);
@@ -624,11 +622,11 @@ public class OptWnd extends Window {
                 Config.sfxsqueakvol = vol;
                 Utils.setprefd("sfxsqueakvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("Quern sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Quern sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxquernvol * 1000);
@@ -639,11 +637,11 @@ public class OptWnd extends Window {
                 Config.sfxquernvol = vol;
                 Utils.setprefd("sfxquernvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("'Whip' sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("'Whip' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxwhipvol * 1000);
@@ -654,9 +652,8 @@ public class OptWnd extends Window {
                 Config.sfxwhipvol = vol;
                 Utils.setprefd("sfxwhipvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Disable metallic mining sound") {
+        });
+        appender.add(new CheckBox("Disable metallic mining sound") {
             {
                 a = Config.nometallicsfx;
             }
@@ -666,9 +663,9 @@ public class OptWnd extends Window {
                 Config.nometallicsfx = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on rare curios (bluebells, glimmers, ...)") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on rare curios (bluebells, glimmers, ...)") {
             {
                 a = Config.alarmonforagables;
             }
@@ -678,9 +675,9 @@ public class OptWnd extends Window {
                 Config.alarmonforagables = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmonforagablesvol * 1000);
@@ -691,9 +688,9 @@ public class OptWnd extends Window {
                 Config.alarmonforagablesvol = vol;
                 Utils.setprefd("alarmonforagablesvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on bears & lynx") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on bears & lynx") {
             {
                 a = Config.alarmbears;
             }
@@ -703,9 +700,9 @@ public class OptWnd extends Window {
                 Config.alarmbears = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmbearsvol * 1000);
@@ -716,11 +713,11 @@ public class OptWnd extends Window {
                 Config.alarmbearsvol = vol;
                 Utils.setprefd("alarmbearsvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("Fireplace sound volume (req. restart)"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Fireplace sound volume (req. restart)"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxfirevol * 1000);
@@ -731,9 +728,9 @@ public class OptWnd extends Window {
                 Config.sfxfirevol = vol;
                 Utils.setprefd("sfxfirevol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on trolls") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on trolls") {
             {
                 a = Config.alarmtroll;
             }
@@ -743,9 +740,9 @@ public class OptWnd extends Window {
                 Config.alarmtroll = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmtrollvol * 1000);
@@ -756,9 +753,9 @@ public class OptWnd extends Window {
                 Config.alarmtrollvol = vol;
                 Utils.setprefd("alarmtrollvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on mammoths") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on mammoths") {
             {
                 a = Config.alarmmammoth;
             }
@@ -768,9 +765,9 @@ public class OptWnd extends Window {
                 Config.alarmmammoth = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmmammothvol * 1000);
@@ -781,12 +778,14 @@ public class OptWnd extends Window {
                 Config.alarmmammothvol = vol;
                 Utils.setprefd("alarmmammothvol", vol);
             }
-        }, new Coord(250, y));
+        });
     }
 
     private void initAudioThirdColumn() {
-        int y = 0;
-        audio.add(new CheckBox("Alarm on battering rams and catapults") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
+        appender.setX(500);
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on battering rams and catapults") {
             {
                 a = Config.alarmbram;
             }
@@ -796,9 +795,9 @@ public class OptWnd extends Window {
                 Config.alarmbram = val;
                 a = val;
             }
-        }, new Coord(500, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmbramvol * 1000);
@@ -809,7 +808,7 @@ public class OptWnd extends Window {
                 Config.alarmbramvol = vol;
                 Utils.setprefd("alarmbramvol", vol);
             }
-        }, new Coord(500, y));
+        });
     }
 
     private void initDisplay() {
