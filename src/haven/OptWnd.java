@@ -819,8 +819,9 @@ public class OptWnd extends Window {
     }
 
     private void initDisplayFirstColumn() {
-        int y = 0;
-        display.add(new CheckBox("Display kin names") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(display);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;
             }
@@ -830,9 +831,8 @@ public class OptWnd extends Window {
                 Config.showkinnames = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Display item completion as progress bar") {
+        });
+        appender.add(new CheckBox("Display item completion as progress bar") {
             {
                 a = Config.itemmeterbar;
             }
@@ -842,9 +842,8 @@ public class OptWnd extends Window {
                 Config.itemmeterbar = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Display item completion as percentage") {
+        });
+        appender.add(new CheckBox("Display item completion as percentage") {
             {
                 a = Config.itempercentage;
             }
@@ -854,9 +853,8 @@ public class OptWnd extends Window {
                 Config.itempercentage = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show hourglass percentage") {
+        });
+        appender.add(new CheckBox("Show hourglass percentage") {
             {
                 a = Config.showprogressperc;
             }
@@ -866,9 +864,8 @@ public class OptWnd extends Window {
                 Config.showprogressperc = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show attributes & softcap values in craft window") {
+        });
+        appender.add(new CheckBox("Show attributes & softcap values in craft window") {
             {
                 a = Config.showcraftcap;
             }
@@ -878,9 +875,8 @@ public class OptWnd extends Window {
                 Config.showcraftcap = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show objects health") {
+        });
+        appender.add(new CheckBox("Show objects health") {
             {
                 a = Config.showgobhp;
             }
@@ -898,9 +894,8 @@ public class OptWnd extends Window {
                         gui.map.removeCustomSprites(Sprite.GOB_HEALTH_ID);
                 }
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show player paths") {
+        });
+        appender.add(new CheckBox("Show player paths") {
             {
                 a = Config.showplayerpaths;
             }
@@ -910,9 +905,8 @@ public class OptWnd extends Window {
                 Config.showplayerpaths = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show animal paths") {
+        });
+        appender.add(new CheckBox("Show animal paths") {
             {
                 a = Config.showanimalpaths;
             }
@@ -922,9 +916,8 @@ public class OptWnd extends Window {
                 Config.showanimalpaths = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show study remaining time") {
+        });
+        appender.add(new CheckBox("Show study remaining time") {
             {
                 a = Config.showstudylefttime;
             }
@@ -934,9 +927,8 @@ public class OptWnd extends Window {
                 Config.showstudylefttime = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show contents bars for buckets/flasks") {
+        });
+        appender.add(new CheckBox("Show contents bars for buckets/flasks") {
             {
                 a = Config.showcontentsbars;
             }
@@ -946,12 +938,14 @@ public class OptWnd extends Window {
                 Config.showcontentsbars = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
     }
 
     private void initDisplaySecondColumn() {
-        int y = 0;
-        display.add(new CheckBox("Show wear bars") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(display);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setX(400);
+        appender.add(new CheckBox("Show wear bars") {
             {
                 a = Config.showwearbars;
             }
@@ -961,9 +955,8 @@ public class OptWnd extends Window {
                 Config.showwearbars = val;
                 a = val;
             }
-        }, new Coord(400, y));
-        y += 35;
-        display.add(new CheckBox("Show animal radius") {
+        });
+        appender.add(new CheckBox("Show animal radius") {
             {
                 a = Config.showanimalrad;
             }
@@ -973,9 +966,8 @@ public class OptWnd extends Window {
                 Config.showanimalrad = val;
                 a = val;
             }
-        }, new Coord(400, y));
-        y += 35;
-        display.add(new CheckBox("Highlight empty/finished drying frames") {
+        });
+        appender.add(new CheckBox("Highlight empty/finished drying frames") {
             {
                 a = Config.showdframestatus;
             }
@@ -985,9 +977,8 @@ public class OptWnd extends Window {
                 Config.showdframestatus = val;
                 a = val;
             }
-        }, new Coord(400, y));
-        y += 35;
-        display.add(new CheckBox("Draw circles around party members") {
+        });
+        appender.add(new CheckBox("Draw circles around party members") {
             {
                 a = Config.partycircles;
             }
@@ -997,13 +988,16 @@ public class OptWnd extends Window {
                 Config.partycircles = val;
                 a = val;
             }
-        }, new Coord(400, y));
+        });
     }
 
     private void initMap() {
-        int y = 0;
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(map);
 
-        map.add(new CheckBox("Save map tiles to disk") {
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Save map tiles to disk") {
             {
                 a = Config.savemmap;
             }
@@ -1014,7 +1008,7 @@ public class OptWnd extends Window {
                 MapGridSave.mgs = null;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
 
         map.add(new Label("Show boulders:"), new Coord(180, 0));
         map.add(new Label("Show bushes:"), new Coord(325, 0));
@@ -1033,8 +1027,12 @@ public class OptWnd extends Window {
     }
 
     private void initGeneralFirstColumn() {
-        int y = 0;
-        general.add(new CheckBox("Save chat logs to disk") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(general);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Save chat logs to disk") {
             {
                 a = Config.chatsave;
             }
@@ -1051,9 +1049,8 @@ public class OptWnd extends Window {
                     }
                 }
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Show timestamps in chats") {
+        });
+        appender.add(new CheckBox("Show timestamps in chats") {
             {
                 a = Config.chattimestamp;
             }
@@ -1063,9 +1060,8 @@ public class OptWnd extends Window {
                 Config.chattimestamp = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Notify when kin comes online") {
+        });
+        appender.add(new CheckBox("Notify when kin comes online") {
             {
                 a = Config.notifykinonline;
             }
@@ -1075,9 +1071,8 @@ public class OptWnd extends Window {
                 Config.notifykinonline = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Auto hearth") {
+        });
+        appender.add(new CheckBox("Auto hearth") {
             {
                 a = Config.autohearth;
             }
@@ -1087,9 +1082,8 @@ public class OptWnd extends Window {
                 Config.autohearth = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Auto logout on unknown/red players") {
+        });
+        appender.add(new CheckBox("Auto logout on unknown/red players") {
             {
                 a = Config.autologout;
             }
@@ -1099,9 +1093,8 @@ public class OptWnd extends Window {
                 Config.autologout = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Print server time to System log") {
+        });
+        appender.add(new CheckBox("Print server time to System log") {
             {
                 a = Config.servertimesyslog;
             }
@@ -1111,9 +1104,8 @@ public class OptWnd extends Window {
                 Config.servertimesyslog = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Pick' action") {
+        });
+        appender.add(new CheckBox("Automatically select 'Pick' action") {
             {
                 a = Config.autopick;
             }
@@ -1123,9 +1115,8 @@ public class OptWnd extends Window {
                 Config.autopick = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Harvest' action") {
+        });
+        appender.add(new CheckBox("Automatically select 'Harvest' action") {
             {
                 a = Config.autoharvest;
             }
@@ -1135,9 +1126,8 @@ public class OptWnd extends Window {
                 Config.autoharvest = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Eat' action") {
+        });
+        appender.add(new CheckBox("Automatically select 'Eat' action") {
             {
                 a = Config.autoeat;
             }
@@ -1147,9 +1137,8 @@ public class OptWnd extends Window {
                 Config.autoeat = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Split' action") {
+        });
+        appender.add(new CheckBox("Automatically select 'Split' action") {
             {
                 a = Config.autosplit;
             }
@@ -1159,9 +1148,8 @@ public class OptWnd extends Window {
                 Config.autosplit = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Run on login") {
+        });
+        appender.add(new CheckBox("Run on login") {
             {
                 a = Config.runonlogin;
             }
@@ -1171,12 +1159,17 @@ public class OptWnd extends Window {
                 Config.runonlogin = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
     }
 
     private void initGeneralSecondColumn() {
-        int y = 0;
-        general.add(new CheckBox("Show server time") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(general);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.setX(260);
+
+        appender.add(new CheckBox("Show server time") {
             {
                 a = Config.showservertime;
             }
@@ -1186,9 +1179,8 @@ public class OptWnd extends Window {
                 Config.showservertime = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
+        });
+        appender.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
             {
                 a = Config.showtoggles;
             }
@@ -1198,9 +1190,8 @@ public class OptWnd extends Window {
                 Config.showtoggles = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Enable tracking on login") {
+        });
+        appender.add(new CheckBox("Enable tracking on login") {
             {
                 a = Config.enabletracking;
             }
@@ -1210,9 +1201,8 @@ public class OptWnd extends Window {
                 Config.enabletracking = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Enable criminal acts on login") {
+        });
+        appender.add(new CheckBox("Enable criminal acts on login") {
             {
                 a = Config.enablecrime;
             }
@@ -1222,9 +1212,8 @@ public class OptWnd extends Window {
                 Config.enablecrime = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Select System log on login") {
+        });
+        appender.add(new CheckBox("Select System log on login") {
             {
                 a = Config.syslogonlogin;
             }
@@ -1234,9 +1223,8 @@ public class OptWnd extends Window {
                 Config.syslogonlogin = val;
                 a = val;
             }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Auto-miner: drop mined ore") {
+        });
+        appender.add(new CheckBox("Auto-miner: drop mined ore") {
             {
                 a = Config.dropore;
             }
@@ -1246,12 +1234,16 @@ public class OptWnd extends Window {
                 Config.dropore = val;
                 a = val;
             }
-        }, new Coord(260, y));
+        });
     }
 
     private void initCombat() {
-        int y = 0;
-        combat.add(new CheckBox("Display damage received by opponents") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(combat);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Display damage received by opponents") {
             {
                 a = Config.showdmgop;
             }
@@ -1261,9 +1253,8 @@ public class OptWnd extends Window {
                 Config.showdmgop = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Display damage received by me") {
+        });
+        appender.add(new CheckBox("Display damage received by me") {
             {
                 a = Config.showdmgmy;
             }
@@ -1273,9 +1264,8 @@ public class OptWnd extends Window {
                 Config.showdmgmy = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Highlight current opponent") {
+        });
+        appender.add(new CheckBox("Highlight current opponent") {
             {
                 a = Config.hlightcuropp;
             }
@@ -1285,9 +1275,8 @@ public class OptWnd extends Window {
                 Config.hlightcuropp = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Aggro closest unknown/red player on Tab key") {
+        });
+        appender.add(new CheckBox("Aggro closest unknown/red player on Tab key") {
             {
                 a = Config.agroclosest;
             }
@@ -1297,9 +1286,8 @@ public class OptWnd extends Window {
                 Config.agroclosest = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Display cooldown time") {
+        });
+        appender.add(new CheckBox("Display cooldown time") {
             {
                 a = Config.showcooldown;
             }
@@ -1309,9 +1297,8 @@ public class OptWnd extends Window {
                 Config.showcooldown = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Show arrow vectors") {
+        });
+        appender.add(new CheckBox("Show arrow vectors") {
             {
                 a = Config.showarchvector;
             }
@@ -1321,9 +1308,8 @@ public class OptWnd extends Window {
                 Config.showarchvector = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Show attack cooldown delta") {
+        });
+        appender.add(new CheckBox("Show attack cooldown delta") {
             {
                 a = Config.showcddelta;
             }
@@ -1333,9 +1319,8 @@ public class OptWnd extends Window {
                 Config.showcddelta = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Disallow aggroing of partied/village members/non-red kins") {
+        });
+        appender.add(new CheckBox("Disallow aggroing of partied/village members/non-red kins") {
             {
                 a = Config.donotaggrofriends;
             }
@@ -1345,15 +1330,19 @@ public class OptWnd extends Window {
                 Config.donotaggrofriends = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();
     }
 
     private void initControl() {
-        int y = 0;
-        control.add(new CheckBox("Free camera rotation") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(control);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Free camera rotation") {
             {
                 a = Config.camfree;
             }
@@ -1363,21 +1352,20 @@ public class OptWnd extends Window {
                 Config.camfree = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new Label("Bad camera scrolling sensitivity"), new Coord(0, y));
-        control.add(new HSlider(50, 0, 50, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.badcamsensitivity;
-            }
-            public void changed() {
-                Config.badcamsensitivity = val;
-                Utils.setprefi("badcamsensitivity", val);
-            }
-        }, new Coord(180, y));
-        y += 35;
-        control.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
+        });
+        appender.addRow(
+                new Label("Bad camera scrolling sensitivity"),
+                new HSlider(50, 0, 50, 0) {
+                    protected void attach(UI ui) {
+                        super.attach(ui);
+                        val = Config.badcamsensitivity;
+                    }
+                    public void changed() {
+                        Config.badcamsensitivity = val;
+                        Utils.setprefi("badcamsensitivity", val);
+                    }
+                });
+        appender.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
             {
                 a = Config.alternmapctrls;
             }
@@ -1387,9 +1375,8 @@ public class OptWnd extends Window {
                 Config.alternmapctrls = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Use French (AZERTY) keyboard layout") {
+        });
+        appender.add(new CheckBox("Use French (AZERTY) keyboard layout") {
             {
                 a = Config.userazerty;
             }
@@ -1399,9 +1386,8 @@ public class OptWnd extends Window {
                 Config.userazerty = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Reverse bad camera MMB x-axis") {
+        });
+        appender.add(new CheckBox("Reverse bad camera MMB x-axis") {
             {
                 a = Config.reversebadcamx;
             }
@@ -1411,9 +1397,8 @@ public class OptWnd extends Window {
                 Config.reversebadcamx = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Reverse bad camera MMB y-axis") {
+        });
+        appender.add(new CheckBox("Reverse bad camera MMB y-axis") {
             {
                 a = Config.reversebadcamy;
             }
@@ -1423,9 +1408,8 @@ public class OptWnd extends Window {
                 Config.reversebadcamy = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Force hardware cursor (req. restart)") {
+        });
+        appender.add(new CheckBox("Force hardware cursor (req. restart)") {
             {
                 a = Config.hwcursor;
             }
@@ -1435,9 +1419,8 @@ public class OptWnd extends Window {
                 Config.hwcursor = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
+        });
+        appender.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
             {
                 a = Config.nodropping;
             }
@@ -1447,9 +1430,8 @@ public class OptWnd extends Window {
                 Config.nodropping = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Enable full zoom-out in Ortho cam") {
+        });
+        appender.add(new CheckBox("Enable full zoom-out in Ortho cam") {
             {
                 a = Config.enableorthofullzoom;
             }
@@ -1459,9 +1441,8 @@ public class OptWnd extends Window {
                 Config.enableorthofullzoom = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y = 0;
-        control.add(new CheckBox("Disable hotkey (tilde/back-quote key) for drinking") {
+        });
+        appender.add(new CheckBox("Disable hotkey (tilde/back-quote key) for drinking") {
             {
                 a = Config.disabledrinkhotkey;
             }
@@ -1471,20 +1452,20 @@ public class OptWnd extends Window {
                 Config.disabledrinkhotkey = val;
                 a = val;
             }
-        }, new Coord(350, y));
+        });
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
     }
 
     private void initUis() {
-        int y = 0;
-        Label langlbl = new Label("Language (req. restart):");
-        uis.add(langlbl, new Coord(0, y));
-        uis.add(langDropdown(), new Coord(langlbl.sz.x + 10, y));
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(uis);
 
-        y += 35;
-        uis.add(new CheckBox("Show quick hand slots") {
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.addRow(new Label("Language (req. restart):"), langDropdown());
+        appender.add(new CheckBox("Show quick hand slots") {
             {
                 a = Config.quickslots;
             }
@@ -1505,9 +1486,8 @@ public class OptWnd extends Window {
                 } catch (ClassCastException e) { // in case we are at the login screen
                 }
             }
-        }, new Coord(0, y));
-        y += 35;
-        uis.add(new CheckBox("Show F-key toolbar") {
+        });
+        appender.add(new CheckBox("Show F-key toolbar") {
             {
                 a = Config.fbelt;
             }
@@ -1527,9 +1507,8 @@ public class OptWnd extends Window {
                     }
                 }
             }
-        }, new Coord(0, y));
-        y += 35;
-        uis.add(new CheckBox("Hide extensions menu (req. restart)") {
+        });
+        appender.add(new CheckBox("Hide extensions menu (req. restart)") {
             {
                 a = Config.hidexmenu;
             }
@@ -1539,9 +1518,8 @@ public class OptWnd extends Window {
                 Config.hidexmenu = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        uis.add(new CheckBox("Show inventory on login") {
+        });
+        appender.add(new CheckBox("Show inventory on login") {
             {
                 a = Config.showinvonlogin;
             }
@@ -1551,13 +1529,10 @@ public class OptWnd extends Window {
                 Config.showinvonlogin = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        Label chatszlbl = new Label("Chat font size (req. restart):");
-        uis.add(chatszlbl, new Coord(0, y + 1));
-        uis.add(chatFntSzDropdown(), new Coord(chatszlbl.sz.x + 10, y));
-        y += 35;
-        uis.add(new CheckBox("Hide quests panel") {
+        });
+
+        appender.addRow(new Label("Chat font size (req. restart):"), chatFntSzDropdown());
+        appender.add(new CheckBox("Hide quests panel") {
             {
                 a = Config.noquests;
             }
@@ -1574,9 +1549,8 @@ public class OptWnd extends Window {
                 }
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        uis.add(new CheckBox("Show Craft/Build history toolbar") {
+        });
+        appender.add(new CheckBox("Show Craft/Build history toolbar") {
             {
                 a = Config.histbelt;
             }
@@ -1596,9 +1570,8 @@ public class OptWnd extends Window {
                     }
                 }
             }
-        }, new Coord(0, y));
-        y += 35;
-        uis.add(new CheckBox("Instant flower menus") {
+        });
+        appender.add(new CheckBox("Instant flower menus") {
             {
                 a = Config.instantflowermenu;
             }
@@ -1608,7 +1581,7 @@ public class OptWnd extends Window {
                 Config.instantflowermenu = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
@@ -1631,14 +1604,15 @@ public class OptWnd extends Window {
                 Utils.delpref("fbelt_vertical");
             }
         }, new Coord(260, 320));
-
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
     }
 
     private void initQuality() {
-        int y = 0;
-        quality.add(new CheckBox("Show item quality") {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(quality);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.add(new CheckBox("Show item quality") {
             {
                 a = Config.showquality;
             }
@@ -1648,15 +1622,21 @@ public class OptWnd extends Window {
                 Config.showquality = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 20;
-        quality.add(new Label("Highest"), new Coord(0, y));
-        quality.add(new Label("Avg E/S/V"), new Coord(65, y));
-        quality.add(new Label("All"), new Coord(150, y));
-        quality.add(new Label("Avg S/V"), new Coord(205, y));
-        quality.add(new Label("Lowest"), new Coord(275, y));
-        y += 10;
-        quality.add(new HSlider(310, 0, 4, 0) {
+        });
+
+        Label highest = new Label("Highest");
+        Label avgESV = new Label("Avg E/S/V");
+        Label all = new Label("All");
+        Label avgSV = new Label("Avg S/V");
+        Label lowest = new Label("Lowest");
+
+        appender.setVerticalMargin(0);
+        appender.addRow(highest, avgESV, all, avgSV, lowest);
+
+        final int showQualityWidth = HorizontalAligner.apply(Arrays.asList(highest, avgESV, all, avgSV, lowest), HORIZONTAL_MARGIN);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.add(new HSlider(showQualityWidth, 0, 4, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = Config.showqualitymode;
@@ -1665,9 +1645,8 @@ public class OptWnd extends Window {
                 Config.showqualitymode = val;
                 Utils.setprefi("showqualitymode", val);
             }
-        }, new Coord(0, y));
-        y += 25;
-        quality.add(new CheckBox("Show LP gain multiplier for curios") {
+        });
+        appender.add(new CheckBox("Show LP gain multiplier for curios") {
             {
                 a = Config.showlpgainmult;
             }
@@ -1677,13 +1656,11 @@ public class OptWnd extends Window {
                 Config.showlpgainmult = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        Label avglbl = new Label("Calculate Avg as (req. logout):");
-        quality.add(avglbl, new Coord(0, y));
-        quality.add(avgQModeDropdown(), new Coord(avglbl.sz.x + 10, y));
-        y += 35;
-        quality.add(new CheckBox("Round item quality to a whole number") {
+        });
+
+        appender.addRow(new Label("Calculate Avg as (req. logout):"), avgQModeDropdown());
+
+        appender.add(new CheckBox("Round item quality to a whole number") {
             {
                 a = Config.qualitywhole;
             }
@@ -1693,9 +1670,8 @@ public class OptWnd extends Window {
                 Config.qualitywhole = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        quality.add(new CheckBox("Draw background for quality values") {
+        });
+        appender.add(new CheckBox("Draw background for quality values") {
             {
                 a = Config.qualitybg;
             }
@@ -1705,7 +1681,7 @@ public class OptWnd extends Window {
                 Config.qualitybg = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
 
         quality.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         quality.pack();
