@@ -363,7 +363,6 @@ public class LocalMiniMap extends Widget {
                             Audio.play(trollsfx, Config.alarmtrollvol);
                         }
                     } else if (Config.alarmmammoth && res.name.equals("gfx/kritter/mammoth/mammoth")) {
-                        System.out.println("mammoth");
                         sgobs.add(gob.id);
                         GAttrib drw = gob.getattr(Drawable.class);
                         if (drw != null && drw instanceof Composite) {
