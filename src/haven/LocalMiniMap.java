@@ -64,7 +64,7 @@ public class LocalMiniMap extends Widget {
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, bushf).tex();
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
-    public final static double partymembersize = 14;
+
 
     private static class MapTile {
         public MCache.Grid grid;
@@ -574,15 +574,14 @@ public class LocalMiniMap extends Widget {
                     continue;
                 }
 
-                final Coord front = ptc.add(Coord.sc(0, partymembersize / 2).rotate(angle));
-                final Coord right = ptc.add(Coord.sc(Math.PI / 4, -partymembersize / 2).rotate(angle));
-                final Coord left = ptc.add(Coord.sc(-Math.PI / 4, -partymembersize / 2).rotate(angle));
+                final Coord front = new Coord(8, 0).rotate(angle).add(ptc);
+                final Coord right = new Coord(-5, 5).rotate(angle).add(ptc);
+                final Coord left = new Coord(-5, -5).rotate(angle).add(ptc);
+                final Coord notch = new Coord(-2, 0).rotate(angle).add(ptc);
                 g.chcolor(m.col);
-                g.poly(front, right, left);
+                g.poly(front, right, notch, left);
                 g.chcolor(Color.BLACK);
-                g.line(front, right, 1);
-                g.line(right, left, 1);
-                g.line(left, front, 1);
+                g.polyline(1, front, right, notch, left);
                 g.chcolor();
             }
         }

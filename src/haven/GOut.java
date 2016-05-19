@@ -362,6 +362,17 @@ public class GOut {
         checkerr();
     }
 
+    public void polyline(float w, Coord... c) {
+        st.set(cur2d);
+        apply();
+        gl.glLineWidth(w);
+        gl.glBegin(GL2.GL_LINE_LOOP);
+        for (Coord vc : c)
+            gl.glVertex2i(vc.x + tx.x, vc.y + tx.y);
+        gl.glEnd();
+        checkerr();
+    }
+
     public void frect(Coord ul, Coord sz) {
         ul = tx.add(ul);
         Coord br = ul.add(sz);
