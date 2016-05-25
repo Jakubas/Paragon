@@ -1,3 +1,105 @@
+Version 1.33.1
+    New:
+        * Wrecking ball icon.
+        * Option to disable the hotkey for drinking.
+
+    Fixed:
+        * Arrow vectors when ridding horses.
+        * Misc. crashes.
+
+    Misc:
+        * Update Russian localization (on behalf of InGodWeTrust)
+
+
+Version 1.33.0
+    New:
+        * Arrow vectors.
+        * Attack cooldown delta.
+
+
+Version 1.32.8
+    Fixed:
+        * change was erroneously called for linstep event.
+        * NPE in OCache.cmppose
+
+
+Version 1.32.7
+    New:
+        * Cart icon.
+        * Volume slider for wagon whip sound.
+
+    Fixed:
+        * Floating hearth fire names when fire animation are disabled.
+
+    Misc:
+        * Merged upstream changes.
+
+
+Version 1.32.6
+    Fixed:
+        * Custom gfx/hud/drop resource conflict with other clients.
+        * Crash in F-belt
+        * Crash on alt+rbm equipory items.
+        * Back-quote/tilde key not working on non English locales on Windows.
+        * Misc. fixes related to optimization merge.
+
+    Misc:
+        * Updated curio list.
+
+
+Version 1.32.5
+    Fixed:
+        * Fixed crash when auto-mining.
+
+    Misc:
+        * Merge optimization related changes from upstream.
+
+
+Version 1.32.4
+    Misc:
+        * Moved W hotkey to use back-quote key and fixed everything related to auto-drinking.
+
+
+Version 1.32.3
+    New:
+        * Drink water from any container in the inventory on W key.
+
+    Misc:
+        * Updated resources jar.
+
+
+Version 1.32.2
+    New:
+        * Instant flower menus option.
+
+    Fixed:
+        * Possible crash in F-belt.
+        * Crash in History belt.
+
+
+Version 1.32.1
+    Fixed:
+        * Crash when studying curios with less than 1 hour study time.
+        * alt+z/x not working.
+        * Re-enabled shift+alt+lmb.
+
+
+Version 1.32.0
+    New:
+        * Craft/build history hotbelt.
+        * LP/hour in character sheet.
+        * Option to disable animations.
+
+    Fixed:
+        * Wikipedia hotkey not working for non English localizations.
+
+    Misc:
+        * alt+lmb to transfer identical items in descending order, alt+rmb for ascending.
+          alt+shift+lmb was removed together with the old ordering option in settings window.
+        * shift+d to toggle beehive/trough radius. Old setting in the settings window was removed.
+        * Updates to localization support and Russian translation.
+
+
 Version 1.31.1
     New:
         * Battering ram and catapult alarm.

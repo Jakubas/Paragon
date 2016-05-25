@@ -36,7 +36,7 @@ public class Audio {
     public static boolean enabled = true;
     private static Player player;
     public static final AudioFormat fmt = new AudioFormat(44100, 16, 2, true, false);
-    private static int bufsize = 4096;
+    private static int bufsize = Utils.getprefi("audiobufsize", 4096);
     public static double volume = 1.0;
 
     static {
@@ -566,6 +566,10 @@ public class Audio {
             }
             if (sz > 2)
                 reslastc.put(res, clip);
+
+            if (Config.sfxwhipvol != 1.0 && "sfx/balders".equals(res.name))
+                return new Audio.VolAdjust(clip.stream(), Config.sfxwhipvol);
+
             return (clip.stream());
         }
     }
@@ -623,6 +627,7 @@ public class Audio {
                 if (nsz > 44100)
                     throw (new Exception("Rejecting buffer longer than 1 second"));
                 bufsize = nsz * 4;
+                Utils.setprefi("audiobufsize", bufsize);
                 Player pl = ckpl(false);
                 if (pl != null)
                     pl.reopen();

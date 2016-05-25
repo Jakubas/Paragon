@@ -26,6 +26,8 @@
 
 package haven.error;
 
+import haven.Config;
+
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -107,7 +109,7 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
         final String tr = w.toString();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                exbox.setText(tr);
+                exbox.setText(Config.version + ":" + Config.gitrev + "\n\n" + tr);
                 pack();
                 exbox.setCaretPosition(0);
                 setVisible(true);

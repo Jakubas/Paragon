@@ -88,7 +88,7 @@ public class Buff extends Widget {
                     m *= (ot - pt) / ot;
                 }
                 m = Utils.clip(m, 0.0, 1.0);
-                g.chcolor(255, 255, 255, a / 2);
+                g.chcolor(255, 255, 255, 170);
                 Coord ccc = img.sz().div(2);
                 g.prect(imgoff.add(ccc), ccc.inv(), img.sz().sub(ccc), Math.PI * 2 * m);
                 g.chcolor(255, 255, 255, a);

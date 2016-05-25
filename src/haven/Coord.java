@@ -177,4 +177,11 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public int manhattan2(Coord c){
         return Math.max(Math.abs(x - c.x) , Math.abs(y - c.y));
     }
+
+    public Coord rotate(double angle) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return new Coord((int) Math.round(x * cos - y * sin),
+                         (int) Math.round(y * cos + x * sin));
+    }
 }

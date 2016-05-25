@@ -107,7 +107,7 @@ public class Inventory extends Widget implements DTarget {
         if(msg.equals("drop-identical")) {
             for (WItem item : getIdenticalItems((GItem) args[0]))
                 item.item.wdgmsg("drop", Coord.z);
-        } else if(msg.equals("transfer-identical")) {
+        } else if(msg.startsWith("transfer-identical")) {
             Window stockpile = gameui().getwnd("Stockpile");
             Window smelter = gameui().getwnd("Ore Smelter");
             Window kiln = gameui().getwnd("Kiln");
@@ -122,9 +122,9 @@ public class Inventory extends Widget implements DTarget {
                         else if (aq.avg == bq.avg)
                             return 0;
                         else if (aq.avg > bq.avg)
-                            return Config.sortascending ? 1 : -1;
+                            return msg.endsWith("asc") ? 1 : -1;
                         else
-                            return Config.sortascending ? -1 : 1;
+                            return msg.endsWith("asc") ? -1 : 1;
                     }
                 });
                 for (WItem item : items)
@@ -234,79 +234,20 @@ public class Inventory extends Widget implements DTarget {
         return feespace;
     }
 
-    public void drinkTillFull(int threshold) {
-        GameUI gui = gameui();
-        if (gameui().maininv.drink(threshold)) {
-            try {
-                Thread.sleep(500);
-                do {
-                    IMeter.Meter stam = gui.getmeter("stam", 0);
-                    if (stam.a >= 90)
-                        break;
-                    Thread.sleep(10);
-                    stam = gui.getmeter("stam", 0);
-                    if (stam.a >= 90)
-                        break;
-                } while (gui.prog >= 0);
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-    }
-
     public boolean drink(int threshold) {
         IMeter.Meter stam = gameui().getmeter("stam", 0);
         if (stam == null || stam.a > threshold)
             return false;
 
-        List<WItem> containers = getItemsPartial("Waterskin", "Waterflask");
-
-        // find hotkeyed water container
-        WItem hotwater = null;
-        for (WItem w : containers) {
-            if (w.olcol != null && w.olcol.save != null) {
-                hotwater = w;
-                break;
-            }
-        }
-        if (hotwater == null)
-            return false;
-
-        // find any additional containers and refill the hotkeyed one
-        for (WItem w : containers) {
-            if (w.olcol != null && w.olcol.save == null) {
-                // break if full
-                ItemInfo.Contents hotcnt = hotwater.item.getcontents();
-                if (hotcnt != null) {
-                    String name = hotwater.item.getname();
-                    double fullcont = name.contains("Waterskin") ? 3.0D : 2.0D;
-                    if (hotcnt.content == fullcont)
-                        break;
-                }
-
-                ItemInfo.Contents cnt = w.item.getcontents();
-                if (cnt != null && cnt.content > 0) {
-                    w.item.wdgmsg("take", new Coord(w.item.sz.x / 2, w.item.sz.y / 2));
-                    hotwater.item.wdgmsg("itemact", 0);
-                    wdgmsg("drop", w.c.add(sqsz.div(2)).div(invsq.sz()));
-                }
+        List<WItem> containers = getItemsPartial("Waterskin", "Waterflask", "Kuksa");
+        for (WItem wi : containers) {
+            ItemInfo.Contents cont = wi.item.getcontents();
+            if (cont != null) {
+                wi.item.wdgmsg("iact", wi.c, 0);
+                return true;
             }
         }
 
-        // drink
-        GameUI.Belt beltwdg = gameui().beltwdg;
-        Indir<Resource>[] belt = gameui().belt;
-        for (int s = 0; s < belt.length; s++) {
-            Indir<Resource> indir = belt[s];
-            if (indir != null) {
-                try {
-                    Resource res = indir.get();
-                    if (res != null && (res.basename().equals("waterskin") || res.basename().equals("waterflask")))
-                        beltwdg.keyact(s);
-                } catch (Loading l) {
-                }
-            }
-        }
-        return true;
+        return false;
     }
 }

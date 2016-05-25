@@ -81,6 +81,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean crimeautotgld = false;
     private boolean trackautotgld = false;
     public FBelt fbelt;
+    public CraftHistoryBelt histbelt;
     private ErrorSysMsgCallback errmsgcb;
 
     public abstract class Belt extends Widget {
@@ -194,6 +195,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         add(fbelt, Utils.getprefc("fbelt_c", new Coord(20, 200)));
         if (!Config.fbelt)
             fbelt.hide();
+
+        histbelt = new CraftHistoryBelt(Utils.getprefb("histbelt_vertical", true));
+        add(histbelt, Utils.getprefc("histbelt_c", new Coord(70, 200)));
+        if (!Config.histbelt)
+            histbelt.hide();
     }
 
     /* Ice cream */
@@ -906,7 +912,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (key == ':') {
             entercmd();
             return (true);
-        } else if (key == ' ' && !Config.disablespacebar) {
+        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_DELETE) {
             toggleui();
             return (true);
         } else if (key == 3) {
@@ -949,11 +955,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             quickslots.drop(QuickSlotsWdg.lc, Coord.z);
-            quickslots.mousedown(QuickSlotsWdg.lc, 1);
+            quickslots.simulateclick(QuickSlotsWdg.lc);
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_X) {
             quickslots.drop(QuickSlotsWdg.rc, Coord.z);
-            quickslots.mousedown(QuickSlotsWdg.rc, 1);
+            quickslots.simulateclick(QuickSlotsWdg.rc);
             return true;
         } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_S) {
             HavenPanel.needtotakescreenshot = true;
@@ -961,6 +967,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
             Config.hidegobs = !Config.hidegobs;
             Utils.setprefb("hidegobs", Config.hidegobs);
+            if (map != null)
+                map.refreshGobsHidable();
             return true;
         } else if (ev.getKeyCode() == KeyEvent.VK_TAB && Config.agroclosest) {
             if (map != null)
@@ -974,6 +982,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_B) {
             Config.showboundingboxes = !Config.showboundingboxes;
             Utils.setprefb("showboundingboxes", Config.showboundingboxes);
+            if (map != null)
+                map.refreshGobsAll();
             return true;
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_Z) {
             Config.pf = !Config.pf;
@@ -985,11 +995,31 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_P) {
             Config.showplantgrowstage = !Config.showplantgrowstage;
             Utils.setprefb("showplantgrowstage", Config.showplantgrowstage);
+            if (!Config.showplantgrowstage && map != null)
+                map.removeCustomSprites(Sprite.GROWTH_STAGE_ID);
+            if (map != null)
+                map.refreshGobsGrowthStages();
         } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_X) {
             Config.tilecenter = !Config.tilecenter;
             Utils.setprefb("tilecenter", Config.tilecenter);
             msg("Tile centering is now turned " + (Config.tilecenter ? "on." : "off."), Color.WHITE);
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_D) {
+            Config.showminerad = !Config.showminerad;
+            Utils.setprefb("showminerad", Config.showminerad);
+            return true;
+        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_D) {
+            Config.showfarmrad = !Config.showfarmrad;
+            Utils.setprefb("showfarmrad", Config.showfarmrad);
+            return true;
+        } else if (!Config.disabledrinkhotkey && (ev.getKeyCode() == KeyEvent.VK_BACK_QUOTE || (Config.iswindows && Utils.getScancode(ev) == 41))) {
+            synchronized (ui.fmAutoSelName) {
+                ui.fmAutoSelName = "Drink";
+                ui.fmAutoTime = System.currentTimeMillis();
+            }
+            maininv.drink(100);
+            return true;
         }
+
         return (super.globtype(key, ev));
     }
 
@@ -997,23 +1027,18 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         return (super.mousedown(c, button));
     }
 
-    private int uimode = 1;
+    private boolean uishowing = true;
 
-    public void toggleui(int mode) {
+    // TODO: toggle chat, betls, and minimap visibility as well
+    public void toggleui() {
         Hidepanel[] panels = {brpanel, ulpanel, umpanel, urpanel, menupanel};
-        switch (uimode = mode) {
-            case 0:
-                for (Hidepanel p : panels)
-                    p.mshow(true);
-                break;
-            case 1:
-                for (Hidepanel p : panels)
-                    p.mshow();
-                break;
-            case 2:
-                for (Hidepanel p : panels)
-                    p.mshow(false);
-                break;
+        uishowing = !uishowing;
+        if (uishowing) {
+            for (Hidepanel p : panels)
+                p.mshow(true);
+        } else {
+            for (Hidepanel p : panels)
+                p.mshow(false);
         }
     }
 
@@ -1021,11 +1046,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Hidepanel[] panels = {brpanel, ulpanel, umpanel, urpanel, menupanel};
         for (Hidepanel p : panels)
             p.cshow(p.tvis);
-        uimode = 1;
-    }
-
-    public void toggleui() {
-        toggleui((uimode + 1) % 3);
+        uishowing = true;
     }
 
     public void resize(Coord sz) {

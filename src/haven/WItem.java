@@ -320,6 +320,12 @@ public class WItem extends Widget implements DTarget {
                             g.chcolor(wearclr[p == 1.0 ? 3 : (int) (p / 0.25)]);
                             g.frect(new Coord(sz.x - 3, sz.y - h), new Coord(3, h));
                             g.chcolor();
+                            // NOTE: apparently identically named class "Wear" with no namespace is used
+                            // for both the wear and armor class info... Y U DO DIS LOFTAR X(
+                            // We need to break here once we found first "Wear" (it will always come before the armor class.)
+                            // otherwise it would generate exception on second "Wear" class and we don't want to do that
+                            // in drawing routine.
+                            break;
                         }
                     }
                 } catch (Exception e) { // fail silently if info is not ready
@@ -366,22 +372,28 @@ public class WItem extends Widget implements DTarget {
         if (btn == 1) {
             if (ui.modctrl && ui.modmeta)
                 wdgmsg("drop-identical", this.item);
-            else if (ui.modshift && ui.modmeta) {
-                wdgmsg("transfer-identical", this.item);
-            } else if (ui.modctrl && ui.modshift && Resource.language.equals("en")) {
+            else if (ui.modctrl && ui.modshift) {
                 String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
-                String url = String.format("http://ringofbrodgar.com/wiki/%s", name.replace(' ', '_'));
+                name = name.replace(' ', '_');
+                if (!Resource.language.equals("en")) {
+                    int i = name.indexOf('(');
+                    if (i > 0)
+                        name = name.substring(i + 1, name.length() - 1);
+                }
+                String url = String.format("http://ringofbrodgar.com/wiki/%s", name);
                 openwebpage(url);
-            } else if (ui.modshift)
+            } else if (ui.modshift && !ui.modmeta)
                 item.wdgmsg("transfer", c);
             else if (ui.modctrl)
                 item.wdgmsg("drop", c);
+            else if (ui.modmeta)
+                wdgmsg("transfer-identical", this.item);
             else
                 item.wdgmsg("take", c);
             return (true);
         } else if (btn == 3) {
-            if (ui.modmeta)
-                wdgmsg("transfer-identical", this.item);
+            if (ui.modmeta && !(parent instanceof Equipory))
+                wdgmsg("transfer-identical-asc", this.item);
             else
                 item.wdgmsg("iact", c, ui.modflags());
             return (true);

@@ -78,7 +78,7 @@ public class OptWnd extends Window {
         public VideoPanel(Panel back) {
             super();
             add(new PButton(200, "Back", 27, back), new Coord(270, 360));
-            pack();
+            resize(new Coord(740, 400));
         }
 
         public class CPanel extends Widget {
@@ -271,6 +271,35 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 }, new Coord(0, y));
+
+                add(new Label("Disable animations (req. restart):"), new Coord(550, 0));
+                CheckListbox animlist = new CheckListbox(180, 18) {
+                    protected void itemclick(CheckListboxItem itm, int button) {
+                        super.itemclick(itm, button);
+
+                        String[] selected = getselected();
+                        Utils.setprefsa("disableanim", selected);
+
+                        Config.disableanimSet.clear();
+                        for (String selname : selected) {
+                            for (Pair<String, String> selpair : Config.disableanim) {
+                                if (selpair.a.equals(selname)) {
+                                    Config.disableanimSet.add(selpair.b);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                for (Pair<String, String> obj : Config.disableanim) {
+                    boolean selected = false;
+                    if (Config.disableanimSet.contains(obj.b))
+                        selected = true;
+                    animlist.items.add(new CheckListboxItem(obj.a, selected));
+                }
+                add(animlist, new Coord(550, 15));
+
                 pack();
             }
         }
@@ -583,6 +612,21 @@ public class OptWnd extends Window {
             }
         }, new Coord(250, y));
         y += 20;
+        audio.add(new Label("'Whip' sound volume"), new Coord(250, y));
+        y += 15;
+        audio.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxwhipvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxwhipvol = vol;
+                Utils.setprefd("sfxwhipvol", vol);
+            }
+        }, new Coord(250, y));
+        y += 20;
         audio.add(new CheckBox("Disable metallic mining sound") {
             {
                 a = Config.nometallicsfx;
@@ -709,7 +753,8 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmmammothvol", vol);
             }
         }, new Coord(250, y));
-        y += 20;
+        // -------------------------------------------- audio 3rd column
+        y = 0;
         audio.add(new CheckBox("Alarm on battering rams and catapults") {
             {
                 a = Config.alarmbram;
@@ -720,7 +765,7 @@ public class OptWnd extends Window {
                 Config.alarmbram = val;
                 a = val;
             }
-        }, new Coord(250, y));
+        }, new Coord(500, y));
         y += 15;
         audio.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
@@ -733,7 +778,8 @@ public class OptWnd extends Window {
                 Config.alarmbramvol = vol;
                 Utils.setprefd("alarmbramvol", vol);
             }
-        }, new Coord(250, y));
+        }, new Coord(500, y));
+
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
 
@@ -808,6 +854,14 @@ public class OptWnd extends Window {
                 Utils.setprefb("showgobhp", val);
                 Config.showgobhp = val;
                 a = val;
+
+                GameUI gui = gameui();
+                if (gui != null && gui.map != null) {
+                    if (val)
+                        gui.map.addHealthSprites();
+                    else
+                        gui.map.removeCustomSprites(Sprite.GOB_HEALTH_ID);
+                }
             }
         }, new Coord(0, y));
         y += 35;
@@ -868,18 +922,6 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showwearbars", val);
                 Config.showwearbars = val;
-                a = val;
-            }
-        }, new Coord(400, y));
-        y += 35;
-        display.add(new CheckBox("Show troughs/beehives radius") {
-            {
-                a = Config.showfarmrad;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showfarmrad", val);
-                Config.showfarmrad = val;
                 a = val;
             }
         }, new Coord(400, y));
@@ -1015,6 +1057,18 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
+        general.add(new CheckBox("Auto logout on unknown/red players") {
+            {
+                a = Config.autologout;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autologout", val);
+                Config.autologout = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
         general.add(new CheckBox("Print server time to System log") {
             {
                 a = Config.servertimesyslog;
@@ -1086,7 +1140,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
-        y += 35;
+        // -------------------------------------------- general 2nd column
+        y = 0;
         general.add(new CheckBox("Show server time") {
             {
                 a = Config.showservertime;
@@ -1097,9 +1152,8 @@ public class OptWnd extends Window {
                 Config.showservertime = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        // -------------------------------------------- general 2nd column
-        y = 0;
+        }, new Coord(260, y));
+        y += 35;
         general.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
             {
                 a = Config.showtoggles;
@@ -1224,6 +1278,30 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Show arrow vectors") {
+            {
+                a = Config.showarchvector;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showarchvector", val);
+                Config.showarchvector = val;
+                a = val;
+            }
+        }, new Coord(0, y));
+        y += 35;
+        combat.add(new CheckBox("Show attack cooldown delta") {
+            {
+                a = Config.showcddelta;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcddelta", val);
+                Config.showcddelta = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         combat.pack();
@@ -1314,18 +1392,6 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        control.add(new CheckBox("Disable UI hiding with space-bar") {
-            {
-                a = Config.disablespacebar;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("disablespacebar", val);
-                Config.disablespacebar = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         control.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
             {
                 a = Config.nodropping;
@@ -1350,17 +1416,17 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y = 0;
-        control.add(new CheckBox("Transfer items in ascending order instead of descending") {
+        control.add(new CheckBox("Disable hotkey (tilde/back-quote key) for drinking") {
             {
-                a = Config.sortascending;
+                a = Config.disabledrinkhotkey;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("sortascending", val);
-                Config.sortascending = val;
+                Utils.setprefb("disabledrinkhotkey", val);
+                Config.disabledrinkhotkey = val;
                 a = val;
             }
-        }, new Coord(320, y));
+        }, new Coord(350, y));
 
         control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         control.pack();
@@ -1462,6 +1528,40 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Show Craft/Build history toolbar") {
+            {
+                a = Config.histbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("histbelt", val);
+                Config.histbelt = val;
+                a = val;
+                GameUI gui = gameui();
+                if (gui != null) {
+                    CraftHistoryBelt histbelt = gui.histbelt;
+                    if (histbelt != null) {
+                        if (val)
+                            histbelt.show();
+                        else
+                            histbelt.hide();
+                    }
+                }
+            }
+        }, new Coord(0, y));
+        y += 35;
+        uis.add(new CheckBox("Instant flower menus") {
+            {
+                a = Config.instantflowermenu;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("instantflowermenu", val);
+                Config.instantflowermenu = val;
+                a = val;
+            }
+        }, new Coord(0, y));
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
@@ -1478,6 +1578,7 @@ public class OptWnd extends Window {
                 Utils.delpref("gui-br-visible");
                 Utils.delpref("gui-ul-visible");
                 Utils.delpref("gui-ur-visible");
+                Utils.delpref("gui-um-visible");
                 Utils.delpref("menu-visible");
                 Utils.delpref("fbelt_c");
                 Utils.delpref("fbelt_vertical");
