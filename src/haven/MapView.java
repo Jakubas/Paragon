@@ -665,7 +665,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 Gob.Overlay rovl = null;
                 boolean show = false;
 
-                if (res.name.equals("gfx/terobjs/minesupport")) {
+                if (res.name.equals("gfx/terobjs/minesupport") || res.name.equals("gfx/terobjs/ladder")) {
                     rovl = rovlsupport;
                     show = Config.showminerad;
                 } else if (res.name.equals("gfx/terobjs/column")) {
