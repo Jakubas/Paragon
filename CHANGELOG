@@ -1,3 +1,21 @@
+Version 1.34.0
+    New:
+        * Show character direction on the minimap (by elsid).
+        * Option to auto logout on unknown/red players.
+
+    Fixed:
+        * Food satiation type text no showing in the tooltip.
+        * Buckets/flask/etc bars not showing when using Russian language.
+        * Various crashes.
+
+    Misc:
+        * Updated Russian localization (by InGodWeTrust and elsid).
+        * Preserve :audiobuf setting across restarts.
+        * Show mining support radius for ladders.
+        * Show average quality when inspecting objects.
+        * Completely removed ui hiding using space-bar together with the old setting for disabling it.
+
+
 Version 1.33.1
     New:
         * Wrecking ball icon.
