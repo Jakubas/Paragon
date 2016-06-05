@@ -1450,8 +1450,9 @@ public class OptWnd extends Window {
         // -------------------------------------------- uis
 
         y = 0;
-        uis.add(new Label("Language (req. restart):"), new Coord(0, y));
-        uis.add(langDropdown(), new Coord(120, y));
+        Label langlbl = new Label("Language (req. restart):");
+        uis.add(langlbl, new Coord(0, y));
+        uis.add(langDropdown(), new Coord(langlbl.sz.x + 10, y));
 
         y += 35;
         uis.add(new CheckBox("Show quick hand slots") {
@@ -1523,8 +1524,9 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        uis.add(new Label("Chat font size (req. restart):"), new Coord(0, y + 1));
-        uis.add(chatFntSzDropdown(), new Coord(180, y));
+        Label chatszlbl = new Label("Chat font size (req. restart):");
+        uis.add(chatszlbl, new Coord(0, y + 1));
+        uis.add(chatFntSzDropdown(), new Coord(chatszlbl.sz.x + 10, y));
         y += 35;
         uis.add(new CheckBox("Hide quests panel") {
             {
@@ -1648,8 +1650,9 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        quality.add(new Label("Calculate Avg as (req. logout):"), new Coord(0, y));
-        quality.add(avgQModeDropdown(), new Coord(190, y));
+        Label avglbl = new Label("Calculate Avg as (req. logout):");
+        quality.add(avglbl, new Coord(0, y));
+        quality.add(avgQModeDropdown(), new Coord(avglbl.sz.x + 10, y));
         y += 35;
         quality.add(new CheckBox("Round item quality to a whole number") {
             {
