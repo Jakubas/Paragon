@@ -51,7 +51,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     public static class Quality {
         public static final int AVG_MODE_QUADRATIC = 0;
-        public static final int AVG_MODE_GEMOTERIC = 1;
+        public static final int AVG_MODE_GEOMETRIC = 1;
         public static final int AVG_MODE_ARITHMETIC = 2;
 
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
@@ -97,7 +97,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
             if (Config.avgmode == AVG_MODE_QUADRATIC)
                 avg = Math.sqrt((e * e + s * s + v * v) / 3.0);
-            else if (Config.avgmode == AVG_MODE_GEMOTERIC)
+            else if (Config.avgmode == AVG_MODE_GEOMETRIC)
                 avg = Math.pow(e * s * v, 1.0 / 3.0);
             else // AVG_MODE_ARITHMETIC
                 avg = (e + s + v) / 3.0;
@@ -105,7 +105,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             double avgsv;
             if (Config.avgmode == AVG_MODE_QUADRATIC)
                 avgsv = Math.sqrt((s * s + v * v) / 2.0);
-            else if (Config.avgmode == AVG_MODE_GEMOTERIC)
+            else if (Config.avgmode == AVG_MODE_GEOMETRIC)
                 avgsv = Math.pow(s * v, 1.0 / 2.0);
             else // AVG_MODE_ARITHMETIC
                 avgsv = (s + v) / 2.0;

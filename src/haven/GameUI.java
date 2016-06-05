@@ -36,7 +36,7 @@ import java.awt.image.WritableRaster;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static haven.GItem.Quality.AVG_MODE_GEMOTERIC;
+import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
 import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 import static haven.Inventory.invsq;
 
@@ -1120,7 +1120,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 case AVG_MODE_QUADRATIC:
                     avg =  Math.sqrt((e * e + s * s + v * v) / 3.0);
                     break;
-                case AVG_MODE_GEMOTERIC:
+                case AVG_MODE_GEOMETRIC:
                     avg =  Math.pow(e * s * v, 1.0 / 3.0);
                     break;
                 default:

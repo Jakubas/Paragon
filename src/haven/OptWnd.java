@@ -35,7 +35,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static haven.GItem.Quality.AVG_MODE_ARITHMETIC;
-import static haven.GItem.Quality.AVG_MODE_GEMOTERIC;
+import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
 import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 
 public class OptWnd extends Window {
@@ -1776,7 +1776,7 @@ public class OptWnd extends Window {
 
     private static final Pair[] avgQModes = new Pair[]{
             new Pair<>(Resource.getLocString(Resource.l10nLabel, "Quadratic"), AVG_MODE_QUADRATIC),
-            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Geometric"), AVG_MODE_GEMOTERIC),
+            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Geometric"), AVG_MODE_GEOMETRIC),
             new Pair<>(Resource.getLocString(Resource.l10nLabel, "Arithmetic"), AVG_MODE_ARITHMETIC)
     };
 
