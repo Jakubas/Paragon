@@ -58,7 +58,6 @@ public class Config {
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", false);
-    public static boolean showplayersmmap = Utils.getprefb("showplayersmmap", false);
     public static boolean savemmap = Utils.getprefb("savemmap", true);
     public static boolean studylock = Utils.getprefb("studylock", false);
     public static boolean camfree = Utils.getprefb("camfree", false);

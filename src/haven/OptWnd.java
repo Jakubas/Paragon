@@ -971,18 +971,6 @@ public class OptWnd extends Window {
 
         // -------------------------------------------- map
         y = 0;
-        map.add(new CheckBox("Show players on minimap") {
-            {
-                a = Config.showplayersmmap;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showplayersmmap", val);
-                Config.showplayersmmap = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
         map.add(new CheckBox("Save map tiles to disk") {
             {
                 a = Config.savemmap;
