@@ -50,6 +50,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private String name = "";
 
     public static class Quality {
+        public static final int AVG_MODE_QUADRATIC = 0;
+        public static final int AVG_MODE_GEMOTERIC = 1;
+        public static final int AVG_MODE_ARITHMETIC = 2;
+
         private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
         private static final DecimalFormat longfmt = new DecimalFormat("#.###");
         public double max, min;
@@ -91,8 +95,21 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 colormin = vitalityclr;
             }
 
-            avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
-            double avgsv = Config.arithavg ? (s + v) / 2.0 : Math.sqrt((s * s + v * v) / 2.0);
+            if (Config.avgmode == AVG_MODE_QUADRATIC)
+                avg = Math.sqrt((e * e + s * s + v * v) / 3.0);
+            else if (Config.avgmode == AVG_MODE_GEMOTERIC)
+                avg = Math.pow(e * s * v, 1.0 / 3.0);
+            else // AVG_MODE_ARITHMETIC
+                avg = (e + s + v) / 3.0;
+
+            double avgsv;
+            if (Config.avgmode == AVG_MODE_QUADRATIC)
+                avgsv = Math.sqrt((s * s + v * v) / 2.0);
+            else if (Config.avgmode == AVG_MODE_GEMOTERIC)
+                avgsv = Math.pow(s * v, 1.0 / 2.0);
+            else // AVG_MODE_ARITHMETIC
+                avgsv = (s + v) / 2.0;
+
             if (curio) {
                 double lpgain = Math.sqrt(Math.sqrt((e * e + s * s + v * v) / 300.0));
                 lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();

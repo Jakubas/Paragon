@@ -173,6 +173,7 @@ public class Config {
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static boolean donotaggrofriends =  Utils.getprefb("donotaggrofriends", false);
+    public static int avgmode = Utils.getprefi("avgmode", 0);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

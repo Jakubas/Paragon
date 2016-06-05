@@ -34,6 +34,10 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static haven.GItem.Quality.AVG_MODE_ARITHMETIC;
+import static haven.GItem.Quality.AVG_MODE_GEMOTERIC;
+import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
+
 public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis, quality;
     public Panel current;
@@ -1644,17 +1648,8 @@ public class OptWnd extends Window {
             }
         }, new Coord(0, y));
         y += 35;
-        quality.add(new CheckBox("Use arithmetic average") {
-            {
-                a = Config.arithavg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("arithavg", val);
-                Config.arithavg = val;
-                a = val;
-            }
-        }, new Coord(0, y));
+        quality.add(new Label("Calculate Avg as (req. logout):"), new Coord(0, y));
+        quality.add(avgQModeDropdown(), new Coord(190, y));
         y += 35;
         quality.add(new CheckBox("Round item quality to a whole number") {
             {
@@ -1778,6 +1773,42 @@ public class OptWnd extends Window {
 
         return new ArrayList<Locale>(languages);
     }
+
+    private static final Pair[] avgQModes = new Pair[]{
+            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Quadratic"), AVG_MODE_QUADRATIC),
+            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Geometric"), AVG_MODE_GEMOTERIC),
+            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Arithmetic"), AVG_MODE_ARITHMETIC)
+    };
+
+    @SuppressWarnings("unchecked")
+    private Dropbox<Pair<String, Integer>> avgQModeDropdown() {
+        Dropbox<Pair<String, Integer>> modes = new Dropbox<Pair<String, Integer>>(95, 3, 16) {
+            @Override
+            protected Pair<String, Integer> listitem(int i) {
+                return avgQModes[i];
+            }
+
+            @Override
+            protected int listitems() {
+                return avgQModes.length;
+            }
+
+            @Override
+            protected void drawitem(GOut g, Pair<String, Integer> item, int i) {
+                g.text(item.a, Coord.z);
+            }
+
+            @Override
+            public void change(Pair<String, Integer> item) {
+                super.change(item);
+                Config.avgmode = item.b;
+                Utils.setprefi("avgmode", item.b);
+            }
+        };
+        modes.change(avgQModes[Config.avgmode]);
+        return modes;
+    }
+
 
     public OptWnd() {
         this(true);
