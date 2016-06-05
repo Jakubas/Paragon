@@ -36,6 +36,8 @@ import java.awt.image.WritableRaster;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static haven.GItem.Quality.AVG_MODE_GEMOTERIC;
+import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 import static haven.Inventory.invsq;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
@@ -1112,7 +1114,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             int e = Integer.parseInt(m.group(1));
             int s = Integer.parseInt(m.group(2));
             int v = Integer.parseInt(m.group(3));
-            double avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
+
+            double avg;
+            switch (Config.avgmode) {
+                case AVG_MODE_QUADRATIC:
+                    avg =  Math.sqrt((e * e + s * s + v * v) / 3.0);
+                    break;
+                case AVG_MODE_GEMOTERIC:
+                    avg =  Math.pow(e * s * v, 1.0 / 3.0);
+                    break;
+                default:
+                    avg =  (e + s + v) / 3.0;
+                    break;
+            }
             msg += "  (Avg: " + shortfmt.format(avg) + ")";
         }
         msg(msg, Color.WHITE, Color.WHITE);
