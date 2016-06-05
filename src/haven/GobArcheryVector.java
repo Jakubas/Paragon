@@ -19,8 +19,7 @@ public class GobArcheryVector extends Sprite {
         Gob gob = (Gob) owner;
         Location.goback(rl.state(), "gobx");
         rl.prepo(States.xray);
-        KinInfo ki = gob.getattr(KinInfo.class);
-        clr = gob.isplayer() || ki != null && ki.group != 2 && ki.group != 0 ? friend : foe;
+        clr = gob.isplayer() || gob.isFriend() ? friend : foe;
         rl.prepo(States.vertexcolor);
         return true;
     }

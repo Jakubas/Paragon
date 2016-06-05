@@ -1691,6 +1691,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
                         pfRightClick(inf.gob, getid(inf.r), clickb, 0, null);
                     } else {
+                        if (Config.donotaggrofriends && curs != null && curs.name.equals("gfx/hud/curs/atk") && inf.gob.isFriend())
+                            return;
+
                         wdgmsg("click", pc, mc, clickb, ui.modflags(), 0, (int) inf.gob.id, inf.gob.rc, 0, getid(inf.r));
                     }
                 } else {
@@ -2233,8 +2236,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 try {
                     Resource res = gob.getres();
                     if (res != null && "body".equals(res.basename()) && gob.id != player().id) {
-                        KinInfo kininfo = gob.getattr(KinInfo.class);
-                        if (kininfo == null || kininfo.group == 2) {
+                        if (!gob.isFriend()) {
                             double dist = player().rc.dist(gob.rc);
                             if (dist < gobclsdist) {
                                 gobcls = gob;

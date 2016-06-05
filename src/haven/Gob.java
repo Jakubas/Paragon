@@ -719,4 +719,19 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public boolean isplayer() {
         return MapView.plgob == id;
     }
+
+    public boolean isFriend() {
+        synchronized (glob.party.memb) {
+            for (Party.Member m : glob.party.memb.values()) {
+                if (m.gobid == id)
+                    return true;
+            }
+        }
+
+        KinInfo kininfo = getattr(KinInfo.class);
+        if (kininfo == null || kininfo.group == 2 /*red*/)
+            return false;
+
+        return true;
+    }
 }
