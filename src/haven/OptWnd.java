@@ -1180,17 +1180,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
-            {
-                a = Config.showtoggles;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showtoggles", val);
-                Config.showtoggles = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Enable tracking on login") {
             {
                 a = Config.enabletracking;

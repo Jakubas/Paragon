@@ -747,23 +747,21 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void uimsg(String msg, Object... args) {
         if (msg == "err") {
             String err = (String) args[0];
-            if (Config.showtoggles) {
-                if (err.startsWith("Swimming is now turned")) {
-                    togglebuff(err, "swim", Bufflist.buffswim);
-                } else if (err.startsWith("Tracking is now turned")) {
-                    togglebuff(err, "track", Bufflist.bufftrack);
-                    if (trackautotgld) {
-                        errornosfx(err);
-                        trackautotgld = false;
-                        return;
-                    }
-                } else if (err.startsWith("Criminal acts are now turned")) {
-                    togglebuff(err, "crime", Bufflist.buffcrime);
-                    if (crimeautotgld) {
-                        errornosfx(err);
-                        crimeautotgld = false;
-                        return;
-                    }
+            if (err.startsWith("Swimming is now turned")) {
+                togglebuff(err, "swim", Bufflist.buffswim);
+            } else if (err.startsWith("Tracking is now turned")) {
+                togglebuff(err, "track", Bufflist.bufftrack);
+                if (trackautotgld) {
+                    errornosfx(err);
+                    trackautotgld = false;
+                    return;
+                }
+            } else if (err.startsWith("Criminal acts are now turned")) {
+                togglebuff(err, "crime", Bufflist.buffcrime);
+                if (crimeautotgld) {
+                    errornosfx(err);
+                    crimeautotgld = false;
+                    return;
                 }
             }
             error(err);
