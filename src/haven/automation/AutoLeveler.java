@@ -1,15 +1,21 @@
 package haven.automation;
 
 import haven.*;
+import haven.Button;
+import haven.Frame;
+import haven.Label;
+import haven.Window;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 
 
 public class AutoLeveler extends Window implements GobSelectCallback, ErrorSysMsgCallback {
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
-    private static final Text.Foundry countf = new Text.Foundry(Text.sansb, 12).aa(true);
+    private static final Text.Foundry countf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
     private List<Gob> stockpiles = new ArrayList<>();
     private final Label lbls;
     public boolean terminate = false;

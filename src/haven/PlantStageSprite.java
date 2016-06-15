@@ -4,8 +4,8 @@ import java.awt.*;
 
 
 public class PlantStageSprite extends Sprite {
-    private static final Text.Foundry fndr = new Text.Foundry(Text.sansb, 12).aa(true);
-    private static final Text.Foundry fndrmax = new Text.Foundry(Text.sansb, 20).aa(true);
+    private static final Text.Foundry fndr = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
+    private static final Text.Foundry fndrmax = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 20).aa(true);
     private static final Color stagecolor = new Color(255, 227, 168);
     private static final Color stagemaxcolor = new Color(254, 100, 100);
     private static final Tex stgmaxtex = Text.renderstroked("\u2022", stagemaxcolor, Color.BLACK, fndrmax).tex();
