@@ -41,6 +41,7 @@ public class Text {
     public static final Font fraktur = Resource.local().loadwait("ui/fraktur").layer(Resource.Font.class).font;
     public static final Font dfont = sans;
     public static final Foundry std;
+    public static final Foundry numfnd = new Foundry(sans, 10);
     public final BufferedImage img;
     public final String text;
     private Tex tex;

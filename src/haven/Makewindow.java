@@ -68,7 +68,7 @@ public class Makewindow extends Widget {
             this.res = res;
             this.sdt = new MessageBuf(sdt);
             if (num >= 0)
-                this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE).img, Utils.contrast(Color.WHITE)));
+                this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE,  Text.numfnd).img, Utils.contrast(Color.WHITE)));
             else
                 this.num = null;
         }

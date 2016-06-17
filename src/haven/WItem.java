@@ -213,7 +213,7 @@ public class WItem extends Widget implements DTarget {
             drawmain(g, spr);
             g.defstate();
             if (item.num >= 0) {
-                g.atext(Integer.toString(item.num), sz, 1, 1);
+                g.atext(Integer.toString(item.num), sz, 1, 1, Text.numfnd);
             } else if (itemnum.get() != null) {
                 g.aimage(itemnum.get(), sz, 1, 1);
             }
