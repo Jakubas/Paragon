@@ -29,7 +29,7 @@ package haven;
 import java.awt.Color;
 
 public class Buff extends Widget {
-    public static final Text.Foundry nfnd = new Text.Foundry(Text.dfont, 10);
+    public static final Text.Foundry nfnd = new Text.Foundry(Text.dfont, Config.fontsizeglobal);
     public static final Tex frame = Resource.loadtex("gfx/hud/buffs/frame");
     public static final Tex cframe = Resource.loadtex("gfx/hud/buffs/cframe");
     static final Coord imgoff = new Coord(3, 3);

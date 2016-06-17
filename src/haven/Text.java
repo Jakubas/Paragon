@@ -32,9 +32,12 @@ import java.util.*;
 
 public class Text {
     // Following fonts should not be removed even if unused, since they could be needed for remotely loaded resources.
-    public static final Font serif = new Font("Serif", Font.PLAIN, 10);
-    public static final Font sans = new Font("Sans", Font.PLAIN, 10);
-    public static final Font mono = new Font("Monospaced", Font.PLAIN, 10);
+    // Serif - used for misc numerical values, quest panel title, village names, text input boxes.
+    // Mono - used by the console.
+    // Sans - everything else.
+    public static final Font serif = new Font("Serif", Font.PLAIN, Config.fontsizeglobal);
+    public static final Font sans = new Font("Sans", Font.PLAIN, Config.fontsizeglobal);
+    public static final Font mono = new Font("Monospaced", Font.PLAIN, Config.fontsizeglobal);
     public static final Font fraktur = Resource.local().loadwait("ui/fraktur").layer(Resource.Font.class).font;
     public static final Font dfont = sans;
     public static final Foundry std;
@@ -45,7 +48,7 @@ public class Text {
     public static final Color white = Color.WHITE;
 
     static {
-        std = new Foundry(sans, 10);
+        std = new Foundry(sans, Config.fontsizeglobal);
     }
 
     public static class Line extends Text {

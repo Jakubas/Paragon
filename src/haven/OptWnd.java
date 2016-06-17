@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import static haven.GItem.Quality.AVG_MODE_ARITHMETIC;
 import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
@@ -1519,8 +1520,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-
-        appender.addRow(new Label("Chat font size (req. restart):"), chatFntSzDropdown());
         appender.add(new CheckBox("Hide quests panel") {
             {
                 a = Config.noquests;
@@ -1571,6 +1570,11 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.addRow(new Label("Interface font size (req. restart):"), makeFontSizeGlobalDropdown());
+        appender.addRow(new Label("Button font size (req. restart):"), makeFontSizeButtonDropdown());
+        appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
+        appender.addRow(new Label("Chat font size (req. restart):"), chatFntSzDropdown());
+
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
             @Override
@@ -1808,6 +1812,106 @@ public class OptWnd extends Window {
         return modes;
     }
 
+    private static final List<Integer> fontSize = Arrays.asList(10, 11, 12, 13, 14, 15, 16);
+
+    private Dropbox<Integer> makeFontSizeGlobalDropdown() {
+        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
+        final int width = widths.stream().reduce(Integer::max).get() + 20;
+        final int height = Text.render(fontSize.get(0).toString()).sz().y;
+        return new Dropbox<Integer>(width, fontSize.size(), height) {
+            {
+                super.change(Config.fontsizeglobal);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizeglobal = item;
+                Utils.setprefi("fontsizeglobal", item);
+            }
+        };
+    }
+
+    private Dropbox<Integer> makeFontSizeButtonDropdown() {
+        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
+        final int width = widths.stream().reduce(Integer::max).get() + 20;
+        final int height = Text.render(fontSize.get(0).toString()).sz().y;
+        return new Dropbox<Integer>(width, fontSize.size(), height) {
+            {
+                super.change(Config.fontsizebutton);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizebutton = item;
+                Utils.setprefi("fontsizebutton", item);
+            }
+        };
+    }
+
+    private Dropbox<Integer> makeFontSizeWndCapDropdown() {
+        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
+        final int width = widths.stream().reduce(Integer::max).get() + 20;
+        final int height = Text.render(fontSize.get(0).toString()).sz().y;
+        return new Dropbox<Integer>(width, fontSize.size(), height) {
+            {
+                super.change(Config.fontsizewndcap);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizewndcap = item;
+                Utils.setprefi("fontsizewndcap", item);
+            }
+        };
+    }
 
     public OptWnd() {
         this(true);

@@ -28,17 +28,15 @@ package haven;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.font.TextAttribute;
 import java.util.*;
 import java.util.List;
 
-import static haven.Window.wbox;
 import static haven.PUtils.*;
 
 import haven.resutil.FoodInfo;
 
 public class CharWnd extends Window {
-    public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, 9).aa(true);
+    public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, Config.fontsizeglobal).aa(true);
     public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.sans, 20).aa(true), Window.ctex), 2, 2, new Color(96, 48, 0));
     public static final Text.Foundry attrf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), Resource.language.equals("en") ? 14 : 12).aa(true);
     public static final Color debuff = new Color(255, 128, 128);
@@ -1101,7 +1099,7 @@ public class CharWnd extends Window {
             }
 
             static final Text.Furnace qtfnd = new BlurFurn(new Text.Foundry(Text.serif.deriveFont(java.awt.Font.BOLD, 16)).aa(true), 2, 1, Color.BLACK);
-            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, 12).aa(true);
+            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, Config.fontsizeglobal * 12 / 10).aa(true);
 
             class QView extends Widget {
                 private Condition[] ccond;

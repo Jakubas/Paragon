@@ -171,6 +171,9 @@ public class Config {
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static boolean donotaggrofriends =  Utils.getprefb("donotaggrofriends", false);
     public static int avgmode = Utils.getprefi("avgmode", 0);
+    public static int fontsizeglobal = Utils.getprefi("fontsizeglobal", 11);
+    public static int fontsizebutton = Utils.getprefi("fontsizebutton", 12);
+    public static int fontsizewndcap = Utils.getprefi("fontsizewndcap", 14);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

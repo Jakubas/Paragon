@@ -50,6 +50,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private String name = "";
 
     public static class Quality {
+        private static final Text.Foundry fnd = new Text.Foundry(Text.sans, 10);
         public static final int AVG_MODE_QUADRATIC = 0;
         public static final int AVG_MODE_GEOMETRIC = 1;
         public static final int AVG_MODE_ARITHMETIC = 2;
@@ -112,17 +113,17 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
             if (curio) {
                 double lpgain = Math.sqrt(Math.sqrt((e * e + s * s + v * v) / 300.0));
-                lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();
+                lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK, fnd).tex();
             }
-            etex = Text.renderstroked(shortfmt.format(e), essenceclr, Color.BLACK).tex();
-            stex = Text.renderstroked(shortfmt.format(s), substanceclr, Color.BLACK).tex();
-            vtex = Text.renderstroked(shortfmt.format(v), vitalityclr, Color.BLACK).tex();
-            mintex = Text.renderstroked(shortfmt.format(min), colormin, Color.BLACK).tex();
-            maxtex = Text.renderstroked(shortfmt.format(max), colormax, Color.BLACK).tex();
-            avgtex = Text.renderstroked(shortfmt.format(avg), colormax, Color.BLACK).tex();
-            avgsvtex = Text.renderstroked(shortfmt.format(avgsv), colormax, Color.BLACK).tex();
-            avgwholetex = Text.renderstroked(Math.round(avg) + "", colormax, Color.BLACK).tex();
-            avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", colormax, Color.BLACK).tex();
+            etex = Text.renderstroked(shortfmt.format(e), essenceclr, Color.BLACK, fnd).tex();
+            stex = Text.renderstroked(shortfmt.format(s), substanceclr, Color.BLACK, fnd).tex();
+            vtex = Text.renderstroked(shortfmt.format(v), vitalityclr, Color.BLACK, fnd).tex();
+            mintex = Text.renderstroked(shortfmt.format(min), colormin, Color.BLACK, fnd).tex();
+            maxtex = Text.renderstroked(shortfmt.format(max), colormax, Color.BLACK, fnd).tex();
+            avgtex = Text.renderstroked(shortfmt.format(avg), colormax, Color.BLACK, fnd).tex();
+            avgsvtex = Text.renderstroked(shortfmt.format(avgsv), colormax, Color.BLACK, fnd).tex();
+            avgwholetex = Text.renderstroked(Math.round(avg) + "", colormax, Color.BLACK, fnd).tex();
+            avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", colormax, Color.BLACK, fnd).tex();
         }
     }
 
