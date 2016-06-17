@@ -43,11 +43,7 @@ import java.awt.datatransfer.*;
 
 public class ChatUI extends Widget {
     private static final Resource alarmsfx = Resource.local().loadwait("sfx/chatalarm");
-    public static final RichText.Foundry fndsml = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(10f), TextAttribute.FOREGROUND, Color.BLACK));
-    public static final RichText.Foundry fndmed = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(12f), TextAttribute.FOREGROUND, Color.BLACK));
-    public static final RichText.Foundry fndlrg = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(14f), TextAttribute.FOREGROUND, Color.BLACK));
-    public static final RichText.Foundry fndxlr = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont(16f), TextAttribute.FOREGROUND, Color.BLACK));
-    public static final RichText.Foundry fnd;
+    public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont((float)Config.fontsizechat)));
     public static final Text.Foundry qfnd = new Text.Foundry(Text.dfont, 12, new java.awt.Color(192, 255, 192));
     public static final int selw = 130;
     private static final int brpw = 142, beltw = 410;
@@ -74,24 +70,6 @@ public class ChatUI extends Widget {
         setcanfocus(true);
         if (h < 1)
             hide();
-    }
-
-    static {
-        switch (Config.chatfontsize) {
-            default:
-            case 0:
-                fnd = fndsml;
-                break;
-            case 1:
-                fnd = fndmed;
-                break;
-            case 2:
-                fnd = fndlrg;
-                break;
-            case 3:
-                fnd = fndxlr;
-                break;
-        }
     }
 
     protected void added() {

@@ -1573,7 +1573,7 @@ public class OptWnd extends Window {
         appender.addRow(new Label("Interface font size (req. restart):"), makeFontSizeGlobalDropdown());
         appender.addRow(new Label("Button font size (req. restart):"), makeFontSizeButtonDropdown());
         appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
-        appender.addRow(new Label("Chat font size (req. restart):"), chatFntSzDropdown());
+        appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
 
 
         uis.add(new Button(220, "Reset Windows (req. logout)") {
@@ -1682,7 +1682,8 @@ public class OptWnd extends Window {
 
     private Dropbox<Locale> langDropdown() {
         List<Locale> languages = enumerateLanguages();
-        return new Dropbox<Locale>(120, 5, 16) {
+        List<String> values = languages.stream().map(x -> x.getDisplayName()).collect(Collectors.toList());
+        return new Dropbox<Locale>(10, values) {
             {
                 super.change(new Locale(Resource.language));
             }
@@ -1707,44 +1708,6 @@ public class OptWnd extends Window {
                 super.change(item);
                 Resource.language = item.toString();
                 Utils.setpref("language", item.toString());
-            }
-        };
-    }
-
-    private static final Pair[] chatFntSz = new Pair[]{
-            new Pair<>("0", 0),
-            new Pair<>("1", 1),
-            new Pair<>("2", 2),
-            new Pair<>("3", 3)
-    };
-
-    @SuppressWarnings("unchecked")
-    private Dropbox<Pair<String, Integer>> chatFntSzDropdown() {
-        return new Dropbox<Pair<String, Integer>>(55, 4, 16) {
-            {
-                super.change(new Pair<String, Integer>(Config.chatfontsize + "", Config.chatfontsize));
-            }
-
-            @Override
-            protected Pair<String, Integer> listitem(int i) {
-                return chatFntSz[i];
-            }
-
-            @Override
-            protected int listitems() {
-                return chatFntSz.length;
-            }
-
-            @Override
-            protected void drawitem(GOut g, Pair<String, Integer> item, int i) {
-                g.text(item.a, Coord.z);
-            }
-
-            @Override
-            public void change(Pair<String, Integer> item) {
-                super.change(item);
-                Config.chatfontsize = item.b;
-                Utils.setprefi("chatfontsize", item.b);
             }
         };
     }
@@ -1785,7 +1748,8 @@ public class OptWnd extends Window {
 
     @SuppressWarnings("unchecked")
     private Dropbox<Pair<String, Integer>> avgQModeDropdown() {
-        Dropbox<Pair<String, Integer>> modes = new Dropbox<Pair<String, Integer>>(95, 3, 16) {
+        List<String> values = Arrays.stream(avgQModes).map(x -> x.a.toString()).collect(Collectors.toList());
+        Dropbox<Pair<String, Integer>> modes = new Dropbox<Pair<String, Integer>>(avgQModes.length, values) {
             @Override
             protected Pair<String, Integer> listitem(int i) {
                 return avgQModes[i];
@@ -1815,10 +1779,8 @@ public class OptWnd extends Window {
     private static final List<Integer> fontSize = Arrays.asList(10, 11, 12, 13, 14, 15, 16);
 
     private Dropbox<Integer> makeFontSizeGlobalDropdown() {
-        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
-        final int width = widths.stream().reduce(Integer::max).get() + 20;
-        final int height = Text.render(fontSize.get(0).toString()).sz().y;
-        return new Dropbox<Integer>(width, fontSize.size(), height) {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
             {
                 super.change(Config.fontsizeglobal);
             }
@@ -1848,10 +1810,8 @@ public class OptWnd extends Window {
     }
 
     private Dropbox<Integer> makeFontSizeButtonDropdown() {
-        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
-        final int width = widths.stream().reduce(Integer::max).get() + 20;
-        final int height = Text.render(fontSize.get(0).toString()).sz().y;
-        return new Dropbox<Integer>(width, fontSize.size(), height) {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
             {
                 super.change(Config.fontsizebutton);
             }
@@ -1881,10 +1841,8 @@ public class OptWnd extends Window {
     }
 
     private Dropbox<Integer> makeFontSizeWndCapDropdown() {
-        final List<Integer> widths = fontSize.stream().map((v) -> Text.render(v.toString()).sz().x).collect(Collectors.toList());
-        final int width = widths.stream().reduce(Integer::max).get() + 20;
-        final int height = Text.render(fontSize.get(0).toString()).sz().y;
-        return new Dropbox<Integer>(width, fontSize.size(), height) {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
             {
                 super.change(Config.fontsizewndcap);
             }
@@ -1912,6 +1870,38 @@ public class OptWnd extends Window {
             }
         };
     }
+
+    private Dropbox<Integer> makeFontSizeChatDropdown() {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
+            {
+                super.change(Config.fontsizechat);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizechat = item;
+                Utils.setprefi("fontsizechat", item);
+            }
+        };
+    }
+
 
     public OptWnd() {
         this(true);

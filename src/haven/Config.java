@@ -82,7 +82,6 @@ public class Config {
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", false);
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
     public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
-    public static int chatfontsize = Utils.getprefi("chatfontsize", 0);
     public static boolean quickslots = Utils.getprefb("quickslots", false);
     public static boolean statuswdgvisible = Utils.getprefb("statuswdgvisible", false);
     public static boolean chatalarm = Utils.getprefb("chatalarm", false);
@@ -174,6 +173,7 @@ public class Config {
     public static int fontsizeglobal = Utils.getprefi("fontsizeglobal", 11);
     public static int fontsizebutton = Utils.getprefi("fontsizebutton", 12);
     public static int fontsizewndcap = Utils.getprefi("fontsizewndcap", 14);
+    public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

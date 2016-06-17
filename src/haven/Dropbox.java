@@ -27,6 +27,8 @@
 package haven;
 
 import java.awt.Color;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Dropbox<T> extends ListWidget<T> {
     public static final Tex drop = Resource.loadtex("gfx/hud/dropdown");
@@ -39,6 +41,19 @@ public abstract class Dropbox<T> extends ListWidget<T> {
         super(new Coord(w, itemh), itemh);
         this.listh = listh;
         dropc = new Coord(sz.x - drop.sz().x - 1, 1);
+    }
+
+    public Dropbox(int listh, List<String> values) {
+        this(calcWidth(values), listh, calcHeight(values));
+    }
+
+    private static int calcWidth(List<String> names) {
+        List<Integer> widths = names.stream().map((v) -> Text.render(v).sz().x).collect(Collectors.toList());
+        return widths.stream().reduce(Integer::max).get() + 22;
+    }
+
+    private static int calcHeight(List<String> values) {
+        return Math.max(Text.render(values.get(0)).sz().y, 16);
     }
 
     private class Droplist extends Listbox<T> {
