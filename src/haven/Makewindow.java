@@ -116,14 +116,12 @@ public class Makewindow extends Widget {
         Label lblIn = new Label("Input:");
         Label lblOut = new Label("Result:");
 
-        if (!Resource.language.equals("en")) {
-            xoff = qmodl.sz().x;
-            if (lblIn.sz.x > xoff)
-                xoff = lblIn.sz.x;
-            if (lblOut.sz.x > xoff)
-                xoff = lblOut.sz.x;
-            xoff += 8;
-        }
+        xoff = qmodl.sz().x;
+        if (lblIn.sz.x > xoff)
+            xoff = lblIn.sz.x;
+        if (lblOut.sz.x > xoff)
+            xoff = lblOut.sz.x;
+        xoff += 8;
 
         add(lblIn, new Coord(0, 8));
         add(lblOut, new Coord(0, outy + 8));
