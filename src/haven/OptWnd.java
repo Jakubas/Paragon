@@ -1570,9 +1570,9 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.addRow(new Label("Interface font size (req. restart):"), makeFontSizeGlobalDropdown());
-        appender.addRow(new Label("Button font size (req. restart):"), makeFontSizeButtonDropdown());
-        appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
+        //appender.addRow(new Label("Interface font size (req. restart):"), makeFontSizeGlobalDropdown());
+        //appender.addRow(new Label("Button font size (req. restart):"), makeFontSizeButtonDropdown());
+        //appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
         appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
 
 
