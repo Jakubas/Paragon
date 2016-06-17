@@ -191,7 +191,7 @@ public class Equipory extends Widget implements DTarget {
             }
         }
         if (armorclass != null)
-            g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - 15));
+            g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - armorclass.sz().y));
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {
