@@ -170,8 +170,18 @@ public class Config {
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static boolean donotaggrofriends =  Utils.getprefb("donotaggrofriends", false);
     public static int avgmode = Utils.getprefi("avgmode", 0);
-    public static int fontsizeglobal = Utils.getprefi("fontsizeglobal", 11);
-    public static int fontsizebutton = Utils.getprefi("fontsizebutton", 12);
+    private final static Map<String, Integer> defFontSzGlobal =  new HashMap<String, Integer>(3) {{
+        put("zh", 16);
+        put("en", 11);
+        put("ru", 11);
+    }};
+    private final static Map<String, Integer> defFontSzButton =  new HashMap<String, Integer>(3) {{
+        put("zh", 14);
+        put("en", 12);
+        put("ru", 10);
+    }};
+    public static int fontsizeglobal = Utils.getprefi("fontsizeglobal", defFontSzGlobal.get(Resource.language));
+    public static int fontsizebutton = Utils.getprefi("fontsizebutton", defFontSzButton.get(Resource.language));
     public static int fontsizewndcap = Utils.getprefi("fontsizewndcap", 14);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static boolean pf = false;
@@ -180,6 +190,8 @@ public class Config {
     public static String prefspec = "hafen";
     public static String version;
     public static String gitrev;
+
+
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
