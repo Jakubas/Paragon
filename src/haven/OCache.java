@@ -401,12 +401,17 @@ public class OCache implements Iterable<Gob> {
     public synchronized void health(Gob g, int hp) {
         g.setattr(new GobHealth(g, hp));
 
-        if (Config.showgobhp && hp < 4) {
+        if (Config.showgobhp) {
             Gob.Overlay ol = g.findol(Sprite.GOB_HEALTH_ID);
-            if (ol == null)
-                g.addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hp)));
-            else if (((GobHealthSprite)ol.spr).val != hp)
-                ((GobHealthSprite)ol.spr).update(hp);
+            if (hp < 4) {
+                if (ol == null)
+                    g.addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hp)));
+                else if (((GobHealthSprite) ol.spr).val != hp)
+                    ((GobHealthSprite) ol.spr).update(hp);
+            } else {
+                if (ol != null)
+                    g.ols.remove(ol);
+            }
         }
 
         changed(g);
