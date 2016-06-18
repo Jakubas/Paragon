@@ -178,11 +178,17 @@ public class Config {
     private final static Map<String, Integer> defFontSzButton =  new HashMap<String, Integer>(3) {{
         put("zh", 14);
         put("en", 12);
-        put("ru", 10);
+        put("ru", 12);
+    }};
+    private final static Map<String, Integer> defFontSzAttr =  new HashMap<String, Integer>(3) {{
+        put("zh", 14);
+        put("en", 14);
+        put("ru", 13);
     }};
     public static int fontsizeglobal = Utils.getprefi("fontsizeglobal", defFontSzGlobal.get(Resource.language));
     public static int fontsizebutton = Utils.getprefi("fontsizebutton", defFontSzButton.get(Resource.language));
     public static int fontsizewndcap = Utils.getprefi("fontsizewndcap", 14);
+    public static int fontsizeattr = Utils.getprefi("fontsizeattr", defFontSzAttr.get(Resource.language));
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static boolean pf = false;
     public static String playerposfile;
