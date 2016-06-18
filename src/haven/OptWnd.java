@@ -567,7 +567,7 @@ public class OptWnd extends Window {
 
     private void initAudioSecondColumn() {
         final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
-        appender.setX(250);
+        appender.setX(350);
         appender.setVerticalMargin(0);
         appender.add(new Label("'Chip' sound volume"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
@@ -1111,7 +1111,7 @@ public class OptWnd extends Window {
 
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
-        appender.setX(260);
+        appender.setX(310);
 
         appender.add(new CheckBox("Show server time") {
             {
@@ -1518,8 +1518,7 @@ public class OptWnd extends Window {
         //appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
         appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
 
-
-        uis.add(new Button(220, "Reset Windows (req. logout)") {
+        Button resetWndBtn = new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {
                 for (String wndcap : Window.persistentwnds)
@@ -1539,7 +1538,8 @@ public class OptWnd extends Window {
                 Utils.delpref("fbelt_c");
                 Utils.delpref("fbelt_vertical");
             }
-        }, new Coord(260, 320));
+        };
+        uis.add(resetWndBtn, new Coord(740 / 2 - resetWndBtn.sz.x / 2 , 320));
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
     }
