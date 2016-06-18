@@ -281,7 +281,7 @@ public class FightWnd extends Widget {
         info.bg = new Color(0, 0, 0, 128);
         Frame.around(this, Collections.singletonList(info));
 
-        add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.l10nLabel,"Martial Arts & Combat Schools")).tex()), 0, 0);
+        add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.BUNDLE_LABEL,"Martial Arts & Combat Schools")).tex()), 0, 0);
         actlist = add(new Actions(260, 8), new Coord(250, 35).add(wbox.btloff()));
         Frame.around(this, Collections.singletonList(actlist));
         savelist = add(new Savelist(260, 3), new Coord(250, 225).add(wbox.btloff()));

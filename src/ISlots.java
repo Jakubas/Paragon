@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ISlots extends Tip implements NumberInfo {
-    public static final Text ch = Text.render(Resource.getLocString(Resource.l10nLabel, "Gilding:"));
+    public static final Text ch = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Gilding:"));
     public static final Foundry progf;
     public final Collection<SItem> s = new ArrayList<SItem>();
     public final int left;
@@ -33,7 +33,7 @@ public class ISlots extends Tip implements NumberInfo {
         var1.cmp.add(ch.img, new Coord(0, var1.cmp.sz.y));
         BufferedImage var2;
         if (this.attrs.length > 0) {
-            String chanceStr = Resource.getLocString(Resource.l10nLabel, "Chance: $col[%s]{%d%%} to $col[%s]{%d%%}");
+            String chanceStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Chance: $col[%s]{%d%%} to $col[%s]{%d%%}");
             var2 = RichText.render(String.format(chanceStr,
                     "192,192,255",
                     Long.valueOf(Math.round(100.0D * this.pmin)),
@@ -53,7 +53,7 @@ public class ISlots extends Tip implements NumberInfo {
                 var10 += var7.getWidth() + 2;
             }
         } else {
-            String chanceStr = Resource.getLocString(Resource.l10nLabel, "Chance: $col[%s]{%d%%}");
+            String chanceStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Chance: $col[%s]{%d%%}");
             var2 = RichText.render(String.format(chanceStr,
                     "192,192,255", Integer.valueOf((int) Math.round(100.0D * this.pmin))),
                     0,
@@ -69,8 +69,8 @@ public class ISlots extends Tip implements NumberInfo {
         }
 
         if (this.left > 0) {
-            String gildStr = Resource.getLocString(Resource.l10nLabel, "Gildable ×%d");
-            String gild2Str = Resource.getLocString(Resource.l10nLabel, "Gildable");
+            String gildStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Gildable ×%d");
+            String gild2Str = Resource.getLocString(Resource.BUNDLE_LABEL, "Gildable");
             var1.cmp.add(progf.render(this.left > 1 ? String.format(gildStr, Integer.valueOf(this.left)) : gild2Str).img, new Coord(10, var1.cmp.sz.y));
         }
 

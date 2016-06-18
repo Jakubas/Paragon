@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class Slotted extends Tip {
-    public static final Line ch = Text.render(Resource.getLocString(Resource.l10nLabel, "As gilding:"));
+    public static final Line ch = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "As gilding:"));
     public final double pmin;
     public final double pmax;
     public final Resource[] attrs;
@@ -32,7 +32,7 @@ public class Slotted extends Tip {
         var1.cmp.add(ch.img, new Coord(0, var1.cmp.sz.y));
         BufferedImage var2;
         if (this.attrs.length > 0) {
-            String chanceStr = Resource.getLocString(Resource.l10nLabel, "Chance: $col[%s]{%d%%} to $col[%s]{%d%%}");
+            String chanceStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Chance: $col[%s]{%d%%} to $col[%s]{%d%%}");
             var2 = RichText.render(String.format(chanceStr, "192,192,255", Long.valueOf(Math.round(100.0D * this.pmin)), "192,192,255", Long.valueOf(Math.round(100.0D * this.pmax))), 0, new Object[0]).img;
             int var3 = var2.getHeight();
             byte var4 = 10;
@@ -46,7 +46,7 @@ public class Slotted extends Tip {
                 var8 += var7.getWidth() + 2;
             }
         } else {
-            String chanceStr = Resource.getLocString(Resource.l10nLabel, "Chance: $col[%s]{%d%%}");
+            String chanceStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Chance: $col[%s]{%d%%}");
             var2 = RichText.render(String.format(chanceStr, "192,192,255", Integer.valueOf((int) Math.round(100.0D * this.pmin))), 0, new Object[0]).img;
             var1.cmp.add(var2, new Coord(10, var1.cmp.sz.y));
         }

@@ -1741,9 +1741,9 @@ public class OptWnd extends Window {
     }
 
     private static final Pair[] avgQModes = new Pair[]{
-            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Quadratic"), AVG_MODE_QUADRATIC),
-            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Geometric"), AVG_MODE_GEOMETRIC),
-            new Pair<>(Resource.getLocString(Resource.l10nLabel, "Arithmetic"), AVG_MODE_ARITHMETIC)
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Quadratic"), AVG_MODE_QUADRATIC),
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Geometric"), AVG_MODE_GEOMETRIC),
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Arithmetic"), AVG_MODE_ARITHMETIC)
     };
 
     @SuppressWarnings("unchecked")

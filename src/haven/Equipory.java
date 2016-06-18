@@ -186,7 +186,7 @@ public class Equipory extends Widget implements DTarget {
                         }
                     }
                 }
-                armorclass = Text.render(Resource.getLocString(Resource.l10nLabel, "Armor Class: ") + h + "/" + s, Color.BLACK, acf).tex();
+                armorclass = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Armor Class: ") + h + "/" + s, Color.BLACK, acf).tex();
             } catch (Exception e) { // fail silently
             }
         }

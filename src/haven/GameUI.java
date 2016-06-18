@@ -864,7 +864,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public class MainMenu extends Widget {
         public MainMenu() {
             super(menubg.sz());
-            add(new MenuButton("rbtn-inv", 9, Resource.getLocString(Resource.l10nLabel, "Inventory ($col[255,255,0]{Tab})")) {
+            add(new MenuButton("rbtn-inv", 9, Resource.getLocString(Resource.BUNDLE_LABEL, "Inventory ($col[255,255,0]{Tab})")) {
                 public void click() {
                     if ((invwnd != null) && invwnd.show(!invwnd.visible)) {
                         invwnd.raise();
@@ -872,7 +872,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-equ", 5, Resource.getLocString(Resource.l10nLabel, "Equipment ($col[255,255,0]{Ctrl+E})")) {
+            add(new MenuButton("rbtn-equ", 5, Resource.getLocString(Resource.BUNDLE_LABEL, "Equipment ($col[255,255,0]{Ctrl+E})")) {
                 public void click() {
                     if ((equwnd != null) && equwnd.show(!equwnd.visible)) {
                         equwnd.raise();
@@ -880,7 +880,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-chr", 20, Resource.getLocString(Resource.l10nLabel, "Character Sheet ($col[255,255,0]{Ctrl+T})")) {
+            add(new MenuButton("rbtn-chr", 20, Resource.getLocString(Resource.BUNDLE_LABEL, "Character Sheet ($col[255,255,0]{Ctrl+T})")) {
                 public void click() {
                     if ((chrwdg != null) && chrwdg.show(!chrwdg.visible)) {
                         chrwdg.raise();
@@ -888,7 +888,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-bud", 2, Resource.getLocString(Resource.l10nLabel, "Kith & Kin ($col[255,255,0]{Ctrl+B})")) {
+            add(new MenuButton("rbtn-bud", 2, Resource.getLocString(Resource.BUNDLE_LABEL, "Kith & Kin ($col[255,255,0]{Ctrl+B})")) {
                 public void click() {
                     if (zerg.show(!zerg.visible)) {
                         zerg.raise();
@@ -897,7 +897,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-opt", 15, Resource.getLocString(Resource.l10nLabel, "Options ($col[255,255,0]{Ctrl+O})")) {
+            add(new MenuButton("rbtn-opt", 15, Resource.getLocString(Resource.BUNDLE_LABEL, "Options ($col[255,255,0]{Ctrl+O})")) {
                 public void click() {
                     if (opts.show(!opts.visible)) {
                         opts.raise();
@@ -1074,15 +1074,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void msg(String msg, Color color, Color logcol) {
         msgtime = System.currentTimeMillis();
-
-        if (Resource.L10N_DEBUG)
-            Resource.l10nMsg = Resource.saveStrings(Resource.BUNDLE_MSG, Resource.l10nMsg, msg, msg);
-
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nMsg != null && Resource.l10nMsg.containsKey(msg))
-                msg = Resource.l10nMsg.get(msg);
-        }
-
+        msg = Resource.getLocString(Resource.BUNDLE_MSG, msg);
         lastmsg = msgfoundry.render(msg, color);
         syslog.append(msg, logcol);
         if (color == Color.WHITE)
@@ -1321,7 +1313,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 Tex glow;
 
                 {
-                    this.tooltip = RichText.render(Resource.getLocString(Resource.l10nLabel, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
+                    this.tooltip = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
                     glow = new TexI(PUtils.rasterimg(PUtils.blurmask(up.getRaster(), 2, 2, Color.WHITE)));
                 }
 

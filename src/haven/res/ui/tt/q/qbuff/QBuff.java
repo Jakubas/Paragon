@@ -18,7 +18,7 @@ public class QBuff extends ItemInfo.Tip {
         super(owner);
         this.icon = icon;
         this.origName = name;
-        this.name = Resource.getLocString(Resource.l10nLabel, name);
+        this.name = Resource.getLocString(Resource.BUNDLE_LABEL, name);
         this.q = q;
     }
 

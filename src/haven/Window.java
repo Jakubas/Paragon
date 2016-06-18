@@ -113,15 +113,7 @@ public class Window extends Widget implements DTarget {
         this.mrgn = lg ? dlmrgn : dsmrgn;
         origcap = cap;
         cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
-
-        if (Resource.L10N_DEBUG)
-            Resource.l10nWindow = Resource.saveStrings(Resource.BUNDLE_WINDOW, Resource.l10nWindow, cap, cap);
-
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nWindow != null && Resource.l10nWindow.containsKey(cap))
-                cap = Resource.l10nWindow.get(cap);
-        }
-        chcap(cap);
+        chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
         resize(sz);
         setfocustab(true);
     }

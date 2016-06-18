@@ -70,8 +70,8 @@ public class FoodInfo extends ItemInfo.Tip {
     }
 
     public BufferedImage longtip() {
-        String infoStr = Resource.getLocString(Resource.l10nLabel, "Energy: $col[128,128,255]{%s%%}, Hunger: $col[255,192,128]{%s%%}");
-        String chanceStr = Resource.getLocString(Resource.l10nLabel, "$i{($col[192,192,255]{%d%%} chance)}");
+        String infoStr = Resource.getLocString(Resource.BUNDLE_LABEL, "Energy: $col[128,128,255]{%s%%}, Hunger: $col[255,192,128]{%s%%}");
+        String chanceStr = Resource.getLocString(Resource.BUNDLE_LABEL, "$i{($col[192,192,255]{%d%%} chance)}");
 
         BufferedImage base = RichText.render(String.format(infoStr, Utils.odformat2(end * 100, 2), Utils.odformat2(glut * 100, 2)), 0).img;
         Collection<BufferedImage> imgs = new LinkedList<BufferedImage>();

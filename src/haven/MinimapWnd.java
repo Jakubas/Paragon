@@ -43,7 +43,7 @@ public class MinimapWnd extends Widget {
 
         pclaim = new ToggleButton("gfx/hud/wndmap/btns/claim", "gfx/hud/wndmap/btns/claim-d", map.visol(0)) {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Display personal claims"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display personal claims"));
             }
 
             public void click() {
@@ -58,7 +58,7 @@ public class MinimapWnd extends Widget {
         };
         vclaim = new ToggleButton("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", map.visol(2)) {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Display village claims"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display village claims"));
             }
 
             public void click() {
@@ -73,7 +73,7 @@ public class MinimapWnd extends Widget {
         };
         center = new IButton("gfx/hud/wndmap/btns/center", "", "", "") {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Center the map on player"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Center the map on player"));
             }
 
             public void click() {
@@ -82,7 +82,7 @@ public class MinimapWnd extends Widget {
         };
         lock = new ToggleButton("gfx/hud/wndmap/btns/lock-d", "gfx/hud/wndmap/btns/lock", Config.maplocked) {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Lock map dragging"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Lock map dragging"));
             }
 
             public void click() {
@@ -92,7 +92,7 @@ public class MinimapWnd extends Widget {
         };
         viewdist = new IButton("gfx/hud/wndmap/btns/viewdist", "", "", "") {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Show view distance box"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Show view distance box"));
             }
 
             public void click() {
@@ -102,7 +102,7 @@ public class MinimapWnd extends Widget {
         };
         grid = new IButton("gfx/hud/wndmap/btns/grid", "", "", "") {
             {
-                tooltip = Text.render(Resource.getLocString(Resource.l10nLabel, "Show map grid"));
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Show map grid"));
             }
 
             public void click() {

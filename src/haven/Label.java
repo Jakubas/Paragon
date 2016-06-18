@@ -54,26 +54,14 @@ public class Label extends Widget {
     public Label(String text, int w, Text.Foundry f) {
         super(Coord.z);
         this.f = f;
-        if (Resource.L10N_DEBUG)
-            Resource.l10nLabel = Resource.saveStrings(Resource.BUNDLE_LABEL, Resource.l10nLabel, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nLabel != null && Resource.l10nLabel.containsKey(text))
-                text = Resource.l10nLabel.get(text);
-        }
-        this.text = f.renderwrap(texts = text, this.col, w);
+        this.text = f.renderwrap(texts = Resource.getLocString(Resource.BUNDLE_LABEL, text), this.col, w);
         sz = this.text.sz();
     }
 
     public Label(String text, Text.Foundry f) {
         super(Coord.z);
         this.f = f;
-        if (Resource.L10N_DEBUG)
-            Resource.l10nLabel = Resource.saveStrings(Resource.BUNDLE_LABEL, Resource.l10nLabel, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nLabel != null && Resource.l10nLabel.containsKey(text))
-                text = Resource.l10nLabel.get(text);
-        }
-        this.text = f.render(texts = text, this.col);
+        this.text = f.render(texts = Resource.getLocString(Resource.BUNDLE_LABEL, text), this.col);
         sz = this.text.sz();
     }
 
@@ -99,11 +87,11 @@ public class Label extends Widget {
                 Matcher matcher = contPattern.matcher(text);
                 if (matcher.find()) {
                     String num = matcher.group(1);
-                    String locText = Resource.getLocStringOrNull(Resource.l10nLabel, text.replace(num, "%s"));
+                    String locText = Resource.getLocStringOrNull(Resource.BUNDLE_LABEL, text.replace(num, "%s"));
                     if (locText != null)
                         t = String.format(locText, num);
                 } else {
-                    t = Resource.getLocString(Resource.l10nLabel, text);
+                    t = Resource.getLocString(Resource.BUNDLE_LABEL, text);
                 }
             }
         }

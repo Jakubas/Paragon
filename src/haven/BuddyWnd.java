@@ -273,15 +273,15 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
 
                     public void choose(Petal opt) {
                         if (opt != null) {
-                            if (opt.name.equals(Resource.getLocString(Resource.l10nFlower, "End kinship"))) {
+                            if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "End kinship"))) {
                                 b.endkin();
-                            } else if (opt.name.equals(Resource.getLocString(Resource.l10nFlower, "Chat"))) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Chat"))) {
                                 b.chat();
-                            } else if (opt.name.equals(Resource.getLocString(Resource.l10nFlower, "Invite"))) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Invite"))) {
                                 b.invite();
-                            } else if (opt.name.equals(Resource.getLocString(Resource.l10nFlower, "Forget"))) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Forget"))) {
                                 b.forget();
-                            } else if (opt.name.equals(Resource.getLocString(Resource.l10nFlower, "Describe"))) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Describe"))) {
                                 b.describe();
                             }
                             uimsg("act", opt.num);
@@ -307,7 +307,7 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
         super(new Coord(200, 380));
         setfocustab(true);
         int y = 0;
-        add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.l10nLabel, "Kin")).tex()), new Coord(0, 0));
+        add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Kin")).tex()), new Coord(0, 0));
         y += 35;
 
         bl = add(new BuddyList(200 - Window.wbox.bisz().x, 7), new Coord(Window.wbox.btloff().x, y));

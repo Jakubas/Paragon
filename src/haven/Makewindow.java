@@ -35,7 +35,7 @@ public class Makewindow extends Widget {
     List<Spec> inputs = Collections.emptyList();
     List<Spec> outputs = Collections.emptyList();
     List<Indir<Resource>> qmod = null;
-    static final Text qmodl;
+    static final Text qmodl = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Quality:"));
     int xoff = 45;
     final int qmy = 38, outy = 65;
     public static final Text.Foundry nmf = new Text.Foundry(Text.serif, 20).aa(true);
@@ -48,14 +48,6 @@ public class Makewindow extends Widget {
         public Widget create(Widget parent, Object[] args) {
             return (new Makewindow((String) args[0]));
         }
-    }
-
-    static {
-        String q = "Quality:";
-        if (!Resource.language.equals("en"))
-            if (Resource.l10nLabel.containsKey(q))
-                q = Resource.l10nLabel.get(q);
-        qmodl = Text.render(q);
     }
 
     public class Spec implements GSprite.Owner {
