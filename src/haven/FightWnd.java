@@ -277,14 +277,14 @@ public class FightWnd extends Widget {
         for (int i = 0; i < nsave; i++)
             saves[i] = unused;
 
-        info = add(new CharWnd.LoadingTextBox(new Coord(223, 220), "", CharWnd.ifnd), new Coord(5, 35).add(wbox.btloff()));
+        info = add(new CharWnd.LoadingTextBox(new Coord(228, 220), "", CharWnd.ifnd), new Coord(0, 35).add(wbox.btloff()));
         info.bg = new Color(0, 0, 0, 128);
         Frame.around(this, Collections.singletonList(info));
 
         add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.l10nLabel,"Martial Arts & Combat Schools")).tex()), 0, 0);
-        actlist = add(new Actions(250, 8), new Coord(245, 35).add(wbox.btloff()));
+        actlist = add(new Actions(260, 8), new Coord(250, 35).add(wbox.btloff()));
         Frame.around(this, Collections.singletonList(actlist));
-        savelist = add(new Savelist(250, 3), new Coord(245, 225).add(wbox.btloff()));
+        savelist = add(new Savelist(260, 3), new Coord(250, 225).add(wbox.btloff()));
         Frame.around(this, Collections.singletonList(savelist));
 
         add(new Button(70, "Load", false) {
@@ -292,13 +292,13 @@ public class FightWnd extends Widget {
                 load(savelist.sel);
                 use(savelist.sel);
             }
-        }, 5, 274);
+        }, 0, 274);
         add(new Button(70, "Save", false) {
             public void click() {
                 save(savelist.sel);
                 use(savelist.sel);
             }
-        }, 86, 274);
+        }, 84, 274);
         add(new Button(70, "Rename", false) {
             public void click() {
                 GameUI gui = gameui();

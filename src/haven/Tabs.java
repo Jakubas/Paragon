@@ -70,7 +70,7 @@ public class Tabs {
         return (parent.add(new Tab() {
             @Override
             public boolean mousedown(Coord c, int button) {
-                if (Config.studylock && c.x > 265 && c.x < 265 + 133 && c.y > 40 && c.y < 40 + 133)
+                if (Config.studylock && c.x > 260 && c.x < 260 + 133 && c.y > 40 && c.y < 40 + 133)
                     return false;
                 return super.mousedown(c, button);
             }
