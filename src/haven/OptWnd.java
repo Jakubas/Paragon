@@ -490,7 +490,7 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
-        appender.add(new CheckBox("Alarm on new private chat") {
+        appender.add(new CheckBox("Alarm on new private/party chat") {
             {
                 a = Config.chatalarm;
             }
@@ -512,31 +512,6 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.chatalarmvol = vol;
                 Utils.setprefd("chatalarmvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.add(new CheckBox("Alarm on new party chat message") {
-            {
-                a = Config.partychatalarm;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("partychatalarm", val);
-                Config.partychatalarm = val;
-                a = val;
-            }
-        });
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.partychatalarmvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.partychatalarmvol = vol;
-                Utils.setprefd("partychatalarmvol", vol);
             }
         });
         appender.setVerticalMargin(0);
@@ -652,17 +627,6 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.sfxwhipvol = vol;
                 Utils.setprefd("sfxwhipvol", vol);
-            }
-        });
-        appender.add(new CheckBox("Disable metallic mining sound") {
-            {
-                a = Config.nometallicsfx;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("nometallicsfx", val);
-                Config.nometallicsfx = val;
-                a = val;
             }
         });
         appender.setVerticalMargin(0);

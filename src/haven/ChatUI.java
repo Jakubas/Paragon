@@ -831,8 +831,8 @@ public class ChatUI extends Widget {
                         notify(cmsg, urgency);
 
                     long time = System.currentTimeMillis();
-                    if (Config.partychatalarm && (lastmsg == 0 || (time - lastmsg) / 1000 / 60 > 3)) {
-                        Audio.play(alarmsfx, Config.partychatalarmvol);
+                    if (Config.chatalarm && (lastmsg == 0 || (time - lastmsg) / 1000 / 60 > 3)) {
+                        Audio.play(alarmsfx, Config.chatalarmvol);
                         lastmsg = time;
                     }
                 }
