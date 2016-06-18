@@ -89,7 +89,6 @@ public class Config {
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 1.0);
-    public static double sfxsqueakvol = Utils.getprefd("sfxsqueakvol", 1.0);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 1.0);
     public static double sfxfirevol = Utils.getprefd("sfxfirevol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", false);

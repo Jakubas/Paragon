@@ -76,8 +76,8 @@ public class AudioSprite {
 
             if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
-            else if (Config.sfxsqueakvol != 1.0 && "sfx/squeak".equals(res.name))
-                stream = new Audio.VolAdjust(stream, Config.sfxsqueakvol);
+            else if ("sfx/squeak".equals(res.name))
+                stream = new Audio.VolAdjust(stream, 0.2);
             else if (Config.sfxquernvol != 1.0 && "sfx/terobjs/quern".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxquernvol);
 

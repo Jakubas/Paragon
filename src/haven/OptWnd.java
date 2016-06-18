@@ -383,7 +383,6 @@ public class OptWnd extends Window {
     private void initAudio() {
         initAudioFirstColumn();
         initAudioSecondColumn();
-        initAudioThirdColumn();
         audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         audio.pack();
     }
@@ -585,21 +584,6 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
-        appender.add(new Label("'Squeak' sound volume"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.sfxsqueakvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.sfxsqueakvol = vol;
-                Utils.setprefd("sfxsqueakvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
         appender.add(new Label("Quern sound volume"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -744,11 +728,6 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmmammothvol", vol);
             }
         });
-    }
-
-    private void initAudioThirdColumn() {
-        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
-        appender.setX(500);
         appender.setVerticalMargin(0);
         appender.add(new CheckBox("Alarm on battering rams and catapults") {
             {
