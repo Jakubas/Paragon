@@ -1092,7 +1092,7 @@ public class CharWnd extends Window {
             }
 
             static final Text.Furnace qtfnd = new BlurFurn(new Text.Foundry(Text.serif.deriveFont(java.awt.Font.BOLD, 16)).aa(true), 2, 1, Color.BLACK);
-            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, Config.fontsizeglobal * 14 / 12).aa(true);
+            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, Config.fontsizeglobal * 14 / 11).aa(true);
 
             class QView extends Widget {
                 private Condition[] ccond;

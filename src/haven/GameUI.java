@@ -42,7 +42,7 @@ import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 import static haven.Inventory.invsq;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
-    public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, Config.fontsizeglobal * 14 / 12);
+    public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, Config.fontsizeglobal * 14 / 11);
     public static final Text.Foundry progressf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
     private static final int blpw = 142, brpw = 142;
     public final String chrid;
