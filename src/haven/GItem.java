@@ -198,7 +198,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         int hoursleft = timeleft / 60;
         int minutesleft = timeleft - hoursleft * 60;
 
-        timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
+        timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, Text.numfnd).tex();
         return true;
     }
 
@@ -267,7 +267,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             rawinfo = args;
         } else if (name == "meter") {
             meter = (Integer) args[0];
-            metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK).tex();
+            metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK, Text.numfnd).tex();
             timelefttex = null;
         }
     }
