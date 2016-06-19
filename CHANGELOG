@@ -1,3 +1,18 @@
+Version 1.34.1
+    New:
+        * [Preliminary] Chinese translation (by forsaken628).
+        * Option to disallow aggroing of partied/village members/non-red kins.
+        * Added option for geometric average.
+
+    Fixed:
+        * Construction health not being updated after fixing it.
+        * Various minor things.
+
+    Misc:
+        * Updated Russian localization (by elsid).
+        * Adjustments to options and character sheet window layout.
+
+
 Version 1.34.0
     New:
         * Show character direction on the minimap (by elsid).
