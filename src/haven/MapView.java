@@ -1680,7 +1680,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
                         if (w instanceof ChatUI.MultiChat) {
                             ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
-                            if (chat.name().equals("Area Chat")) {
+                            if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
                                 chat.send(ChatUI.CMD_PREFIX_HLIGHT + inf.gob.id);
                                 break;
                             }

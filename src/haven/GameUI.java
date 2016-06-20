@@ -180,7 +180,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 }
             }
         }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
-        syslog = chat.add(new ChatUI.Log("System"));
+        syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
         opts = add(new OptWnd());
         opts.hide();
         zerg = add(new Zergwnd(), 187, 50);

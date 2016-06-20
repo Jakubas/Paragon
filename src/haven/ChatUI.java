@@ -765,7 +765,7 @@ public class ChatUI extends Widget {
                 Integer from = (Integer) args[0];
                 String line = (String) args[1];
 
-                if (name.equals("Area Chat") && line.startsWith(CMD_PREFIX_HLIGHT)) {
+                if (name.equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat")) && line.startsWith(CMD_PREFIX_HLIGHT)) {
                     try {
                         long gobid = Long.parseLong(line.substring(1));
                         OCache oc = gameui().map.glob.oc;
@@ -805,7 +805,7 @@ public class ChatUI extends Widget {
         private long lastmsg = 0;
 
         public PartyChat() {
-            super(false, "Party", 2);
+            super(false, Resource.getLocString(Resource.BUNDLE_LABEL, "Party"), 2);
         }
 
         public void uimsg(String msg, Object... args) {
@@ -917,7 +917,7 @@ public class ChatUI extends Widget {
         public Widget create(Widget parent, Object[] args) {
             String name = (String) args[0];
             int urgency = (Integer) args[1];
-            return (new MultiChat(false, name, urgency));
+            return (new MultiChat(false, Resource.getLocString(Resource.BUNDLE_LABEL, name), urgency));
         }
     }
 
