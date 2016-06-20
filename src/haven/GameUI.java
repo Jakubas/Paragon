@@ -170,6 +170,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
         umpanel.add(new Cal(), new Coord(0, 10));
+        add(new Widget(new Coord(300, 40)) {
+            @Override
+            public void draw(GOut g) {
+                if (Config.showservertime) {
+                    Tex time = ui.sess.glob.servertimetex;
+                    if (time != null)
+                        g.image(time, new Coord(300 / 2 - time.sz().x / 2, 0));
+                }
+            }
+        }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
         syslog = chat.add(new ChatUI.Log("System"));
         opts = add(new OptWnd());
         opts.hide();

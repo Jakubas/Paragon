@@ -58,6 +58,7 @@ public class Glob {
     private static final long SEC_DAY = 60 * 60 * 24;
     private static final Color timeclr = new Color(177, 144, 173);
     public String servertime;
+    public Tex servertimetex;
 
     static {
         timersThread = new TimersThread();
@@ -253,6 +254,7 @@ public class Glob {
         servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Day %d, %02d:%02d"), day, hours, mins);
         if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
             servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
+        servertimetex = Text.render(servertime).tex();
     }
 
     public void blob(Message msg) {
