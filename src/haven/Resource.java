@@ -1834,6 +1834,17 @@ public class Resource implements Serializable {
         if (Resource.L10N_DEBUG)
             Resource.saveStrings(bundle, key, key);
         String ll = map.get(key);
+        // labels which require special handling
+        if (ll == null && bundle == BUNDLE_LABEL) {
+            // party invite
+            final String partyInvite = " has invited you to join his party. Do you wish to do so?";
+            if (key.endsWith(partyInvite)) {
+                String name = key.substring(0, key.indexOf(partyInvite));
+                ll = map.get("%s" + partyInvite);
+                if (ll != null)
+                    ll = String.format(ll, name);
+            }
+        }
         return ll != null ? ll : key;
     }
 
