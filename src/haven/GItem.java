@@ -29,7 +29,6 @@ package haven;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
@@ -55,8 +54,6 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         public static final int AVG_MODE_GEOMETRIC = 1;
         public static final int AVG_MODE_ARITHMETIC = 2;
 
-        private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
-        private static final DecimalFormat longfmt = new DecimalFormat("#.###");
         public double max, min;
         public double avg;
         public Tex etex, stex, vtex;
@@ -113,15 +110,15 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
             if (curio) {
                 double lpgain = Math.sqrt(Math.sqrt((e * e + s * s + v * v) / 300.0));
-                lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK, fnd).tex();
+                lpgaintex = Text.renderstroked(Utils.fmt3DecPlace(lpgain), Color.WHITE, Color.BLACK, fnd).tex();
             }
-            etex = Text.renderstroked(shortfmt.format(e), essenceclr, Color.BLACK, fnd).tex();
-            stex = Text.renderstroked(shortfmt.format(s), substanceclr, Color.BLACK, fnd).tex();
-            vtex = Text.renderstroked(shortfmt.format(v), vitalityclr, Color.BLACK, fnd).tex();
-            mintex = Text.renderstroked(shortfmt.format(min), colormin, Color.BLACK, fnd).tex();
-            maxtex = Text.renderstroked(shortfmt.format(max), colormax, Color.BLACK, fnd).tex();
-            avgtex = Text.renderstroked(shortfmt.format(avg), colormax, Color.BLACK, fnd).tex();
-            avgsvtex = Text.renderstroked(shortfmt.format(avgsv), colormax, Color.BLACK, fnd).tex();
+            etex = Text.renderstroked(Utils.fmt1DecPlace(e), essenceclr, Color.BLACK, fnd).tex();
+            stex = Text.renderstroked(Utils.fmt1DecPlace(s), substanceclr, Color.BLACK, fnd).tex();
+            vtex = Text.renderstroked(Utils.fmt1DecPlace(v), vitalityclr, Color.BLACK, fnd).tex();
+            mintex = Text.renderstroked(Utils.fmt1DecPlace(min), colormin, Color.BLACK, fnd).tex();
+            maxtex = Text.renderstroked(Utils.fmt1DecPlace(max), colormax, Color.BLACK, fnd).tex();
+            avgtex = Text.renderstroked(Utils.fmt1DecPlace(avg), colormax, Color.BLACK, fnd).tex();
+            avgsvtex = Text.renderstroked(Utils.fmt1DecPlace(avgsv), colormax, Color.BLACK, fnd).tex();
             avgwholetex = Text.renderstroked(Math.round(avg) + "", colormax, Color.BLACK, fnd).tex();
             avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", colormax, Color.BLACK, fnd).tex();
         }

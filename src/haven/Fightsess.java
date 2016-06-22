@@ -26,7 +26,6 @@
 
 package haven;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -43,7 +42,6 @@ public class Fightsess extends Widget {
     public Coord pcc;
     public int pho;
     private final Fightview fv;
-    private static final DecimalFormat cdfmt = new DecimalFormat("#.#");
     private static final Map<Long, Tex> cdvalues = new HashMap<Long, Tex>(7);
 
     private static final Map<String, Integer> atkcds = new HashMap<String, Integer>(9){{
@@ -165,7 +163,7 @@ public class Fightsess extends Widget {
             g.frect(pcc.add(-w, 20), new Coord(w * 2, 15));
             g.chcolor();
             if (Config.showcooldown)
-                g.atextstroked(cdfmt.format(cd), pcc.add(0, 27), 0.5, 0.5, Color.WHITE, Color.BLACK);
+                g.atextstroked(Utils.fmt1DecPlace(cd), pcc.add(0, 27), 0.5, 0.5, Color.WHITE, Color.BLACK);
         }
         Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
         for (int i = 0; i < actions.length; i++) {

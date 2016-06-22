@@ -1401,4 +1401,15 @@ public class Utils {
             }
         });
     }
+
+    // NOTE: following fmt*DecPlace methods will not work with values having large integer part
+    static String fmt1DecPlace(double value) {
+        double rvalue = (double) Math.round(value * 10) / 10;
+        return (rvalue % 1 == 0) ? Integer.toString((int)rvalue) : Double.toString(rvalue);
+    }
+
+    static String fmt3DecPlace(double value) {
+        double rvalue = (double) Math.round(value * 1000) / 1000;
+        return (rvalue % 1 == 0) ? Integer.toString((int)rvalue) : Double.toString(rvalue);
+    }
 }

@@ -29,7 +29,6 @@ package haven;
 import haven.automation.ErrorSysMsgCallback;
 
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
@@ -90,7 +89,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public CraftHistoryBelt histbelt;
     private ErrorSysMsgCallback errmsgcb;
     private static final Pattern esvMsgPattern = Pattern.compile("Essence: ([0-9]+), Substance: ([0-9]+), Vitality: ([0-9]+)");
-    private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -1128,7 +1126,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     avg =  (e + s + v) / 3.0;
                     break;
             }
-            msg += "  (Avg: " + shortfmt.format(avg) + ")";
+            msg += "  (Avg: " + Utils.fmt1DecPlace(avg) + ")";
         }
         msg(msg, Color.WHITE, Color.WHITE);
     }
