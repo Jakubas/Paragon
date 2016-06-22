@@ -72,7 +72,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean afk = false;
     @SuppressWarnings("unchecked")
     public Indir<Resource>[] belt = new Indir[144];
-    public Belt beltwdg;
+    public Belt beltwdg = add(new NKeyBelt());
     public String polowner;
     public Bufflist buffs;
     public MinimapWnd minimapWnd;
@@ -1215,102 +1215,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         return null;
     }
 
-    public class FKeyBelt extends Belt implements DTarget, DropTarget {
-        public final int beltkeys[] = {KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4,
-                KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8,
-                KeyEvent.VK_F9, KeyEvent.VK_F10, KeyEvent.VK_F11, KeyEvent.VK_F12};
-        public int curbelt = 0;
-
-        public FKeyBelt() {
-            super(new Coord(450, 34));
-        }
-
-        private Coord beltc(int i) {
-            return (new Coord(((invsq.sz().x + 2) * i) + (10 * (i / 4)), 0));
-        }
-
-        private int beltslot(Coord c) {
-            for (int i = 0; i < 12; i++) {
-                if (c.isect(beltc(i), invsq.sz()))
-                    return (i + (curbelt * 12));
-            }
-            return (-1);
-        }
-
-        public void draw(GOut g) {
-            for (int i = 0; i < 12; i++) {
-                int slot = i + (curbelt * 12);
-                Coord c = beltc(i);
-                g.image(invsq, beltc(i));
-                try {
-                    if (belt[slot] != null)
-                        g.image(belt[slot].get().layer(Resource.imgc).tex(), c.add(1, 1));
-                } catch (Loading e) {
-                }
-                g.chcolor(156, 180, 158, 255);
-                FastText.aprintf(g, c.add(invsq.sz().sub(2, 0)), 1, 1, "F%d", i + 1);
-                g.chcolor();
-            }
-        }
-
-        public boolean mousedown(Coord c, int button) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (button == 1)
-                    GameUI.this.wdgmsg("belt", slot, 1, ui.modflags());
-                if (button == 3)
-                    GameUI.this.wdgmsg("setbelt", slot, 1);
-                return (true);
-            }
-            return (false);
-        }
-
-        public boolean globtype(char key, KeyEvent ev) {
-            if (key != 0)
-                return (false);
-            boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
-            for (int i = 0; i < beltkeys.length; i++) {
-                if (ev.getKeyCode() == beltkeys[i]) {
-                    if (M) {
-                        curbelt = i;
-                        return (true);
-                    } else {
-                        keyact(i + (curbelt * 12));
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-
-        public boolean drop(Coord c, Coord ul) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                GameUI.this.wdgmsg("setbelt", slot, 0);
-                return (true);
-            }
-            return (false);
-        }
-
-        public boolean iteminteract(Coord c, Coord ul) {
-            return (false);
-        }
-
-        public boolean dropthing(Coord c, Object thing) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (thing instanceof Resource) {
-                    Resource res = (Resource) thing;
-                    if (res.layer(Resource.action) != null) {
-                        GameUI.this.wdgmsg("setbelt", slot, res.name);
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-    }
-
     private static final Tex nkeybg = Resource.loadtex("gfx/hud/hb-main");
 
     public class NKeyBelt extends Belt implements DTarget, DropTarget {
@@ -1437,19 +1341,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
-    {
-        String val = Utils.getpref("belttype", "n");
-        if (val.equals("n")) {
-            beltwdg = add(new NKeyBelt());
-        } else if (val.equals("f")) {
-            beltwdg = add(new FKeyBelt());
-        } else {
-            beltwdg = add(new NKeyBelt());
-        }
-    }
-
     private Map<String, Console.Command> cmdmap = new TreeMap<String, Console.Command>();
-
     {
         cmdmap.put("afk", new Console.Command() {
             public void run(Console cons, String[] args) {
@@ -1462,21 +1354,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 Object[] ad = new Object[args.length - 1];
                 System.arraycopy(args, 1, ad, 0, ad.length);
                 wdgmsg("act", ad);
-            }
-        });
-        cmdmap.put("belt", new Console.Command() {
-            public void run(Console cons, String[] args) {
-                if (args[1].equals("f")) {
-                    beltwdg.destroy();
-                    beltwdg = add(new FKeyBelt());
-                    Utils.setpref("belttype", "f");
-                    resize(sz);
-                } else if (args[1].equals("n")) {
-                    beltwdg.destroy();
-                    beltwdg = add(new NKeyBelt());
-                    Utils.setpref("belttype", "n");
-                    resize(sz);
-                }
             }
         });
         cmdmap.put("tool", new Console.Command() {
