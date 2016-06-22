@@ -173,10 +173,12 @@ public class Inventory extends Widget implements DTarget {
         String resname = item.resource().name;
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
                 if (wdg instanceof WItem) {
-                    String oname = ((WItem) wdg).item.spr().getname();
-                    if (((WItem)wdg).item.resource().name.equals(resname) &&
-                            (name == null || name != null && name.equals(oname)))
-                        items.add((WItem)wdg);
+                    GSprite sprite = ((WItem) wdg).item.spr();
+                    if (sprite != null) {
+                        Resource res = ((WItem) wdg).item.resource();
+                        if (res != null && res.name.equals(resname) && (name == null || name.equals(sprite.getname())))
+                            items.add((WItem) wdg);
+                    }
                 }
         }
         return items;
