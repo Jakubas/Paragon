@@ -41,7 +41,7 @@ public class WItem extends Widget implements DTarget {
     private Resource cspr = null;
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
-    private static final Color qualitybg = new Color(20, 20, 20, 250);
+    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
     public static final Color[] wearclr = new Color[]{
             new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
     };
