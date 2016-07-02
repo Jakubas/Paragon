@@ -215,7 +215,7 @@ public class WItem extends Widget implements DTarget {
             if (item.num >= 0) {
                 g.atext(Integer.toString(item.num), sz, 1, 1, Text.numfnd);
             } else if (itemnum.get() != null) {
-                g.aimage(itemnum.get(), sz, 1, 1);
+                g.aimage(itemnum.get(), new Coord(sz.x, 0), 1, 0);
             }
             if (item.meter > 0) {
                 if (Config.itemmeterbar) {
