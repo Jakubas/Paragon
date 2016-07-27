@@ -73,12 +73,18 @@ public class Pathfinder implements Runnable {
 
         long start = System.nanoTime();
         synchronized (oc) {
+            Gob player = mv.player();
             for (Gob gob : oc) {
                 if (gob.isplayer())
                     continue;
                 // need to exclude destination gob so it won't get into TO candidates list
                 if (this.gob != null && this.gob.id == gob.id)
                     continue;
+                GobHitbox.BBox box = GobHitbox.getBBox(gob, true);
+                if (box != null && isInsideBoundBox(gob.rc, gob.a, box, player.rc)) {
+                    m.excludeGob(gob);
+                    continue;
+                }
                 m.addGob(gob);
             }
         }
@@ -90,6 +96,7 @@ public class Pathfinder implements Runnable {
 
             if (freeloc == null) {
                 terminate = true;
+                m.dbgdump();
                 return;
             }
 
@@ -105,6 +112,7 @@ public class Pathfinder implements Runnable {
 
             // need to recalculate map
             moveinterupted = true;
+            m.dbgdump();
             return;
         }
 
@@ -161,6 +169,7 @@ public class Pathfinder implements Runnable {
                 interruptedRetries--;
                 if (interruptedRetries == 0)
                     terminate = true;
+                m.dbgdump();
                 return;
             }
         }
@@ -180,5 +189,11 @@ public class Pathfinder implements Runnable {
 
     public void moveCount(int count) {
         lastmsg = System.currentTimeMillis();
+    }
+
+    static public boolean isInsideBoundBox(Coord gobRc, double gobA, GobHitbox.BBox gobBBox, Coord point) {
+        final Coordf relative = new Coordf(point.sub(gobRc)).rotate(-gobA);
+        return relative.x >= gobBBox.a.x && relative.x <= gobBBox.b.x &&
+               relative.y >= gobBBox.a.y && relative.y <= gobBBox.b.y;
     }
 }
