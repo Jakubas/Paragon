@@ -18,8 +18,6 @@ public class Pathfinder implements Runnable {
     private int clickb;
     private Gob gob;
     private String action;
-    private int count = -100;
-    private int step = -200;
     public Coord mc;
     private int modflags;
     private int interruptedRetries = 5;
@@ -128,9 +126,6 @@ public class Pathfinder implements Runnable {
         Iterator<Edge> it = path.iterator();
         lastmsg = System.currentTimeMillis();
         while (it.hasNext() && !moveinterupted && !terminate) {
-            count = -100;
-            step = -200;
-
             Edge e = it.next();
 
             mc = new Coord(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin);
@@ -143,12 +138,7 @@ public class Pathfinder implements Runnable {
             else
                 mv.wdgmsg("click", Coord.z, mc, 1, 0);
 
-            boolean done = false;
-            synchronized (oc) {
-                done = step < count - 1;
-            }
-
-            while (!moveinterupted && !terminate && done && !mv.player().rc.equals(mc)) {
+            while (!moveinterupted && !terminate && !mv.player().rc.equals(mc)) {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e1) {
@@ -164,10 +154,6 @@ public class Pathfinder implements Runnable {
                     break;
                 } else if (System.currentTimeMillis() - lastmsg > 3000) { // just in case...
                     break;
-                }
-
-                synchronized (oc) {
-                    done = step < count - 1;
                 }
             }
 
@@ -189,12 +175,10 @@ public class Pathfinder implements Runnable {
 
     private long lastmsg;
     public void moveStep(int step) {
-        this.step = step;
         lastmsg = System.currentTimeMillis();
     }
 
     public void moveCount(int count) {
-        this.count = count;
         lastmsg = System.currentTimeMillis();
     }
 }
