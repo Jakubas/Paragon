@@ -134,7 +134,7 @@ public class Map {
     }
 
     public void addGob(Gob gob) {
-        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, false);
+        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, true);
         if (bbox == null)
             return;
 
@@ -223,7 +223,7 @@ public class Map {
     }
 
     public void excludeGob(Gob gob) {
-        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, false);
+        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, true);
         if (bbox == null)
             return;
 
