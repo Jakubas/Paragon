@@ -41,7 +41,7 @@ public class WItem extends Widget implements DTarget {
     private Resource cspr = null;
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
-    private static final Color qualitybg = new Color(20, 20, 20, 250);
+    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
     public static final Color[] wearclr = new Color[]{
             new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
     };
@@ -215,7 +215,7 @@ public class WItem extends Widget implements DTarget {
             if (item.num >= 0) {
                 g.atext(Integer.toString(item.num), sz, 1, 1, Text.numfnd);
             } else if (itemnum.get() != null) {
-                g.aimage(itemnum.get(), sz, 1, 1);
+                g.aimage(itemnum.get(), new Coord(sz.x, 0), 1, 0);
             }
             if (item.meter > 0) {
                 if (Config.itemmeterbar) {

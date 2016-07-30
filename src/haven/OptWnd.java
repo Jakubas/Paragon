@@ -1618,6 +1618,14 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.addRow(
+            new Label("Background transparency (req. restart):"),
+            new HSlider(200, 0, 255, Config.qualitybgtransparency) {
+                public void changed() {
+                    Utils.setprefi("qualitybgtransparency", val);
+                    Config.qualitybgtransparency = val;
+                }
+            });
 
         quality.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         quality.pack();

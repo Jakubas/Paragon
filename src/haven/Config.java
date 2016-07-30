@@ -122,6 +122,7 @@ public class Config {
     public static boolean showdmgmy = Utils.getprefb("showdmgmy", false);
     public static boolean hidegobs = Utils.getprefb("hidegobs", false);
     public static boolean qualitybg = Utils.getprefb("qualitybg", false);
+    public static int qualitybgtransparency = Utils.getprefi("qualitybgtransparency", 5);
     public static boolean showwearbars = Utils.getprefb("showwearbars", false);
     public static boolean tilecenter = Utils.getprefb("tilecenter", false);
     public static boolean userazerty = Utils.getprefb("userazerty", false);
