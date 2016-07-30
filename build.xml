@@ -26,6 +26,7 @@
 	<pathelement path="lib/jogl.jar" />
 	<pathelement path="lib/gluegen-rt.jar" />
 	<pathelement path="lib/jglob.jar" />
+        <pathelement path="lib/junit.jar" />
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:-options" />
@@ -126,5 +127,21 @@
         <sysproperty key="haven.defserv" value="sh.seatribe.se" />
         <sysproperty key="haven.resdir" value="/home/fredrik/src/hafen/res" />
       </java>
+  </target>
+
+  <target name="test" depends="jars">
+    <junit showoutput="true" printsummary="true">
+      <classpath>
+        <pathelement location="lib/junit.jar" />
+        <pathelement location="lib/hamcrest/core.jar" />
+        <pathelement location="build/hafen.jar" />
+      </classpath>
+      <formatter usefile="false" type="plain" />
+      <batchtest fork="true" >
+        <fileset dir="src">
+          <include name="haven/pathfinder/test/PathfinderIsInsideBoundBoxTest.java" />
+        </fileset>
+      </batchtest>
+    </junit>
   </target>
 </project>
