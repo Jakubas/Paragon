@@ -500,7 +500,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         this.cc = cc;
         this.plgob = plgob;
         this.gobs = new Gobs();
-        this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
+        this.gridol = new TileOutline(glob.map);
         this.partyHighlight = new PartyHighlight(glob.party, plgob);
         setcanfocus(true);
     }
@@ -1382,12 +1382,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
                 // we ignore Defer.DeferredException to prevent the client for crashing
             }
-            // change grid overlay position when player moves by 20 tiles
+
             if (showgrid) {
-                Coord tc = cc.div(MCache.tilesz);
-                if (tc.manhattan2(lasttc) > 20) {
+                Coord tc = new Coord((cc.x / tilesz.x / MCache.cutsz.x - view) * MCache.cutsz.x,
+                        (cc.y / tilesz.y / MCache.cutsz.y - view) * MCache.cutsz.y);
+                if (!tc.equals(lasttc)) {
                     lasttc = tc;
-                    gridol.update(tc.sub(MCache.cutsz.mul(view + 1)));
+                    gridol.update(tc);
                 }
             }
         } catch (Loading e) {

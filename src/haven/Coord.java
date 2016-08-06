@@ -183,10 +183,6 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
         return (ret);
     }
 
-    public int manhattan2(Coord c){
-        return Math.max(Math.abs(x - c.x) , Math.abs(y - c.y));
-    }
-
     public Coord rotate(double angle) {
         double cos = Math.cos(angle);
         double sin = Math.sin(angle);
