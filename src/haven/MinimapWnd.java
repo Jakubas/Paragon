@@ -15,7 +15,7 @@ public class MinimapWnd extends Widget {
     private final Widget mmap;
     private final MapView map;
     private IButton center, viewdist, grid;
-    private ToggleButton pclaim, vclaim, lock;
+    private ToggleButton pclaim, vclaim, realm, lock;
     private boolean minimized;
     private Coord szr;
     private boolean resizing;
@@ -40,6 +40,8 @@ public class MinimapWnd extends Widget {
             map.enol(0, 1);
         if (Utils.getprefb("showvclaim", false))
             map.enol(2, 3);
+        if (Utils.getprefb("showrealms", false))
+            map.enol(4, 5);
 
         pclaim = new ToggleButton("gfx/hud/wndmap/btns/claim", "gfx/hud/wndmap/btns/claim-d", map.visol(0)) {
             {
@@ -68,6 +70,21 @@ public class MinimapWnd extends Widget {
                 } else {
                     map.disol(2, 3);
                     Utils.setprefb("showvclaim", false);
+                }
+            }
+        };
+        realm = new ToggleButton("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", map.visol(4)) {  // FIXME: realm icon
+            {
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display realms"));
+            }
+
+            public void click() {
+                if ((map != null) && !map.visol(4)) {
+                    map.enol(4, 5);
+                    Utils.setprefb("showrealms", true);
+                } else {
+                    map.disol(4, 5);
+                    Utils.setprefb("showrealms", false);
                 }
             }
         };
@@ -114,10 +131,11 @@ public class MinimapWnd extends Widget {
         add(mmap, 1, 27);
         add(pclaim, 5, 3);
         add(vclaim, 29, 3);
-        add(center, 53, 3);
-        add(lock, 77, 3);
-        add(viewdist, 101, 3);
-        add(grid, 125, 3);
+        add(realm, 53, 3);
+        add(center, 77, 3);
+        add(lock, 101, 3);
+        add(viewdist, 125, 3);
+        add(grid, 149, 3);
         pack();
     }
 
@@ -302,6 +320,7 @@ public class MinimapWnd extends Widget {
             mmap.hide();
             pclaim.hide();
             vclaim.hide();
+            realm.hide();
             center.hide();
             lock.hide();
             viewdist.hide();
@@ -310,6 +329,7 @@ public class MinimapWnd extends Widget {
             mmap.show();
             pclaim.show();
             vclaim.show();
+            realm.show();
             center.show();
             lock.show();
             viewdist.show();

@@ -60,7 +60,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private Widget qqview;
     public BuddyWnd buddies;
     private final Zergwnd zerg;
-    public Polity polity;
+    public final Collection<Polity> polities = new ArrayList<Polity>();
     public HelpWnd help;
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
@@ -72,7 +72,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     @SuppressWarnings("unchecked")
     public Indir<Resource>[] belt = new Indir[144];
     public Belt beltwdg = add(new NKeyBelt());
-    public String polowner;
+    public final Map<Integer, String> polowners = new HashMap<Integer, String>();
     public Bufflist buffs;
     public MinimapWnd minimapWnd;
     public TimersWnd timerswnd;
@@ -428,7 +428,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     static class Zergwnd extends Hidewnd {
         Tabs tabs = new Tabs(Coord.z, Coord.z, this);
-        final TButton kin, pol;
+        final TButton kin, pol, pol2;
 
         class TButton extends IButton {
             Tabs.Tab tab = null;
@@ -462,12 +462,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             kin = add(new TButton("kin", false));
             kin.tooltip = Text.render("Kin");
             pol = add(new TButton("pol", true));
+            pol2 = add(new TButton("rlm", true));
         }
 
         private void repack() {
             tabs.indpack();
             kin.c = new Coord(0, tabs.curtab.contentsz().y + 20);
             pol.c = new Coord(kin.c.x + kin.sz.x + 10, kin.c.y);
+            pol2.c = new Coord(pol.c.x + pol.sz.x + 10, pol.c.y);
             this.pack();
         }
 
@@ -487,6 +489,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             btn.tab.destroy();
             btn.tab = null;
             repack();
+        }
+
+        void addpol(Polity p) {
+	        /* This isn't very nice. :( */
+            TButton btn = p.cap.equals("Village")?pol:pol2;
+            ntab(p, btn);
+            btn.tooltip = Text.render(p.cap);
         }
     }
 
@@ -600,8 +609,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (place == "buddy") {
             zerg.ntab(buddies = (BuddyWnd) child, zerg.kin);
         } else if (place == "pol") {
-            zerg.ntab(polity = (Polity) child, zerg.pol);
-            zerg.pol.tooltip = Text.render(polity.cap);
+            Polity p = (Polity)child;
+            polities.add(p);
+            zerg.addpol(p);
         } else if (place == "chat") {
             ChatUI.Channel prevchannel = chat.sel;
             chat.addchild(child);
@@ -662,8 +672,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     updhand();
                 }
             }
-        } else if (w == polity) {
-            polity = null;
+        } else if (polities.contains(w)) {
+            polities.remove(w);
             zerg.dtab(zerg.pol);
         } else if (w == chrwdg) {
             chrwdg = null;
@@ -790,23 +800,20 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 belt[slot] = ui.sess.getres((Integer) args[1]);
             }
         } else if (msg == "polowner") {
-            String o = (String) args[0];
-            boolean n = ((Integer) args[1]) != 0;
-            if (o.length() == 0)
-                o = null;
-            else
+            int id = (Integer)args[0];
+            String o = (String)args[1];
+            boolean n = ((Integer)args[2]) != 0;
+            if(o != null)
                 o = o.intern();
-            if (o != polowner) {
-                if (map != null) {
-                    if (o == null) {
-                        if (polowner != null)
-                            map.setpoltext("Leaving " + polowner);
-                    } else {
-                        map.setpoltext("Entering " + o);
-                    }
+            String cur = polowners.get(id);
+            if(map != null) {
+                if((o != null) && (cur == null)) {
+                    map.setpoltext(id, "Entering " + o);
+                } else if((o == null) && (cur != null)) {
+                    map.setpoltext(id, "Leaving " + cur);
                 }
-                polowner = o;
             }
+            polowners.put(id, o);
         } else if (msg == "showhelp") {
             Indir<Resource> res = ui.sess.getres((Integer) args[0]);
             if (help == null)
@@ -824,6 +831,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return;
         } else if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
+        } else if((polities.contains(sender)) && (msg == "close")) {
+            sender.hide();
         } else if ((sender == help) && (msg == "close")) {
             ui.destroy(help);
             help = null;
@@ -941,15 +950,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 }
             }
             Utils.setprefb("chatvis", chat.targeth != 0);
-        } else if (key == 16) {
-        /*
-        if((polity != null) && polity.show(!polity.visible)) {
-		polity.raise();
-		fitwdg(polity);
-		setfocus(polity);
-	    }
-	    */
-            return (true);
         } else if ((key == 27) && (map != null) && !map.hasfocus) {
             setfocus(map);
             return (true);
