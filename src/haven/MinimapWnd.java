@@ -73,7 +73,7 @@ public class MinimapWnd extends Widget {
                 }
             }
         };
-        realm = new ToggleButton("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", map.visol(4)) {  // FIXME: realm icon
+        realm = new ToggleButton("gfx/hud/wndmap/btns/realm", "gfx/hud/wndmap/btns/realm-d", map.visol(4)) {
             {
                 tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display realms"));
             }
