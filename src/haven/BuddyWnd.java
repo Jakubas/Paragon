@@ -376,21 +376,21 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
             }
         }, new Coord(0, y));
         y += 25;
-        add(new Button(45, "Set") {
+        add(new Button(sbw, "Set") {
             public void click() {
                 setpwd(charpass.text);
             }
         }, new Coord(0, y));
-        add(new Button(60, "Clear") {
+        add(new Button(sbw, "Clear") {
             public void click() {
                 setpwd("");
             }
-        }, new Coord(55, y));
-        add(new Button(75, "Random") {
+        }, new Coord(sbw + 10, y));
+        add(new Button(sbw, "Random") {
             public void click() {
                 setpwd(randpwd());
             }
-        }, new Coord(125, y));
+        }, new Coord(width - sbw, y));
         y += 35;
 
         add(new Label("Make kin by hearth secret:"), new Coord(0, y));
