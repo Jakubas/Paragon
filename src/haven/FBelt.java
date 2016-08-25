@@ -29,8 +29,12 @@ public class FBelt extends Widget implements DTarget, DropTarget {
             if (resnames != null) {
                 for (int i = 0; i < 12; i++) {
                     String resname = resnames[i];
-                    if (!resname.equals("null"))
-                        belt[i] = Resource.remote().loadwait(resnames[i]);
+                    if (!resname.equals("null")) {
+                        try {
+                            belt[i] = Resource.remote().loadwait(resnames[i]);
+                        } catch (Resource.LoadException le) {   // possibly a resource from another client
+                        }
+                    }
                 }
             }
         }
@@ -73,13 +77,9 @@ public class FBelt extends Widget implements DTarget, DropTarget {
                 if (belt[slot] != null)
                     g.image(belt[slot].layer(Resource.imgc).tex(), c.add(1, 1));
             } catch (Loading e) {
-            } catch (RuntimeException rte) {
-                if (rte.getCause() instanceof Resource.LoadException) { // possibly a resource from another client
-                    belt[slot] = null;
-                    save();
-                } else {
-                    throw rte;
-                }
+            } catch (Resource.LoadException le) {
+                // possibly a resource from another client
+                belt[slot] = null;
             }
             g.chcolor(156, 180, 158, 255);
             FastText.aprintf(g, c.add(invsq.sz().sub(2, 0)), 1, 1, "F%d", i + 1);
