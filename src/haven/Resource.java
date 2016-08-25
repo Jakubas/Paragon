@@ -1880,7 +1880,7 @@ public class Resource implements Serializable {
             if (key.startsWith("paginae/act") || key.startsWith("paginae/bld")
                     || key.startsWith("paginae/craft") || key.startsWith("paginae/gov")
                     || key.startsWith("paginae/pose") || key.startsWith("paginae/amber")
-                    || key.startsWith("paginae/atk/ashoot")) {
+                    || key.startsWith("paginae/atk/ashoot") || key.startsWith("paginae/seid")) {
                 map = l10nBundleMap.get(Resource.BUNDLE_ACTION);
             } else {
                 map = l10nBundleMap.get(bundle);
