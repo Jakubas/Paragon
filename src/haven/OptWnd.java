@@ -1146,17 +1146,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Select System log on login") {
-            {
-                a = Config.syslogonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("syslogonlogin", val);
-                Config.syslogonlogin = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Auto-miner: drop mined ore") {
             {
                 a = Config.dropore;
