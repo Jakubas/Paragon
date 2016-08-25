@@ -1876,17 +1876,16 @@ public class Resource implements Serializable {
                     return;
             }
 
-            Map<String, String> map;
-            if (key.startsWith("paginae/act") || key.startsWith("paginae/bld")
+            Map<String, String> map = l10nBundleMap.get(bundle);
+
+            if (bundle.equals(BUNDLE_TOOLTIP) &&
+                    (key.startsWith("paginae/act") || key.startsWith("paginae/bld")
                     || key.startsWith("paginae/craft") || key.startsWith("paginae/gov")
                     || key.startsWith("paginae/pose") || key.startsWith("paginae/amber")
-                    || key.startsWith("paginae/atk/ashoot") || key.startsWith("paginae/seid")) {
-                map = l10nBundleMap.get(Resource.BUNDLE_ACTION);
-            } else {
-                map = l10nBundleMap.get(bundle);
-            }
+                    || key.startsWith("paginae/atk/ashoot") || key.startsWith("paginae/seid")))
+                return;
 
-            if (key == null || key.equals("") || map.containsKey(key))
+            if (key == null || key.equals("") || val.equals("") || map.containsKey(key))
                 return;
 
             try {
