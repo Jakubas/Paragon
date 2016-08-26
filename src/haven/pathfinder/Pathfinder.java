@@ -160,7 +160,7 @@ public class Pathfinder implements Runnable {
                 // therefore we just wait for a bit
                 if (gob != null && !it.hasNext() && System.currentTimeMillis() - lastmsg > 500) {
                     break;
-                } else if (System.currentTimeMillis() - lastmsg > 3000) { // just in case...
+                } else if (System.currentTimeMillis() - lastmsg > 800) { // make sure we don't get stuck indefinitely
                     break;
                 }
             }
