@@ -1,3 +1,14 @@
+Version 1.35.2
+    Fixed:
+        * Slow auto-mining.
+        * Crash when having non existent resources (e.g. from another client) on the F-belt.
+
+    Misc:
+        * Added windweed to hide icons list.
+        * Open system log by default.
+        * Updated russian localization and english strings.
+
+
 Version 1.35.0
     Fixed:
         * Pathfinding issues (by elsid).
