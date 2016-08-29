@@ -33,7 +33,7 @@ public class PlantStageSprite extends Sprite {
     public void draw(GOut g) {
         mv.load(cam.load(camp.fin(Matrix4f.id))).mul1(wxf.load(loc.fin(Matrix4f.id)));
         Coord3f s = proj.toscreen(mv.mul4(Coord3f.o), wndsz);
-        g.image(tex, new Coord((int) s.x - 5, (int) s.y - 20));
+        g.image(tex, new Coord((int) s.x - 7, (int) s.y - 10));
     }
 
     public boolean setup(RenderList rl) {
