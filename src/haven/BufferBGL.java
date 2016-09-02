@@ -38,7 +38,7 @@ public class BufferBGL extends BGL {
     }
 
     public BufferBGL() {
-        this(128);
+        this(512);
     }
 
     public void run(GL2 gl) {
