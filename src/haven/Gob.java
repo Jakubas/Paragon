@@ -497,24 +497,21 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 if (res != null && res.name.startsWith("gfx/terobjs/plants") && !res.name.endsWith("trellis")) {
                     GAttrib rd = getattr(ResDrawable.class);
                     if (rd != null) {
-                        try {
-                            int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
-                            if (cropstgmaxval == 0) {
-                                for (FastMesh.MeshRes layer : res.layers(FastMesh.MeshRes.class)) {
-                                    int stg = layer.id / 10;
-                                    if (stg > cropstgmaxval)
-                                        cropstgmaxval = stg;
-                                }
+                        int stage = ((ResDrawable) rd).sdt.peekrbuf(0);
+                        if (cropstgmaxval == 0) {
+                            for (FastMesh.MeshRes layer : res.layers(FastMesh.MeshRes.class)) {
+                                int stg = layer.id / 10;
+                                if (stg > cropstgmaxval)
+                                    cropstgmaxval = stg;
                             }
-                            Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
-                            if (ol == null && (stage == cropstgmaxval || stage > 0 && stage < 5)) {
-                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
-                            } else if (stage <= 0) {
-                                ols.remove(ol);
-                            } else if (((PlantStageSprite)ol.spr).stg != stage) {
-                                ((PlantStageSprite)ol.spr).update(stage, cropstgmaxval);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e) { // ignored
+                        }
+                        Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
+                        if (ol == null && (stage == cropstgmaxval || stage > 0 && stage < 6)) {
+                            addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval)));
+                        } else if (stage <= 0 || stage >= 6) {
+                            ols.remove(ol);
+                        } else if (((PlantStageSprite)ol.spr).stg != stage) {
+                            ((PlantStageSprite)ol.spr).update(stage, cropstgmaxval);
                         }
                     }
                 }
@@ -522,17 +519,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 if (res != null && (res.name.startsWith("gfx/terobjs/trees") || res.name.startsWith("gfx/terobjs/bushes"))) {
                     ResDrawable rd = getattr(ResDrawable.class);
                     if (rd != null && !rd.sdt.eom()) {
-                        try {
-                            final int stage = rd.sdt.peekrbuf(0);
-                            if (stage < 100) {
-                                Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
-                                if (ol == null) {
-                                    addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
-                                } else if (((TreeStageSprite)ol.spr).val != stage) {
-                                    ((TreeStageSprite)ol.spr).update(stage);
-                                }
+                        final int stage = rd.sdt.peekrbuf(0);
+                        if (stage < 100) {
+                            Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
+                            if (ol == null) {
+                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
+                            } else if (((TreeStageSprite)ol.spr).val != stage) {
+                                ((TreeStageSprite)ol.spr).update(stage);
                             }
-                        } catch (ArrayIndexOutOfBoundsException e) { // ignored
                         }
                     }
                 }
