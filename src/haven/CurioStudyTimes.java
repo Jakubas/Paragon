@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CurioStudyTimes {
-    public final static Map<String, Double> curios = new HashMap<String, Double>(74) {{
+    public final static Map<String, Double> curios = new HashMap<String, Double>(75) {{
         put("ants-empress", 3 + 20.0 / 60.0);
         put("ants-queen", 1 + 20.0 / 60.0);
         put("ants-soldiers", 40.0 / 60.0);
@@ -79,5 +79,6 @@ public class CurioStudyTimes {
         put("antfarm", 8.0);
         put("seersspindle", 16.0);
         put("edelweiss", 29.0);
+        put("wormapple", 11.0);
     }};
 }
