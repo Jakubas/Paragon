@@ -97,18 +97,16 @@ public class QuickSlotsWdg extends Widget implements DTarget {
     public boolean mousedown(Coord c, int button) {
        if (ui.modmeta)
             return true;
-
-        if (button == 1 && c.x > 44 && c.x < 50) {
-            dragging = ui.grabmouse(this);
-            dc = c;
-            return true;
-        }
-        dragging = null;
         Equipory e = gameui().getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null) {
+                dragging = null;
                 w.mousedown(new Coord(w.sz.x / 2, w.sz.y / 2), button);
+                return true;
+            } else if (button == 1) {
+                dragging = ui.grabmouse(this);
+                dc = c;
                 return true;
             }
         }
