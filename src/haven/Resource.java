@@ -1834,7 +1834,7 @@ public class Resource implements Serializable {
         if (Resource.L10N_DEBUG)
             Resource.saveStrings(bundle, key, key);
         String ll = map.get(key);
-        // labels which require special handling
+        // strings which require special handling
         if (ll == null && bundle == BUNDLE_LABEL) {
             // party invite
             final String partyInvite = " has invited you to join his party. Do you wish to do so?";
@@ -1843,6 +1843,15 @@ public class Resource implements Serializable {
                 ll = map.get("%s" + partyInvite);
                 if (ll != null)
                     ll = String.format(ll, name);
+            }
+        } else if (ll == null && bundle == BUNDLE_FLOWER) {
+            // gild
+            if (key.startsWith("Gild (")) {
+                final String flwGild = "Gild (%s%% chance)";
+                String val = key.substring(key.indexOf("(") + 1, key.indexOf("%"));
+                ll = map.get(flwGild);
+                if (ll != null)
+                    ll = String.format(ll, val);
             }
         }
         return ll != null ? ll : key;
