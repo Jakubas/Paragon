@@ -171,16 +171,13 @@ public abstract class ItemInfo {
     }
 
     private static String locContentName(String str) {
-        int i = str.indexOf(" l of ");
-        if (i > 0) {
-            String contName = str.substring(i);
-            String locContName = Resource.getLocStringOrNull(Resource.BUNDLE_LABEL, contName);
-            if (locContName != null)
-                return str.substring(0, i) + locContName + " (" + str.substring(i + " l of ".length()) + ")";
-            return str;
-        }
-        // TODO: handling for seeds. will require updating Contents handling below
-
+        String loc;
+        if ((loc = Resource.getLocContent(str, " l of ")) != null)
+            return loc;
+        if ((loc = Resource.getLocContent(str, " kg of ")) != null)
+            return loc;
+        if ((loc = Resource.getLocContent(str, " seeds of ")) != null)
+            return loc;
         return str;
     }
 
@@ -198,8 +195,10 @@ public abstract class ItemInfo {
                 if (info instanceof ItemInfo.Name) {
                     ItemInfo.Name name = (ItemInfo.Name) info;
                     if (name.str != null) {
-                        isseeds = name.str.text.contains(" seed");
+                        // determine whether we are dealing with seeds by testing for
+                        // the absence of decimal separator (this will work irregardless of current localization)
                         int amountend = name.str.text.indexOf(' ');
+                        isseeds = name.str.text.lastIndexOf('.', amountend) < 0;
                         if (amountend > 0) {
                             try {
                                 content = Double.parseDouble(name.str.text.substring(0, amountend));

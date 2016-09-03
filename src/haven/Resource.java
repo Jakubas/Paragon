@@ -1877,6 +1877,18 @@ public class Resource implements Serializable {
         return ll != null ? ll : null;
     }
 
+    public static String getLocContent(String str, String type) {
+        int i = str.indexOf(type);
+        if (i > 0) {
+            String contName = str.substring(i);
+            String locContName = Resource.getLocStringOrNull(Resource.BUNDLE_LABEL, contName);
+            if (locContName != null)
+                return str.substring(0, i) + locContName + " (" + str.substring(i + type.length()) + ")";
+            return str;
+        }
+        return null;
+    }
+
     private static void saveStrings(String bundle, String key, String val) {
         synchronized (Resource.class) {
             if (bundle.equals(BUNDLE_FLOWER)) {
