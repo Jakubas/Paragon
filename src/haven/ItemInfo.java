@@ -146,7 +146,7 @@ public abstract class ItemInfo {
         }
 
         public Name(Owner owner, String str) {
-            this(owner, Text.render(locContentName(str)));
+            this(owner, Text.render(Resource.getLocContent(str)));
         }
 
         public BufferedImage tipimg() {
@@ -168,17 +168,6 @@ public abstract class ItemInfo {
                 }
             });
         }
-    }
-
-    private static String locContentName(String str) {
-        String loc;
-        if ((loc = Resource.getLocContent(str, " l of ")) != null)
-            return loc;
-        if ((loc = Resource.getLocContent(str, " kg of ")) != null)
-            return loc;
-        if ((loc = Resource.getLocContent(str, " seeds of ")) != null)
-            return loc;
-        return str;
     }
 
     public static class Contents extends Tip {

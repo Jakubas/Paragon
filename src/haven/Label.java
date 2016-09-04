@@ -82,17 +82,14 @@ public class Label extends Widget {
 
     public void settext(String text) {
         String t = text;
-        if (!Resource.language.equals("en")) {
-            if (text.startsWith("Contents:")) {
-                Matcher matcher = contPattern.matcher(text);
-                if (matcher.find()) {
-                    String num = matcher.group(1);
-                    String locText = Resource.getLocStringOrNull(Resource.BUNDLE_LABEL, text.replace(num, "%s"));
-                    if (locText != null)
-                        t = String.format(locText, num);
-                } else {
-                    t = Resource.getLocString(Resource.BUNDLE_LABEL, text);
-                }
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            // barrel content
+            final String contStr = "Contents: ";
+            if (text.startsWith(contStr) && !text.endsWith("Empty.")) {
+                String cont = text.substring(contStr.length(), text.length() - 1);
+                t = Resource.getLocString(Resource.BUNDLE_LABEL, contStr) + Resource.getLocContent(cont);
+            } else {
+                t = Resource.getLocString(Resource.BUNDLE_LABEL, text);
             }
         }
         this.text = f.render(texts = t, col);

@@ -1877,7 +1877,18 @@ public class Resource implements Serializable {
         return ll != null ? ll : null;
     }
 
-    public static String getLocContent(String str, String type) {
+    public static String getLocContent(String str) {
+        String loc;
+        if ((loc = Resource.locContent(str, " l of ")) != null)
+            return loc;
+        if ((loc = Resource.locContent(str, " kg of ")) != null)
+            return loc;
+        if ((loc = Resource.locContent(str, " seeds of ")) != null)
+            return loc;
+        return str;
+    }
+
+    private static String locContent(String str, String type) {
         int i = str.indexOf(type);
         if (i > 0) {
             String contName = str.substring(i);
