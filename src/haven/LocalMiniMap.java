@@ -303,9 +303,9 @@ public class LocalMiniMap extends Widget {
                         KinInfo kininfo = gob.getattr(KinInfo.class);
                         if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
                             g.chcolor(Color.BLACK);
-                            g.fellipse(pc, new Coord(5, 5));
+                            g.fcircle(pc.x, pc.y, 5, 16);
                             g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                            g.fellipse(pc, new Coord(4, 4));
+                            g.fcircle(pc.x, pc.y, 4, 16);
                             g.chcolor();
                         }
 
