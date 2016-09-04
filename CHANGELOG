@@ -1,3 +1,15 @@
+Version 1.35.3
+    Fixed:
+        * Last stage indicator flickering on some crops. 
+
+    Misc:
+        * Updated curio study times.
+        * Standardized controls for moving the F-bar, history bar, and hand slots.
+        * Improved localization support.
+        * Updated Russian localization and English strings.
+        * Various code cleanups.
+
+
 Version 1.35.2
     Fixed:
         * Slow auto-mining.
