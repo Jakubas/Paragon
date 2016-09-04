@@ -97,7 +97,7 @@
         <fileset dir="etc" includes="*.bat,run.sh"/>
     </zip>
     <zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
-        <fileset dir="build" includes="amber-res.jar, hafen.jar, l10n.jar" />
+        <fileset dir="build" includes="amber-res.jar, hafen.jar, l10n.jar, builtin-res.jar" />
         <fileset dir="${basedir}" includes="CHANGELOG"/>
     </zip>
   </target>
