@@ -99,8 +99,7 @@ public class Button extends SIWidget {
         this(w);
         this.text = text;
         this.cont = text.img;
-        if (this.text != null)
-            this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
+        this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
     public Button(int w, BufferedImage cont) {
