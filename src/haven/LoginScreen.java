@@ -154,6 +154,7 @@ public class LoginScreen extends Widget {
     private static class LoginList extends Widget {
         private static final int ITEM_HEIGHT = 20;
         private static final Text.Foundry fnd = new Text.Foundry(Text.sans, 14);
+        private Tex xicon = Text.render("\u2716", Color.RED, fnd).tex();
         private LoginData curLD;
 
         public LoginList(Coord c, Coord sz, Widget parent) {
@@ -176,7 +177,7 @@ public class LoginScreen extends Widget {
                             g.chcolor();
                         }
                         g.aimage(Text.render(ld.name, Color.WHITE, fnd).tex(), new Coord(10, i * ITEM_HEIGHT + 10), 0, 0.5);
-                        g.aimage(Text.render("\u2716", Color.RED, fnd).tex(), new Coord(sz.x - 20, i * ITEM_HEIGHT + 10), 0, 0.5);
+                        g.aimage(xicon, new Coord(sz.x - 20, i * ITEM_HEIGHT + 10), 0, 0.5);
                     }
                 }
             }

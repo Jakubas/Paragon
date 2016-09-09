@@ -54,7 +54,13 @@ public class LocalMiniMap extends Widget {
     private static final Resource mammothsfx = Resource.local().loadwait("sfx/mammoth");
     private static final Resource doomedsfx = Resource.local().loadwait("sfx/doomed");
 	private final HashSet<Long> sgobs = new HashSet<Long>();
-    private final HashMap<Coord, BufferedImage> maptiles = new HashMap<Coord, BufferedImage>(28, 0.75f);
+    private final HashMap<Coord, Tex> maptiles = new HashMap<Coord, Tex>(28, 0.75f) {
+        @Override
+        public void clear() {
+            values().forEach(Tex::dispose);
+            super.clear();
+        }
+    };
     private final Map<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> cache = new LinkedHashMap<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>>(7, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry<Pair<MCache.Grid, Integer>, Defer.Future<MapTile>> eldest) {
             return size() > 7;
@@ -91,7 +97,7 @@ public class LocalMiniMap extends Widget {
         return (img);
     }
 
-    public BufferedImage drawmap(Coord ul, Coord sz) {
+    public Tex drawmap(Coord ul, Coord sz) {
         BufferedImage[] texes = new BufferedImage[256];
         MCache m = ui.sess.glob.map;
         BufferedImage buf = TexI.mkbuf(sz);
@@ -137,7 +143,7 @@ public class LocalMiniMap extends Widget {
             }
         }
 
-        return (buf);
+        return new TexI(buf);
     }
 
     public LocalMiniMap(Coord sz, MapView mv) {
@@ -520,7 +526,7 @@ public class LocalMiniMap extends Widget {
             if (maptiles.size() >= 9) {
                 for (int x = -ht; x < ht + ht; x++) {
                     for (int y = -vt; y < vt + vt; y++) {
-                        BufferedImage mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
+                        Tex mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
                         if (mt != null) {
                             int mtcx = (x - tox) * 100 + pox;
                             int mtcy = (y - toy) * 100 + poy;
