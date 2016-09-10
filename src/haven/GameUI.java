@@ -199,10 +199,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         add(statuswindow, new Coord(HavenPanel.w / 2 + 80, 10));
 
         if (!chrid.equals("")) {
-            Config.boulderssel = Utils.getprefsa("boulderssel_" + chrid, null);
-            Config.bushessel = Utils.getprefsa("bushessel_" + chrid, null);
-            Config.treessel = Utils.getprefsa("treessel_" + chrid, null);
-            Config.iconssel = Utils.getprefsa("iconssel_" + chrid, null);
+            Utils.loadprefchklist("boulderssel_" + chrid, Config.boulders);
+            Utils.loadprefchklist("bushessel_" + chrid, Config.bushes);
+            Utils.loadprefchklist("treessel_" + chrid, Config.trees);
+            Utils.loadprefchklist("iconssel_" + chrid, Config.icons);
             opts.setMapSettings();
         }
 

@@ -1850,90 +1850,51 @@ public class OptWnd extends Window {
     public void setMapSettings() {
         final String charname = gameui().chrid;
 
-         CheckListbox boulderlist = new CheckListbox(130, 18) {
+        CheckListbox boulderlist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.boulderssel = getselected();
-                Utils.setprefsa("boulderssel_" + charname, Config.boulderssel);
+                Utils.setprefchklst("boulderssel_" + charname, Config.boulders);
             }
         };
-        for (String boulder : Config.boulders) {
-            boolean selected = false;
-            if (Config.boulderssel != null) {
-                for (String sboulder : Config.boulderssel) {
-                    if (sboulder.equals(boulder)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            boulderlist.items.add(new CheckListboxItem(boulder, selected));
-        }
+        for (CheckListboxItem itm : Config.boulders.values())
+            boulderlist.items.add(itm);
         map.add(boulderlist, new Coord(180, 15));
 
-
         CheckListbox bushlist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.bushessel = getselected();
-                Utils.setprefsa("bushessel_" + charname, Config.bushessel);
+                Utils.setprefchklst("bushessel_" + charname, Config.bushes);
             }
         };
-        for (String bush : Config.bushes) {
-            boolean selected = false;
-            if (Config.bushessel != null) {
-                for (String sbush : Config.bushessel) {
-                    if (sbush.equals(bush)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            bushlist.items.add(new CheckListboxItem(bush, selected));
-        }
+        for (CheckListboxItem itm : Config.bushes.values())
+            bushlist.items.add(itm);
         map.add(bushlist, new Coord(325, 15));
 
         CheckListbox treelist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.treessel = getselected();
-                Utils.setprefsa("treessel_" + charname, Config.treessel);
+                Utils.setprefchklst("treessel_" + charname, Config.trees);
             }
         };
-        for (String tree : Config.trees) {
-            boolean selected = false;
-            if (Config.treessel != null) {
-                for (String stree : Config.treessel) {
-                    if (stree.equals(tree)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            treelist.items.add(new CheckListboxItem(tree, selected));
-        }
+        for (CheckListboxItem itm : Config.trees.values())
+            treelist.items.add(itm);
         map.add(treelist, new Coord(470, 15));
 
         CheckListbox iconslist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.iconssel = getselected();
-                Utils.setprefsa("iconssel_" + charname, Config.iconssel);
+                Utils.setprefchklst("iconssel_" + charname, Config.icons);
             }
         };
-        for (String icon : Config.icons) {
-            boolean selected = false;
-            if (Config.iconssel != null) {
-                for (String sicon : Config.iconssel) {
-                    if (sicon.equals(icon)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            iconslist.items.add(new CheckListboxItem(icon, selected));
-        }
+        for (CheckListboxItem itm : Config.icons.values())
+            iconslist.items.add(itm);
         map.add(iconslist, new Coord(615, 15));
+
+
         map.pack();
     }
 

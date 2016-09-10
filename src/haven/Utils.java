@@ -255,6 +255,42 @@ public class Utils {
         }
     }
 
+    static void loadprefchklist(String prefname, Map<String, CheckListboxItem> data) {
+        try {
+            String jsonstr = Utils.getpref(prefname, null);
+            if (jsonstr == null)
+                return;
+            JSONArray ja = new JSONArray(jsonstr);
+            for (int i = 0; i < ja.length(); i++) {
+                CheckListboxItem itm = data.get(ja.getString(i));
+                if (itm != null)
+                    itm.selected = true;
+            }
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static void setprefchklst(String prefname, Map<String, CheckListboxItem> val) {
+        try {
+            String jsonarr = "";
+            Iterator it = val.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                CheckListboxItem itm = (CheckListboxItem)entry.getValue();
+                if (itm.selected)
+                    jsonarr += "\"" + entry.getKey() + "\",";
+            }
+            if (jsonarr.length() > 0)
+                jsonarr = jsonarr.substring(0, jsonarr.length() - 1);
+            Utils.setpref(prefname, "[" + jsonarr + "]");
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     static JSONObject[] getprefjsona(String prefname, JSONObject[] def) {
         try {
             String jsonstr = Utils.getpref(prefname, null);
