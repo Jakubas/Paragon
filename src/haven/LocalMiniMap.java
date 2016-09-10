@@ -187,14 +187,8 @@ public class LocalMiniMap extends Widget {
                     String basename = res.basename();
                     if (res.name.startsWith("gfx/terobjs/bumlings")) {
                         CheckListboxItem itm = Config.boulders.get(basename.substring(0, basename.length() - 1));
-                        Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
-                        if (itm == null) {  // highlight unlisted boulders
-                            g.chcolor(Color.BLACK);
-                            g.frect(pc, new Coord(6, 6));
-                            g.chcolor(Color.RED);
-                            g.frect(pc.add(1, 1), new Coord(4, 4));
-                            g.chcolor();
-                        } else if (itm.selected) {
+                        if (itm != null && itm.selected) {
+                            Coord pc = p2c(gob.rc).add(delta).sub(3, 3);
                             g.chcolor(Color.BLACK);
                             g.frect(pc, new Coord(6, 6));
                             g.chcolor(Color.CYAN);
