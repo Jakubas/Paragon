@@ -192,12 +192,9 @@ public class Fightview extends Widget {
         throw (new Notfound(gobid));
     }
 
-    private long lastrot = System.currentTimeMillis();
     public void rotateopp() {
-        if (lsrel.size() <= 1 || System.currentTimeMillis() - lastrot < 500)
+        if (lsrel.size() <= 1)
             return;
-
-        lastrot = System.currentTimeMillis();
 
         for (int i = 0; i < rotationlist.size(); i++) {
             try {

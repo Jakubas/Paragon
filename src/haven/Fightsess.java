@@ -275,7 +275,11 @@ public class Fightsess extends Widget {
             else
                 wdgmsg("use", n);
             return (true);
+        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_TAB) {
+            fv.rotateopp();
+            return true;
         }
+
         return (super.globtype(key, ev));
     }
 }

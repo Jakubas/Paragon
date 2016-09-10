@@ -868,6 +868,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (Config.agroclosest && key == 9)
                 return super.globtype(key, ev);
 
+            // ctrl + tab is used to rotate opponents
+            if (key == 9 && ev.isControlDown())
+                return true;
+
             if (key == gkey) {
                 click();
                 return (true);
