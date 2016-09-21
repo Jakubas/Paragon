@@ -1,3 +1,15 @@
+Version 1.36.0
+    New:
+        * Load indicator for ovens, smelters, forges.
+
+    Fixed:
+        * Rare crash in fill oven/smelters task.
+
+    Misc:
+        * shift+wheel for switching combat opponents has been replaced with ctrl+tab
+        * Display human readable names in map settings instead of resource names.
+
+
 Version 1.35.3
     Fixed:
         * Last stage indicator flickering on some crops. 
