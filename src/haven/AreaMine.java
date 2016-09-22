@@ -1,16 +1,12 @@
 package haven;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class AreaMine implements Runnable {
     private MapView mv;
     private Coord a, b, c, d;
     private boolean terminate = false;
-    private static final Set<String> miningtools = new HashSet<String>(Arrays.asList(
-            "Pickaxe", "Stone Axe", "Metal Axe", "Battleaxe of the Twelfth Bay"));
+    private static final String[] miningtools = new String[] {
+            "Pickaxe", "Stone Axe", "Metal Axe", "Battleaxe of the Twelfth Bay"};
 
     public AreaMine(Coord a, Coord b, MapView mv) {
         this.a = a;
@@ -103,25 +99,11 @@ public class AreaMine implements Runnable {
             if (terminate)
                 break mine;
 
-            // drink
             GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
-            if (gui.maininv != null) {
-                if (gui.maininv.drink(70)) {
-                    try {
-                        Thread.sleep(500);
-                        do {
-                            IMeter.Meter stam = gui.getmeter("stam", 0);
-                            if (stam.a >= 84)
-                                break;
-                            Thread.sleep(10);
-                            stam = gui.getmeter("stam", 0);
-                            if (stam.a >= 84)
-                                break;
-                        } while (gui.prog >= 0);
-                    } catch (InterruptedException e) {
-                        break mine;
-                    }
-                }
+            try {
+                haven.automation.Utils.drinkTillFull(gui, 70, 84);
+            } catch (InterruptedException e) {
+                break mine;
             }
 
             Coord tc = path[i];
@@ -181,10 +163,25 @@ public class AreaMine implements Runnable {
                 WItem l = e.quickslots[6];
                 WItem r = e.quickslots[7];
                 boolean notool = true;
-                if (l != null && miningtools.contains(l.item.getname()))
-                    notool = false;
-                if (r != null && miningtools.contains(r.item.getname()))
-                    notool = false;
+
+                if (l != null) {
+                    String lname = l.item.getname();
+                    for (String tool : miningtools) {
+                        if (lname.contains(tool)){
+                            notool = false;
+                            break;
+                        }
+                    }
+                }
+                if (r != null) {
+                    String rname = r.item.getname();
+                    for (String tool : miningtools) {
+                        if (rname.contains(tool)){
+                            notool = false;
+                            break;
+                        }
+                    }
+                }
 
                 if (notool)
                     break mine;

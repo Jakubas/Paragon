@@ -33,6 +33,7 @@ public class DisplayList extends GLObject implements BGL.ID {
 
     public DisplayList(GOut g) {
         super(g);
+        g.gl.bglCreate(this);
     }
 
     public void create(GL2 gl) {

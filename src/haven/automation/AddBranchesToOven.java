@@ -34,7 +34,7 @@ public class AddBranchesToOven implements Runnable {
             return;
         }
 
-        WItem coalw = gui.maininv.getitem("Branch");
+        WItem coalw = gui.maininv.getItemPartial("Branch");
         if (coalw == null) {
             gui.error("No branches found in the inventory");
             return;
@@ -43,7 +43,7 @@ public class AddBranchesToOven implements Runnable {
 
         coal.wdgmsg("take", new Coord(coal.sz.x / 2, coal.sz.y / 2));
         int timeout = 0;
-        while (gui.hand.isEmpty()) {
+        while (gui.hand.isEmpty() || gui.vhand == null) {
             timeout += HAND_DELAY;
             if (timeout >= TIMEOUT) {
                 gui.error("No branches found in the inventory");

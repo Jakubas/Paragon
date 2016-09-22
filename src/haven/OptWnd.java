@@ -33,9 +33,17 @@ import java.net.URL;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+
+import static haven.GItem.Quality.AVG_MODE_ARITHMETIC;
+import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
+import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 
 public class OptWnd extends Window {
-    public final Panel main, video, audio, display, map, general, combat, control, uis;
+    public static final int VERTICAL_MARGIN = 10;
+    public static final int HORIZONTAL_MARGIN = 5;
+    public static final int VERTICAL_AUDIO_MARGIN = 5;
+    public final Panel main, video, audio, display, map, general, combat, control, uis, quality;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -78,7 +86,7 @@ public class OptWnd extends Window {
         public VideoPanel(Panel back) {
             super();
             add(new PButton(200, "Back", 27, back), new Coord(270, 360));
-            pack();
+            resize(new Coord(740, 400));
         }
 
         public class CPanel extends Widget {
@@ -86,8 +94,10 @@ public class OptWnd extends Window {
 
             public CPanel(GLSettings gcf) {
                 this.cf = gcf;
-                int y = 0;
-                add(new CheckBox("Per-fragment lighting") {
+                final WidgetVerticalAppender appender = new WidgetVerticalAppender(this);
+                appender.setVerticalMargin(VERTICAL_MARGIN);
+                appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+                appender.add(new CheckBox("Per-fragment lighting") {
                     {
                         a = cf.flight.val;
                     }
@@ -106,9 +116,8 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new CheckBox("Render shadows") {
+                });
+                appender.add(new CheckBox("Render shadows") {
                     {
                         a = cf.lshadow.val;
                     }
@@ -127,9 +136,8 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new CheckBox("Antialiasing") {
+                });
+                appender.add(new CheckBox("Antialiasing") {
                     {
                         a = cf.fsaa.val;
                     }
@@ -144,40 +152,39 @@ public class OptWnd extends Window {
                         a = val;
                         cf.dirty = true;
                     }
-                }, new Coord(0, y));
-                y += 25;
-                add(new Label("Anisotropic filtering"), new Coord(0, y));
+                });
+                appender.add(new Label("Anisotropic filtering"));
                 if (cf.anisotex.max() <= 1) {
-                    add(new Label("(Not supported)"), new Coord(15, y + 15));
+                    appender.add(new Label("(Not supported)"));
                 } else {
-                    final Label dpy = add(new Label(""), new Coord(165, y + 15));
-                    add(new HSlider(160, (int) (cf.anisotex.min() * 2), (int) (cf.anisotex.max() * 2), (int) (cf.anisotex.val * 2)) {
-                        protected void added() {
-                            dpy();
-                            this.c.y = dpy.c.y + ((dpy.sz.y - this.sz.y) / 2);
-                        }
+                    final Label dpy = new Label("");
+                    appender.addRow(
+                            new HSlider(160, (int) (cf.anisotex.min() * 2), (int) (cf.anisotex.max() * 2), (int) (cf.anisotex.val * 2)) {
+                                protected void added() {
+                                    dpy();
+                                }
 
-                        void dpy() {
-                            if (val < 2)
-                                dpy.settext("Off");
-                            else
-                                dpy.settext(String.format("%.1f\u00d7", (val / 2.0)));
-                        }
+                                void dpy() {
+                                    if (val < 2)
+                                        dpy.settext("Off");
+                                    else
+                                        dpy.settext(String.format("%.1f\u00d7", (val / 2.0)));
+                                }
 
-                        public void changed() {
-                            try {
-                                cf.anisotex.set(val / 2.0f);
-                            } catch (GLSettings.SettingException e) {
-                                getparent(GameUI.class).error(e.getMessage());
-                                return;
-                            }
-                            dpy();
-                            cf.dirty = true;
-                        }
-                    }, new Coord(0, y + 15));
+                                public void changed() {
+                                    try {
+                                        cf.anisotex.set(val / 2.0f);
+                                    } catch (GLSettings.SettingException e) {
+                                        getparent(GameUI.class).error(e.getMessage());
+                                        return;
+                                    }
+                                    dpy();
+                                    cf.dirty = true;
+                                }
+                            },
+                            dpy);
                 }
-                y += 35;
-                add(new CheckBox("Disable biome tile transitions (requires logout)") {
+                appender.add(new CheckBox("Disable biome tile transitions (requires logout)") {
                     {
                         a = Config.disabletiletrans;
                     }
@@ -186,9 +193,8 @@ public class OptWnd extends Window {
                         Utils.setprefb("disabletiletrans", val);
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Disable flavor objects including ambient sounds") {
+                });
+                appender.add(new CheckBox("Disable flavor objects including ambient sounds") {
                     {
                         a = Config.hideflocomplete;
                     }
@@ -198,9 +204,8 @@ public class OptWnd extends Window {
                         Config.hideflocomplete = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Hide flavor objects (requires logout)") {
+                });
+                appender.add(new CheckBox("Hide flavor objects but keep sounds (requires logout)") {
                     {
                         a = Config.hideflovisual;
                     }
@@ -210,9 +215,8 @@ public class OptWnd extends Window {
                         Config.hideflovisual = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Show weather") {
+                });
+                appender.add(new CheckBox("Show weather") {
                     {
                         a = Config.showweather;
                     }
@@ -222,9 +226,8 @@ public class OptWnd extends Window {
                         Config.showweather = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Simple crops (req. logout)") {
+                });
+                appender.add(new CheckBox("Simple crops (req. logout)") {
                     {
                         a = Config.simplecrops;
                     }
@@ -234,9 +237,8 @@ public class OptWnd extends Window {
                         Config.simplecrops = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Simple foragables (req. logout)") {
+                });
+                appender.add(new CheckBox("Simple foragables (req. logout)") {
                     {
                         a = Config.simpleforage;
                     }
@@ -246,9 +248,8 @@ public class OptWnd extends Window {
                         Config.simpleforage = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Hide crops") {
+                });
+                appender.add(new CheckBox("Hide crops") {
                     {
                         a = Config.hidecrops;
                     }
@@ -258,9 +259,8 @@ public class OptWnd extends Window {
                         Config.hidecrops = val;
                         a = val;
                     }
-                }, new Coord(0, y));
-                y += 35;
-                add(new CheckBox("Show FPS") {
+                });
+                appender.add(new CheckBox("Show FPS") {
                     {
                         a = Config.showfps;
                     }
@@ -270,7 +270,36 @@ public class OptWnd extends Window {
                         Config.showfps = val;
                         a = val;
                     }
-                }, new Coord(0, y));
+                });
+
+                add(new Label("Disable animations (req. restart):"), new Coord(550, 0));
+                CheckListbox animlist = new CheckListbox(180, 18) {
+                    protected void itemclick(CheckListboxItem itm, int button) {
+                        super.itemclick(itm, button);
+
+                        String[] selected = getselected();
+                        Utils.setprefsa("disableanim", selected);
+
+                        Config.disableanimSet.clear();
+                        for (String selname : selected) {
+                            for (Pair<String, String> selpair : Config.disableanim) {
+                                if (selpair.a.equals(selname)) {
+                                    Config.disableanimSet.add(selpair.b);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                for (Pair<String, String> obj : Config.disableanim) {
+                    boolean selected = false;
+                    if (Config.disableanimSet.contains(obj.b))
+                        selected = true;
+                    animlist.items.add(new CheckListboxItem(obj.a, selected));
+                }
+                add(animlist, new Coord(550, 15));
+
                 pack();
             }
         }
@@ -289,6 +318,7 @@ public class OptWnd extends Window {
 
     public OptWnd(boolean gopts) {
         super(new Coord(740, 400), "Options", true);
+
         main = add(new Panel());
         video = add(new VideoPanel(main));
         audio = add(new Panel());
@@ -298,8 +328,22 @@ public class OptWnd extends Window {
         combat = add(new Panel());
         control = add(new Panel());
         uis = add(new Panel());
-        int y;
+        quality = add(new Panel());
 
+        initMain(gopts);
+        initAudio();
+        initDisplay();
+        initMap();
+        initGeneral();
+        initCombat();
+        initControl();
+        initUis();
+        initQuality();
+
+        chpanel(main);
+    }
+
+    private void initMain(boolean gopts) {
         main.add(new PButton(200, "Video settings", 'v', video), new Coord(0, 0));
         main.add(new PButton(200, "Audio settings", 'a', audio), new Coord(0, 30));
         main.add(new PButton(200, "Display settings", 'd', display), new Coord(0, 60));
@@ -308,6 +352,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Combat settings", 'c', combat), new Coord(210, 30));
         main.add(new PButton(200, "Control settings", 'k', control), new Coord(210, 60));
         main.add(new PButton(200, "UI settings", 'u', uis), new Coord(210, 90));
+        main.add(new PButton(200, "Quality settings", 'q', quality), new Coord(420, 0));
 
         if (gopts) {
             main.add(new Button(200, "Switch character") {
@@ -333,20 +378,29 @@ public class OptWnd extends Window {
             }
         }, new Coord(270, 360));
         main.pack();
+    }
 
-        // -------------------------------------------- audio
-        y = 0;
-        audio.add(new Label("Master audio volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, (int) (Audio.volume * 1000)) {
+    private void initAudio() {
+        initAudioFirstColumn();
+        initAudioSecondColumn();
+        audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        audio.pack();
+    }
+
+    private void initAudioFirstColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Master audio volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, (int) (Audio.volume * 1000)) {
             public void changed() {
                 Audio.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 30;
-        audio.add(new Label("In-game event volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("In-game event volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (ui.audio.pos.volume * 1000);
@@ -355,11 +409,11 @@ public class OptWnd extends Window {
             public void changed() {
                 ui.audio.pos.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new Label("Ambient volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Ambient volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (ui.audio.amb.volume * 1000);
@@ -368,9 +422,9 @@ public class OptWnd extends Window {
             public void changed() {
                 ui.audio.amb.setvolume(val / 1000.0);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on unknown players") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on unknown players") {
             {
                 a = Config.alarmunknown;
             }
@@ -380,9 +434,9 @@ public class OptWnd extends Window {
                 Config.alarmunknown = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int)(Config.alarmunknownvol * 1000);
@@ -393,9 +447,9 @@ public class OptWnd extends Window {
                 Config.alarmunknownvol = vol;
                 Utils.setprefd("alarmunknownvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on red players") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on red players") {
             {
                 a = Config.alarmred;
             }
@@ -405,9 +459,9 @@ public class OptWnd extends Window {
                 Config.alarmred = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmredvol * 1000);
@@ -418,11 +472,11 @@ public class OptWnd extends Window {
                 Config.alarmredvol = vol;
                 Utils.setprefd("alarmredvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new Label("Timers alarm volume"), new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Timers alarm volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.timersalarmvol * 1000);
@@ -433,9 +487,9 @@ public class OptWnd extends Window {
                 Config.timersalarmvol = vol;
                 Utils.setprefd("timersalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on new private chat") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on new private/party chat") {
             {
                 a = Config.chatalarm;
             }
@@ -445,9 +499,9 @@ public class OptWnd extends Window {
                 Config.chatalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.chatalarmvol * 1000);
@@ -458,34 +512,9 @@ public class OptWnd extends Window {
                 Config.chatalarmvol = vol;
                 Utils.setprefd("chatalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on new party chat message") {
-            {
-                a = Config.partychatalarm;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("partychatalarm", val);
-                Config.partychatalarm = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.partychatalarmvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.partychatalarmvol = vol;
-                Utils.setprefd("partychatalarmvol", vol);
-            }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm when curio finishes") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm when curio finishes") {
             {
                 a = Config.studyalarm;
             }
@@ -495,9 +524,9 @@ public class OptWnd extends Window {
                 Config.studyalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.studyalarmvol * 1000);
@@ -508,9 +537,9 @@ public class OptWnd extends Window {
                 Config.studyalarmvol = vol;
                 Utils.setprefd("studyalarmvol", vol);
             }
-        }, new Coord(0, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm when pony power < 10%") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm when pony power < 10%") {
             {
                 a = Config.ponyalarm;
             }
@@ -520,9 +549,9 @@ public class OptWnd extends Window {
                 Config.ponyalarm = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.ponyalarmvol * 1000);
@@ -533,12 +562,16 @@ public class OptWnd extends Window {
                 Config.ponyalarmvol = vol;
                 Utils.setprefd("ponyalarmvol", vol);
             }
-        }, new Coord(0, y));
-        // -------------------------------------------- audio 2nd column
-        y = 0;
-        audio.add(new Label("'Chip' sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+    }
+
+    private void initAudioSecondColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(audio);
+        appender.setX(350);
+        appender.setVerticalMargin(0);
+        appender.add(new Label("'Chip' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxchipvol * 1000);
@@ -549,26 +582,11 @@ public class OptWnd extends Window {
                 Config.sfxchipvol = vol;
                 Utils.setprefd("sfxchipvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("'Squeak' sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.sfxsqueakvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.sfxsqueakvol = vol;
-                Utils.setprefd("sfxsqueakvol", vol);
-            }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("Quern sound volume"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Quern sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxquernvol * 1000);
@@ -579,21 +597,24 @@ public class OptWnd extends Window {
                 Config.sfxquernvol = vol;
                 Utils.setprefd("sfxquernvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Disable metallic mining sound") {
-            {
-                a = Config.nometallicsfx;
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("'Whip' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxwhipvol * 1000);
             }
 
-            public void set(boolean val) {
-                Utils.setprefb("nometallicsfx", val);
-                Config.nometallicsfx = val;
-                a = val;
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxwhipvol = vol;
+                Utils.setprefd("sfxwhipvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on rare curios (bluebells, glimmers, ...)") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on rare curios (bluebells, glimmers, ...)") {
             {
                 a = Config.alarmonforagables;
             }
@@ -603,9 +624,9 @@ public class OptWnd extends Window {
                 Config.alarmonforagables = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmonforagablesvol * 1000);
@@ -616,9 +637,9 @@ public class OptWnd extends Window {
                 Config.alarmonforagablesvol = vol;
                 Utils.setprefd("alarmonforagablesvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on bears & lynx") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on bears & lynx") {
             {
                 a = Config.alarmbears;
             }
@@ -628,9 +649,9 @@ public class OptWnd extends Window {
                 Config.alarmbears = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmbearsvol * 1000);
@@ -641,11 +662,11 @@ public class OptWnd extends Window {
                 Config.alarmbearsvol = vol;
                 Utils.setprefd("alarmbearsvol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new Label("Fireplace sound volume (req. restart)"), new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Fireplace sound volume (req. restart)"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.sfxfirevol * 1000);
@@ -656,9 +677,9 @@ public class OptWnd extends Window {
                 Config.sfxfirevol = vol;
                 Utils.setprefd("sfxfirevol", vol);
             }
-        }, new Coord(250, y));
-        y += 20;
-        audio.add(new CheckBox("Alarm on trolls") {
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on trolls") {
             {
                 a = Config.alarmtroll;
             }
@@ -668,9 +689,9 @@ public class OptWnd extends Window {
                 Config.alarmtroll = val;
                 a = val;
             }
-        }, new Coord(250, y));
-        y += 15;
-        audio.add(new HSlider(200, 0, 1000, 0) {
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
                 super.attach(ui);
                 val = (int) (Config.alarmtrollvol * 1000);
@@ -681,13 +702,70 @@ public class OptWnd extends Window {
                 Config.alarmtrollvol = vol;
                 Utils.setprefd("alarmtrollvol", vol);
             }
-        }, new Coord(250, y));
-        audio.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        audio.pack();
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on mammoths") {
+            {
+                a = Config.alarmmammoth;
+            }
 
-        // -------------------------------------------- display
-        y = 0;
-        display.add(new CheckBox("Display kin names") {
+            public void set(boolean val) {
+                Utils.setprefb("alarmmammoth", val);
+                Config.alarmmammoth = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmmammothvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmmammothvol = vol;
+                Utils.setprefd("alarmmammothvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on battering rams and catapults") {
+            {
+                a = Config.alarmbram;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmbram", val);
+                Config.alarmbram = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmbramvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmbramvol = vol;
+                Utils.setprefd("alarmbramvol", vol);
+            }
+        });
+    }
+
+    private void initDisplay() {
+        initDisplayFirstColumn();
+        initDisplaySecondColumn();
+        display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        display.pack();
+    }
+
+    private void initDisplayFirstColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(display);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;
             }
@@ -697,86 +775,8 @@ public class OptWnd extends Window {
                 Config.showkinnames = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show item quality") {
-            {
-                a = Config.showquality;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showquality", val);
-                Config.showquality = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 20;
-        display.add(new Label("High"), new Coord(0, y));
-        display.add(new Label("Avg E/S/V"), new Coord(35, y));
-        display.add(new Label("All"), new Coord(100, y));
-        display.add(new Label("Avg S/V"), new Coord(135, y));
-        display.add(new Label("Low"), new Coord(190, y));
-        y += 10;
-        display.add(new HSlider(210, 0, 4, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.showqualitymode;
-            }
-            public void changed() {
-                Config.showqualitymode = val;
-                Utils.setprefi("showqualitymode", val);
-            }
-        }, new Coord(0, y));
-        y += 25;
-        display.add(new CheckBox("Show LP gain multiplier for curios") {
-            {
-                a = Config.showlpgainmult;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showlpgainmult", val);
-                Config.showlpgainmult = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Use arithmetic average") {
-            {
-                a = Config.arithavg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("arithavg", val);
-                Config.arithavg = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Round item quality to a whole number") {
-            {
-                a = Config.qualitywhole;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("qualitywhole", val);
-                Config.qualitywhole = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Draw background for quality values") {
-            {
-                a = Config.qualitybg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("qualitybg", val);
-                Config.qualitybg = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Display item completion as progress bar") {
+        });
+        appender.add(new CheckBox("Display item completion as progress bar") {
             {
                 a = Config.itemmeterbar;
             }
@@ -786,9 +786,8 @@ public class OptWnd extends Window {
                 Config.itemmeterbar = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Display item completion as percentage") {
+        });
+        appender.add(new CheckBox("Display item completion as percentage") {
             {
                 a = Config.itempercentage;
             }
@@ -798,9 +797,8 @@ public class OptWnd extends Window {
                 Config.itempercentage = val;
                 a = val;
             }
-        }, new Coord(0, y));
-        y += 35;
-        display.add(new CheckBox("Show hourglass percentage") {
+        });
+        appender.add(new CheckBox("Show hourglass percentage") {
             {
                 a = Config.showprogressperc;
             }
@@ -810,24 +808,586 @@ public class OptWnd extends Window {
                 Config.showprogressperc = val;
                 a = val;
             }
-        }, new Coord(0, y));
+        });
+        appender.add(new CheckBox("Show attributes & softcap values in craft window") {
+            {
+                a = Config.showcraftcap;
+            }
 
-        // -------------------------------------------- display 2nd column
-        y = 0;
-        display.add(new Label("Chat font size (req. restart): Small"), new Coord(260, y + 1));
-        display.add(new HSlider(40, 0, 3, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.chatfontsize;
+            public void set(boolean val) {
+                Utils.setprefb("showcraftcap", val);
+                Config.showcraftcap = val;
+                a = val;
             }
-            public void changed() {
-                Config.chatfontsize = val;
-                Utils.setprefi("chatfontsize", val);
+        });
+        appender.add(new CheckBox("Show objects health") {
+            {
+                a = Config.showgobhp;
             }
-        }, new Coord(432, y));
-        display.add(new Label("Large"), new Coord(475, y + 1));
-        y += 35;
-        display.add(new CheckBox("Show quick hand slots") {
+
+            public void set(boolean val) {
+                Utils.setprefb("showgobhp", val);
+                Config.showgobhp = val;
+                a = val;
+
+                GameUI gui = gameui();
+                if (gui != null && gui.map != null) {
+                    if (val)
+                        gui.map.addHealthSprites();
+                    else
+                        gui.map.removeCustomSprites(Sprite.GOB_HEALTH_ID);
+                }
+            }
+        });
+        appender.add(new CheckBox("Show player paths") {
+            {
+                a = Config.showplayerpaths;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showplayerpaths", val);
+                Config.showplayerpaths = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show animal paths") {
+            {
+                a = Config.showanimalpaths;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showanimalpaths", val);
+                Config.showanimalpaths = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show study remaining time") {
+            {
+                a = Config.showstudylefttime;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showstudylefttime", val);
+                Config.showstudylefttime = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show contents bars for buckets/flasks") {
+            {
+                a = Config.showcontentsbars;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcontentsbars", val);
+                Config.showcontentsbars = val;
+                a = val;
+            }
+        });
+    }
+
+    private void initDisplaySecondColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(display);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setX(400);
+        appender.add(new CheckBox("Show wear bars") {
+            {
+                a = Config.showwearbars;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showwearbars", val);
+                Config.showwearbars = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show animal radius") {
+            {
+                a = Config.showanimalrad;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showanimalrad", val);
+                Config.showanimalrad = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight empty/finished drying frames") {
+            {
+                a = Config.showdframestatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdframestatus", val);
+                Config.showdframestatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Draw circles around party members") {
+            {
+                a = Config.partycircles;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("partycircles", val);
+                Config.partycircles = val;
+                a = val;
+            }
+        });
+    }
+
+    private void initMap() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(map);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Save map tiles to disk") {
+            {
+                a = Config.savemmap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("savemmap", val);
+                Config.savemmap = val;
+                MapGridSave.mgs = null;
+                a = val;
+            }
+        });
+
+        map.add(new Label("Show boulders:"), new Coord(180, 0));
+        map.add(new Label("Show bushes:"), new Coord(325, 0));
+        map.add(new Label("Show trees:"), new Coord(470, 0));
+        map.add(new Label("Hide icons:"), new Coord(615, 0));
+
+        map.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        map.pack();
+    }
+
+    private void initGeneral() {
+        initGeneralFirstColumn();
+        initGeneralSecondColumn();
+        general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        general.pack();
+    }
+
+    private void initGeneralFirstColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(general);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Save chat logs to disk") {
+            {
+                a = Config.chatsave;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chatsave", val);
+                Config.chatsave = val;
+                a = val;
+                if (!val && Config.chatlog != null) {
+                    try {
+                        Config.chatlog.close();
+                        Config.chatlog = null;
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        });
+        appender.add(new CheckBox("Show timestamps in chats") {
+            {
+                a = Config.chattimestamp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chattimestamp", val);
+                Config.chattimestamp = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Notify when kin comes online") {
+            {
+                a = Config.notifykinonline;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("notifykinonline", val);
+                Config.notifykinonline = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Auto hearth") {
+            {
+                a = Config.autohearth;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autohearth", val);
+                Config.autohearth = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Auto logout on unknown/red players") {
+            {
+                a = Config.autologout;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autologout", val);
+                Config.autologout = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Print server time to System log") {
+            {
+                a = Config.servertimesyslog;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("servertimesyslog", val);
+                Config.servertimesyslog = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Automatically select 'Pick' action") {
+            {
+                a = Config.autopick;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autopick", val);
+                Config.autopick = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Automatically select 'Harvest' action") {
+            {
+                a = Config.autoharvest;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoharvest", val);
+                Config.autoharvest = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Automatically select 'Eat' action") {
+            {
+                a = Config.autoeat;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoeat", val);
+                Config.autoeat = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Automatically select 'Split' action") {
+            {
+                a = Config.autosplit;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autosplit", val);
+                Config.autosplit = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Run on login") {
+            {
+                a = Config.runonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("runonlogin", val);
+                Config.runonlogin = val;
+                a = val;
+            }
+        });
+    }
+
+    private void initGeneralSecondColumn() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(general);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.setX(310);
+
+        appender.add(new CheckBox("Show server time") {
+            {
+                a = Config.showservertime;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showservertime", val);
+                Config.showservertime = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable tracking on login") {
+            {
+                a = Config.enabletracking;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enabletracking", val);
+                Config.enabletracking = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable criminal acts on login") {
+            {
+                a = Config.enablecrime;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enablecrime", val);
+                Config.enablecrime = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Auto-miner: drop mined ore") {
+            {
+                a = Config.dropore;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropore", val);
+                Config.dropore = val;
+                a = val;
+            }
+        });
+    }
+
+    private void initCombat() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(combat);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Display damage received by opponents") {
+            {
+                a = Config.showdmgop;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdmgop", val);
+                Config.showdmgop = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Display damage received by me") {
+            {
+                a = Config.showdmgmy;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showdmgmy", val);
+                Config.showdmgmy = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight current opponent") {
+            {
+                a = Config.hlightcuropp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hlightcuropp", val);
+                Config.hlightcuropp = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Aggro closest unknown/red player on Tab key") {
+            {
+                a = Config.agroclosest;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("agroclosest", val);
+                Config.agroclosest = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Display cooldown time") {
+            {
+                a = Config.showcooldown;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcooldown", val);
+                Config.showcooldown = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show arrow vectors") {
+            {
+                a = Config.showarchvector;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showarchvector", val);
+                Config.showarchvector = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show attack cooldown delta") {
+            {
+                a = Config.showcddelta;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcddelta", val);
+                Config.showcddelta = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Disallow aggroing of party/village members & non-red kins") {
+            {
+                a = Config.donotaggrofriends;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("donotaggrofriends", val);
+                Config.donotaggrofriends = val;
+                a = val;
+            }
+        });
+
+        combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        combat.pack();
+    }
+
+    private void initControl() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(control);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Free camera rotation") {
+            {
+                a = Config.camfree;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("camfree", val);
+                Config.camfree = val;
+                a = val;
+            }
+        });
+        appender.addRow(
+                new Label("Bad camera scrolling sensitivity"),
+                new HSlider(50, 0, 50, 0) {
+                    protected void attach(UI ui) {
+                        super.attach(ui);
+                        val = Config.badcamsensitivity;
+                    }
+                    public void changed() {
+                        Config.badcamsensitivity = val;
+                        Utils.setprefi("badcamsensitivity", val);
+                    }
+                });
+        appender.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
+            {
+                a = Config.alternmapctrls;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alternmapctrls", val);
+                Config.alternmapctrls = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Use French (AZERTY) keyboard layout") {
+            {
+                a = Config.userazerty;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("userazerty", val);
+                Config.userazerty = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Reverse bad camera MMB x-axis") {
+            {
+                a = Config.reversebadcamx;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("reversebadcamx", val);
+                Config.reversebadcamx = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Reverse bad camera MMB y-axis") {
+            {
+                a = Config.reversebadcamy;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("reversebadcamy", val);
+                Config.reversebadcamy = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Force hardware cursor (req. restart)") {
+            {
+                a = Config.hwcursor;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hwcursor", val);
+                Config.hwcursor = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
+            {
+                a = Config.nodropping;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("nodropping", val);
+                Config.nodropping = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable full zoom-out in Ortho cam") {
+            {
+                a = Config.enableorthofullzoom;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enableorthofullzoom", val);
+                Config.enableorthofullzoom = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Disable hotkey (tilde/back-quote key) for drinking") {
+            {
+                a = Config.disabledrinkhotkey;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disabledrinkhotkey", val);
+                Config.disabledrinkhotkey = val;
+                a = val;
+            }
+        });
+
+        control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        control.pack();
+    }
+
+    private void initUis() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(uis);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.addRow(new Label("Language (req. restart):"), langDropdown());
+        appender.add(new CheckBox("Show quick hand slots") {
             {
                 a = Config.quickslots;
             }
@@ -848,130 +1408,8 @@ public class OptWnd extends Window {
                 } catch (ClassCastException e) { // in case we are at the login screen
                 }
             }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show Attribute/Ability values in craft window") {
-            {
-                a = Config.showcraftcap;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showcraftcap", val);
-                Config.showcraftcap = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show objects health") {
-            {
-                a = Config.showgobhp;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showgobhp", val);
-                Config.showgobhp = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show player paths") {
-            {
-                a = Config.showplayerpaths;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showplayerpaths", val);
-                Config.showplayerpaths = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show animal paths") {
-            {
-                a = Config.showanimalpaths;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showanimalpaths", val);
-                Config.showanimalpaths = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show study remaining time (req. restart)") {
-            {
-                a = Config.showstudylefttime;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showstudylefttime", val);
-                Config.showstudylefttime = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show inventory on login") {
-            {
-                a = Config.showinvonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showinvonlogin", val);
-                Config.showinvonlogin = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        display.add(new CheckBox("Show contents bars for buckets/flasks") {
-            {
-                a = Config.showcontentsbars;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showcontentsbars", val);
-                Config.showcontentsbars = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        // -------------------------------------------- display 3rd column
-        y = 0;
-        display.add(new CheckBox("Show wear bars") {
-            {
-                a = Config.showwearbars;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showwearbars", val);
-                Config.showwearbars = val;
-                a = val;
-            }
-        }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Show troughs/beehives radius") {
-            {
-                a = Config.showfarmrad;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showfarmrad", val);
-                Config.showfarmrad = val;
-                a = val;
-            }
-        }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Show animal radius") {
-            {
-                a = Config.showanimalrad;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showanimalrad", val);
-                Config.showanimalrad = val;
-                a = val;
-            }
-        }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Show F-key toolbar") {
+        });
+        appender.add(new CheckBox("Show F-key toolbar") {
             {
                 a = Config.fbelt;
             }
@@ -980,29 +1418,19 @@ public class OptWnd extends Window {
                 Utils.setprefb("fbelt", val);
                 Config.fbelt = val;
                 a = val;
-                FBelt fbelt = gameui().fbelt;
-                if (fbelt != null) {
-                    if (val)
-                        fbelt.show();
-                    else
-                        fbelt.hide();
+                GameUI gui = gameui();
+                if (gui != null) {
+                    FBelt fbelt = gui.fbelt;
+                    if (fbelt != null) {
+                        if (val)
+                            fbelt.show();
+                        else
+                            fbelt.hide();
+                    }
                 }
             }
-        }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Highlight empty/finished drying frames") {
-            {
-                a = Config.showdframestatus;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showdframestatus", val);
-                Config.showdframestatus = val;
-                a = val;
-            }
-        }, new Coord(540, y));
-        y += 35;
-        display.add(new CheckBox("Hide extensions menu (req. restart)") {
+        });
+        appender.add(new CheckBox("Hide extensions menu (req. restart)") {
             {
                 a = Config.hidexmenu;
             }
@@ -1012,9 +1440,74 @@ public class OptWnd extends Window {
                 Config.hidexmenu = val;
                 a = val;
             }
-        }, new Coord(540, y));
+        });
+        appender.add(new CheckBox("Show inventory on login") {
+            {
+                a = Config.showinvonlogin;
+            }
 
-        display.add(new Button(220, "Reset Windows (req. logout)") {
+            public void set(boolean val) {
+                Utils.setprefb("showinvonlogin", val);
+                Config.showinvonlogin = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Hide quests panel") {
+            {
+                a = Config.noquests;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("noquests", val);
+                Config.noquests = val;
+                try {
+                    if (val)
+                        gameui().questpanel.hide();
+                    else
+                        gameui().questpanel.show();
+                } catch (NullPointerException npe) { // ignored
+                }
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show Craft/Build history toolbar") {
+            {
+                a = Config.histbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("histbelt", val);
+                Config.histbelt = val;
+                a = val;
+                GameUI gui = gameui();
+                if (gui != null) {
+                    CraftHistoryBelt histbelt = gui.histbelt;
+                    if (histbelt != null) {
+                        if (val)
+                            histbelt.show();
+                        else
+                            histbelt.hide();
+                    }
+                }
+            }
+        });
+        appender.add(new CheckBox("Instant flower menus") {
+            {
+                a = Config.instantflowermenu;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("instantflowermenu", val);
+                Config.instantflowermenu = val;
+                a = val;
+            }
+        });
+        //appender.addRow(new Label("Interface font size (req. restart):"), makeFontSizeGlobalDropdown());
+        //appender.addRow(new Label("Button font size (req. restart):"), makeFontSizeButtonDropdown());
+        //appender.addRow(new Label("Window title font size (req. restart):"), makeFontSizeWndCapDropdown());
+        appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
+
+        Button resetWndBtn = new Button(220, "Reset Windows (req. logout)") {
             @Override
             public void click() {
                 for (String wndcap : Window.persistentwnds)
@@ -1029,471 +1522,112 @@ public class OptWnd extends Window {
                 Utils.delpref("gui-br-visible");
                 Utils.delpref("gui-ul-visible");
                 Utils.delpref("gui-ur-visible");
+                Utils.delpref("gui-um-visible");
                 Utils.delpref("menu-visible");
                 Utils.delpref("fbelt_c");
                 Utils.delpref("fbelt_vertical");
             }
-        }, new Coord(260, 320));
-        display.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        display.pack();
-
-        // -------------------------------------------- map
-        y = 0;
-        map.add(new CheckBox("Show players on minimap") {
-            {
-                a = Config.showplayersmmap;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showplayersmmap", val);
-                Config.showplayersmmap = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        map.add(new CheckBox("Save map tiles to disk") {
-            {
-                a = Config.savemmap;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("savemmap", val);
-                Config.savemmap = val;
-                MapGridSave.mgs = null;
-                a = val;
-            }
-        }, new Coord(0, y));
-
-        map.add(new Label("Show boulders:"), new Coord(180, 0));
-        map.add(new Label("Show bushes:"), new Coord(325, 0));
-        map.add(new Label("Show trees:"), new Coord(470, 0));
-        map.add(new Label("Hide icons:"), new Coord(615, 0));
-
-        map.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        map.pack();
-
-        // -------------------------------------------- general
-        y = 0;
-        general.add(new CheckBox("Save chat logs to disk") {
-            {
-                a = Config.chatsave;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("chatsave", val);
-                Config.chatsave = val;
-                a = val;
-                if (!val && Config.chatlog != null) {
-                    try {
-                        Config.chatlog.close();
-                        Config.chatlog = null;
-                    } catch (Exception e) {
-                    }
-                }
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Show timestamps in chats") {
-            {
-                a = Config.chattimestamp;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("chattimestamp", val);
-                Config.chattimestamp = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Notify when kin comes online") {
-            {
-                a = Config.notifykinonline;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("notifykinonline", val);
-                Config.notifykinonline = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Auto hearth") {
-            {
-                a = Config.autohearth;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autohearth", val);
-                Config.autohearth = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Print server time to System log") {
-            {
-                a = Config.servertimesyslog;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("servertimesyslog", val);
-                Config.servertimesyslog = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Pick' action") {
-            {
-                a = Config.autopick;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autopick", val);
-                Config.autopick = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Harvest' action") {
-            {
-                a = Config.autoharvest;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autoharvest", val);
-                Config.autoharvest = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Eat' action") {
-            {
-                a = Config.autoeat;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autoeat", val);
-                Config.autoeat = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Automatically select 'Split' action") {
-            {
-                a = Config.autosplit;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autosplit", val);
-                Config.autosplit = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Run on login") {
-            {
-                a = Config.runonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("runonlogin", val);
-                Config.runonlogin = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        general.add(new CheckBox("Show server time") {
-            {
-                a = Config.showservertime;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showservertime", val);
-                Config.showservertime = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        // -------------------------------------------- general 2nd column
-        y = 0;
-        general.add(new CheckBox("Show swimming/tracking/crime buffs (req. logout)") {
-            {
-                a = Config.showtoggles;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showtoggles", val);
-                Config.showtoggles = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Enable tracking on login") {
-            {
-                a = Config.enabletracking;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("enabletracking", val);
-                Config.enabletracking = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Enable criminal acts on login") {
-            {
-                a = Config.enablecrime;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("enablecrime", val);
-                Config.enablecrime = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Select System log on login") {
-            {
-                a = Config.syslogonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("syslogonlogin", val);
-                Config.syslogonlogin = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-        y += 35;
-        general.add(new CheckBox("Auto-miner: drop mined ore") {
-            {
-                a = Config.dropore;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropore", val);
-                Config.dropore = val;
-                a = val;
-            }
-        }, new Coord(260, y));
-
-        general.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        general.pack();
-
-        // -------------------------------------------- combat
-        y = 0;
-        combat.add(new CheckBox("Display damage received by opponents") {
-            {
-                a = Config.showdmgop;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showdmgop", val);
-                Config.showdmgop = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Display damage received by me") {
-            {
-                a = Config.showdmgmy;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showdmgmy", val);
-                Config.showdmgmy = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Highlight current opponent") {
-            {
-                a = Config.hlightcuropp;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hlightcuropp", val);
-                Config.hlightcuropp = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Aggro closest unknown/red player on Tab key") {
-            {
-                a = Config.agroclosest;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("agroclosest", val);
-                Config.agroclosest = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        combat.add(new CheckBox("Display cooldown time") {
-            {
-                a = Config.showcooldown;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showcooldown", val);
-                Config.showcooldown = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-
-        combat.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        combat.pack();
-
-        // -------------------------------------------- control
-        y = 0;
-        control.add(new CheckBox("Free camera rotation") {
-            {
-                a = Config.camfree;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("camfree", val);
-                Config.camfree = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new Label("Bad camera scrolling sensitivity"), new Coord(0, y));
-        control.add(new HSlider(50, 0, 50, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = Config.badcamsensitivity;
-            }
-            public void changed() {
-                Config.badcamsensitivity = val;
-                Utils.setprefi("badcamsensitivity", val);
-            }
-        }, new Coord(160, y));
-        y += 35;
-        control.add(new CheckBox("Minimap: use MMB to drag & L/RMB to move") {
-            {
-                a = Config.alternmapctrls;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("alternmapctrls", val);
-                Config.alternmapctrls = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Use French (AZERTY) keyboard layout") {
-            {
-                a = Config.userazerty;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("userazerty", val);
-                Config.userazerty = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Reverse bad camera MMB x-axis") {
-            {
-                a = Config.reversebadcamx;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("reversebadcamx", val);
-                Config.reversebadcamx = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Reverse bad camera MMB y-axis") {
-            {
-                a = Config.reversebadcamy;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("reversebadcamy", val);
-                Config.reversebadcamy = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Force hardware cursor (req. restart)") {
-            {
-                a = Config.hwcursor;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hwcursor", val);
-                Config.hwcursor = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Disable UI hiding with space-bar") {
-            {
-                a = Config.disablespacebar;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("disablespacebar", val);
-                Config.disablespacebar = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
-            {
-                a = Config.nodropping;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("nodropping", val);
-                Config.nodropping = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y += 35;
-        control.add(new CheckBox("Enable full zoom-out in Ortho cam") {
-            {
-                a = Config.enableorthofullzoom;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("enableorthofullzoom", val);
-                Config.enableorthofullzoom = val;
-                a = val;
-            }
-        }, new Coord(0, y));
-        y = 0;
-        control.add(new CheckBox("Transfer items in ascending order instead of descending") {
-            {
-                a = Config.sortascending;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("sortascending", val);
-                Config.sortascending = val;
-                a = val;
-            }
-        }, new Coord(320, y));
-
-        control.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
-        control.pack();
-
-        // -------------------------------------------- uis
-
-        y = 0;
-        uis.add(new Label("Language (req. restart): "), new Coord(0, y));
-        uis.add(langDropdown(), new Coord(120, y));
-
+        };
+        uis.add(resetWndBtn, new Coord(740 / 2 - resetWndBtn.sz.x / 2 , 320));
         uis.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
         uis.pack();
+    }
 
-        chpanel(main);
+    private void initQuality() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(quality);
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.add(new CheckBox("Show item quality") {
+            {
+                a = Config.showquality;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showquality", val);
+                Config.showquality = val;
+                a = val;
+            }
+        });
+
+        Label highest = new Label("Highest");
+        Label avgESV = new Label("Avg E/S/V");
+        Label all = new Label("All");
+        Label avgSV = new Label("Avg S/V");
+        Label lowest = new Label("Lowest");
+
+        appender.setVerticalMargin(0);
+        appender.addRow(highest, avgESV, all, avgSV, lowest);
+
+        final int showQualityWidth = HorizontalAligner.apply(Arrays.asList(highest, avgESV, all, avgSV, lowest), HORIZONTAL_MARGIN);
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.add(new HSlider(showQualityWidth, 0, 4, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = Config.showqualitymode;
+            }
+            public void changed() {
+                Config.showqualitymode = val;
+                Utils.setprefi("showqualitymode", val);
+            }
+        });
+        appender.add(new CheckBox("Show LP gain multiplier for curios") {
+            {
+                a = Config.showlpgainmult;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showlpgainmult", val);
+                Config.showlpgainmult = val;
+                a = val;
+            }
+        });
+
+        appender.addRow(new Label("Calculate Avg as (req. logout):"), avgQModeDropdown());
+
+        appender.add(new CheckBox("Round item quality to a whole number") {
+            {
+                a = Config.qualitywhole;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitywhole", val);
+                Config.qualitywhole = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Draw background for quality values") {
+            {
+                a = Config.qualitybg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitybg", val);
+                Config.qualitybg = val;
+                a = val;
+            }
+        });
+        appender.addRow(
+            new Label("Background transparency (req. restart):"),
+            new HSlider(200, 0, 255, Config.qualitybgtransparency) {
+                public void changed() {
+                    Utils.setprefi("qualitybgtransparency", val);
+                    Config.qualitybgtransparency = val;
+                }
+            });
+
+        quality.add(new PButton(200, "Back", 27, main), new Coord(270, 360));
+        quality.pack();
     }
 
     private Dropbox<Locale> langDropdown() {
         List<Locale> languages = enumerateLanguages();
-        Dropbox<Locale> lang = new Dropbox<Locale>(120, 5, 16) {
+        List<String> values = languages.stream().map(x -> x.getDisplayName()).collect(Collectors.toList());
+        return new Dropbox<Locale>(10, values) {
+            {
+                super.change(new Locale(Resource.language));
+            }
+
             @Override
             protected Locale listitem(int i) {
                 return languages.get(i);
@@ -1516,8 +1650,6 @@ public class OptWnd extends Window {
                 Utils.setpref("language", item.toString());
             }
         };
-        lang.change(new Locale(Resource.language));
-        return lang;
     }
 
     private List<Locale> enumerateLanguages() {
@@ -1548,6 +1680,169 @@ public class OptWnd extends Window {
         return new ArrayList<Locale>(languages);
     }
 
+    private static final Pair[] avgQModes = new Pair[]{
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Quadratic"), AVG_MODE_QUADRATIC),
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Geometric"), AVG_MODE_GEOMETRIC),
+            new Pair<>(Resource.getLocString(Resource.BUNDLE_LABEL, "Arithmetic"), AVG_MODE_ARITHMETIC)
+    };
+
+    @SuppressWarnings("unchecked")
+    private Dropbox<Pair<String, Integer>> avgQModeDropdown() {
+        List<String> values = Arrays.stream(avgQModes).map(x -> x.a.toString()).collect(Collectors.toList());
+        Dropbox<Pair<String, Integer>> modes = new Dropbox<Pair<String, Integer>>(avgQModes.length, values) {
+            @Override
+            protected Pair<String, Integer> listitem(int i) {
+                return avgQModes[i];
+            }
+
+            @Override
+            protected int listitems() {
+                return avgQModes.length;
+            }
+
+            @Override
+            protected void drawitem(GOut g, Pair<String, Integer> item, int i) {
+                g.text(item.a, Coord.z);
+            }
+
+            @Override
+            public void change(Pair<String, Integer> item) {
+                super.change(item);
+                Config.avgmode = item.b;
+                Utils.setprefi("avgmode", item.b);
+            }
+        };
+        modes.change(avgQModes[Config.avgmode]);
+        return modes;
+    }
+
+    private static final List<Integer> fontSize = Arrays.asList(10, 11, 12, 13, 14, 15, 16);
+
+    private Dropbox<Integer> makeFontSizeGlobalDropdown() {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
+            {
+                super.change(Config.fontsizeglobal);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizeglobal = item;
+                Utils.setprefi("fontsizeglobal", item);
+            }
+        };
+    }
+
+    private Dropbox<Integer> makeFontSizeButtonDropdown() {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
+            {
+                super.change(Config.fontsizebutton);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizebutton = item;
+                Utils.setprefi("fontsizebutton", item);
+            }
+        };
+    }
+
+    private Dropbox<Integer> makeFontSizeWndCapDropdown() {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
+            {
+                super.change(Config.fontsizewndcap);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizewndcap = item;
+                Utils.setprefi("fontsizewndcap", item);
+            }
+        };
+    }
+
+    private Dropbox<Integer> makeFontSizeChatDropdown() {
+        List<String> values = fontSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(fontSize.size(), values) {
+            {
+                super.change(Config.fontsizechat);
+            }
+
+            @Override
+            protected Integer listitem(int i) {
+                return fontSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return fontSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.fontsizechat = item;
+                Utils.setprefi("fontsizechat", item);
+            }
+        };
+    }
+
+
     public OptWnd() {
         this(true);
     }
@@ -1555,90 +1850,51 @@ public class OptWnd extends Window {
     public void setMapSettings() {
         final String charname = gameui().chrid;
 
-         CheckListbox boulderlist = new CheckListbox(130, 18) {
+        CheckListbox boulderlist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.boulderssel = getselected();
-                Utils.setprefsa("boulderssel_" + charname, Config.boulderssel);
+                Utils.setprefchklst("boulderssel_" + charname, Config.boulders);
             }
         };
-        for (String boulder : Config.boulders) {
-            boolean selected = false;
-            if (Config.boulderssel != null) {
-                for (String sboulder : Config.boulderssel) {
-                    if (sboulder.equals(boulder)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            boulderlist.items.add(new CheckListboxItem(boulder, selected));
-        }
+        for (CheckListboxItem itm : Config.boulders.values())
+            boulderlist.items.add(itm);
         map.add(boulderlist, new Coord(180, 15));
 
-
         CheckListbox bushlist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.bushessel = getselected();
-                Utils.setprefsa("bushessel_" + charname, Config.bushessel);
+                Utils.setprefchklst("bushessel_" + charname, Config.bushes);
             }
         };
-        for (String bush : Config.bushes) {
-            boolean selected = false;
-            if (Config.bushessel != null) {
-                for (String sbush : Config.bushessel) {
-                    if (sbush.equals(bush)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            bushlist.items.add(new CheckListboxItem(bush, selected));
-        }
+        for (CheckListboxItem itm : Config.bushes.values())
+            bushlist.items.add(itm);
         map.add(bushlist, new Coord(325, 15));
 
         CheckListbox treelist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.treessel = getselected();
-                Utils.setprefsa("treessel_" + charname, Config.treessel);
+                Utils.setprefchklst("treessel_" + charname, Config.trees);
             }
         };
-        for (String tree : Config.trees) {
-            boolean selected = false;
-            if (Config.treessel != null) {
-                for (String stree : Config.treessel) {
-                    if (stree.equals(tree)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            treelist.items.add(new CheckListboxItem(tree, selected));
-        }
+        for (CheckListboxItem itm : Config.trees.values())
+            treelist.items.add(itm);
         map.add(treelist, new Coord(470, 15));
 
         CheckListbox iconslist = new CheckListbox(130, 18) {
+            @Override
             protected void itemclick(CheckListboxItem itm, int button) {
                 super.itemclick(itm, button);
-                Config.iconssel = getselected();
-                Utils.setprefsa("iconssel_" + charname, Config.iconssel);
+                Utils.setprefchklst("iconssel_" + charname, Config.icons);
             }
         };
-        for (String icon : Config.icons) {
-            boolean selected = false;
-            if (Config.iconssel != null) {
-                for (String sicon : Config.iconssel) {
-                    if (sicon.equals(icon)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-            iconslist.items.add(new CheckListboxItem(icon, selected));
-        }
+        for (CheckListboxItem itm : Config.icons.values())
+            iconslist.items.add(itm);
         map.add(iconslist, new Coord(615, 15));
+
+
         map.pack();
     }
 

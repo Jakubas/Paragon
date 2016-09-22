@@ -44,7 +44,7 @@ public class CheckBox extends Widget {
     }
 
     public CheckBox(String lbl, boolean lg) {
-        this.lbl = Text.std.render(lbl, java.awt.Color.WHITE);
+        this.lbl = Text.std.render(Resource.getLocString(Resource.BUNDLE_LABEL, lbl), java.awt.Color.WHITE);
         if (lg) {
             box = lbox;
             mark = lmark;
@@ -74,7 +74,7 @@ public class CheckBox extends Widget {
     }
 
     public void draw(GOut g) {
-        g.image(lbl.tex(), loff.add(box.sz().x, box.sz().y - lbl.sz().y));
+        g.image(lbl.tex(), loff.add(box.sz().x, box.sz().y / 2 - lbl.sz().y / 2));
         g.image(box, Coord.z);
         if (a)
             g.image(mark, Coord.z);

@@ -38,8 +38,6 @@ public interface ResCache {
     public static class StupidJavaCodeContainer {
         private static ResCache makeglobal() {
             ResCache ret;
-            if ((ret = JnlpCache.create()) != null)
-                return (ret);
             if (Config.fscache) {
                 if ((ret = FileCache.foruser()) != null)
                     return (ret);

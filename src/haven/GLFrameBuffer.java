@@ -41,6 +41,7 @@ public class GLFrameBuffer extends GLState {
 
         public FBO(GOut g) {
             super(g);
+            g.gl.bglCreate(this);
         }
 
         public void create(GL2 gl) {
@@ -105,6 +106,7 @@ public class GLFrameBuffer extends GLState {
 
             public RBO(GOut g) {
                 super(g);
+                g.gl.bglCreate(this);
             }
 
             public void create(GL2 gl) {

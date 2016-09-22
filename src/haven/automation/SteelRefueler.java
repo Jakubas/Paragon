@@ -5,6 +5,7 @@ import haven.Button;
 import haven.Label;
 import haven.Window;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class SteelRefueler extends Window implements GobSelectCallback {
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
-    private static final Text.Foundry countf = new Text.Foundry(Text.sansb, 12).aa(true);
+    private static final Text.Foundry countf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
     private List<Gob> crucibles = new ArrayList<>();
     private List<Gob> stockpiles = new ArrayList<>();
     private final Label lblc, lbls;
@@ -31,12 +32,12 @@ public class SteelRefueler extends Window implements GobSelectCallback {
 
         Label lblctxt = new Label("Crucibles Selected:", infof);
         add(lblctxt, new Coord(15, 60));
-        lblc = new Label("0", countf);
+        lblc = new Label("0", countf, true);
         add(lblc, new Coord(110, 58));
 
         Label lblstxt = new Label("Stockpiles Selected:", infof);
         add(lblstxt, new Coord(135, 60));
-        lbls = new Label("0", countf);
+        lbls = new Label("0", countf, true);
         add(lbls, new Coord(235, 58));
 
         clearbtn = new Button(140, "Clear Selection") {

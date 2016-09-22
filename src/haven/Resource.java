@@ -58,13 +58,16 @@ public class Resource implements Serializable {
     public static Class<Tooltip> tooltip = Tooltip.class;
 
     public static String language = Utils.getpref("language", "en");
-    public static Map<String, String> l10nTooltip, l10nPagina, l10nWindow, l10nButton, l10nFlower;
+    public static Map<String, String> l10nTooltip, l10nPagina, l10nWindow, l10nButton, l10nFlower, l10nMsg, l10nLabel, l10nAction;
     public static final String BUNDLE_TOOLTIP = "tooltip";
     public static final String BUNDLE_PAGINA = "pagina";
     public static final String BUNDLE_WINDOW = "window";
     public static final String BUNDLE_BUTTON = "button";
     public static final String BUNDLE_FLOWER = "flower";
-
+    public static final String BUNDLE_MSG = "msg";
+    public static final String BUNDLE_LABEL = "label";
+    public static final String BUNDLE_ACTION = "action";
+    private final static Map<String, Map<String, String>> l10nBundleMap;
     public static final boolean L10N_DEBUG = false;
 
     private Collection<Layer> layers = new LinkedList<Layer>();
@@ -411,7 +414,10 @@ public class Resource implements Serializable {
                     else
                         error = new LoadException(String.format("Load error in resource %s(v%d), from %s", res.name, res.ver, src), t, null);
                     error.src = src;
-                    error.prev = res.error;
+                    if(res.error != null) {
+                        error.prev = res.error;
+                        error.addSuppressed(res.error);
+                    }
                     res.error = error;
                 }
             }
@@ -787,7 +793,21 @@ public class Resource implements Serializable {
             l10nWindow = l10n(BUNDLE_WINDOW, language);
             l10nButton = l10n(BUNDLE_BUTTON, language);
             l10nFlower = l10n(BUNDLE_FLOWER, language);
+            l10nMsg = l10n(BUNDLE_MSG, language);
+            l10nLabel = l10n(BUNDLE_LABEL, language);
+            l10nAction = l10n(BUNDLE_ACTION, language);
         }
+
+        l10nBundleMap =  new HashMap<String, Map<String, String>>(8) {{
+            put(BUNDLE_TOOLTIP, l10nTooltip);
+            put(BUNDLE_PAGINA, l10nPagina);
+            put(BUNDLE_WINDOW, l10nWindow);
+            put(BUNDLE_BUTTON, l10nButton);
+            put(BUNDLE_FLOWER, l10nFlower);
+            put(BUNDLE_MSG, l10nMsg);
+            put(BUNDLE_LABEL, l10nLabel);
+            put(BUNDLE_ACTION, l10nAction);
+        }};
 
         for (Class<?> cl : dolda.jglob.Loader.get(LayerName.class).classes()) {
             String nm = cl.getAnnotation(LayerName.class).value();
@@ -913,22 +933,24 @@ public class Resource implements Serializable {
 
         public Tooltip(Message buf) {
             String text = new String(buf.bytes(), Utils.utf8);
-            if (language.equals("en") && !L10N_DEBUG) {
-                this.t = text;
+            Resource res = super.getres();
+            String locText = getLocString(BUNDLE_TOOLTIP, res, text);
+
+            if (res != null && !language.equals("en")) {
+                if (locText.equals(text) || !res.name.startsWith("gfx/invobjs") ||
+                        // exclude meat "conditions" since the tooltip is dynamically generated and it won't be in right order
+                        text.contains("Raw ") || text.contains("Filet of ") || text.contains("Sizzling") ||
+                        text.contains("Roast") || text.contains("Meat") || text.contains("Spitroast") ||
+                        // exclude food conditions
+                        res.name.startsWith("gfx/invobjs/food/")) {
+                    this.t = locText;
+                } else {
+                    this.t = locText + " (" + text + ")";
+                }
                 return;
             }
 
-            if (L10N_DEBUG) {
-                Resource res = super.getres();
-                Resource.l10nTooltip = Resource.saveStrings(Resource.BUNDLE_TOOLTIP, Resource.l10nTooltip, res.name, text);
-            }
-
-            String locText = null;
-            Resource res = super.getres();
-            if (res != null && l10nTooltip != null)
-                locText = l10nTooltip.get(res.name);
-
-            this.t = locText != null ? locText : text;
+            this.t = locText;
         }
 
         public void init() {
@@ -1214,22 +1236,7 @@ public class Resource implements Serializable {
 
         public Pagina(Message buf) {
             String text = new String(buf.bytes(), Utils.utf8);
-            if (language.equals("en") && !L10N_DEBUG) {
-                this.text = text;
-                return;
-            }
-
-            if (Resource.L10N_DEBUG) {
-                Resource res = super.getres();
-                Resource.l10nPagina = Resource.saveStrings(Resource.BUNDLE_PAGINA, Resource.l10nPagina, res.name, text);
-            }
-
-            String locText = null;
-            Resource res = super.getres();
-            if (res != null && l10nPagina != null)
-                locText = l10nPagina.get(res.name);
-
-            this.text = locText != null ? locText : text;
+            this.text = Resource.getLocString(Resource.BUNDLE_PAGINA, super.getres(), text);
         }
 
         public void init() {
@@ -1242,6 +1249,7 @@ public class Resource implements Serializable {
         public final Named parent;
         public final char hk;
         public final String[] ad;
+        public final String origName;
 
         public AButton(Message buf) {
             String pr = buf.string();
@@ -1255,7 +1263,10 @@ public class Resource implements Serializable {
                     throw (new LoadException("Illegal resource dependency", e, Resource.this));
                 }
             }
-            name = buf.string();
+
+            origName = buf.string();
+            name = Resource.getLocString(Resource.BUNDLE_ACTION, super.getres(), origName);
+
             buf.string(); /* Prerequisite skill */
             hk = (char) buf.uint16();
             ad = new String[buf.uint16()];
@@ -1809,30 +1820,128 @@ public class Resource implements Serializable {
         }
     }
 
-    public static Map<String, String> saveStrings(String bundle, Map<String, String> map, String key, String val) {
+    public static String getLocString(String bundle, String key) {
+        Map<String, String> map = l10nBundleMap.get(bundle);
+        if (map == null || key == null)
+            return key;
+        if (Resource.L10N_DEBUG)
+            Resource.saveStrings(bundle, key, key);
+        String ll = map.get(key);
+        // strings which require special handling
+        if (ll == null && bundle == BUNDLE_LABEL) {
+            // party invite
+            final String partyInvite = " has invited you to join his party. Do you wish to do so?";
+            if (key.endsWith(partyInvite)) {
+                String name = key.substring(0, key.indexOf(partyInvite));
+                ll = map.get("%s" + partyInvite);
+                if (ll != null)
+                    ll = String.format(ll, name);
+            }
+        } else if (ll == null && bundle == BUNDLE_FLOWER) {
+            // gild
+            if (key.startsWith("Gild (")) {
+                final String flwGild = "Gild (%s%% chance)";
+                String val = key.substring(key.indexOf("(") + 1, key.indexOf("%"));
+                ll = map.get(flwGild);
+                if (ll != null)
+                    ll = String.format(ll, val);
+            }
+        }
+        return ll != null ? ll : key;
+    }
+
+    public static String getLocString(String bundle, Resource key, String def) {
+        Map<String, String> map = l10nBundleMap.get(bundle);
+        if (map == null || key == null)
+            return def;
+        if (Resource.L10N_DEBUG)
+            Resource.saveStrings(bundle, key.name, def);
+        String ll = map.get(key.name);
+        return ll != null ? ll : def;
+    }
+
+    public static String getLocStringOrNull(String bundle, String key) {
+        Map<String, String> map = l10nBundleMap.get(bundle);
+        if (map == null)
+            return null;
+        if (Resource.L10N_DEBUG)
+            Resource.saveStrings(bundle, key, key);
+        String ll = map.get(key);
+        return ll != null ? ll : null;
+    }
+
+    public static String getLocContent(String str) {
+        String loc;
+        if ((loc = Resource.locContent(str, " l of ")) != null)
+            return loc;
+        if ((loc = Resource.locContent(str, " kg of ")) != null)
+            return loc;
+        if ((loc = Resource.locContent(str, " seeds of ")) != null)
+            return loc;
+        return str;
+    }
+
+    private static String locContent(String str, String type) {
+        int i = str.indexOf(type);
+        if (i > 0) {
+            String contName = str.substring(i);
+            String locContName = Resource.getLocStringOrNull(Resource.BUNDLE_LABEL, contName);
+            if (locContName != null)
+                return str.substring(0, i) + locContName + " (" + str.substring(i + type.length()) + ")";
+            return str;
+        }
+        return null;
+    }
+
+    private static void saveStrings(String bundle, String key, String val) {
         synchronized (Resource.class) {
-            if (key == null)
-                return map;
+            if (bundle.equals(BUNDLE_FLOWER)) {
+                if (key.startsWith("Follow ") || key.startsWith("Travel along") ||
+                        key.startsWith("Extend ") && key.startsWith("Connect "))
+                    return;
+            }
 
-            if (map != null && map.containsKey(key))
-                return map;
+            Map<String, String> map = l10nBundleMap.get(bundle);
 
-            if (val == null)
-                val = key;
+            if (bundle.equals(BUNDLE_TOOLTIP) &&
+                    (key.startsWith("paginae/act") || key.startsWith("paginae/bld")
+                    || key.startsWith("paginae/craft") || key.startsWith("paginae/gov")
+                    || key.startsWith("paginae/pose") || key.startsWith("paginae/amber")
+                    || key.startsWith("paginae/atk/ashoot") || key.startsWith("paginae/seid")))
+                return;
+
+            if (key == null || key.equals("") || val.equals("") || map.containsKey(key))
+                return;
+
+            try {
+                Integer.parseInt(key);
+                return;
+            } catch (NumberFormatException nfe) {
+            }
+            try {
+                Integer.parseInt(val);
+                return;
+            } catch (NumberFormatException nfe) {
+            }
+
+            if (key.startsWith("Village shield:") || key.startsWith("Essence:") ||  // inspect tool
+                    key.endsWith("is ONLINE") || key.endsWith("is offline") ||      // kin online/offline
+                    key.startsWith("Experience points gained:"))
+                return;
+
+            new File("l10n").mkdirs();
 
             CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
             encoder.onMalformedInput(CodingErrorAction.REPORT);
             encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
             BufferedWriter out = null;
             try {
-                key = key.replace(" ", "\\ ");
+                map.put(key, val);
+                key = key.replace(" ", "\\ ").replace(":", "\\:").replace("=", "\\=");
                 val = val.replace("\\", "\\\\").replace("\n", "\\n").replace("\u0000", "");
-                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../l10n/" + bundle + "_new.properties", true), encoder));
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("l10n/" + bundle + "_new.properties", true), encoder));
                 out.write(key + " = " + val);
                 out.newLine();
-                if (map == null)
-                    map = new HashMap<>();
-                map.put(key, val);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -1847,7 +1956,7 @@ public class Resource implements Serializable {
                 }
             }
 
-            return map;
+            return;
         }
     }
 

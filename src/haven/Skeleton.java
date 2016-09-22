@@ -171,7 +171,7 @@ public class Skeleton {
         }
         float d0, d1;
         if (cos > 0.9999f) {
-	    /* Reasonable threshold? Is this function even critical
+        /* Reasonable threshold? Is this function even critical
 	     * for performance? */
             d0 = 1.0f - t;
             d1 = t;
@@ -391,14 +391,15 @@ public class Skeleton {
     }
 
     public interface HasPose {
-	public Pose getpose();
+        public Pose getpose();
     }
+
     public static Pose getpose(Object owner) {
-	if(owner instanceof HasPose)
-	    return(((HasPose)owner).getpose());
-	return(null);
+        if (owner instanceof HasPose)
+            return (((HasPose) owner).getpose());
+        return (null);
     }
-    
+
     public interface ModOwner {
         public double getv();
 
@@ -545,8 +546,12 @@ public class Skeleton {
                 int mask = Sprite.decnum(sdt);
                 Collection<PoseMod> poses = new ArrayList<PoseMod>(16);
                 for (ResPose p : res.layers(ResPose.class)) {
-                    if ((p.id < 0) || ((mask & (1 << p.id)) != 0))
+                    if ((p.id < 0) || ((mask & (1 << p.id)) != 0)) {
+                        if (Config.disableanimSet.contains("/idle") && res.name.endsWith("/idle") &&
+                                !res.name.startsWith("gfx/borka"))
+                            continue;
                         poses.add(p.forskel(owner, skel, p.defmode));
+                    }
                 }
                 if (poses.size() == 0)
                     return (skel.nilmod());

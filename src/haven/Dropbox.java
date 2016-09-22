@@ -27,12 +27,15 @@
 package haven;
 
 import java.awt.Color;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Dropbox<T> extends ListWidget<T> {
-    public static final Tex drop = Resource.loadtex("gfx/hud/drop");
+    public static final Tex drop = Resource.loadtex("gfx/hud/dropdown");
     public final int listh;
     private final Coord dropc;
     private Droplist dl;
+    private int selhighlight;
 
     public Dropbox(int w, int listh, int itemh) {
         super(new Coord(w, itemh), itemh);
@@ -40,11 +43,25 @@ public abstract class Dropbox<T> extends ListWidget<T> {
         dropc = new Coord(sz.x - drop.sz().x - 1, 1);
     }
 
+    public Dropbox(int listh, List<String> values) {
+        this(calcWidth(values), listh, calcHeight(values));
+    }
+
+    private static int calcWidth(List<String> names) {
+        List<Integer> widths = names.stream().map((v) -> Text.render(v).sz().x).collect(Collectors.toList());
+        return widths.stream().reduce(Integer::max).get() + 22;
+    }
+
+    private static int calcHeight(List<String> values) {
+        return Math.max(Text.render(values.get(0)).sz().y, 16);
+    }
+
     private class Droplist extends Listbox<T> {
         private UI.Grab grab = null;
 
         private Droplist() {
             super(Dropbox.this.sz.x, Math.min(listh, Dropbox.this.listitems()), Dropbox.this.itemh);
+            selhighlight = -1;
             sel = Dropbox.this.sel;
             Dropbox.this.ui.root.add(this, Dropbox.this.rootpos().add(0, Dropbox.this.sz.y));
             grab = ui.grabmouse(this);
@@ -79,6 +96,22 @@ public abstract class Dropbox<T> extends ListWidget<T> {
         public void change(T item) {
             Dropbox.this.change(item);
             reqdestroy();
+        }
+
+        @Override
+        public void draw(GOut g) {
+            super.draw(g);
+            if (selhighlight >= 0) {
+                g.chcolor(115, 210, 22, 128);
+                g.frect(new Coord(0, selhighlight * itemh), new Coord(g.sz.x, itemh));
+                g.chcolor();
+            }
+        }
+
+        @Override
+        public void mousemove(Coord c) {
+            super.mousemove(c);
+            selhighlight = c.y < 0 || c.y > listh * itemh || c.x < 0 || c.x > sz.x ? -1 : c.y / itemh;
         }
     }
 

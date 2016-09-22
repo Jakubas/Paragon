@@ -43,6 +43,12 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     static {
         try {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+
+            // Since H&H IPs aren't likely to change (at least mid client run), and the client constantly needs to fetch
+            // resources from the server, we enable "cache forever" policy so to overcome sporadic UnknownHostException
+            // due to flaky DNS. Bad practice, but still better than forcing the user to modify hosts file.
+            // NOTE: this needs to be done early as possible before InetAddressCachePolicy is initialized.
+            java.security.Security.setProperty("networkaddress.cache.ttl" , "-1");
         } catch (Exception e) {
         }
     }
@@ -297,66 +303,11 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     }
 
     static {
-        if ((WebBrowser.self = JnlpBrowser.create()) == null)
-            WebBrowser.self = DesktopBrowser.create();
-    }
-
-    private static void netxsurgery() throws Exception {
-	/* Force off NetX codebase classloading. */
-        Class<?> nxc;
-        try {
-            nxc = Class.forName("net.sourceforge.jnlp.runtime.JNLPClassLoader");
-        } catch (ClassNotFoundException e1) {
-            try {
-                nxc = Class.forName("netx.jnlp.runtime.JNLPClassLoader");
-            } catch (ClassNotFoundException e2) {
-                throw (new Exception("No known NetX on classpath"));
-            }
-        }
-        ClassLoader cl = MainFrame.class.getClassLoader();
-        if (!nxc.isInstance(cl)) {
-            throw (new Exception("Not running from a NetX classloader"));
-        }
-        Field cblf, lf;
-        try {
-            cblf = nxc.getDeclaredField("codeBaseLoader");
-            lf = nxc.getDeclaredField("loaders");
-        } catch (NoSuchFieldException e) {
-            throw (new Exception("JNLPClassLoader does not conform to its known structure"));
-        }
-        cblf.setAccessible(true);
-        lf.setAccessible(true);
-        Set<Object> loaders = new HashSet<Object>();
-        Stack<Object> open = new Stack<Object>();
-        open.push(cl);
-        while (!open.empty()) {
-            Object cur = open.pop();
-            if (loaders.contains(cur))
-                continue;
-            loaders.add(cur);
-            Object curl;
-            try {
-                curl = lf.get(cur);
-            } catch (IllegalAccessException e) {
-                throw (new Exception("Reflection accessibility not available even though set"));
-            }
-            for (int i = 0; i < Array.getLength(curl); i++) {
-                Object other = Array.get(curl, i);
-                if (nxc.isInstance(other))
-                    open.push(other);
-            }
-        }
-        for (Object cur : loaders) {
-            try {
-                cblf.set(cur, null);
-            } catch (IllegalAccessException e) {
-                throw (new Exception("Reflection accessibility not available even though set"));
-            }
-        }
+        WebBrowser.self = DesktopBrowser.create();
     }
 
     private static void javabughack() throws InterruptedException {
-	/* Work around a stupid deadlock bug in AWT. */
+	    /* Work around a stupid deadlock bug in AWT. */
         try {
             javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -366,25 +317,12 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                 }
             });
         } catch (java.lang.reflect.InvocationTargetException e) {
-	    /* Oh, how I love Swing! */
+	        /* Oh, how I love Swing! */
             throw (new Error(e));
-        }
-	/* Work around another deadl bug in Sun's JNLP client. */
-        javax.imageio.spi.IIORegistry.getDefaultInstance();
-        try {
-            netxsurgery();
-        } catch (Exception e) {
         }
     }
 
     private static void main2(String[] args) {
-        if (Config.showstudylefttime)
-            new Thread(new Runnable() {
-                public void run() {
-                    StudyTimes.updatestudytimes();
-                }
-            }, "Curio times fetcher").start();
-
         Config.cmdline(args);
 
         if (Config.playerposfile != null)
@@ -423,21 +361,15 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     }
 
     public static void main(final String[] args) {
-	/* Set up the error handler as early as humanly possible. */
-        ThreadGroup g = new ThreadGroup("Haven main group");
-        String ed;
-        if (!(ed = Utils.getprop("haven.errorurl", "")).equals("")) {
-            try {
-                final haven.error.ErrorHandler hg = new haven.error.ErrorHandler(new java.net.URL(ed));
-                hg.sethandler(new haven.error.ErrorGui(null) {
-                    public void errorsent() {
-                        hg.interrupt();
-                    }
-                });
-                g = hg;
-            } catch (java.net.MalformedURLException e) {
+	    /* Set up the error handler as early as humanly possible. */
+        final haven.error.ErrorHandler hg = new haven.error.ErrorHandler();
+        hg.sethandler(new haven.error.ErrorGui(null) {
+            public void errorsent() {
+                hg.interrupt();
             }
-        }
+        });
+        ThreadGroup g = hg;
+
         Thread main = new HackThread(g, new Runnable() {
             public void run() {
                 main2(args);

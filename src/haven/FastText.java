@@ -29,7 +29,7 @@ package haven;
 import java.awt.image.BufferedImage;
 
 public class FastText {
-    public static final Text.Foundry fnd = new Text.Foundry(Text.sans, 10);
+    public static final Text.Foundry fnd = new Text.Foundry(Text.sans, 11);
     private static final Tex[] ct = new Tex[225];
 
     private FastText() {
@@ -59,17 +59,6 @@ public class FastText {
             lc.x -= textw(text) * ax;
         if (ay > 0)
             lc.y -= fnd.height() * ay;
-        for (int i = 0; i < text.length(); i++) {
-            Tex ch = ch(text.charAt(i));
-            g.image(ch, lc);
-            lc.x += ch.sz().x;
-        }
-    }
-
-    public static void aprint(GOut g, Coord c, String text) {
-        Coord lc = new Coord(c);
-        lc.x -= textw(text) / 2;
-        lc.y -= fnd.height();
         for (int i = 0; i < text.length(); i++) {
             Tex ch = ch(text.charAt(i));
             g.image(ch, lc);

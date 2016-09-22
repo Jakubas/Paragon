@@ -8,29 +8,29 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Dbg {
-    private static boolean DEBUG = false;
+    private boolean enabled;
     private BufferedImage img;
     private Graphics2D g;
 
-    public Dbg(boolean enable) {
-        this.DEBUG = enable;
+    public Dbg(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void init() {
-        if (DEBUG) {
+        if (enabled) {
             img = new BufferedImage(Map.sz, Map.sz, BufferedImage.TYPE_INT_RGB);
             g = img.createGraphics();
         }
     }
 
     public void dot(int x, int y, Color clr) {
-        if (DEBUG) {
+        if (enabled) {
             img.setRGB(x, y, clr.getRGB());
         }
     }
 
     public void rect(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy, Color clr) {
-        if (DEBUG) {
+        if (enabled) {
             g.setColor(clr);
             g.drawLine(ax, ay, bx, by);
             g.drawLine(bx, by, cx, cy);
@@ -40,14 +40,14 @@ public class Dbg {
     }
 
     public void line(int ax, int ay, int bx, int by, Color clr) {
-        if (DEBUG) {
+        if (enabled) {
             g.setColor(clr);
             g.drawLine(ax, ay, bx, by);
         }
     }
 
     public void fill(byte[][] scenegrid) {
-        if (DEBUG) {
+        if (enabled) {
             for (int i = 0; i < Map.sz; i++) {
                 for (int j = 0; j < Map.sz; j++) {
                     if (scenegrid[i][j] == Map.CELL_BLK) {
@@ -76,7 +76,7 @@ public class Dbg {
     }
 
     public void save() {
-        if (DEBUG) {
+        if (enabled) {
             String time = new SimpleDateFormat("MMdd_HHmmss").format(Calendar.getInstance().getTime());
             try {
                 new File("pf").mkdirs();

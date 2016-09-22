@@ -18,10 +18,9 @@ public class Pathfinder implements Runnable {
     private int clickb;
     private Gob gob;
     private String action;
-    private int count = -100;
-    private int step = -200;
     public Coord mc;
     private int modflags;
+    private int interruptedRetries = 5;
 
     public Pathfinder(MapView mv, Coord dest, String action) {
         this.dest = dest;
@@ -74,15 +73,50 @@ public class Pathfinder implements Runnable {
 
         long start = System.nanoTime();
         synchronized (oc) {
+            Gob player = mv.player();
             for (Gob gob : oc) {
                 if (gob.isplayer())
                     continue;
                 // need to exclude destination gob so it won't get into TO candidates list
                 if (this.gob != null && this.gob.id == gob.id)
                     continue;
+                GobHitbox.BBox box = GobHitbox.getBBox(gob, true);
+                if (box != null && isInsideBoundBox(gob.rc, gob.a, box, player.rc)) {
+                    m.excludeGob(gob);
+                    continue;
+                }
                 m.addGob(gob);
             }
         }
+
+        // if player is located at a position occupied by a gob (can happen when starting too close to gobs)
+        // move it 1 unit away from it
+        if (m.isOriginBlocked()) {
+            Pair<Integer, Integer> freeloc = m.getFreeLocation();
+
+            if (freeloc == null) {
+                terminate = true;
+                m.dbgdump();
+                return;
+            }
+
+            mc = new Coord(src.x + freeloc.a - Map.origin, src.y + freeloc.b - Map.origin);
+            mv.wdgmsg("click", Coord.z, mc, 1, 0);
+
+            // FIXME
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // need to recalculate map
+            moveinterupted = true;
+            m.dbgdump();
+            return;
+        }
+
+
 
         // exclude any bounding boxes overlapping the destination gob
         if (this.gob != null)
@@ -98,10 +132,8 @@ public class Pathfinder implements Runnable {
         m.dbgdump();
 
         Iterator<Edge> it = path.iterator();
+        lastmsg = System.currentTimeMillis();
         while (it.hasNext() && !moveinterupted && !terminate) {
-            count = -100;
-            step = -200;
-
             Edge e = it.next();
 
             mc = new Coord(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin);
@@ -114,12 +146,7 @@ public class Pathfinder implements Runnable {
             else
                 mv.wdgmsg("click", Coord.z, mc, 1, 0);
 
-            boolean done = false;
-            synchronized (oc) {
-                done = step < count - 1;
-            }
-
-            while (!moveinterupted && !terminate && done && !mv.player().rc.equals(mc)) {
+            while (!moveinterupted && !terminate && !mv.player().rc.equals(mc)) {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e1) {
@@ -131,15 +158,19 @@ public class Pathfinder implements Runnable {
                 // no step/count notification will be send by the server for last segment
                 // and player's position won't match mc either
                 // therefore we just wait for a bit
-                if (gob != null && !it.hasNext() && System.currentTimeMillis() - lastmsg > 400) {
+                if (gob != null && !it.hasNext() && System.currentTimeMillis() - lastmsg > 500) {
                     break;
-                } else if (System.currentTimeMillis() - lastmsg > 2000) { // just in case...
+                } else if (System.currentTimeMillis() - lastmsg > 800) { // make sure we don't get stuck indefinitely
                     break;
                 }
+            }
 
-                synchronized (oc) {
-                    done = step < count - 1;
-                }
+            if (moveinterupted) {
+                interruptedRetries--;
+                if (interruptedRetries == 0)
+                    terminate = true;
+                m.dbgdump();
+                return;
             }
         }
 
@@ -153,12 +184,16 @@ public class Pathfinder implements Runnable {
 
     private long lastmsg;
     public void moveStep(int step) {
-        this.step = step;
         lastmsg = System.currentTimeMillis();
     }
 
     public void moveCount(int count) {
-        this.count = count;
         lastmsg = System.currentTimeMillis();
+    }
+
+    static public boolean isInsideBoundBox(Coord gobRc, double gobA, GobHitbox.BBox gobBBox, Coord point) {
+        final Coordf relative = new Coordf(point.sub(gobRc)).rotate(-gobA);
+        return relative.x >= gobBBox.a.x && relative.x <= gobBBox.b.x &&
+               relative.y >= gobBBox.a.y && relative.y <= gobBBox.b.y;
     }
 }

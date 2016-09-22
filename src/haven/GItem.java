@@ -26,8 +26,9 @@
 
 package haven;
 
+import haven.res.ui.tt.q.qbuff.QBuff;
+
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
@@ -48,8 +49,11 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private String name = "";
 
     public static class Quality {
-        private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
-        private static final DecimalFormat longfmt = new DecimalFormat("#.###");
+        private static final Text.Foundry fnd = new Text.Foundry(Text.sans, 10);
+        public static final int AVG_MODE_QUADRATIC = 0;
+        public static final int AVG_MODE_GEOMETRIC = 1;
+        public static final int AVG_MODE_ARITHMETIC = 2;
+
         public double max, min;
         public double avg;
         public Tex etex, stex, vtex;
@@ -89,21 +93,34 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 colormin = vitalityclr;
             }
 
-            avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
-            double avgsv = Config.arithavg ? (s + v) / 2.0 : Math.sqrt((s * s + v * v) / 2.0);
+            if (Config.avgmode == AVG_MODE_QUADRATIC)
+                avg = Math.sqrt((e * e + s * s + v * v) / 3.0);
+            else if (Config.avgmode == AVG_MODE_GEOMETRIC)
+                avg = Math.pow(e * s * v, 1.0 / 3.0);
+            else // AVG_MODE_ARITHMETIC
+                avg = (e + s + v) / 3.0;
+
+            double avgsv;
+            if (Config.avgmode == AVG_MODE_QUADRATIC)
+                avgsv = Math.sqrt((s * s + v * v) / 2.0);
+            else if (Config.avgmode == AVG_MODE_GEOMETRIC)
+                avgsv = Math.pow(s * v, 1.0 / 2.0);
+            else // AVG_MODE_ARITHMETIC
+                avgsv = (s + v) / 2.0;
+
             if (curio) {
                 double lpgain = Math.sqrt(Math.sqrt((e * e + s * s + v * v) / 300.0));
-                lpgaintex = Text.renderstroked(longfmt.format(lpgain), Color.WHITE, Color.BLACK).tex();
+                lpgaintex = Text.renderstroked(Utils.fmt3DecPlace(lpgain), Color.WHITE, Color.BLACK, fnd).tex();
             }
-            etex = Text.renderstroked(shortfmt.format(e), essenceclr, Color.BLACK).tex();
-            stex = Text.renderstroked(shortfmt.format(s), substanceclr, Color.BLACK).tex();
-            vtex = Text.renderstroked(shortfmt.format(v), vitalityclr, Color.BLACK).tex();
-            mintex = Text.renderstroked(shortfmt.format(min), colormin, Color.BLACK).tex();
-            maxtex = Text.renderstroked(shortfmt.format(max), colormax, Color.BLACK).tex();
-            avgtex = Text.renderstroked(shortfmt.format(avg), colormax, Color.BLACK).tex();
-            avgsvtex = Text.renderstroked(shortfmt.format(avgsv), colormax, Color.BLACK).tex();
-            avgwholetex = Text.renderstroked(Math.round(avg) + "", colormax, Color.BLACK).tex();
-            avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", colormax, Color.BLACK).tex();
+            etex = Text.renderstroked(Utils.fmt1DecPlace(e), essenceclr, Color.BLACK, fnd).tex();
+            stex = Text.renderstroked(Utils.fmt1DecPlace(s), substanceclr, Color.BLACK, fnd).tex();
+            vtex = Text.renderstroked(Utils.fmt1DecPlace(v), vitalityclr, Color.BLACK, fnd).tex();
+            mintex = Text.renderstroked(Utils.fmt1DecPlace(min), colormin, Color.BLACK, fnd).tex();
+            maxtex = Text.renderstroked(Utils.fmt1DecPlace(max), colormax, Color.BLACK, fnd).tex();
+            avgtex = Text.renderstroked(Utils.fmt1DecPlace(avg), colormax, Color.BLACK, fnd).tex();
+            avgsvtex = Text.renderstroked(Utils.fmt1DecPlace(avgsv), colormax, Color.BLACK, fnd).tex();
+            avgwholetex = Text.renderstroked(Math.round(avg) + "", colormax, Color.BLACK, fnd).tex();
+            avgsvwholetex = Text.renderstroked(Math.round(avgsv) + "", colormax, Color.BLACK, fnd).tex();
         }
     }
 
@@ -159,27 +176,26 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     public boolean updatetimelefttex() {
-        synchronized (this) {
-            if (name.isEmpty()) {
-                if ((name = getname()).isEmpty()) {
-                    return false;
-                }
-            }
-
-            if (studytime == 0.0) {
-                if ((studytime = StudyTimes.getstudytime(getname())) == 0.0) {
-                    return false;
-                }
-            }
-
-            double timeneeded = studytime * 60;
-            int timeleft = (int) timeneeded * (100 - meter) / 100;
-            int hoursleft = timeleft / 60;
-            int minutesleft = timeleft - hoursleft * 60;
-
-            timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK).tex();
+        Resource res;
+        try {
+            res = resource();
+        } catch (Loading l) {
+            return false;
         }
 
+        if (studytime == 0.0) {
+            Double st = CurioStudyTimes.curios.get(res.basename());
+            if (st == null)
+                return false;
+            studytime = st;
+        }
+
+        double timeneeded = studytime * 60;
+        int timeleft = (int) timeneeded * (100 - meter) / 100;
+        int hoursleft = timeleft / 60;
+        int minutesleft = timeleft - hoursleft * 60;
+
+        timelefttex = Text.renderstroked(String.format("%d:%d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, Text.numfnd).tex();
         return true;
     }
 
@@ -248,7 +264,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             rawinfo = args;
         } else if (name == "meter") {
             meter = (Integer) args[0];
-            metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK).tex();
+            metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK, Text.numfnd).tex();
             timelefttex = null;
         }
     }
@@ -257,18 +273,16 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         double e = 0, s = 0, v = 0;
         boolean curio = false;
         for (ItemInfo info : infolist) {
-            if (info.getClass().getSimpleName().equals("QBuff")) {
-                try {
-                    String name = (String) info.getClass().getDeclaredField("name").get(info);
-                    double val = (Double) info.getClass().getDeclaredField("q").get(info);
-                    if ("Essence".equals(name))
-                        e = val;
-                    else if ("Substance".equals(name))
-                        s = val;
-                    else if ("Vitality".equals(name))
-                        v = val;
-                } catch (Exception ex) {
-                }
+            if (info instanceof QBuff) {
+                QBuff qb = (QBuff)info;
+                String name = qb.origName;
+                double val = qb.q;
+                if ("Essence".equals(name))
+                    e = val;
+                else if ("Substance".equals(name))
+                    s = val;
+                else if ("Vitality".equals(name))
+                    v = val;
             } else if (info.getClass() == Curiosity.class) {
                 curio = true;
             }

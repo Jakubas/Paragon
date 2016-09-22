@@ -1,3 +1,7 @@
+## Version 1.3.5
+### Changed:
+- Merged with newest Amber
+  
 ## Version 1.3.4
 ### Changed:
 - Fixed a bug in harvester that was causing some players to stop after 10-20 tiles by changing the way
@@ -25,7 +29,7 @@
 - [WIP] Sort button for cupboards
 
 ### Changed:
-- Merged with newest Ambe
+- Merged with newest Amber
 - Drinking water in farmer automation
 
 ## Version 1.2

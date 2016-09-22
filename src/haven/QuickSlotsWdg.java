@@ -52,7 +52,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
                         ItemInfo.Contents imtcnt = (ItemInfo.Contents) info;
                         if (imtcnt.content > 0) {
                             double capacity;
-                            if (item.getname().equals("Bucket"))
+                            if (item.getname().contains("Bucket"))
                                 capacity = imtcnt.isseeds ? 1000D : 10.0D;
                             else
                                 return;
@@ -95,21 +95,31 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-        if (button == 1 && c.x > 44 && c.x < 50) {
-            dragging = ui.grabmouse(this);
-            dc = c;
+       if (ui.modmeta)
             return true;
-        }
-        dragging = null;
         Equipory e = gameui().getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null) {
+                dragging = null;
                 w.mousedown(new Coord(w.sz.x / 2, w.sz.y / 2), button);
+                return true;
+            } else if (button == 1) {
+                dragging = ui.grabmouse(this);
+                dc = c;
                 return true;
             }
         }
         return false;
+    }
+
+    public void simulateclick(Coord c) {
+        Equipory e = gameui().getequipory();
+        if (e != null) {
+            WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
+            if (w != null)
+                w.item.wdgmsg("take", new Coord(w.sz.x / 2, w.sz.y / 2));
+        }
     }
 
     @Override

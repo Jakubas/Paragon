@@ -30,9 +30,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.*;
 import java.net.URL;
+import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.prefs.*;
 import java.util.*;
@@ -253,6 +255,42 @@ public class Utils {
         }
     }
 
+    static void loadprefchklist(String prefname, Map<String, CheckListboxItem> data) {
+        try {
+            String jsonstr = Utils.getpref(prefname, null);
+            if (jsonstr == null)
+                return;
+            JSONArray ja = new JSONArray(jsonstr);
+            for (int i = 0; i < ja.length(); i++) {
+                CheckListboxItem itm = data.get(ja.getString(i));
+                if (itm != null)
+                    itm.selected = true;
+            }
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static void setprefchklst(String prefname, Map<String, CheckListboxItem> val) {
+        try {
+            String jsonarr = "";
+            Iterator it = val.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                CheckListboxItem itm = (CheckListboxItem)entry.getValue();
+                if (itm.selected)
+                    jsonarr += "\"" + entry.getKey() + "\",";
+            }
+            if (jsonarr.length() > 0)
+                jsonarr = jsonarr.substring(0, jsonarr.length() - 1);
+            Utils.setpref(prefname, "[" + jsonarr + "]");
+        } catch (SecurityException e) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     static JSONObject[] getprefjsona(String prefname, JSONObject[] def) {
         try {
             String jsonstr = Utils.getpref(prefname, null);
@@ -370,8 +408,6 @@ public class Utils {
         try {
             String ret;
             if ((ret = System.getProperty(propname)) != null)
-                return (ret);
-            if ((ret = System.getProperty("jnlp." + propname)) != null)
                 return (ret);
             return (def);
         } catch (SecurityException e) {
@@ -969,7 +1005,7 @@ public class Utils {
         double a1 = c1.getAlpha() / 255.0;
         double a2 = c2.getAlpha() / 255.0;
     /* I can't help but feel that this should be possible to
-	 * express in some simpler form, but I can't see how. */
+     * express in some simpler form, but I can't see how. */
         double ac = a1 + a2 - (a1 * a2);
         return (new Color((int) Math.round((((c2.getRed() * a2) - (c1.getRed() * a2)) / ac) + c1.getRed()),
                 (int) Math.round((((c2.getGreen() * a2) - (c1.getGreen() * a2)) / ac) + c1.getGreen()),
@@ -1289,7 +1325,7 @@ public class Utils {
         return (null);
     }
 
-    private final static Map<Character, Character> az2qwmap = new HashMap<Character, Character>(10) {{
+    private final static Map<Character, Character> az2qwmap = new HashMap<Character, Character>(12) {{
         put('&', '1');
         put('é', '2');
         put('"', '3');
@@ -1300,11 +1336,91 @@ public class Utils {
         put('_', '8');
         put('ç', '9');
         put('à', '0');
+        put('a', 'q');
+        put('z', 'w');
     }};
 
     public static char azerty2qwerty(char az) {
         return az2qwmap.containsKey(az) ? az2qwmap.get(az) : az;
     }
+
+    // Windows only
+    public static Long getScancode(final KeyEvent keyEvent) {
+        try {
+            Field field = KeyEvent.class.getDeclaredField("scancode");
+            field.setAccessible(true);
+            return field.getLong(keyEvent);
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+            return null;
+        }
+    }
+    
+    public static final Comparator<Object> idcmd = new Comparator<Object>() {
+        int eid = 0;
+        final Map<Ref, Long> emerg = new HashMap<Ref, Long>();
+        final ReferenceQueue<Object> cleanq = new ReferenceQueue<Object>();
+
+        class Ref extends WeakReference<Object> {
+            final int h;
+
+            Ref(Object o, ReferenceQueue<Object> queue) {
+                super(o, queue);
+                this.h = System.identityHashCode(o);
+            }
+
+            public int hashCode() {
+                return (h);
+            }
+
+            public boolean equals(Object o) {
+                if (o == this)
+                    return (true);
+                if (!(o instanceof Ref))
+                    return (false);
+                Object or = ((Ref) o).get();
+                Object sr = get();
+                return ((or != null) && (sr != null) && (or == sr));
+            }
+        }
+
+        private void clean() {
+            Reference<? extends Object> ref;
+            while ((ref = cleanq.poll()) != null)
+                emerg.remove(ref);
+        }
+
+        public int compare(Object a, Object b) {
+            if (a == b)
+                return (0);
+            if (a == null)
+                return (1);
+            if (b == null)
+                return (-1);
+            int ah = System.identityHashCode(a);
+            int bh = System.identityHashCode(b);
+            if (ah < bh)
+                return (-1);
+            else if (ah > bh)
+                return (1);
+
+            synchronized (emerg) {
+                if (eid == 0)
+                    System.err.println("could not impose ordering in idcmd, using slow-path");
+                clean();
+                Ref ar = new Ref(a, cleanq), br = new Ref(b, cleanq);
+                Long ai, bi;
+                if ((ai = emerg.get(ar)) == null)
+                    emerg.put(ar, ai = ((long) ah << 32) | (((long) eid++) & 0xffffffffl));
+                if ((bi = emerg.get(br)) == null)
+                    emerg.put(br, bi = ((long) ah << 32) | (((long) eid++) & 0xffffffffl));
+                if (ai < bi)
+                    return (-1);
+                else if (ai > bi)
+                    return (1);
+                throw (new RuntimeException("Comparison identity crisis"));
+            }
+        }
+    };
 
     static {
         Console.setscmd("die", new Console.Command() {
@@ -1322,5 +1438,16 @@ public class Utils {
                 System.gc();
             }
         });
+    }
+
+    // NOTE: following fmt*DecPlace methods will not work with values having large integer part
+    static String fmt1DecPlace(double value) {
+        double rvalue = (double) Math.round(value * 10) / 10;
+        return (rvalue % 1 == 0) ? Integer.toString((int)rvalue) : Double.toString(rvalue);
+    }
+
+    static String fmt3DecPlace(double value) {
+        double rvalue = (double) Math.round(value * 1000) / 1000;
+        return (rvalue % 1 == 0) ? Integer.toString((int)rvalue) : Double.toString(rvalue);
     }
 }

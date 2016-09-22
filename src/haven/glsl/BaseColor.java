@@ -24,12 +24,32 @@
  *  Boston, MA 02111-1307 USA
  */
 
-package haven.error;
+package haven.glsl;
 
-import java.io.*;
+import haven.*;
+import static haven.glsl.Cons.*;
+import static haven.glsl.Function.PDir.*;
+import static haven.glsl.Type.*;
+import haven.glsl.ValBlock.Value;
 
-public class ReportException extends IOException {
-    public ReportException(String message) {
-        super(message);
+public class BaseColor implements ShaderMacro {
+    public static final InstancedUniform u_color = new InstancedUniform.Vec4("color", States.color) {
+	    public float[] forstate(GOut g, GLState.Buffer buf) {
+		return(buf.get(States.color).ca);
+	    }
+	};
+
+    public static final AutoVarying transfer = new AutoVarying(VEC4) {
+	    protected Expression root(VertexContext vctx) {
+		return(u_color.ref());
+	    }
+	};
+
+    public void modify(ProgramContext prog) {
+	prog.fctx.fragcol.mod(new Macro1<Expression>() {
+		public Expression expand(Expression in) {
+		    return(mul(in, transfer.ref()));
+		}
+	    }, 0);
     }
 }

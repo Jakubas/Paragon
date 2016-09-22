@@ -41,7 +41,7 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
     private Resource cspr = null;
     private Message csdt = Message.nil;
     public static final Color famountclr = new Color(24, 116, 205);
-    private static final Color qualitybg = new Color(20, 20, 20, 250);
+    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
     public static final Color[] wearclr = new Color[]{
             new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
     };
@@ -213,9 +213,9 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
             drawmain(g, spr);
             g.defstate();
             if (item.num >= 0) {
-                g.atext(Integer.toString(item.num), sz, 1, 1);
+                g.atext(Integer.toString(item.num), sz, 1, 1, Text.numfnd);
             } else if (itemnum.get() != null) {
-                g.aimage(itemnum.get(), sz, 1, 1);
+                g.aimage(itemnum.get(), new Coord(sz.x, 0), 1, 0);
             }
             if (item.meter > 0) {
                 if (Config.itemmeterbar) {
@@ -320,6 +320,12 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
                             g.chcolor(wearclr[p == 1.0 ? 3 : (int) (p / 0.25)]);
                             g.frect(new Coord(sz.x - 3, sz.y - h), new Coord(3, h));
                             g.chcolor();
+                            // NOTE: apparently identically named class "Wear" with no namespace is used
+                            // for both the wear and armor class info... Y U DO DIS LOFTAR X(
+                            // We need to break here once we found first "Wear" (it will always come before the armor class.)
+                            // otherwise it would generate exception on second "Wear" class and we don't want to do that
+                            // in drawing routine.
+                            break;
                         }
                     }
                 } catch (Exception e) { // fail silently if info is not ready
@@ -333,11 +339,11 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
     private void drawamountbar(GOut g, double content, boolean isseeds) {
         double capacity;
         String name = item.getname();
-        if (name.equals("Waterskin"))
+        if (name.contains("Waterskin"))
             capacity = 3.0D;
-        else if (name.equals("Bucket"))
+        else if (name.contains("Bucket"))
             capacity = isseeds ? 1000D : 10.0D;
-        else if (name.equals("Waterflask"))
+        else if (name.contains("Waterflask"))
             capacity = 2.0D;
         else
             return;
@@ -366,22 +372,28 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
         if (btn == 1) {
             if (ui.modctrl && ui.modmeta)
                 wdgmsg("drop-identical", this.item);
-            else if (ui.modshift && ui.modmeta) {
-                wdgmsg("transfer-identical", this.item);
-            } else if (ui.modctrl && ui.modshift) {
+            else if (ui.modctrl && ui.modshift) {
                 String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
-                String url = String.format("http://ringofbrodgar.com/wiki/%s", name.replace(' ', '_'));
+                name = name.replace(' ', '_');
+                if (!Resource.language.equals("en")) {
+                    int i = name.indexOf('(');
+                    if (i > 0)
+                        name = name.substring(i + 1, name.length() - 1);
+                }
+                String url = String.format("http://ringofbrodgar.com/wiki/%s", name);
                 openwebpage(url);
-            } else if (ui.modshift)
+            } else if (ui.modshift && !ui.modmeta)
                 item.wdgmsg("transfer", c);
             else if (ui.modctrl)
                 item.wdgmsg("drop", c);
+            else if (ui.modmeta)
+                wdgmsg("transfer-identical", this.item);
             else
                 item.wdgmsg("take", c);
             return (true);
         } else if (btn == 3) {
-            if (ui.modmeta)
-                wdgmsg("transfer-identical", this.item);
+            if (ui.modmeta && !(parent instanceof Equipory))
+                wdgmsg("transfer-identical-asc", this.item);
             else
                 item.wdgmsg("iact", c, ui.modflags());
             return (true);
@@ -432,22 +444,25 @@ public class WItem extends Widget implements DTarget, Comparable<WItem> {
     }
 
     private boolean replacecurio(Window wnd, Resource res) {
-        for (Widget invwdg = wnd.lchild; invwdg != null; invwdg = invwdg.prev) {
-            if (invwdg instanceof Inventory) {
-                Inventory inv = (Inventory) invwdg;
-                for (Widget witm = inv.lchild; witm != null; witm = witm.prev) {
-                    if (witm instanceof WItem) {
-                        GItem ngitm = ((WItem) witm).item;
-                        Resource nres = ngitm.resource();
-                        if (nres != null && nres.name.equals(res.name)) {
-                            ngitm.wdgmsg("take", witm.c);
-                            ((Inventory) parent).drop(Coord.z, c);
-                            return true;
+        try {
+            for (Widget invwdg = wnd.lchild; invwdg != null; invwdg = invwdg.prev) {
+                if (invwdg instanceof Inventory) {
+                    Inventory inv = (Inventory) invwdg;
+                    for (Widget witm = inv.lchild; witm != null; witm = witm.prev) {
+                        if (witm instanceof WItem) {
+                            GItem ngitm = ((WItem) witm).item;
+                            Resource nres = ngitm.resource();
+                            if (nres != null && nres.name.equals(res.name)) {
+                                ngitm.wdgmsg("take", witm.c);
+                                ((Inventory) parent).drop(Coord.z, c);
+                                return true;
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
             }
+        } catch (Exception e) { // ignored
         }
         return false;
     }

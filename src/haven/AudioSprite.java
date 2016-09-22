@@ -39,7 +39,7 @@ public class AudioSprite {
         }
         if (!cl.isEmpty()) {
             int rnd = (int) (Math.random() * cl.size());
-            if (Config.nometallicsfx && rnd == 1 && "sfx/items/pickaxe".equals(res.name) )
+            if (rnd == 1 && "sfx/items/pickaxe".equals(res.name) )
                 rnd = 0;
             return cl.get(rnd);
         }
@@ -76,8 +76,8 @@ public class AudioSprite {
 
             if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
-            else if (Config.sfxsqueakvol != 1.0 && "sfx/squeak".equals(res.name))
-                stream = new Audio.VolAdjust(stream, Config.sfxsqueakvol);
+            else if ("sfx/squeak".equals(res.name))
+                stream = new Audio.VolAdjust(stream, 0.2);
             else if (Config.sfxquernvol != 1.0 && "sfx/terobjs/quern".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxquernvol);
 
@@ -96,6 +96,10 @@ public class AudioSprite {
 
         public boolean tick(int dt) {
             return (done);
+        }
+
+        public Object staticp() {
+            return(CONSTANS);
         }
     }
 
@@ -141,6 +145,10 @@ public class AudioSprite {
             else
                 clip = null;
         }
+
+        public Object staticp() {
+            return(CONSTANS);
+        }
     }
 
     public static class Ambience extends Sprite {
@@ -150,7 +158,7 @@ public class AudioSprite {
             super(owner, res);
             ClipAmbiance.Desc clamb = res.layer(ClipAmbiance.Desc.class);
             if (clamb != null) {
-                this.amb = new ClipAmbiance(clamb);
+                this.amb = clamb.spr;
             } else {
                 if (Config.sfxfirevol != 1.0 && "sfx/fire".equals(res.name))
                     this.amb = new ActAudio.Ambience(res, Config.sfxfirevol);
@@ -162,6 +170,10 @@ public class AudioSprite {
         public boolean setup(RenderList r) {
             r.add(amb, null);
             return (false);
+        }
+
+        public Object staticp() {
+            return(CONSTANS);
         }
     }
 }

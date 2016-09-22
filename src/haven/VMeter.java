@@ -27,12 +27,19 @@
 package haven;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VMeter extends Widget {
     static Tex bg = Resource.loadtex("gfx/hud/vm-frame");
     static Tex fg = Resource.loadtex("gfx/hud/vm-tex");
     Color cl;
     public int amount;
+    private static final Map<String, Integer> levels = new HashMap<String, Integer>(3) {{
+        put("Oven", 3 * 4);   // amount per unit * number of units
+        put("Finery Forge", 6 * 2);
+        put("Ore Smelter", (int) (3.3 * 12));
+    }};
 
     @RName("vm")
     public static class $_ implements Factory {
@@ -63,9 +70,20 @@ public class VMeter extends Widget {
     public void draw(GOut g) {
         g.image(bg, Coord.z);
         g.chcolor(cl);
-        int h = (sz.y - 6);
-        h = (h * amount) / 100;
+        int hm = (sz.y - 6);
+        int h = (hm * amount) / 100;
         g.image(fg, new Coord(0, 0), new Coord(0, sz.y - 3 - h), sz.add(0, h));
+
+        Widget p = this.parent;
+        if (p instanceof Window) {
+            Integer lvl = this.levels.get(((Window) p).origcap);
+            if (lvl != null) {
+                g.chcolor(Color.WHITE);
+                int y = sz.y - 3 - (hm * lvl) / 100;
+                g.line(new Coord(3, y), new Coord(sz.x - 3, y), 1);
+                g.chcolor();
+            }
+        }
     }
 
     public void uimsg(String msg, Object... args) {

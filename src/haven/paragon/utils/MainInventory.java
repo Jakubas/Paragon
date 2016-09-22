@@ -28,14 +28,14 @@ public class MainInventory {
     }
     
     public void dropIdentical(String... objNames) {
-    	List<WItem> items = ui().sess.glob.gui.maininv.getitems(objNames);
+    	List<WItem> items = ui().sess.glob.gui.maininv.getItemsPartial(objNames);
     	if (items.isEmpty()) return;
     	WItem item = items.get(0);
     	item.item.wdgmsg("drop-identical", item.item);
     }
     
     public void dropIdenticalPartial(String... objNames) {
-    	List<WItem> items = ui().sess.glob.gui.maininv.getitemsPartial(objNames);
+    	List<WItem> items = ui().sess.glob.gui.maininv.getItemsPartial(objNames);
     	if (items.isEmpty()) return;
     	WItem item = items.get(0);
     	item.item.wdgmsg("drop-identical", item.item);

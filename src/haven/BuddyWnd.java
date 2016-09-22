@@ -43,6 +43,7 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
     private GroupSelector grpsel;
     private FlowerMenu menu;
     public int serial = 0;
+    public static final int width = 263;
     public static final Tex online = Resource.loadtex("gfx/hud/online");
     public static final Tex offline = Resource.loadtex("gfx/hud/offline");
     public static final Color[] gc = new Color[]{
@@ -273,15 +274,15 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
 
                     public void choose(Petal opt) {
                         if (opt != null) {
-                            if (opt.name.equals("End kinship")) {
+                            if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "End kinship"))) {
                                 b.endkin();
-                            } else if (opt.name.equals("Chat")) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Chat"))) {
                                 b.chat();
-                            } else if (opt.name.equals("Invite")) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Invite"))) {
                                 b.invite();
-                            } else if (opt.name.equals("Forget")) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Forget"))) {
                                 b.forget();
-                            } else if (opt.name.equals("Describe")) {
+                            } else if (opt.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Describe"))) {
                                 b.describe();
                             }
                             uimsg("act", opt.num);
@@ -304,33 +305,36 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
     }
 
     public BuddyWnd() {
-        super(new Coord(200, 380));
+        super(new Coord(width, 380));
         setfocustab(true);
         int y = 0;
-        add(new Img(CharWnd.catf.render("Kin").tex()), new Coord(0, 0));
+        add(new Img(CharWnd.catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Kin")).tex()), new Coord(0, 0));
         y += 35;
 
-        bl = add(new BuddyList(200 - Window.wbox.bisz().x, 7), new Coord(Window.wbox.btloff().x, y));
+        bl = add(new BuddyList(width - Window.wbox.bisz().x, 7), new Coord(Window.wbox.btloff().x, y));
         Frame.around(this, Collections.singletonList(bl));
         y += 195;
 
         add(new Label("Sort by:"), new Coord(0, y));
         y += 15;
-        sbstatus = add(new Button(60, "Status") {
+
+        int sbw = (width - 20) / 3;
+
+        sbstatus = add(new Button(sbw, "Status") {
             public void click() {
                 setcmp(statuscmp);
             }
         }, new Coord(0, y));
-        sbgroup = add(new Button(60, "Group") {
+        sbgroup = add(new Button(sbw, "Group") {
             public void click() {
                 setcmp(groupcmp);
             }
-        }, new Coord(70, y));
-        sbalpha = add(new Button(60, "Name") {
+        }, new Coord(sbw + 10, y));
+        sbalpha = add(new Button(sbw, "Name") {
             public void click() {
                 setcmp(alphacmp);
             }
-        }, new Coord(140, y));
+        }, new Coord(width - sbw, y));
         String sort = Utils.getpref("buddysort", "");
         if (sort.equals("")) {
             bcmp = statuscmp;
@@ -343,7 +347,7 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
 
         add(new Label("Presentation name:"), new Coord(0, y));
         y += 15;
-        pname = add(new TextEntry(200, "") {
+        pname = add(new TextEntry(width, "") {
             {
                 dshow = true;
             }
@@ -362,7 +366,7 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
 
         add(new Label("My hearth secret:"), new Coord(0, y));
         y += 15;
-        charpass = add(new TextEntry(200, "") {
+        charpass = add(new TextEntry(width, "") {
             {
                 dshow = true;
             }
@@ -372,26 +376,26 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
             }
         }, new Coord(0, y));
         y += 25;
-        add(new Button(45, "Set") {
+        add(new Button(sbw, "Set") {
             public void click() {
                 setpwd(charpass.text);
             }
         }, new Coord(0, y));
-        add(new Button(60, "Clear") {
+        add(new Button(sbw, "Clear") {
             public void click() {
                 setpwd("");
             }
-        }, new Coord(55, y));
-        add(new Button(75, "Random") {
+        }, new Coord(sbw + 10, y));
+        add(new Button(sbw, "Random") {
             public void click() {
                 setpwd(randpwd());
             }
-        }, new Coord(125, y));
+        }, new Coord(width - sbw, y));
         y += 35;
 
         add(new Label("Make kin by hearth secret:"), new Coord(0, y));
         y += 15;
-        opass = add(new TextEntry(200, "") {
+        opass = add(new TextEntry(width, "") {
             public void activate(String text) {
                 BuddyWnd.this.wdgmsg("bypwd", text);
                 settext("");
@@ -476,7 +480,7 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
             Buddy b = find(id);
             b.online = online;
             if (Config.notifykinonline)
-                ((GameUI) parent.parent.parent).info(b.name + " is " + (online > 0 ? "ONLINE" : "offline"), new Color(54, 105, 205));
+                gameui().msg(b.name + " is " + (online > 0 ? "ONLINE" : "offline"), new Color(54, 105, 205));
         } else if (msg == "upd") {
             int id = (Integer) args[0];
             String name = (String) args[1];

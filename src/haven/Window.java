@@ -50,11 +50,11 @@ public class Window extends Widget implements DTarget {
     public static final Tex bm = Resource.loadtex("gfx/hud/wnd/lg/bm");
     public static final Tex br = Resource.loadtex("gfx/hud/wnd/lg/br");
     public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22);
-    public static final Coord cpo = new Coord(36, Config.iswindows ? 15 : 17);
+    public static final Coord cpo = new Coord(36, 15);
     public static final int capo = 7, capio = 2;
     public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
-    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, 14).aa(true), ctex)) {
+    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, Config.fontsizewndcap).aa(true), ctex)) {
         protected BufferedImage proc(Text text) {
             return (rasterimg(blurmask2(text.img.getRaster(), 1, 1, Color.BLACK)));
         }
@@ -95,7 +95,8 @@ public class Window extends Widget implements DTarget {
     public static final Set<String> persistentwnds = new HashSet<String>(
             Arrays.asList("Timers", "Inventory", "Equipment", "Crafting", "Character Sheet", "Kith & Kin", "Crate",
                     "Cupboard", "Barrel", "Table", "Cauldron", "Stockpile", "Tub", "Ore Smelter", "Land survey",
-                    "Quiver", "Stone Casket", "Chicken Coop", "Extraction Press", "Oven", "Large Chest"));
+                    "Quiver", "Stone Casket", "Chicken Coop", "Extraction Press", "Oven", "Large Chest",
+                    "Herbalist Table", "Kiln", "Finery Forge", "Stone Column", "Steelbox", "Wooden Chest"));
 
     @RName("wnd")
     public static class $_ implements Factory {
@@ -121,13 +122,6 @@ public class Window extends Widget implements DTarget {
 //            });
 //        }
 
-        if (Resource.L10N_DEBUG)
-            Resource.l10nWindow = Resource.saveStrings(Resource.BUNDLE_WINDOW, Resource.l10nWindow, cap, cap);
-
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nWindow != null && Resource.l10nWindow.containsKey(cap))
-                cap = Resource.l10nWindow.get(cap);
-        }
         chcap(cap);
         resize(sz);
         setfocustab(true);
@@ -307,7 +301,7 @@ public class Window extends Widget implements DTarget {
             dm.remove();
             dm = null;
             if (persistentwnds.contains(origcap))
-                Utils.setprefc(cap.text + "_c", this.c);
+                Utils.setprefc(origcap + "_c", this.c);
         } else {
             super.mouseup(c, button);
         }

@@ -31,7 +31,6 @@ import java.net.*;
 import java.util.*;
 
 public class ErrorHandler extends ThreadGroup {
-    private final URL errordest;
     private static final String[] sysprops = {
             "java.version",
             "java.vendor",
@@ -49,12 +48,6 @@ public class ErrorHandler extends ThreadGroup {
                 return ((ErrorHandler) tg);
         }
         return (null);
-    }
-
-    public static void setprop(String key, Object val) {
-        ErrorHandler tg = find();
-        if (tg != null)
-            tg.lsetprop(key, val);
     }
 
     public void lsetprop(String key, Object val) {
@@ -84,7 +77,6 @@ public class ErrorHandler extends ThreadGroup {
                         try {
                             doreport(r);
                         } catch (Exception e) {
-                            status.senderror(e);
                         }
                     }
                 }
@@ -94,33 +86,7 @@ public class ErrorHandler extends ThreadGroup {
         private void doreport(Report r) throws IOException {
             if (!status.goterror(r.t))
                 return;
-            URLConnection c = errordest.openConnection();
-            status.connecting();
-            c.setDoOutput(true);
-            c.addRequestProperty("Content-Type", "application/x-java-error");
-            c.connect();
-            ObjectOutputStream o = new ObjectOutputStream(c.getOutputStream());
-            status.sending();
-            o.writeObject(r);
-            o.close();
-            String ctype = c.getContentType();
-            StringWriter buf = new StringWriter();
-            Reader i = new InputStreamReader(c.getInputStream(), "utf-8");
-            char[] dbuf = new char[1024];
-            while (true) {
-                int len = i.read(dbuf);
-                if (len < 0)
-                    break;
-                buf.write(dbuf, 0, len);
-            }
-            i.close();
-            if (ctype.equals("text/x-report-info")) {
-                status.done("text/x-report-info", buf.toString());
-            } else if (ctype.equals("text/x-report-error")) {
-                throw (new ReportException(buf.toString()));
-            } else {
-                status.done(null, null);
-            }
+            status.done(null, null);
         }
 
         public void report(Thread th, Throwable t) {
@@ -160,17 +126,16 @@ public class ErrorHandler extends ThreadGroup {
         }
     }
 
-    public ErrorHandler(ErrorStatus ui, URL errordest) {
+    public ErrorHandler(ErrorStatus ui) {
         super("Haven client");
-        this.errordest = errordest;
         initial = Thread.currentThread().getThreadGroup();
         reporter = new Reporter(ui);
         reporter.start();
         defprops();
     }
 
-    public ErrorHandler(URL errordest) {
-        this(new ErrorStatus.Simple(), errordest);
+    public ErrorHandler() {
+        this(new ErrorStatus.Simple());
     }
 
     public void sethandler(ErrorStatus handler) {

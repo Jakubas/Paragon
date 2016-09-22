@@ -27,12 +27,15 @@
 package haven;
 
 import java.awt.Color;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Label extends Widget {
     Text.Foundry f;
     Text text;
     String texts;
     Color col = Color.WHITE;
+    private static final Pattern contPattern = Pattern.compile("([0-9]+\\.?[0-9]*)", Pattern.CASE_INSENSITIVE);
 
     @RName("lbl")
     public static class $_ implements Factory {
@@ -51,11 +54,18 @@ public class Label extends Widget {
     public Label(String text, int w, Text.Foundry f) {
         super(Coord.z);
         this.f = f;
-        this.text = f.renderwrap(texts = text, this.col, w);
+        this.text = f.renderwrap(texts = Resource.getLocString(Resource.BUNDLE_LABEL, text), this.col, w);
         sz = this.text.sz();
     }
 
     public Label(String text, Text.Foundry f) {
+        super(Coord.z);
+        this.f = f;
+        this.text = f.render(texts = Resource.getLocString(Resource.BUNDLE_LABEL, text), this.col);
+        sz = this.text.sz();
+    }
+
+    public Label(String text, Text.Foundry f, boolean noL10n) {
         super(Coord.z);
         this.f = f;
         this.text = f.render(texts = text, this.col);
@@ -71,7 +81,18 @@ public class Label extends Widget {
     }
 
     public void settext(String text) {
-        this.text = f.render(texts = text, col);
+        String t = text;
+        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
+            // barrel content
+            final String contStr = "Contents: ";
+            if (text.startsWith(contStr) && !text.endsWith("Empty.")) {
+                String cont = text.substring(contStr.length(), text.length() - 1);
+                t = Resource.getLocString(Resource.BUNDLE_LABEL, contStr) + Resource.getLocContent(cont);
+            } else {
+                t = Resource.getLocString(Resource.BUNDLE_LABEL, text);
+            }
+        }
+        this.text = f.render(texts = t, col);
         sz = this.text.sz();
     }
 

@@ -58,6 +58,7 @@ public class Glob {
     private static final long SEC_DAY = 60 * 60 * 24;
     private static final Color timeclr = new Color(177, 144, 173);
     public String servertime;
+    public Tex servertimetex;
 
     static {
         timersThread = new TimersThread();
@@ -80,7 +81,7 @@ public class Glob {
     }
 
     public static class CAttr extends Observable {
-        public static final Text.Foundry capval = new Text.Foundry(Text.sansb, 12).aa(true);
+        public static final Text.Foundry capval = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
         String nm;
         int base, comp;
         public Tex comptex;
@@ -250,9 +251,10 @@ public class Glob {
         long secintoday = secs % secinday;
         long hours = secintoday / 3600;
         long mins = (secintoday % 3600) / 60;
-        servertime = String.format("Day %d, %02d:%02d", day, hours, mins);
+        servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Day %d, %02d:%02d"), day, hours, mins);
         if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
-            servertime += " (Dewy Lady's Mantle)";
+            servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
+        servertimetex = Text.render(servertime).tex();
     }
 
     public void blob(Message msg) {

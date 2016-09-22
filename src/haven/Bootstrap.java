@@ -150,8 +150,6 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                     try {
                         try {
                             acctname = creds.tryauth(auth);
-                            StatusWdg.username = nativecreds.username;
-                            StatusWdg.pass = nativecreds.pass;
                         } catch (AuthClient.Credentials.AuthException e) {
                             ui.uimsg(1, "error", e.getMessage());
                             continue retry;
@@ -216,7 +214,6 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                 }
             }
         } while (true);
-        haven.error.ErrorHandler.setprop("usr", sess.username);
 
         if (creds != null) {
             LoginData ld = new LoginData(creds.name(), ((AuthClient.NativeCred)creds).pass);

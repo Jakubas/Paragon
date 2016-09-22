@@ -35,7 +35,7 @@ public class Equipory extends Widget implements DTarget {
     private static final Tex bg = Resource.loadtex("gfx/hud/equip/bg");
     private static final int rx = 34 + bg.sz().x;
     private static final int acx = 34 + bg.sz().x / 2;
-    private static final Text.Foundry acf = new Text.Foundry(Text.sans, 12).aa(true);
+    private static final Text.Foundry acf = new Text.Foundry(Text.sans, Config.fontsizeglobal).aa(true);
     private Tex armorclass = null;
     static Coord ecoords[] = {
             new Coord(0, 0),
@@ -174,22 +174,24 @@ public class Equipory extends Widget implements DTarget {
                     if (itm != null) {
                         for (ItemInfo info : itm.item.info()) {
                             if (info.getClass().getSimpleName().equals("Wear")) {
+                                // This will always generate exception since we will get "incorrect" Wear class before
+                                // the correct one. See comment in WItem showwearbars handling for explanation.
+                                // But since it only happens when items are added/removed it's not a big deal.
                                 try {
                                     h += (int) info.getClass().getDeclaredField("hard").get(info);
                                     s += (int) info.getClass().getDeclaredField("soft").get(info);
                                 } catch (Exception ex) { // ignore everything
                                 }
                             }
-
                         }
                     }
                 }
-                armorclass = Text.render("Armor Class: " + h + "/" + s, Color.BLACK, acf).tex();
+                armorclass = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Armor Class: ") + h + "/" + s, Color.BLACK, acf).tex();
             } catch (Exception e) { // fail silently
             }
         }
         if (armorclass != null)
-            g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - 15));
+            g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - armorclass.sz().y));
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {

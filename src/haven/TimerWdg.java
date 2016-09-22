@@ -1,10 +1,11 @@
 package haven;
 
 
+import java.awt.*;
 import java.util.List;
 
 public class TimerWdg extends Widget {
-    public static final Text.Foundry foundry = new Text.Foundry(Text.sansb, 12).aa(true);
+    public static final Text.Foundry foundry = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
     private static final Resource timersfx = Resource.local().loadwait("sfx/timer");
     public final static int height = 31;
     private final static int txty = 8;
@@ -19,9 +20,9 @@ public class TimerWdg extends Widget {
         this.duration = duration;
 
         sz = new Coord(420, height);
-        lblname = new Label(name, foundry);
+        lblname = new Label(name, foundry, true);
         add(lblname, new Coord(3, txty));
-        lbltime = new Label(timeFormat(duration), foundry);
+        lbltime = new Label(timeFormat(duration), foundry, true);
 
         add(lbltime, new Coord(190, txty));
 

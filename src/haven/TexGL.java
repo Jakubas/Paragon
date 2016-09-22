@@ -52,6 +52,7 @@ public abstract class TexGL extends Tex {
 
         public TexOb(GOut g) {
             super(g);
+	        g.gl.bglCreate(this);
         }
 
         public void create(GL2 gl) {

@@ -42,13 +42,14 @@ public class Fightview extends Widget {
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
     public double atkcs, atkct;
-    public int off, def;
+    public Indir<Resource> lastact = null;
+    public long lastuse = 0;
+    public int atkcd;
     private GiveButton curgive;
     private Avaview curava;
     private Button curpurs;
     public final Bufflist buffs = add(new Bufflist());
     private static final Gob.Overlay curol = new Gob.Overlay(new FightCurrentOpp());
-
     {
         buffs.hide();
     }
@@ -59,12 +60,12 @@ public class Fightview extends Widget {
         public final GiveButton give;
         public final Button purs;
         public final Bufflist buffs = add(new Bufflist());
-
         {
             buffs.hide();
         }
-
         public int ip, oip;
+        public Indir<Resource> lastact = null;
+        public long lastuse = 0;
 
         public Relation(long gobid) {
             this.gobid = gobid;
@@ -90,6 +91,16 @@ public class Fightview extends Widget {
             ui.destroy(give);
             ui.destroy(purs);
         }
+
+        public void use(Indir<Resource> act) {
+            lastact = act;
+            lastuse = System.currentTimeMillis();
+        }
+    }
+
+    public void use(Indir<Resource> act) {
+        lastact = act;
+        lastuse = System.currentTimeMillis();
     }
 
     @RName("frv")
@@ -191,12 +202,9 @@ public class Fightview extends Widget {
         throw (new Notfound(gobid));
     }
 
-    private long lastrot = System.currentTimeMillis();
     public void rotateopp() {
-        if (lsrel.size() <= 1 || System.currentTimeMillis() - lastrot < 500)
+        if (lsrel.size() <= 1)
             return;
-
-        lastrot = System.currentTimeMillis();
 
         for (int i = 0; i < rotationlist.size(); i++) {
             try {
@@ -289,6 +297,13 @@ public class Fightview extends Widget {
             rel.ip = (Integer) args[2];
             rel.oip = (Integer) args[3];
             return;
+        } else if(msg == "used") {
+            use((args[0] == null)?null:ui.sess.getres((Integer)args[0]));
+            return;
+        } else if(msg == "ruse") {
+            Relation rel = getrel((Integer)args[0]);
+            rel.use((args[1] == null)?null:ui.sess.getres((Integer)args[1]));
+            return;
         } else if (msg == "cur") {
             try {
                 Relation rel = getrel((Integer) args[0]);
@@ -300,8 +315,9 @@ public class Fightview extends Widget {
             }
             return;
         } else if (msg == "atkc") {
+            atkcd = (Integer) args[0];
             atkcs = System.currentTimeMillis() / 1000.0;
-            atkct = atkcs + (((Integer) args[0]) * 0.06);
+            atkct = atkcs + (atkcd * 0.06);
             return;
         } else if (msg == "blk") {
             blk = n2r((Integer) args[0]);
@@ -309,10 +325,6 @@ public class Fightview extends Widget {
         } else if (msg == "atk") {
             batk = n2r((Integer) args[0]);
             iatk = n2r((Integer) args[1]);
-            return;
-        } else if (msg == "offdef") {
-            off = (Integer) args[0];
-            def = (Integer) args[1];
             return;
         }
         super.uimsg(msg, args);

@@ -134,7 +134,7 @@ public class Map {
     }
 
     public void addGob(Gob gob) {
-        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, false);
+        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, true);
         if (bbox == null)
             return;
 
@@ -223,7 +223,7 @@ public class Map {
     }
 
     public void excludeGob(Gob gob) {
-        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, false);
+        GobHitbox.BBox bbox = GobHitbox.getBBox(gob, true);
         if (bbox == null)
             return;
 
@@ -242,6 +242,13 @@ public class Map {
         Coord cb = Utils.rotate(gcx + bboxb.x + plbbox, gcy + bboxa.y - plbbox, gcx, gcy, cos, sin);
         Coord cc = Utils.rotate(gcx + bboxb.x + plbbox, gcy + bboxb.y + plbbox, gcx, gcy, cos, sin);
         Coord cd = Utils.rotate(gcx + bboxa.x - plbbox, gcy + bboxb.y + plbbox, gcx, gcy, cos, sin);
+
+        // exclude the gob if it's near map edges so we won't need to do bounds checks all later on
+        if (ca.x - mapborder < 0 || ca.y - mapborder < 0 || ca.x + mapborder >= sz || ca.y + mapborder >= sz ||
+                cb.x - mapborder < 0 || cb.y - mapborder < 0 || cb.x + mapborder >= sz || cb.y + mapborder >= sz ||
+                cc.x - mapborder < 0 || cc.y - mapborder < 0 || cc.x + mapborder >= sz || cc.y + mapborder >= sz ||
+                cd.x - mapborder < 0 || cd.y - mapborder < 0 || cd.x + mapborder >= sz || cd.y + mapborder >= sz)
+            return;
 
         Utils.plotRect(map, ca, cb, cc, cd, CELL_FREE);
         dbg.rect(ca.x, ca.y, cb.x, cb.y, cc.x, cc.y, cd.x, cd.y, Color.PINK);
@@ -568,6 +575,25 @@ public class Map {
 
         return path;
     }
+
+    public boolean isOriginBlocked() {
+        return map[origin][origin] == CELL_BLK || map[origin][origin] == CELL_TO;
+    }
+
+    // 3 pixels away from origin
+    public Pair<Integer, Integer> getFreeLocation() {
+        if (map[origin + 3][origin] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin + 3, origin);
+        else if (map[origin - 3][origin] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin - 3, origin);
+        else if (map[origin][origin + 3] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin, origin + 3);
+        else if (map[origin][origin - 3] == CELL_FREE)
+            return new Pair<Integer, Integer>(origin, origin - 3);
+
+        return null;
+    }
+
 
     public void dbgdump() {
         dbg.save();

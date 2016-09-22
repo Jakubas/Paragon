@@ -199,4 +199,10 @@ public interface ShaderMacro {
             return (r);
         }
     }
+
+    public static final ShaderMacro dump = new ShaderMacro() {
+	    public void modify(ProgramContext prog) {
+		prog.dump = true;
+	    }
+	};
 }

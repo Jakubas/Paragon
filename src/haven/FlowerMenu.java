@@ -33,13 +33,13 @@ import static java.lang.Math.PI;
 public class FlowerMenu extends Widget {
     public static final Color pink = new Color(255, 0, 128);
     public static final Color ptc = Color.YELLOW;
-    public static final Text.Foundry ptf = new Text.Foundry(Text.dfont, 12);
+    public static final Text.Foundry ptf = new Text.Foundry(Text.dfont, Config.fontsizeglobal * 12 / 11);
     public static final IBox pbox = Window.wbox;
     public static final Tex pbg = Window.bg;
     public static final int ph = 30, ppl = 8;
     public Petal[] opts;
     private UI.Grab mg, kg;
-
+    
     @RName("sm")
     public static class $_ implements Factory {
         public Widget create(Widget parent, Object[] args) {
@@ -95,7 +95,7 @@ public class FlowerMenu extends Widget {
 
     public class Opening extends NormAnim {
         Opening() {
-            super(0.15);
+            super(Config.instantflowermenu ? 0 : 0.15);
         }
 
         public void ntick(double s) {
@@ -106,13 +106,13 @@ public class FlowerMenu extends Widget {
             for (Petal p : opts) {
                 p.move(p.ta + ((1 - s) * PI), p.tr * s);
                 p.a = s;
-                if (p.name.equals("Pick"))
+                if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Pick")))
                     pick = p;
-                else if (p.name.equals("Harvest"))
+                else if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Harvest")))
                     harvest = p;
-                else if (p.name.equals("Eat"))
+                else if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Eat")))
                     eat = p;
-                else if (p.name.equals("Split"))
+                else if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Split")))
                     split = p;
             }
             if (Config.autopick && pick != null && s == 1.0)
@@ -156,7 +156,7 @@ public class FlowerMenu extends Widget {
 
     public class Cancel extends NormAnim {
         Cancel() {
-            super(0.20);
+            super(Config.instantflowermenu ? 0 : 0.20);
         }
 
         public void ntick(double s) {
@@ -209,17 +209,7 @@ public class FlowerMenu extends Widget {
         opts = new Petal[options.length];
         for (int i = 0; i < options.length; i++) {
             String name = options[i];
-            if (Resource.L10N_DEBUG &&
-                    !name.startsWith("Follow ") && !name.startsWith("Travel along") &&
-                    !name.startsWith("Extend ") && !name.startsWith("Connect "))
-                Resource.l10nFlower = Resource.saveStrings(Resource.BUNDLE_FLOWER, Resource.l10nFlower, name, name);
-
-            String locName = null;
-            if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-                if (Resource.l10nFlower != null && Resource.l10nFlower.containsKey(name))
-                    locName = Resource.l10nFlower.get(name);
-            }
-            add(opts[i] = new Petal(locName != null ? locName : name));
+            add(opts[i] = new Petal(Resource.getLocString(Resource.BUNDLE_FLOWER, name)));
             opts[i].num = i;
         }
     }

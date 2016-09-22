@@ -27,6 +27,8 @@
 package haven;
 import haven.paragon.utils.UtilsSetup;
 
+import haven.resutil.BPRadSprite;
+
 import java.awt.*;
 import java.util.*;
 
@@ -42,9 +44,19 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     public int frame;
     public final Glob glob;
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
-    public Collection<Overlay> ols = new LinkedList<Overlay>();
-    private static final Text.Foundry gobhpf = new Text.Foundry(Text.sansb, 14).aa(true);
-    private static final Text.Foundry stagemax = new Text.Foundry(Text.sansb, 20).aa(true);
+	public Collection<Overlay> ols = new LinkedList<Overlay>() {
+	    public boolean add(Overlay item) {
+	        /* XXX: Remove me once local code is changed to use addol(). */
+	        if(glob.oc.getgob(id) != null) {
+	            // FIXME: extend ols with a method for adding sprites without triggering changed.
+	            if (item.id != Sprite.GROWTH_STAGE_ID && item != animalradius)
+	                glob.oc.changed(Gob.this);
+	        }
+	        return(super.add(item));
+	    }
+	};
+    private static final Text.Foundry gobhpf = new Text.Foundry(Text.sans, 14).aa(true);
+    private static final Text.Foundry stagemax = new Text.Foundry(Text.sans, 20).aa(true);
     private static final Tex[] gobhp = new Tex[]{
             Text.renderstroked("25%", Color.WHITE, Color.BLACK, gobhpf).tex(),
             Text.renderstroked("50%", Color.WHITE, Color.BLACK, gobhpf).tex(),
@@ -67,6 +79,11 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
     private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 255));
     private final Collection<ResAttr.Cell<?>> rdata = new LinkedList<ResAttr.Cell<?>>();
     private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
+    private int cropstgmaxval = 0;
+    private Overlay bowvector = null;
+    private static final Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F));
+    private static final Set<String> dangerousanimalrad = new HashSet<String>(Arrays.asList(
+            "gfx/kritter/bear/bear", "gfx/kritter/boar/boar", "gfx/kritter/lynx/lynx", "gfx/kritter/badger/badger"));
 
     public static class Overlay implements Rendered {
 	public Indir<Resource> res;
@@ -116,6 +133,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
             if (spr != null)
                 rl.add(spr, null);
             return (false);
+        }
+
+        public Object staticp() {
+            return((spr == null)?null:spr.staticp());
         }
     }
     /* XXX: This whole thing didn't turn out quite as nice as I had
@@ -184,11 +205,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
         }
     }
 
-    static {
-        for (int i = 10; i < 100; i++) {
-            treestg[i - 10] = Text.renderstroked(i + "", stagecolor, Color.BLACK, gobhpf).tex();
-        }
-    }
+    public static class Static {}
 
     public Gob(Glob glob, Coord c, long id, int frame) {
         this.glob = glob;
@@ -236,6 +253,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
             glob.oc.remove(id);
     }
 
+    /* Intended for local code. Server changes are handled via OCache. */
+    public void addol(Overlay ol) {
+        ols.add(ol);
+    }
+    public void addol(Sprite ol) {
+        addol(new Overlay(ol));
+    }
+
     public Overlay findol(int id) {
         for (Overlay ol : ols) {
             if (ol.id == id)
@@ -280,6 +305,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
         return (new Coord3f(rc.x, rc.y, glob.map.getcz(rc)));
     }
 
+    public double geta() {
+        return a;
+    }
+
     private Class<? extends GAttrib> attrclass(Class<? extends GAttrib> cl) {
         while (true) {
             Class<?> p = cl.getSuperclass();
@@ -296,8 +325,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
         if (Config.showplayerpaths || Config.showanimalpaths) {
             try {
                 Resource res = getres();
-                if (res != null && a.getClass() == LinMove.class &&
-                        (!res.name.startsWith("gfx/terobjs") || res.name.startsWith("gfx/terobjs/vehicle"))) {
+                if (res != null && a.getClass() == LinMove.class) {
                     boolean isplayer = "body".equals(res.basename());
                     if (isplayer && Config.showplayerpaths || !isplayer && Config.showanimalpaths) {
                         if (gobpath == null) {
@@ -307,7 +335,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
                         ((GobPath) gobpath.spr).lm = (LinMove) a;
                     }
                 }
-
             } catch (Exception e) { // fail silently
             }
         }
@@ -427,18 +454,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
                 ((Overlay.SetupMod) ol.spr).setupmain(rl);
         }
         final GobHealth hlt = getattr(GobHealth.class);
-        if (hlt != null) {
+        if (hlt != null)
             rl.prepc(hlt.getfx());
-            if (Config.showgobhp && hlt.hp < 4) {
-                PView.Draw2D d = new PView.Draw2D() {
-                    public void draw2d(GOut g) {
-                        if (sc != null)
-                            g.image(gobhp[hlt.hp - 1], sc.sub(15, 10));
-                    }
-                };
-                rl.add(d, null);
-            }
-        }
 
         Resource res = null;
         try {
@@ -450,10 +467,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
             boolean done = true;
             boolean empty = true;
             for (Overlay ol : ols) {
-                empty = false;
                 try {
                     Indir<Resource> olires = ol.res;
                     if (olires != null) {
+                        empty = false;
                         Resource olres = olires.get();
                         if (olres != null) {
                             if (olres.name.endsWith("-blood") || olres.name.endsWith("-windweed")) {
@@ -515,40 +532,89 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
                 			maxStage = layer.id / 10;
                 		}
                 	}
-								final int stageMax = maxStage;
-								PView.Draw2D staged = new PView.Draw2D() {
-									@Override
-									public void draw2d(GOut g) {
-										if (sc != null) {
-											String str = String.format("%d/%d", new Object[]{stage, stageMax});
-											if (!plantTex.containsKey(str)) {
-												plantTex.put(str, Text.renderstroked(str, stage >= stageMax ? Color.GREEN : Color.RED, Color.BLACK, gobhpf).tex());
-											}
-											Tex tex = plantTex.get(str);
-											g.image(tex, sc.sub(tex.sz().div(2)));
-										}
-									}
-								};
-								rl.add(staged, null);
+                	final int stageMax = maxStage;
+                	PView.Draw2D staged = new PView.Draw2D() {
+                		@Override
+                		public void draw2d(GOut g) {
+                			if (sc != null) {
+                				String str = String.format("%d/%d", new Object[]{stage, stageMax});
+                				if (!plantTex.containsKey(str)) {
+                					plantTex.put(str, Text.renderstroked(str, stage >= stageMax ? Color.GREEN : Color.RED, Color.BLACK, gobhpf).tex());
+                				}
+                				Tex tex = plantTex.get(str);
+                				g.image(tex, sc.sub(tex.sz().div(2)));
+                			}
+                		}
+                	};
+                	rl.add(staged, null);
                 }
 	
                 if (res != null && (res.name.startsWith("gfx/terobjs/trees") || res.name.startsWith("gfx/terobjs/bushes"))) {
                     ResDrawable rd = getattr(ResDrawable.class);
                     if (rd != null && !rd.sdt.eom()) {
-                        try {
-                            final int stage = rd.sdt.peekrbuf(0);
-                            if (stage < 100) {
-                                PView.Draw2D treestgdrw = new PView.Draw2D() {
-                                    public void draw2d(GOut g) {
-                                        if (sc != null)
-                                            g.image(treestg[stage - 10], sc.sub(10, 5));
-                                    }
-                                };
-                                rl.add(treestgdrw, null);
+                        final int stage = rd.sdt.peekrbuf(0);
+                        if (stage < 100) {
+                            Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
+                            if (ol == null) {
+                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
+                            } else if (((TreeStageSprite)ol.spr).val != stage) {
+                                ((TreeStageSprite)ol.spr).update(stage);
                             }
-                        } catch (ArrayIndexOutOfBoundsException e) { // ignored
                         }
                     }
+                }
+            }
+
+            if (res != null && dangerousanimalrad.contains(res.name)) {
+                if (Config.showanimalrad) {
+                    if (!ols.contains(animalradius)) {
+                        GAttrib drw = getattr(Drawable.class);
+                        if (drw != null && drw instanceof Composite) {
+                            Composite cpst = (Composite) drw;
+                            if (cpst.nposes != null && cpst.nposes.size() > 0) {
+                                for (ResData resdata : cpst.nposes) {
+                                    Resource posres = resdata.res.get();
+                                    if (posres != null && !posres.name.endsWith("/knock") || posres == null) {
+                                        ols.add(animalradius);
+                                        break;
+                                    }
+                                }
+                            } else if (!cpst.nposesold){
+                                ols.add(animalradius);
+                            }
+                        }
+                    }
+                } else {
+                    ols.remove(animalradius);
+                }
+            }
+
+            if (Config.showarchvector && res != null && res.name.equals("gfx/borka/body") && d instanceof Composite) {
+                boolean targetting = false;
+
+                Gob followGob = null;
+                Moving moving = getattr(Moving.class);
+                if (moving != null && moving instanceof Following)
+                    followGob = ((Following)moving).tgt();
+
+                for (Composited.ED ed : ((Composite) d).comp.cequ) {
+                    try {
+                        res = ed.res.res.get();
+                        if (res != null && res.name.endsWith("huntersbow") && ed.res.sdt.peekrbuf(0) == 5) {
+                            targetting = true;
+                            if (bowvector == null) {
+                                bowvector = new Overlay(new GobArcheryVector(this, followGob));
+                                ols.add(bowvector);
+                            }
+                            break;
+                        }
+                    } catch (Loading l) {
+                    }
+                }
+
+                if (!targetting && bowvector != null) {
+                    ols.remove(bowvector);
+                    bowvector = null;
                 }
             }
         }
@@ -559,6 +625,38 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
         if (ki != null)
             rl.add(ki.fx, null);
         return (false);
+    }
+
+    private static final Object DYNAMIC = new Object();
+    private Object seq = null;
+    public Object staticp() {
+        if(seq == null) {
+            Object fs = new Static();
+            for(GAttrib ar : attr.values()) {
+                Object as = ar.staticp();
+                if(as == Rendered.CONSTANS) {
+                } else if(as instanceof Static) {
+                } else {
+                    fs = null;
+                    break;
+                }
+            }
+            for(Overlay ol : ols) {
+                Object os = ol.staticp();
+                if(os == Rendered.CONSTANS) {
+                } else if(os instanceof Static) {
+                } else {
+                    fs = null;
+                    break;
+                }
+            }
+            seq = fs;
+        }
+        return((seq == DYNAMIC)?null:seq);
+    }
+
+    void changed() {
+        seq = null;
     }
 
     public Random mkrandoom() {
@@ -645,8 +743,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 
     public final GobLocation loc = new GobLocation();
 
+    //fix name
     public boolean isplayer() {
-        return MapView.plgob == id;
+    	return MapView.plgob == id;
     }
     
     public Coord coord() {
@@ -712,4 +811,19 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered, Comparabl
 	        return false;
 	    }   
 	}
+	
+    public boolean isFriend() {
+        synchronized (glob.party.memb) {
+            for (Party.Member m : glob.party.memb.values()) {
+                if (m.gobid == id)
+                    return true;
+            }
+        }
+
+        KinInfo kininfo = getattr(KinInfo.class);
+        if (kininfo == null || kininfo.group == 2 /*red*/)
+            return false;
+
+        return true;
+    }
 }

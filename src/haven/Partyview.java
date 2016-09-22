@@ -28,7 +28,6 @@ package haven;
 
 import haven.Party.Member;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -39,7 +38,6 @@ public class Partyview extends Widget {
     Member ol = null;
     Map<Member, Avaview> avs = new HashMap<Member, Avaview>();
     Button leave = null;
-    private static final DecimalFormat df = new DecimalFormat("#.#");
 
     @RName("pv")
     public static class $_ implements Factory {
@@ -87,9 +85,9 @@ public class Partyview extends Widget {
                                 double dyabs = Math.abs(dy);
 
                                 String tooltipstr = String.format("  Distance: %s mg.  X: %s  Y: %s",
-                                        df.format(dist),
-                                        df.format(a.x > b.x ? -1 * dxabs: dxabs),
-                                        df.format(a.y > b.y ? dyabs : -1 * dyabs));
+                                        Utils.fmt1DecPlace(dist),
+                                        Utils.fmt1DecPlace(a.x > b.x ? -1 * dxabs: dxabs),
+                                        Utils.fmt1DecPlace(a.y > b.y ? dyabs : -1 * dyabs));
                                 tooltip = Text.render(tooltipstr).tex();
 
                                 return tooltip;

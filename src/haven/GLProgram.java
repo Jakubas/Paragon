@@ -92,6 +92,7 @@ public class GLProgram implements java.io.Serializable {
 
         public ProgOb(GOut g) {
             super(g);
+            g.gl.bglCreate(this);
         }
 
         public void create(GL2 gl) {

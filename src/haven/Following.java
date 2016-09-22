@@ -66,9 +66,9 @@ public class Following extends Moving {
     }
 
     private Skeleton.Pose getpose(Gob tgt) {
-	if(tgt == null)
-	    return(null);
-	return(Skeleton.getpose(tgt.getattr(Drawable.class)));
+		if(tgt == null)
+		    return(null);
+		return(Skeleton.getpose(tgt.getattr(Drawable.class)));
     }
 
     public GLState xf() {

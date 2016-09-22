@@ -38,7 +38,6 @@ public abstract class GLObject {
 
     public GLObject(GOut g) {
         this.cur = g.curgl;
-        g.gl.bglCreate(this);
     }
 
     public void dispose() {

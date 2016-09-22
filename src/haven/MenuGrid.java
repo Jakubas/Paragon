@@ -30,12 +30,9 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
-import haven.automation.AddBranchesToOven;
-import haven.automation.AddCoalToSmelter;
+import haven.automation.*;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
-import haven.automation.GobSelectCallback;
-import haven.automation.SteelRefueler;
 
 import java.util.*;
 
@@ -46,7 +43,7 @@ public class MenuGrid extends Widget {
     public final static Coord bgsz = bg.sz().add(-1, -1);
     public final static Pagina next = new Glob.Pagina(Resource.local().loadwait("gfx/hud/sc-next").indir());
     public final static Pagina bk = new Glob.Pagina(Resource.local().loadwait("gfx/hud/sc-back").indir());
-    public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
+    public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, Config.fontsizeglobal);
     private static Coord gsz = new Coord(4, 4);
     private Pagina cur, pressed, dragging, layout[][] = new Pagina[gsz.x][gsz.y];
     private UI.Grab grab;
@@ -135,6 +132,8 @@ public class MenuGrid extends Widget {
             p.add(glob.paginafor(Resource.local().load("paginae/amber/coal12")));
             p.add(glob.paginafor(Resource.local().load("paginae/amber/branchoven")));
             p.add(glob.paginafor(Resource.local().load("paginae/amber/steel")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/autosurvey")));
+            p.add(glob.paginafor(Resource.local().load("paginae/amber/torch")));
         }
     }
     
@@ -145,7 +144,7 @@ public class MenuGrid extends Widget {
                 return (-1);
             if ((aa.ad.length > 0) && (ab.ad.length == 0))
                 return (1);
-            return (aa.name.compareTo(ab.name));
+            return (aa.origName.compareTo(ab.origName));
         }
     };
 
@@ -218,7 +217,7 @@ public class MenuGrid extends Widget {
                             m += (1 - m) * (double) (now - btn.gettime) / (double) btn.dtime;
                         m = Utils.clip(m, 0, 1);
                         g.chcolor(255, 255, 255, 128);
-                        g.fellipse(p.add(bgsz.div(2)), bgsz.div(2), 90, (int) (90 + (360 * m)));
+			g.fellipse(p.add(bgsz.div(2)), bgsz.div(2), Math.PI / 2, ((Math.PI / 2) + (Math.PI * 2 * m)));
                         g.chcolor();
                     }
                     if (btn.newp != 0) {
@@ -308,7 +307,44 @@ public class MenuGrid extends Widget {
     private Pagina paginafor(Resource.Named res) {
         return (ui.sess.glob.paginafor(res));
     }
-    
+
+    public void use(String[] ad) {
+        GameUI gui = gameui();
+        if (gui == null)
+            return;
+        if (ad[1].equals("coal")) {
+            Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
+            t.start();
+        } else if (ad[1].equals("branchoven")) {
+            Thread t = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
+            t.start();
+        } else if (ad[1].equals("steel")) {
+            if (gui.getwnd("Steel Refueler") == null) {
+                SteelRefueler sw = new SteelRefueler();
+                gui.map.steelrefueler = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(sw);
+                }
+            }
+        } else if (ad[1].equals("level")) {
+            if (gui.getwnd("Auto Leveler") == null) {
+                AutoLeveler lw = new AutoLeveler();
+                gui.map.autoleveler = lw;
+                gui.add(lw, new Coord(gui.sz.x / 2 - lw.sz.x / 2, gui.sz.y / 2 - lw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(lw);
+                }
+                synchronized (ErrorSysMsgCallback.class) {
+                    gui.registerErrMsg(lw);
+                }
+            }
+        } else if (ad[1].equals("torch")) {
+            Thread t = new Thread(new LightWithTorch(gui), "LightWithTorch");
+            t.start();
+        }
+    }
+
     private void use(Pagina r, boolean reset) {
         Collection<Pagina> sub = new LinkedList<Pagina>(),
                 cur = new LinkedList<Pagina>();
@@ -337,18 +373,20 @@ public class MenuGrid extends Widget {
     
     public boolean use(Pagina r) {
         String [] ad = r.act().ad;
-        if((ad == null) || (ad.length < 1)){
+        if((ad == null) || (ad.length < 1)) {
             return false;
         }
         if(ad[0].equals("@")) {
-            usecustom(ad);
+            useCustom(ad);
         } else {
-            wdgmsg("act", (Object[])ad);
+            if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp")))
+                gameui().histbelt.push(r);
+            wdgmsg("act", (Object[]) ad);
         }
         return true;
     }
     
-    public void usecustom(String[] ad) {
+    public void useCustom(String[] ad) {
         GameUI gui = gameui();
     	switch (ad[1]) {
     	case "farm":
@@ -366,26 +404,11 @@ public class MenuGrid extends Widget {
 		case "catchdragonflies":
 			new Thread(new CatchDragonflies()).start();
 			break;
-    	case "steel":
-            if (gui.getwnd("Steel Refueler") == null) {
-                SteelRefueler sw = new SteelRefueler();
-                gui.map.steelrefueler = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-            break;
-    	case "coal": 
-            Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
-            t.start();
-    		break;
-    	case "branchoven":
-            Thread t1 = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
-            t1.start();
-            break;
-    	}
-  }
+		default:
+			use(ad);
+			break;
+        }
+    }
 
     public void tick(double dt) {
         if (loading || (pagseq != ui.sess.glob.pagseq))
