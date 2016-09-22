@@ -680,9 +680,9 @@ public class CharWnd extends Window {
             this.study = study;
             add(new Label("Attention:"), 2, 2);
             add(new Label("Experience cost:"), 2, 32);
-            add(new Label("LP/hour"), 2, sz.y - 64);
+		    add(new Label("LP/H:"), 2, sz.y - 64);
             add(new Label("Learning points:"), 2, sz.y - 32);
-            add(new Label("LP/H:"), 2, 62);
+
         }
 
         private void upd() {
@@ -715,7 +715,7 @@ public class CharWnd extends Window {
             g.chcolor(192, 192, 255, 255);
             g.aimage(texpt.get().tex(), sz.add(-4, -15), 1.0, 0.0);
             g.chcolor(255, 255, 192, 255);
-            g.aimage(tlpht.get().tex(), sz.add(-4, -49), 1.0, 0.0);
+            g.aimage(tlpht.get().tex(), new Coord(sz.x - 4, 82), 1.0, 0.0);
         }
     }
 
