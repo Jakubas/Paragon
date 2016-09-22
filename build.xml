@@ -26,7 +26,7 @@
 	</target>
 
 	<target name="hafen-client" depends="build-env">
-		<javac srcdir="src" destdir="build/classes" debug="on" source="1.8"
+		<javac encoding="UTF-8" srcdir="src" destdir="build/classes" debug="on" source="1.8"
 			target="1.8" includeantruntime="no">
 			<classpath>
 				<pathelement path="lib/jogl.jar" />
@@ -38,7 +38,6 @@
 			</classpath>
 			<compilerarg value="-Xlint:unchecked" />
 			<compilerarg value="-Xlint:-options" />
-			<!-- <compilerarg value="-Xbarda" /> -->
 		</javac>
 		<copy todir="build/classes">
 			<fileset dir="src" excludes="**/*.java" />
@@ -49,6 +48,9 @@
 		<copy todir="build/classes/haven" file="etc/res-preload" />
 		<copy todir="build/classes/haven" file="etc/res-bgload" />
 		<copy todir="build/classes/haven" file="etc/icon.png" />
+		<copy todir="build/classes/haven" file="etc/curio.config" />
+		<copy todir="build" file="etc/run.bat" />
+		<copy todir="build" file="etc/run_debug.bat" />
 	</target>
 
 	<target name="lib-classes" depends="build-env" unless="unpacked-lib">
